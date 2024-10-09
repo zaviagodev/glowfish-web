@@ -1,6 +1,6 @@
 import { AuthPage } from "@refinedev/core";
 import GlowfishIcon from "../../components/icons/GlowfishIcon";
-import Button from "../../components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import LineIcon from "../../components/icons/LineIcon";
 
 export const Login = () => {
@@ -12,7 +12,7 @@ export const Login = () => {
       </div>
 
       <div className="flex flex-col gap-2.5">
-        <Button icon={<LineIcon className="absolute left-4"/>} bgColor="#04DD00">
+        <Button>
           Continue with Line
         </Button>
 
