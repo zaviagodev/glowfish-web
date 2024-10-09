@@ -37,7 +37,7 @@ import { Register } from "./pages/register";
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
+      {/* <GitHubBanner /> */}
       <RefineKbarProvider>
         <DevtoolsProvider>
           <Refine

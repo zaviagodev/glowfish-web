@@ -92,6 +92,10 @@
     @apply font-bold;
   }
 
+  body {
+    @apply bg-[#0D0D0D] text-white
+  }
+
   @media (max-width: 751px) {
     .menu {
       @apply border-r-0 border-b border-gray-300;
