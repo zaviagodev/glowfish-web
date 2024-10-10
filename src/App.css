@@ -8,16 +8,16 @@
 */
 @layer base {
   input {
-    @apply border border-gray-300 rounded-sm;
+    @apply border border-gray-300 rounded-sm font-sfpro-rounded text-base font-semibold
   }
 
   input[type="submit"] {
     @apply bg-[#EFEFEF];
   }
 
-  button {
+  /* button {
     @apply border border-gray-300 px-2 rounded-sm bg-[#EFEFEF];
-  }
+  } */
 
   h1 {
     @apply text-2xl font-bold my-6;
@@ -32,7 +32,7 @@
   }
 
   label {
-    @apply text-sm font-medium;
+    @apply text-sm font-medium text-[#FFFFFF61];
   }
 
   body {
@@ -93,7 +93,15 @@
   }
 
   body {
-    @apply bg-[#0D0D0D] text-white
+    @apply bg-background text-white;
+  }
+
+  .main-btn {
+    @apply !rounded-full border-0 !h-[46px] w-full font-sfpro-rounded !text-base !font-semibold
+  }
+
+  .main-container {
+    @apply mt-[57px] p-5
   }
 
   @media (max-width: 751px) {
@@ -106,7 +114,7 @@
     @apply pl-4;
   }
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 5%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -123,7 +131,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --input: 0 0% 16%; /* 214.3 31.8% 91.4% */
     --ring: 222.2 84% 4.9%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -159,11 +167,60 @@
     --chart-5: 340 75% 55%;
   }
 }
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+
+@font-face {
+  font-family:'SF Pro';
+  src: url('./fonts/SF Pro/sf-pro-text_light.woff2') format('woff2'),
+      url('./fonts/SF Pro/SFProTHDisplay_light.woff2') format('woff2');
+  font-weight:300;
+}
+
+@font-face {
+  font-family:'SF Pro';
+  src: url('./fonts/SF Pro/sf-pro-text_regular.woff2') format('woff2'),
+      url('./fonts/SF Pro/SFProTHDisplay_regular.woff2') format('woff2');
+  font-weight:400;
+}
+
+@font-face {
+  font-family:'SF Pro';
+  src: url('./fonts/SF Pro/sf-pro-text_semibold.woff2') format('woff2'),
+      url('./fonts/SF Pro/SFProTHDisplay_semibold.woff2') format('woff2');
+  font-weight:600;
+}
+
+@font-face {
+  font-family:'SF Pro Rounded';
+  src: url('./fonts/SF Pro Rounded/SF-Pro-Rounded-Light.woff2') format('woff2');
+  font-weight:300;
+}
+
+@font-face {
+  font-family:'SF Pro Rounded';
+  src: url('./fonts/SF Pro Rounded/SF-Pro-Rounded-Regular.woff2') format('woff2');
+  font-weight:400;
+}
+
+@font-face {
+  font-family:'SF Pro Rounded';
+  src: url('./fonts/SF Pro Rounded/SF-Pro-Rounded-Medium.woff2') format('woff2');
+  font-weight:500;
+}
+
+@font-face {
+  font-family:'SF Pro Rounded';
+  src: url('./fonts/SF Pro Rounded/SF-Pro-Rounded-Semibold.woff2') format('woff2');
+  font-weight:600;
+}
+
+@font-face {
+  font-family:'SF Pro Rounded';
+  src: url('./fonts/SF Pro Rounded/SF-Pro-Rounded-Bold.woff2') format('woff2');
+  font-weight:700;
+}
+
+body {
+  font-family:'SF Pro', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
