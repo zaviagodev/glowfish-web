@@ -15,6 +15,7 @@ import { RegisterMainDrawerProps } from "@/type/type"
 const RegisterDrawer = ({ 
   setIsOpen,
   isOpen,
+  className,
   children
 } : RegisterMainDrawerProps) => {
 
@@ -26,7 +27,7 @@ const RegisterDrawer = ({
 
         <Header className="relative rounded-t-2xl" onClickBackButton={() => setIsOpen(false)}/>
         
-        <section className="bg-background h-full p-5">
+        <section className={cn("bg-background h-full", className)}>
           {children}
         </section>
       </SheetContent>

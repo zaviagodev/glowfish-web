@@ -71,6 +71,7 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
 		zIndex: {
+			50: 50,
 			99: 99
 		}
   	}

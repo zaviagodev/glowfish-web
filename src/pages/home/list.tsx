@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/Button";
 import EventSection from "@/components/main/EventSection";
-import { event_data } from "@/data/data";
+import { event_data, event_you_might_enjoy } from "@/data/data";
 
 export const HomeList = () => {
   // const columns = React.useMemo<ColumnDef<any>[]>(
@@ -155,7 +155,7 @@ export const HomeList = () => {
 
   return (
     <>
-      <Header leftButton={<Menu />}/>
+      <Header leftButton={<Menu />} className="border-0"/>
 
       <section>
         <div className="flex items-center justify-between px-5">
@@ -182,7 +182,7 @@ export const HomeList = () => {
           </div>
 
           <EventSection list={event_data} title="Upcoming Events"/>
-          <EventSection list={event_data} title="Events you might enjoy" cardType="small"/>
+          <EventSection list={event_you_might_enjoy} title="Events you might enjoy" cardType="small"/>
         </section>
       </section>
 

@@ -13,7 +13,7 @@ const TellUsAboutYourself = () => {
       <Header navigateBackTo="/phone-verification"/>
 
       <section className="flex flex-col gap-y-9 mb-24">
-        <h2 className="main-heading">Tell us about <span className="text-[#FF2F00]">yourself.</span></h2>
+        <h2 className="main-heading">Rate what you are <span className="text-[#FF2F00]">into</span></h2>
         <section className="flex flex-col gap-8">
           <StarsSection title="Music and Live Show" rating={4} activeColor="#9B6CDE"/>
           <StarsSection title="Art and Creativity" rating={5} activeColor="#F7D767"/>

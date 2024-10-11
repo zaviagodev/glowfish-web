@@ -98,7 +98,6 @@ function App() {
                 />
                 <Route path="/phone-verification" element={<PhoneVerification />}/>
                 <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />}/>
-                <Route path="/event/:id" element={<EventPage />}/>
                 <Route path="/home">
                   <Route index element={<HomeList />} />
                   <Route path="create" element={<HomeCreate />} />

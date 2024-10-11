@@ -1,7 +1,7 @@
 import EventCard from "@/components/main/EventCard"
 import { cn } from "@/lib/utils"
 import { EventDataProps } from "@/type/type"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 interface EventSectionProps {
   list: EventDataProps[],
@@ -16,6 +16,9 @@ const EventSection = ({
   cardType,
   seeAllLink,
 } : EventSectionProps) => {
+
+  const navigate = useNavigate()
+
   return (
     <section className="flex flex-col gap-4 mt-[30px]">
     <div className="flex items-center justify-between px-5">
@@ -23,15 +26,17 @@ const EventSection = ({
       <Link to={seeAllLink || ""} className="text-fadewhite decoration-none text-xs">See all</Link>
     </div>
 
-    <div className={cn("flex gap-3 overflow-auto px-5", {"w-max": cardType !== "small"})}>
+    <div className={cn("flex gap-3 overflow-auto px-5 w-full")}>
       {list.map((l: any) => (
       <EventCard 
+        key={l.id}
         image={l.image} 
         title={l.title} 
         location={l.location}
         date={l.date}
         price={l.price}
         type={cardType}
+        onClick={() => navigate(`/home/show/${l.id}`)}
       />
       ))}
     </div>

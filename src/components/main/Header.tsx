@@ -1,17 +1,7 @@
 import { Link, useNavigate } from "react-router-dom"
 import { ChevronLeft } from "../icons/MainIcons"
 import { cn } from "@/lib/utils"
-import { ReactNode } from "react"
-
-interface HeaderProps {
-  title?: string
-  leftButton?: string | ReactNode
-  rightButton?: string | ReactNode
-  onClickBackButton?: (val?: any) => void
-  onClickRightButton?: () => void
-  navigateBackTo?: string,
-  className?: string
-}
+import { HeaderProps } from "@/type/type"
 
 const Header = ({
   title,
@@ -20,14 +10,15 @@ const Header = ({
   onClickBackButton,
   onClickRightButton,
   navigateBackTo,
-  className,
-  withBorder
+  className
 } : HeaderProps) => {
 
   const navigate = useNavigate()
 
   return (
-    <header className={cn("px-4 py-3 fixed top-0 left-0 w-full h-[57px] z-99 flex items-center justify-between bg-background border-b border-b-[#181818]", className)}>
+    <header className={
+      cn("px-4 py-3 fixed top-0 left-0 w-full h-[57px] z-[49] flex items-center justify-between bg-background border-b border-b-[#181818]", className
+    )}>
       <div className="flex items-center gap-5">
         <button onClick={() => navigateBackTo ? navigate(navigateBackTo) : onClickBackButton()} className="text-white">
           {leftButton || <ChevronLeft />}

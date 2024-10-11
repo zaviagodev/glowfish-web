@@ -57,7 +57,7 @@ const GetOTPDrawer = ({
   }
 
   return (
-    <RegisterDrawer isOpen={isOpen} setIsOpen={setIsOpen}>
+    <RegisterDrawer isOpen={isOpen} setIsOpen={setIsOpen} className="p-5">
       <SheetHeader className="text-left">
         <SheetTitle className="text-[#E0DCDD]">กรอกรหัสผ่าน OTP</SheetTitle>
         <SheetDescription className="text-fadewhite">

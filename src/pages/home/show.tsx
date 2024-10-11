@@ -1,24 +1,92 @@
+import { Calendar, Location } from "@/components/icons/MainIcons";
+import Header from "@/components/main/Header";
+import { event_data, event_you_might_enjoy } from "@/data/data";
 import { useNavigation, useOne, useResource, useShow } from "@refinedev/core";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/Button";
 
 export const HomeShow = () => {
-  const { edit, list } = useNavigation();
-  const { id } = useResource();
-  const { queryResult } = useShow({});
-  const { data } = queryResult;
+  // const { edit, list } = useNavigation();
+  // const { id } = useResource();
+  // const { queryResult } = useShow({});
+  // const { data } = queryResult;
 
-  const record = data?.data;
+  // const record = data?.data;
 
-  const { data: categoryData, isLoading: categoryIsLoading } = useOne({
-    resource: "categories",
-    id: record?.category?.id || "",
-    queryOptions: {
-      enabled: !!record,
-    },
-  });
+  // const { data: categoryData, isLoading: categoryIsLoading } = useOne({
+  //   resource: "categories",
+  //   id: record?.category?.id || "",
+  //   queryOptions: {
+  //     enabled: !!record,
+  //   },
+  // });
+
+  const { id } = useParams()
 
   return (
-    <div style={{ padding: "16px" }}>
-      <div
+    <>
+      <Header className="bg-transparent border-0" navigateBackTo={-1}/>
+
+      {(event_you_might_enjoy || event_data).filter(data => data.id == id).map(data => (
+        <>
+          <img src={data.image} className="w-full z-100"/>
+
+          <section className="p-5 bg-background/80 relative -top-10 backdrop-blur-sm rounded-[14px] flex flex-col gap-7 mb-[120px]">
+
+            <div className="flex flex-col gap-1.5">
+              <h2 className="font-semibold text-sm">{data.title}</h2>
+              <div className="flex items-center gap-2 text-xs">
+                <Location />
+                <p>{data.location}</p>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <Calendar />
+                <p>{data.date}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-center">
+              <div className="flex -space-x-3">
+                <Avatar className="h-7 w-7">
+                  <AvatarImage src="https://github.com/shadcn.png"/>
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar className="h-7 w-7">
+                  <AvatarImage src="https://github.com/shadcn.png"/>
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar className="h-7 w-7">
+                  <AvatarImage src="https://github.com/shadcn.png"/>
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </div>
+
+              <h2 className="font-semibold text-sm">50K+ Participants</h2>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <h2 className="font-medium text-sm">Description</h2>
+              <p className="text-xs">{data.desc}</p>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <h2 className="font-medium text-sm">Venue & Location</h2>
+              <p className="text-xs">{data.desc}</p>
+            </div>
+          </section>
+
+          <footer className="btn-footer flex flex-col gap-7">
+            <div className="space-y-1">
+              <p className="text-xs">Start from</p>
+              <h2 className="font-sfpro-rounded font-semibold">{data.price}</h2>
+            </div>
+            
+            <Button className="main-btn !bg-[#EE5736]" onClick={() => {}}>Sign up</Button>
+          </footer>
+        </>
+      ))}
+      {/* <div
         style={{
           display: "flex",
           alignItems: "center",
@@ -66,7 +134,7 @@ export const HomeShow = () => {
             })}
           </div>
         </div>
-      </div>
-    </div>
+      </div> */}
+    </>
   );
 };
