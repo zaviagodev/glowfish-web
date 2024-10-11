@@ -1,31 +1,37 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ChevronLeft } from "../icons/MainIcons"
+import { cn } from "@/lib/utils"
 
 interface HeaderProps {
-  onClickBack?: (link: string) => void
   title?: string
   rightButtonText?: string
+  onClickBackButton?: () => void
   onClickRightButton?: () => void
-  navigateBackTo?: string
+  navigateBackTo?: string,
+  className?: string
 }
 
 const Header = ({
-  onClickBack,
   title,
   rightButtonText,
+  onClickBackButton,
   onClickRightButton,
-  navigateBackTo
+  navigateBackTo,
+  className
 } : HeaderProps) => {
+
+  const navigate = useNavigate()
+
   return (
-    <header className="px-4 py-3 fixed top-0 w-full h-[57px] flex items-center justify-between bg-background border-b border-b-[#181818]">
-      <div className="flex items-center">
-        <Link to={navigateBackTo || ""} className="text-white">
+    <header className={cn("px-4 py-3 fixed top-0 left-0 w-full h-[57px] flex items-center justify-between bg-background border-b border-b-[#181818]", className)}>
+      <div className="flex items-center gap-5">
+        <button onClick={() => navigateBackTo ? navigate(navigateBackTo) : onClickBackButton()} className="text-white">
           <ChevronLeft />
-        </Link>
-        {title}
+        </button>
+        <p className="text-base font-semibold">{title}</p>
       </div>
 
-      <button onClick={onClickRightButton}>{rightButtonText}</button>
+      <button onClick={onClickRightButton} className="text-sm">{rightButtonText}</button>
     </header>
   )
 }

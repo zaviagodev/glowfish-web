@@ -7,8 +7,8 @@
 * It is safe to delete them, and they are not intended to be used by Refine components.
 */
 @layer base {
-  input {
-    @apply border border-gray-300 rounded-sm font-sfpro-rounded text-base font-semibold
+  input, .main-input {
+    @apply flex items-center h-12 w-full rounded-md bg-[#303030] outline-none border border-input text-white px-3 py-2 text-white focus:border-[#EE5736]
   }
 
   input[type="submit"] {
@@ -102,6 +102,10 @@
 
   .main-container {
     @apply mt-[57px] p-5
+  }
+
+  .main-heading {
+    @apply font-bold text-[25px] leading-[29px]
   }
 
   @media (max-width: 751px) {
@@ -220,7 +224,7 @@
 }
 
 body {
-  font-family:'SF Pro', sans-serif;
+  font-family:'SF Pro', 'SF Pro Rounded', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

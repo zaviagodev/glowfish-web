@@ -41,7 +41,7 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel htmlFor="first_name">What should we call you?</FormLabel> 
               <FormControl>
-                <Input placeholder="First name" {...field} />
+                <Input placeholder="First name" {...field} className="font-sfpro-rounded font-semibold"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -54,7 +54,7 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel htmlFor="last_name">What is your last name</FormLabel> 
               <FormControl>
-                <Input placeholder="Last name" {...field} />
+                <Input placeholder="Last name" {...field} className="font-sfpro-rounded font-semibold"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -67,7 +67,7 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel htmlFor="phone">Phone</FormLabel> 
               <FormControl>
-                <Input placeholder="Phone" {...field} />
+                <Input placeholder="Phone" {...field} className="font-sfpro-rounded font-semibold"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -80,7 +80,7 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel htmlFor="email">Email</FormLabel> 
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <Input placeholder="Email" {...field} className="font-sfpro-rounded font-semibold"/>
               </FormControl>
               <FormMessage />
             </FormItem>

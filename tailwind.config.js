@@ -4,6 +4,15 @@ export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
   	extend: {
+		keyframes: {
+			'caret-blink': {
+			  '0%,70%,100%': { opacity: '1' },
+			  '20%,50%': { opacity: '0' },
+			},
+		  },
+		  animation: {
+			'caret-blink': 'caret-blink 1.2s ease-out infinite',
+		  },
   		colors: {
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
@@ -45,7 +54,9 @@ export default {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			},
-			line: "#04DD00"
+			line: "#04DD00",
+			fadewhite: "#FFFFFF61",
+			orangefocus: "#EE5736"
   		},
 		letterSpacing: {
 			DEFAULT: "-0.43px"

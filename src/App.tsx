@@ -33,6 +33,8 @@ import {
 import { ForgotPassword } from "./pages/forgotPassword";
 import { Login } from "./pages/login";
 import { Register } from "./pages/register";
+import PhoneVerification from "./pages/phone-verification";
+import TellUsAboutYourself from "./pages/tell-us-about-yourself";
 
 function App() {
   return (
@@ -76,20 +78,25 @@ function App() {
             <Routes>
               <Route
                 element={
-                  <Authenticated
-                    key="authenticated-inner"
-                    fallback={<CatchAllNavigate to="/login" />}
-                  >
-                    <Layout>
-                      <Outlet />
-                    </Layout>
-                  </Authenticated>
+                  // <Authenticated
+                  //   key="authenticated-inner"
+                  //   fallback={<CatchAllNavigate to="/login" />}
+                  // >
+                  //   <Layout>
+                  //     <Outlet />
+                  //   </Layout>
+                  // </Authenticated>
+                  <Layout>
+                    <Outlet />
+                  </Layout>
                 }
               >
                 <Route
                   index
                   element={<NavigateToResource resource="blog_posts" />}
                 />
+                <Route path="/phone-verification" element={<PhoneVerification />}/>
+                <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />}/>
                 <Route path="/blog-posts">
                   <Route index element={<BlogPostList />} />
                   <Route path="create" element={<BlogPostCreate />} />
