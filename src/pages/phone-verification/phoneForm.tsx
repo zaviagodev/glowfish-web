@@ -51,7 +51,7 @@ const PhoneForm = () => {
 
         <Button className="main-btn !bg-[#FF2F00]" type="submit" onClick={() => setVerified(true)}>Get OTP</Button>
 
-        <GetOTPDrawer isOTPVerified={verified} setIsOTPVerified={setVerified}/>
+        <GetOTPDrawer isOpen={verified} setIsOpen={setVerified}/>
       </form>
     </Form>
   )

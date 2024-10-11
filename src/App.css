@@ -6,6 +6,7 @@
 * These styles were added to improve the appearance of the example pages.
 * It is safe to delete them, and they are not intended to be used by Refine components.
 */
+
 @layer base {
   input, .main-input {
     @apply flex items-center h-12 w-full rounded-md bg-[#303030] outline-none border border-input text-white px-3 py-2 text-white focus:border-[#EE5736]
@@ -101,11 +102,19 @@
   }
 
   .main-container {
-    @apply mt-[57px] p-5
+    @apply mt-[57px] p-5 overflow-x-hidden
+  }
+
+  .main-container-home {
+    @apply mt-[57px] py-5 overflow-x-hidden
   }
 
   .main-heading {
     @apply font-bold text-[25px] leading-[29px]
+  }
+
+  .btn-footer {
+    @apply fixed bottom-0 w-full p-5 left-0 bg-background
   }
 
   @media (max-width: 751px) {
@@ -171,6 +180,8 @@
     --chart-5: 340 75% 55%;
   }
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 @font-face {
   font-family:'SF Pro';

@@ -19,11 +19,11 @@ import "./App.css";
 import { authProvider } from "./authProvider";
 import { Layout } from "./components/layout";
 import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "./pages/blog-posts";
+  HomeCreate,
+  HomeEdit,
+  HomeList,
+  HomeShow,
+} from "./pages/home";
 import {
   CategoryCreate,
   CategoryEdit,
@@ -35,6 +35,7 @@ import { Login } from "./pages/login";
 import { Register } from "./pages/register";
 import PhoneVerification from "./pages/phone-verification";
 import TellUsAboutYourself from "./pages/tell-us-about-yourself";
+import EventPage from "./pages/event-page";
 
 function App() {
   return (
@@ -48,11 +49,11 @@ function App() {
             authProvider={authProvider}
             resources={[
               {
-                name: "blog_posts",
-                list: "/blog-posts",
-                create: "/blog-posts/create",
-                edit: "/blog-posts/edit/:id",
-                show: "/blog-posts/show/:id",
+                name: "home",
+                list: "/home",
+                create: "/home/create",
+                edit: "/home/edit/:id",
+                show: "/home/show/:id",
                 meta: {
                   canDelete: true,
                 },
@@ -93,15 +94,16 @@ function App() {
               >
                 <Route
                   index
-                  element={<NavigateToResource resource="blog_posts" />}
+                  element={<NavigateToResource resource="home" />}
                 />
                 <Route path="/phone-verification" element={<PhoneVerification />}/>
                 <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />}/>
-                <Route path="/blog-posts">
-                  <Route index element={<BlogPostList />} />
-                  <Route path="create" element={<BlogPostCreate />} />
-                  <Route path="edit/:id" element={<BlogPostEdit />} />
-                  <Route path="show/:id" element={<BlogPostShow />} />
+                <Route path="/event/:id" element={<EventPage />}/>
+                <Route path="/home">
+                  <Route index element={<HomeList />} />
+                  <Route path="create" element={<HomeCreate />} />
+                  <Route path="edit/:id" element={<HomeEdit />} />
+                  <Route path="show/:id" element={<HomeShow />} />
                 </Route>
                 <Route path="/categories">
                   <Route index element={<CategoryList />} />

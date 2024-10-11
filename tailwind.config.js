@@ -62,13 +62,17 @@ export default {
 			DEFAULT: "-0.43px"
 		},
 		fontFamily: {
-			"sfpro-rounded": "SF Pro Rounded"
+			"sfpro-rounded": "SF Pro Rounded",
+			"inter": "Inter"
 		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		zIndex: {
+			99: 99
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],

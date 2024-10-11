@@ -1,33 +1,24 @@
 import { useNavigation, useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
-import React from "react";
 
-export const BlogPostEdit = () => {
+export const HomeCreate = () => {
   const { list } = useNavigation();
 
   const {
-    refineCore: { onFinish, queryResult },
+    refineCore: { onFinish },
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm({});
 
-  const blogPostsData = queryResult?.data?.data;
-
   const { options: categoryOptions } = useSelect({
     resource: "categories",
-    defaultValue: blogPostsData?.category?.id,
   });
-
-  React.useEffect(() => {
-    setValue("category.id", blogPostsData?.category?.id);
-  }, [categoryOptions]);
 
   return (
     <div style={{ padding: "16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h1>Edit</h1>
+        <h1>Create</h1>
         <div>
           <button
             onClick={() => {
@@ -47,7 +38,7 @@ export const BlogPostEdit = () => {
           }}
         >
           <label>
-            <span style={{ marginRight: "8px" }}>Title</span>
+            <span style={{ marginRight: "8px" }}>title</span>
             <input
               type="text"
               {...register("title", {
@@ -92,7 +83,7 @@ export const BlogPostEdit = () => {
           <label>
             <span style={{ marginRight: "8px" }}>Status</span>
             <select
-              defaultValue="draft"
+              defaultValue={"draft"}
               {...register("status", {
                 required: "This field is required",
               })}
@@ -106,7 +97,7 @@ export const BlogPostEdit = () => {
             </span>
           </label>
           <div>
-            <input type="submit" value="Save" />
+            <input type="submit" value="save" />
           </div>
         </div>
       </form>

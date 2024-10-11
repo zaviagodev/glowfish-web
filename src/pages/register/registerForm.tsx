@@ -11,13 +11,7 @@ import { registerSchema } from "./registerSchema"
 import { useForm } from "@refinedev/react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/Button"
-
-interface RegisterFormProps {
-  first_name: string
-  last_name: string
-  phone: string
-  email: string
-}
+import { useNavigate } from "react-router-dom"
 
 const RegisterForm = () => {
 
@@ -30,6 +24,8 @@ const RegisterForm = () => {
       email: "",
     },
   })
+
+  const navigate = useNavigate()
 
   return (
     <Form {...form}>
@@ -89,6 +85,7 @@ const RegisterForm = () => {
         <Button 
           className="main-btn !bg-[#F3EBD7] text-black"
           type="submit"
+          onClick={() => navigate('/phone-verification')}
         >
           Next
         </Button>
