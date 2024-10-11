@@ -5,6 +5,16 @@ import { useNavigation, useOne, useResource, useShow } from "@refinedev/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 export const HomeShow = () => {
   // const { edit, list } = useNavigation();
@@ -82,7 +92,23 @@ export const HomeShow = () => {
               <h2 className="font-sfpro-rounded font-semibold">{data.price}</h2>
             </div>
             
-            <Button className="main-btn !bg-[#EE5736]" onClick={() => {}}>Sign up</Button>
+
+            <Sheet>
+              <SheetTrigger className="main-btn !bg-[#EE5736]">Sign up</SheetTrigger>
+              <SheetContent className="h-[60%] p-0 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col justify-between" side="bottom">
+                <div className="flex justify-between">
+                  <GlowfishIcon />
+                </div>
+                
+                <footer className="space-y-2">
+                  <div className="text-center">
+                    <p className="text-sm">Total cost</p>
+                    <h2 className="text-2xl font-sfpro-rounded font-medium">{data.price}</h2>
+                  </div>
+                  <Button className="main-btn !bg-[#F4DC53] text-black">Confirm booking</Button>
+                </footer>
+              </SheetContent>
+            </Sheet>
           </footer>
         </>
       ))}
