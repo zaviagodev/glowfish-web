@@ -16,10 +16,6 @@
     @apply bg-[#EFEFEF];
   }
 
-  /* button {
-    @apply border border-gray-300 px-2 rounded-sm bg-[#EFEFEF];
-  } */
-
   h1 {
     @apply text-2xl font-bold my-6;
   }
@@ -232,6 +228,10 @@
   font-family:'SF Pro Rounded';
   src: url('./fonts/SF Pro Rounded/SF-Pro-Rounded-Bold.woff2') format('woff2');
   font-weight:700;
+}
+
+* {
+  scrollbar-width:none;
 }
 
 body {
