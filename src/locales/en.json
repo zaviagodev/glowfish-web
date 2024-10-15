@@ -8,5 +8,16 @@
   "Your OTP will be sent to your phone number": "Your OTP will be sent to your phone number",
   "Didn't receive the OTP": "Didn't receive the OTP",
   "Resend OTP": "Resend OTP",
-  "Valid to": "Valid to"
+  "Valid to": "Valid to",
+  "point": "point",
+  "points": "points",
+  "Used points": "Used points",
+  "Download image": "Download image",
+  "Description": "Description",
+  "Subtotal": "Subtotal",
+  "Shipping cost": "Shipping cost",
+  "Tax": "Tax",
+  "Total cost": "Total cost",
+  "Add coupon": "Add coupon",
+  "Ask for help": "Ask for help"
 }

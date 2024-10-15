@@ -6,11 +6,12 @@ export interface EventDataProps {
     id?: number,
     image: string
     title: string
-    location: string
-    date: string
+    location?: string
+    date?: string
     desc?: string
     validDate?: string
     price?: string | number
+    points?: string | number
     type?: EventDataTypes | string
 }
 
@@ -57,4 +58,8 @@ export interface BookedDataProps {
 export interface BookedDataCompProps {
     title: string
     value: string
+}
+
+export interface RewardProps extends EventDataProps {
+    category?: string
 }

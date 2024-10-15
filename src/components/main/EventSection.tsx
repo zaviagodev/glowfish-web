@@ -9,6 +9,7 @@ interface EventSectionProps {
   title?: string
   cardType?: string
   seeAllLink?: string
+  eventCardLink?: string
 }
 
 const EventSection = ({ 
@@ -16,6 +17,7 @@ const EventSection = ({
   title,
   cardType,
   seeAllLink,
+  eventCardLink
 } : EventSectionProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -35,8 +37,9 @@ const EventSection = ({
           location={event.location}
           date={event.date}
           price={event.price}
+          points={event.points}
           type={cardType}
-          onClick={() => navigate(`/home/show/${event.id}`)}
+          onClick={() => navigate(`${eventCardLink || '/home/show/'}${event.id}`)}
         />
       ))}
     </div>

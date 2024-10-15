@@ -129,9 +129,9 @@ const GetOTPDrawer = ({
         />
 
         <SheetFooter className="pt-8 items-center gap-8">
-          <Button className="main-btn !bg-[#EC441E]" type="submit" disabled={!form.formState.isValid} onClick={() => navigate('/tell-us-about-yourself')}>{t("Confirm OTP")}</Button>
+          <Button className="main-btn !bg-mainorange" type="submit" disabled={!form.formState.isValid} onClick={() => navigate('/tell-us-about-yourself')}>{t("Confirm OTP")}</Button>
 
-          <p>{t("Didn't receive the OTP")} <a className="text-[#EC441E]">{t("Resend OTP")}</a></p>
+          <p>{t("Didn't receive the OTP")} <a className="text-mainorange">{t("Resend OTP")}</a></p>
         </SheetFooter>
         </form>
       </Form>

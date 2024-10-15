@@ -8,5 +8,16 @@
   "Your OTP will be sent to your phone number": "รหัส OTP จะส่งไปยังหมายเลขโทรศัพท์ของคุณ",
   "Didn't receive the OTP": "ไม่ได้รับรหัส",
   "Resend OTP": "ขอ OTP อีกครั้ง",
-  "Valid to": "สามารถใช้ได้ถึง"
+  "Valid to": "สามารถใช้ได้ถึง",
+  "point": "คะแนน",
+  "points": "คะแนน",
+  "Used points": "คะแนนที่ใช้",
+  "Download image": "บันทึกรูปภาพ",
+  "Description": "คำบรรยาย",
+  "Subtotal": "ยอดรวมย่อย",
+  "Shipping cost": "ค่าจัดส่ง",
+  "Tax": "ภาษีสินค้า",
+  "Total cost": "ยอดชำระเงินทั้งหมด",
+  "Add coupon": "ใส่คูปองส่วนลด",
+  "Ask for help": "ขอความช่วยเหลือ"
 }

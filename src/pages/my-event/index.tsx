@@ -23,7 +23,7 @@ const MyEvent = () => {
             date={ev.date}
             image={ev.image}
             validDate={ev.validDate}
-            onClick={() => navigate(`/my-event/${ev.id}`)}
+            onClick={() => navigate(`/my-event/detail/${ev.id}`)}
           />
           ))}
         </section>

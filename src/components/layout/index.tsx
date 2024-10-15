@@ -8,8 +8,10 @@ export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation()
 
   const containerClass = 
-    location.pathname === "/home" ? "main-container-home" : 
-    location.pathname.includes("/home/show") ? "" :
+    location.pathname === "/home" ||
+    location.pathname === "/rewards" ? "main-container-home" : 
+    location.pathname.includes("/home/show") || 
+    location.pathname.includes("/rewards/detail") ? "" :
     "main-container"
 
   return (

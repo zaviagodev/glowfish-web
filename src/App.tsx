@@ -39,6 +39,11 @@ import HistoryPage from "./pages/history";
 import MyEvent from "./pages/my-event";
 import SettingsPage from "./pages/settings";
 import MyEventDetail from "./pages/my-event/detail";
+import MyRewards from "./pages/my-rewards";
+import MyRewardDetail from "./pages/rewards/detail";
+import Rewards from "./pages/rewards";
+import RewardDetail from "./pages/rewards/detail";
+import CheckoutPage from "./pages/checkout";
 
 function App() {
   return (
@@ -102,9 +107,15 @@ function App() {
                 <Route path="/phone-verification" element={<PhoneVerification />}/>
                 <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />}/>
                 <Route path="/history" element={<HistoryPage />}/>
+                <Route path="/checkout" element={<CheckoutPage />}/>
                 <Route path="/my-event" >
                   <Route index element={<MyEvent />}/>
-                  <Route path=":id" element={<MyEventDetail />}/>
+                  <Route path="detail/:id" element={<MyEventDetail />}/>
+                </Route>
+                <Route path="/my-rewards" element={<MyRewards />}/>
+                <Route path="/rewards">
+                  <Route index element={<Rewards />} />
+                  <Route path="detail/:id" element={<RewardDetail />}/>
                 </Route>
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/home">

@@ -4,15 +4,37 @@ export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
   	extend: {
-		keyframes: {
-			'caret-blink': {
-			  '0%,70%,100%': { opacity: '1' },
-			  '20%,50%': { opacity: '0' },
-			},
-		  },
-		  animation: {
-			'caret-blink': 'caret-blink 1.2s ease-out infinite',
-		  },
+  		keyframes: {
+  			'caret-blink': {
+  				'0%,70%,100%': {
+  					opacity: '1'
+  				},
+  				'20%,50%': {
+  					opacity: '0'
+  				}
+  			},
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			}
+  		},
+  		animation: {
+  			'caret-blink': 'caret-blink 1.2s ease-out infinite',
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
+  		},
   		colors: {
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
@@ -44,9 +66,10 @@ export default {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
   			},
-			darkgray: "#303030",
+  			darkgray: '#303030',
+  			mainorange: '#EC441E',
   			border: 'hsl(var(--border))',
-			header: '#181818',
+  			header: '#181818',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',
   			chart: {
@@ -56,26 +79,26 @@ export default {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			},
-			line: "#04DD00",
-			fadewhite: "#FFFFFF61",
-			orangefocus: "#EE5736"
+  			line: '#04DD00',
+  			fadewhite: '#FFFFFF61',
+  			orangefocus: '#EE5736'
   		},
-		letterSpacing: {
-			DEFAULT: "-0.43px"
-		},
-		fontFamily: {
-			"sfpro-rounded": "SF Pro Rounded",
-			"inter": "Inter"
-		},
+  		letterSpacing: {
+  			DEFAULT: '-0.43px'
+  		},
+  		fontFamily: {
+  			'sfpro-rounded': 'SF Pro Rounded',
+  			'inter': 'Inter'
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
-		zIndex: {
-			50: 50,
-			99: 99
-		}
+  		zIndex: {
+  			'50': '50',
+  			'99': '99'
+  		}
   	}
   },
   plugins: [require("tailwindcss-animate")],
