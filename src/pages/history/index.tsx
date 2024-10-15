@@ -7,6 +7,7 @@ import {
     TabsTrigger,
   } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
+import { ArrowDown, ArrowUp } from "@/components/icons/MainIcons"
 
 type PointActionTypes = "Received" | "Used"
 
@@ -39,55 +40,57 @@ const HistoryPage = () => {
     }
   ])
 
-  // Utility to render action content
   const renderAction = (action: PointActionsProps) => {
     const actionTitle = action.type === "Received" ? "Get Point" : "Spend Point"
 
     return (
-      <div key={`${action.type}-${action.date}`} className="flex items-center justify-between py-2">
+      <div key={`${action.type}-${action.date}`} className="flex items-center justify-between py-2 mb-2">
         <div className="flex items-center gap-1.5">
           <div className="border border-[#252525] rounded-full h-9 w-9 flex items-center justify-center">
-            {/* Replace with icons */}
-            {action.type === "Received" ? "下" : "上"}
+            {action.type === "Received" ? <ArrowDown /> : <ArrowUp />}
           </div>
 
           <div className="space-y-1">
-            <h3 className="font-semibold text-sm">{actionTitle}</h3>
-            <p className="text-[#6D6D6D] text-xs">{action.date}</p>
+            <h3 className="page-title">{actionTitle}</h3>
+            <p className="text-[#6D6D6D] text-xs">{action.type} • {action.date}</p>
           </div>
         </div>
 
-        <p className={cn("font-semibold text-sm", {"text-[#EE3636]": action.type === "Used"})}>{Number(action.amount).toFixed(2)}</p>
+        <p className={cn("page-title", {"text-[#EE3636]": action.type === "Used"})}>{Number(action.amount).toFixed(2)}</p>
       </div>
     )
   }
 
   return (
     <>
-      <Header title="History" navigateBackTo={-1} rightButton="Detail"/>
+      <Header title="History" rightButton="Detail"/>
 
       <Tabs defaultValue="All">
-        <TabsList className="w-full bg-[#303030] border border-input">
+        <TabsList className="w-full bg-darkgray border border-input">
           <TabsTrigger value="All" className={tabClassNames}>All</TabsTrigger>
           <TabsTrigger value="Received" className={tabClassNames}>Received</TabsTrigger>
           <TabsTrigger value="Used" className={tabClassNames}>Spend</TabsTrigger>
         </TabsList>
         <TabsContent value="All">
-          {pointActions.map(action => renderAction(action))}
+          <div className="mt-10">{pointActions.map(action => renderAction(action))}</div>
         </TabsContent>
 
         <TabsContent value="Received">
-          {pointActions
-            .filter(action => action.type === "Received")
-            .map(action => renderAction(action))
-          }
+          <div className="mt-10">
+            {pointActions
+              .filter(action => action.type === "Received")
+              .map(action => renderAction(action))
+            }
+          </div>
         </TabsContent>
 
         <TabsContent value="Used">
-          {pointActions
-            .filter(action => action.type === "Used")
-            .map(action => renderAction(action))
-          }
+          <div className="mt-10">
+            {pointActions
+              .filter(action => action.type === "Used")
+              .map(action => renderAction(action))
+            }
+          </div>
         </TabsContent>
       </Tabs>
     </>

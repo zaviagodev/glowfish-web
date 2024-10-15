@@ -1,24 +1,48 @@
-import Header from "@/components/main/Header"
 import RegisterDrawer from "@/components/main/RegisterDrawer"
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import {
-  Sheet,
-  SheetContent,
   SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { RegisterDrawerProps } from "@/type/type"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useForm } from "@refinedev/react-hook-form"
 import { OTPInput, SlotProps } from 'input-otp'
 import { useNavigate } from "react-router-dom"
+import { otpSchema } from "./phoneSchema"
+import { useTranslate } from "@refinedev/core"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+
+interface OTPFormProps extends RegisterDrawerProps {
+  initialValues?: {
+    otp: string
+  }
+}
 
 const GetOTPDrawer = ({ 
   setIsOpen,
-  isOpen
-} : RegisterDrawerProps) => {
+  isOpen,
+  initialValues = {
+    otp: ''
+  }
+} : OTPFormProps) => {
+
+  const t = useTranslate();
+  const form = useForm({
+    resolver: yupResolver(otpSchema),
+    defaultValues: initialValues
+  })
 
   const navigate = useNavigate()
 
@@ -59,43 +83,58 @@ const GetOTPDrawer = ({
   return (
     <RegisterDrawer isOpen={isOpen} setIsOpen={setIsOpen} className="p-5">
       <SheetHeader className="text-left">
-        <SheetTitle className="text-[#E0DCDD]">กรอกรหัสผ่าน OTP</SheetTitle>
+        <SheetTitle className="text-[#E0DCDD]">{t("Please fill the OTP")}</SheetTitle>
         <SheetDescription className="text-fadewhite">
-          รหัส OTP จะส่งไปยังหมายเลขโทรศัพท์ของคุณ
+          {t("Your OTP will be sent to your phone number")}
         </SheetDescription>
       </SheetHeader>
 
-      <div className="space-y-2">
-        <label htmlFor="otp">กรอกรหัส OTP</label>
-        <OTPInput
-          id="otp"
-          maxLength={6}
-          containerClassName="group flex items-center justify-center has-[:disabled]:opacity-30"
-          render={({ slots }) => (
-            <>
-              <div className="flex">
-                {slots.slice(0, 3).map((slot, idx) => (
-                  <Slot key={idx} {...slot} />
-                ))}
-              </div>
-        
-              <FakeDash />
-        
-              <div className="flex">
-                {slots.slice(3).map((slot, idx) => (
-                  <Slot key={idx} {...slot} />
-                ))}
-              </div>
-            </>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(data => data)} className="mt-6">
+        <FormField
+          control={form.control}
+          name="otp"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel htmlFor="otp" className="page-title">{t("Fill the OTP")}</FormLabel> 
+              <FormControl>
+                <OTPInput
+                  type="number"
+                  id="otp"
+                  maxLength={6}
+                  containerClassName="group flex items-center justify-center has-[:disabled]:opacity-30"
+                  render={({ slots }) => (
+                    <>
+                      <div className="flex">
+                        {slots.slice(0, 3).map((slot, idx) => (
+                          <Slot key={idx} {...slot} />
+                        ))}
+                      </div>
+                
+                      <FakeDash />
+                
+                      <div className="flex">
+                        {slots.slice(3).map((slot, idx) => (
+                          <Slot key={idx} {...slot} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
         />
-      </div>
 
-      <SheetFooter className="pt-8 items-center gap-8">
-        <Button className="main-btn !bg-[#EC441E]" onClick={() => navigate('/tell-us-about-yourself')}>Confirm OTP</Button>
+        <SheetFooter className="pt-8 items-center gap-8">
+          <Button className="main-btn !bg-[#EC441E]" type="submit" disabled={!form.formState.isValid} onClick={() => navigate('/tell-us-about-yourself')}>{t("Confirm OTP")}</Button>
 
-        <p>ไม่ได้รับรหัส <a className="text-[#EC441E]">ขอ OTP อีกครั้ง</a></p>
-      </SheetFooter>
+          <p>{t("Didn't receive the OTP")} <a className="text-[#EC441E]">{t("Resend OTP")}</a></p>
+        </SheetFooter>
+        </form>
+      </Form>
     </RegisterDrawer>
   )
 }

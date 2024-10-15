@@ -1,5 +1,6 @@
 import { ReactNode } from "react"
-import { Path } from "react-router-dom"
+
+type EventDataTypes = "small" | "event"
 
 export interface EventDataProps {
     id?: number,
@@ -8,8 +9,9 @@ export interface EventDataProps {
     location: string
     date: string
     desc?: string
-    price: string | number
-    type?: string
+    validDate?: string
+    price?: string | number
+    type?: EventDataTypes | string
 }
 
 export interface EventCardProps extends EventDataProps {
@@ -17,7 +19,7 @@ export interface EventCardProps extends EventDataProps {
 }
 
 export interface RegisterDrawerProps {
-    setIsOpen: (val: boolean) => void,
+    setIsOpen: (val: boolean) => void
     isOpen: boolean
 }
 
@@ -37,8 +39,22 @@ export interface HeaderProps {
     title?: string
     leftButton?: string | ReactNode
     rightButton?: string | ReactNode
+    backButtonClassName?: string
     onClickBackButton?: (val?: any) => void
     onClickRightButton?: () => void
-    navigateBackTo?: string | Partial<Path>
     className?: string
+}
+
+export interface BookedDataProps {
+    name: string
+    order_number: string
+    date: string
+    time: string
+    gate: string
+    seat: string
+}
+  
+export interface BookedDataCompProps {
+    title: string
+    value: string
 }

@@ -1,13 +1,13 @@
 import { t } from "i18next";
 import * as yup from "yup";
 
-export const phoneSchema = yup.object().shape({
-  music: yup.number().required("This field is requried"),
-  art: yup.number().required("This field is requried"),
-  wellness: yup.number().required("This field is requried"),
-  fun: yup.number().required("This field is requried"),
-  social: yup.number().required("This field is requried"),
-  sport: yup.number().required("This field is requried"),
-  family: yup.number().required("This field is requried"),
-  food: yup.number().required("This field is requried")
+export const rateSchema = yup.object().shape({
+  music: yup.number().required(t("This field is required")),
+  art: yup.number().required(t("This field is required")),
+  wellness: yup.number().required(t("This field is required")),
+  fun: yup.number().required(t("This field is required")),
+  social: yup.number().required(t("This field is required")),
+  sport: yup.number().required(t("This field is required")),
+  family: yup.number().required(t("This field is required")),
+  food: yup.number().required(t("This field is required"))
 });

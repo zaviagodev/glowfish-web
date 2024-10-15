@@ -1,13 +1,12 @@
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
-import { Filter, Menu, Search } from "@/components/icons/MainIcons";
+import { Filter, Menu, Notification, Search } from "@/components/icons/MainIcons";
 import Header from "@/components/main/Header";
-import { type GetManyResponse, useMany, useNavigation } from "@refinedev/core";
+import { type GetManyResponse, useMany, useNavigation, useTranslate } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
-import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import EventSection from "@/components/main/EventSection";
 import { event_data, event_you_might_enjoy } from "@/data/data";
 
@@ -138,6 +137,7 @@ export const HomeList = () => {
   //   },
   // }));
 
+  const t = useTranslate();
   const buttonCates = [
     {
       title: 'Music Concert',
@@ -155,34 +155,28 @@ export const HomeList = () => {
 
   return (
     <>
-      <Header leftButton={<Menu />} className="border-0"/>
-
+      <Header leftButton={<Menu className="text-white"/>} className="border-0" rightButton={<Notification />}/>
       <section>
         <div className="flex items-center justify-between px-5">
           <GlowfishIcon />
-
           <Avatar className="h-[50px] w-[50px]">
             <AvatarImage src="https://github.com/shadcn.png"/>
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </div>
-
         <div className="relative flex items-center text-sm mt-4 px-5">
           <Search className="absolute left-8"/>
-          <Input className="h-10 pl-10" placeholder="Search event.."/>
-          
+          <Input className="h-10 pl-10" placeholder={t("Search event..")}/>
           <Filter className="absolute right-8"/>
         </div>
-
         <section className="flex flex-col gap-10">
           <div className="flex items-center gap-3 mt-4 px-5 overflow-auto">
             {buttonCates.map(cate => (
               <Button style={{backgroundColor: cate.color}}>{cate.title}</Button>
             ))}
           </div>
-
-          <EventSection list={event_data} title="Upcoming Events"/>
-          <EventSection list={event_you_might_enjoy} title="Events you might enjoy" cardType="small"/>
+          <EventSection list={event_data} title={t("Upcoming Events")}/>
+          <EventSection list={event_you_might_enjoy} title={t("Events you might enjoy")} cardType="small"/>
         </section>
       </section>
 

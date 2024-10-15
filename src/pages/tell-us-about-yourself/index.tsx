@@ -1,28 +1,21 @@
 import Header from "@/components/main/Header"
-import StarsSection from "@/components/main/StarRatingInput"
-import { Button } from "@/components/ui/Button"
 import { useState } from "react"
 import WelcomeDrawer from "./WelcomeDrawer"
 import RateForm from "./rateForm"
+import { useTranslate } from "@refinedev/core"
 
 const TellUsAboutYourself = () => {
 
-  const [isNext, setIsNext] = useState(false)
+  const t = useTranslate();
+  const [isNext, setIsNext] = useState(false);
 
   return (
     <>
-      <Header navigateBackTo="/phone-verification"/>
-
+      <Header />
       <section className="flex flex-col gap-y-9 mb-24">
-        <h2 className="main-heading">Rate what you are <span className="text-[#FF2F00]">into</span></h2>
-        
-        <RateForm />
+        <h2 className="main-heading">{t("Rate what you are")} <span className="text-[#FF2F00]">{t("into")}</span></h2>
+        <RateForm onSubmit={setIsNext}/>
       </section>
-
-      <footer className="btn-footer">
-        <Button className="main-btn !bg-[#4EA65B]" onClick={() => setIsNext(true)}>Next</Button>
-      </footer>
-      
       <WelcomeDrawer isOpen={isNext} setIsOpen={setIsNext}/>
     </>
   )

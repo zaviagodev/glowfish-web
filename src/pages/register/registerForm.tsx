@@ -10,20 +10,33 @@ import {
 import { registerSchema } from "./registerSchema"
 import { useForm } from "@refinedev/react-hook-form"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
+import { useTranslate } from "@refinedev/core"
+import { yupResolver } from "@hookform/resolvers/yup";
 
-const RegisterForm = () => {
+type RegisterFormProps = {
+  initialValues?: {
+    first_name: string,
+    last_name: string,
+    phone: string,
+    email: string
+  }
+};
 
+const RegisterForm = ({
+  initialValues = {
+    first_name: "",
+    last_name: "",
+    phone: "",
+    email: "",
+  }
+} : RegisterFormProps) => {
+  const t = useTranslate();
   const form = useForm({
-    // resolver: yupResolver(registerSchema),
-    defaultValues: {
-      first_name: "",
-      last_name: "",
-      phone: "",
-      email: "",
-    },
-  })
+    resolver: yupResolver(registerSchema),
+    defaultValues: initialValues
+  });
 
   const navigate = useNavigate()
 
@@ -35,9 +48,9 @@ const RegisterForm = () => {
           name="first_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="first_name">What should we call you?</FormLabel> 
+              <FormLabel htmlFor="first_name">{t("What should we call you?")}</FormLabel> 
               <FormControl>
-                <Input placeholder="First name" {...field} className="font-sfpro-rounded font-semibold"/>
+                <Input placeholder={t("First name")} {...field} className="font-sfpro-rounded font-semibold"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -48,9 +61,9 @@ const RegisterForm = () => {
           name="last_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="last_name">What is your last name</FormLabel> 
+              <FormLabel htmlFor="last_name">{t("What is your last name")}</FormLabel> 
               <FormControl>
-                <Input placeholder="Last name" {...field} className="font-sfpro-rounded font-semibold"/>
+                <Input placeholder={t("Last name")} {...field} className="font-sfpro-rounded font-semibold"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -61,9 +74,9 @@ const RegisterForm = () => {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="phone">Phone</FormLabel> 
+              <FormLabel htmlFor="phone">{t("Phone")}</FormLabel> 
               <FormControl>
-                <Input placeholder="Phone" {...field} className="font-sfpro-rounded font-semibold"/>
+                <Input placeholder={t("Phone")} {...field} className="font-sfpro-rounded font-semibold"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,9 +87,9 @@ const RegisterForm = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="email">Email</FormLabel> 
+              <FormLabel htmlFor="email">{t("Email")}</FormLabel> 
               <FormControl>
-                <Input placeholder="Email" {...field} className="font-sfpro-rounded font-semibold"/>
+                <Input placeholder={t("Email")} {...field} className="font-sfpro-rounded font-semibold"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -87,7 +100,7 @@ const RegisterForm = () => {
           type="submit"
           onClick={() => navigate('/phone-verification')}
         >
-          Next
+          {t("Next")}
         </Button>
       </form>
     </Form>

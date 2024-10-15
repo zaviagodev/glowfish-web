@@ -36,6 +36,9 @@ import { Register } from "./pages/register";
 import PhoneVerification from "./pages/phone-verification";
 import TellUsAboutYourself from "./pages/tell-us-about-yourself";
 import HistoryPage from "./pages/history";
+import MyEvent from "./pages/my-event";
+import SettingsPage from "./pages/settings";
+import MyEventDetail from "./pages/my-event/detail";
 
 function App() {
   return (
@@ -99,6 +102,11 @@ function App() {
                 <Route path="/phone-verification" element={<PhoneVerification />}/>
                 <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />}/>
                 <Route path="/history" element={<HistoryPage />}/>
+                <Route path="/my-event" >
+                  <Route index element={<MyEvent />}/>
+                  <Route path=":id" element={<MyEventDetail />}/>
+                </Route>
+                <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/home">
                   <Route index element={<HomeList />} />
                   <Route path="create" element={<HomeCreate />} />

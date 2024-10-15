@@ -2,55 +2,55 @@ import StarsSection from "@/components/main/StarRatingInput"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { useForm } from "@refinedev/react-hook-form"
 import { useState } from "react"
+import { rateSchema } from "./rateSchema"
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useTranslate } from "@refinedev/core"
+import { Button } from "@/components/ui/button"
 
-type Rating = {
+type RatingProps = {
   title: string
   key: string
   activeColor: string
-  rating: number
 }
 
-const RateForm = () => {
-  const [ratings, setRatings] = useState<Rating[]>([
-    { title: "Music and Live Show", key: "music", activeColor: "#9B6CDE", rating: 0 },
-    { title: "Art and Creativity", key: "art", activeColor: "#F7D767", rating: 0 },
-    { title: "Wellness and Mindfulness", key: "wellness", activeColor: "#E66C9E", rating: 0 },
-    { title: "Fun and Games", key: "fun", activeColor: "#EC441E", rating: 0 },
-    { title: "Social event and networking", key: "social", activeColor: "#016F64", rating: 0 },
-    { title: "Sports", key: "sport", activeColor: "#016F64", rating: 0 },
-    { title: "Family Fun and Kid Activity", key: "family", activeColor: "#016F64", rating: 0 },
-    { title: "Food and Beverages", key: "food", activeColor: "#016F64", rating: 0 }
-  ])
+type RateFormProps = {
+  onSubmit: (val: any) => void
+}
+
+const RateForm = ({
+  onSubmit
+}: RateFormProps) => {
+  const t = useTranslate();
+  const [ratings, setRatings] = useState<RatingProps[]>([
+    { title: t("Music and Live Show"), key: "music", activeColor: "#9B6CDE" },
+    { title: t("Art and Creativity"), key: "art", activeColor: "#F7D767" },
+    { title: t("Wellness and Mindfulness"), key: "wellness", activeColor: "#E66C9E" },
+    { title: t("Fun and Games"), key: "fun", activeColor: "#EC441E" },
+    { title: t("Social event and networking"), key: "social", activeColor: "#016F64" },
+    { title: t("Sports"), key: "sport", activeColor: "#016F64" },
+    { title: t("Family Fun and Kid Activity"), key: "family", activeColor: "#016F64" },
+    { title: t("Food and Beverages"), key: "food", activeColor: "#016F64" }
+  ]);
 
   const defaultValues = ratings.reduce((acc, rating) => {
     acc[rating.key] = 0;
     return acc;
-  }, {} as { [key: string]: number });
+  }, {} as any);
 
   const form = useForm({
-    defaultValues: defaultValues
+    resolver: yupResolver(rateSchema),
+    defaultValues: defaultValues,
   })
-  
-  const handleRatingChange = (key: string, newRating: number) => {
-    setRatings(prevRatings =>
-      prevRatings.map(item =>
-        item.key === key ? { ...item, rating: newRating } : item
-      )
-    );
-    form.setValue(key, newRating)
-  };
 
   return (
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(data => data)}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <section className="flex flex-col gap-8">
             {ratings.map(rating => (
               <FormField
@@ -62,11 +62,8 @@ const RateForm = () => {
                       <StarsSection 
                         key={rating.key}
                         title={rating.title}
-                        rating={rating.rating} 
                         activeColor={rating.activeColor} 
-                        onChange={(newRating: number) => {
-                          handleRatingChange(rating.key, newRating);
-                        }}
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -75,6 +72,10 @@ const RateForm = () => {
               />
             ))}
           </section>
+
+          <footer className="btn-footer">
+            <Button className="main-btn !bg-[#4EA65B]" type="submit">{t("Next")}</Button>
+          </footer>
         </form>
       </Form>
   )

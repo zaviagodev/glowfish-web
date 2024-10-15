@@ -1,0 +1,12 @@
+{
+  "Welcome": "ยินดีต้อนรับ",
+  "Fill the phone number": "กรอกหมายเลขโทรศัพท์",
+  "Please fill the phone number to receive OTP": "กรุณากรอกหมายเลขโทรศัพท์ของคุณเพื่อรับรหัส OTP",
+  "You will receive the 6-digit code": "คุณจะได้รับรหัสยืนยันจำนวน 6 หลัก",
+  "Please fill the OTP": "กรอกรหัสผ่าน OTP",
+  "Fill the OTP": "กรอกรหัส OTP",
+  "Your OTP will be sent to your phone number": "รหัส OTP จะส่งไปยังหมายเลขโทรศัพท์ของคุณ",
+  "Didn't receive the OTP": "ไม่ได้รับรหัส",
+  "Resend OTP": "ขอ OTP อีกครั้ง",
+  "Valid to": "สามารถใช้ได้ถึง"
+}
