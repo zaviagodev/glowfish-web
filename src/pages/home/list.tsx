@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import EventSection from "@/components/main/EventSection";
 import { event_data, event_you_might_enjoy } from "@/data/data";
+import { Link } from "react-router-dom";
 
 export const HomeList = () => {
   // const columns = React.useMemo<ColumnDef<any>[]>(
@@ -159,10 +160,12 @@ export const HomeList = () => {
       <section>
         <div className="flex items-center justify-between px-5">
           <GlowfishIcon />
-          <Avatar className="h-[50px] w-[50px]">
-            <AvatarImage src="https://github.com/shadcn.png"/>
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <Link to="/rewards">
+            <Avatar className="h-[50px] w-[50px]">
+              <AvatarImage src="https://github.com/shadcn.png"/>
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </Link>
         </div>
         <div className="relative flex items-center text-sm mt-4 px-5">
           <Search className="absolute left-8"/>

@@ -3,7 +3,7 @@ import Header from "@/components/main/Header";
 import { event_data, event_you_might_enjoy } from "@/data/data";
 import { useNavigation, useOne, useResource, useShow, useTranslate } from "@refinedev/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -33,6 +33,7 @@ export const HomeShow = () => {
 
   const t = useTranslate();
   const { id } = useParams();
+  const navigate = useNavigate()
   const [numOfParticipants, setNumOfParticipants] = useState(500)
   const [isConfirming, setIsConfirming] = useState(false);
 
@@ -109,7 +110,7 @@ export const HomeShow = () => {
                     <p className="text-sm">{t("Total cost")}</p>
                     <h2 className="text-2xl font-sfpro-rounded font-medium">{data.price}</h2>
                   </div>
-                  <Button className="main-btn !bg-[#F4DC53] text-black">{t("Confirm booking")}</Button>
+                  <Button className="main-btn !bg-[#F4DC53] text-black" onClick={() => navigate("/checkout")}>{t("Confirm booking")}</Button>
                 </footer>
               </SheetContent>
             </Sheet>

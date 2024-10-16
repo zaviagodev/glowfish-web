@@ -1,7 +1,9 @@
+import ScanQRCode from "@/components/icons/ScanQRCode"
 import Header from "@/components/main/Header"
 import { event_data } from "@/data/data"
 import { BookedDataCompProps, BookedDataProps } from "@/type/type"
 import { useState } from "react"
+import Barcode from "react-barcode"
 import { useParams } from "react-router-dom"
 
 const MyEventDetail = () => {
@@ -58,8 +60,8 @@ const MyEventDetail = () => {
           <div className="flex flex-col items-center relative pt-16">
             {/* TODO: Change to Barcode and QR Code */}
             {isQRCode ? 
-              <h2 className="text-black">QR CODE</h2> 
-            : <h2 className="text-black">BARCODE</h2>
+              <ScanQRCode />
+            : <Barcode value="Glowfish"/>
             }
             <p className="text-black text-xs" onClick={() => setIsQRCode(!isQRCode)}>
               {isQRCode ? "Switch to Barcode" : "Switch to QR Code"}

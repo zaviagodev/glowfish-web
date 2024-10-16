@@ -102,7 +102,7 @@ const RewardDetail = () => {
                     </TabsTrigger>
                   </TabsList>
                   <TabsContent value="barcode" className="mt-10">
-                    <Barcode value="Glowfish barcode"/>
+                    <Barcode value="Glowfish" width={2.5}/>
                   </TabsContent>
                   <TabsContent value="qrcode" className="mt-10">
                     <ScanQRCode className="w-full"/>
