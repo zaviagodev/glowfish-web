@@ -11,21 +11,21 @@ const MyEvent = () => {
 
   return (
     <>
-      <Header title="My Event" />
+      <Header title={t("My Event")} />
       <section className="flex flex-col gap-y-10">
         <h2 className="page-title">{t("Booked Event")}</h2>
         <section className="flex flex-col gap-y-5">
           {event_data.map(ev => (
-          <EventCard 
-            type="event"
-            title={ev.title}
-            location={ev.location}
-            date={ev.date}
-            image={ev.image}
-            validDate={ev.validDate}
-            onClick={() => navigate(`/my-event/detail/${ev.id}`)}
-          />
-          ))}
+            <EventCard 
+              type="event"
+              title={ev.title}
+              location={ev.location}
+              date={ev.date}
+              image={ev.image}
+              validDate={ev.validDate}
+              onClick={() => navigate(`/my-event/detail/${ev.id}`)}
+            />
+            ))}
         </section>
       </section>
     </>

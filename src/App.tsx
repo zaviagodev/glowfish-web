@@ -2,11 +2,11 @@ import {
   Authenticated,
   ErrorComponent,
   GitHubBanner,
-  Refine,
+  Refine
 } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-
+import { useTranslation } from "react-i18next"
 import routerBindings, {
   CatchAllNavigate,
   DocumentTitleHandler,
@@ -40,12 +40,33 @@ import MyEvent from "./pages/my-event";
 import SettingsPage from "./pages/settings";
 import MyEventDetail from "./pages/my-event/detail";
 import MyRewards from "./pages/my-rewards";
-import MyRewardDetail from "./pages/rewards/detail";
 import Rewards from "./pages/rewards";
 import RewardDetail from "./pages/rewards/detail";
 import CheckoutPage from "./pages/checkout";
+import useConfig, { ConfigProvider } from "./hooks/useConfig";
+import { useEffect } from "react";
 
 function App() {
+
+  const { t, i18n } = useTranslation();
+  const { config } = useConfig();
+
+  useEffect(() => {
+    // if (!localStorage.getItem("locale") && config?.default_language) {
+    //   i18n.changeLanguage(config.default_language);
+    // }
+    i18n.changeLanguage("en");
+  }, [config]);
+
+  const i18nProvider = {
+    translate: (key: string, params: Record<string, string>) => t(key, params),
+    changeLocale: (lang: string) => {
+      localStorage.setItem("locale", lang);
+      return i18n.changeLanguage(lang);
+    },
+    getLocale: () => i18n.language,
+  };
+
   return (
     <BrowserRouter>
       {/* <GitHubBanner /> */}
@@ -55,6 +76,7 @@ function App() {
             dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
             routerProvider={routerBindings}
             authProvider={authProvider}
+            i18nProvider={i18nProvider}
             resources={[
               {
                 name: "home",
@@ -159,4 +181,13 @@ function App() {
   );
 }
 
-export default App;
+function AppWrapper() {
+  return (
+    <ConfigProvider>
+      <App />
+    </ConfigProvider>
+  );
+}
+
+export default AppWrapper;
+

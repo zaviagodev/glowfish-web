@@ -22,7 +22,6 @@ import ScanQRCode from "@/components/icons/ScanQRCode";
 import Barcode from "react-barcode";
 
 const RewardDetail = () => {
-
   const t = useTranslate();
   const { id } = useParams();
   const [isUsingCoupon, setIsUsingCoupon] = useState(false)
@@ -60,7 +59,7 @@ const RewardDetail = () => {
             <div className="flex flex-col gap-4">
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-1" className="bg-darkgray border-0 text-sm px-5 py-4 rounded-lg">
-                  <AccordionTrigger className="p-0">วิธีแลกของรางวัล</AccordionTrigger>
+                  <AccordionTrigger className="p-0">{t("How to redeem the reward")}</AccordionTrigger>
                   <AccordionContent className="pt-4 pb-0">
                     Yes. It adheres to the WAI-ARIA design pattern.
                   </AccordionContent>
@@ -69,14 +68,14 @@ const RewardDetail = () => {
 
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-1" className="bg-darkgray border-0 text-sm px-5 py-4 rounded-lg">
-                  <AccordionTrigger className="p-0">เงื่อนไขในการแลกของรางวัล</AccordionTrigger>
+                  <AccordionTrigger className="p-0">{t("Redemption condition")}</AccordionTrigger>
                   <AccordionContent className="pt-4 pb-0">
                     Yes. It adheres to the WAI-ARIA design pattern.
+                    TEST OF CONDITION
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
             </div>
-
           </section>
           <footer className="btn-footer flex flex-col gap-7">
             <Sheet open={isUsingCoupon} onOpenChange={setIsUsingCoupon}>
@@ -116,8 +115,7 @@ const RewardDetail = () => {
                     <DownloadIcon />
                     {t("Download image")}
                   </Button>
-
-                  <p className="text-sm text-[#979797] text-center">กรุณากรอกหรือส่งโค้ดนี้ให้พนักงาน<br/>ที่หน้าร้านเพื่อรับของรางวัล</p>
+                  <p className="text-sm text-[#979797] text-center">{t("Please fill or send the code to the staff")}<br/>{t("at the storefront to redeem the reward")}</p>
                 </footer>
               </SheetContent>
             </Sheet>

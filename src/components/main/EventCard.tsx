@@ -21,16 +21,14 @@ const EventCard = ({
   validDate,
   onClick
 } : EventCardProps) => {
-
   const t = useTranslate();
-
   return (
     <Card className={cn("border-0 p-2 relative rounded-lg overflow-hidden text-background", "min-w-[346px] h-full", {"bg-[#202020] border border-[#F1EAD61C] min-w-0": type === "small", "bg-[#202020] flex min-w-0 p-0": type === "event"})} onClick={onClick}>
       <CardContent className="p-0">
-        <img src={image} className={cn("absolute top-0 left-0 object-cover", {"relative rounded-md mb-2 w-[346px]": type === "small", "relative min-w-[125px] w-full h-full object-cover": type === "event"})}/>
+        <img src={image} className={cn("absolute top-0 left-0 object-cover", {"relative rounded-md mb-2 w-[346px]": type === "small", "relative min-w-[125px] max-w-[125px] w-full h-full object-cover": type === "event"})}/>
       </CardContent>
       <CardHeader className={cn("gap-1.5", "mt-20 backdrop-blur-[30px] p-4 bg-white/15 rounded-lg", {"mt-0 p-0 bg-transparent backdrop-blur-none": type === "small", "mt-0 bg-transparent p-3.5 backdrop-blur-none justify-between": type === "event"})}>
-        <CardTitle className={cn("text-sm font-semibold whitespace-pre truncate", "text-background", {"text-white": type === "small", "text-white w-[60%]": type === "event"})}>{title}</CardTitle>
+        <CardTitle className={cn("text-sm font-semibold", "text-background", {"text-white": type === "small", "text-white text-base": type === "event"})}>{title}</CardTitle>
         {type === "small" ? (
           <CardDescription className={cn("justify-between flex items-center text-white")}>
             <section className="flex flex-col gap-1.5">
@@ -55,7 +53,7 @@ const EventCard = ({
                {points ? (
                 <div className="flex items-center gap-2 mt-1 text-mainorange font-semibold">
                   <PriceTag />
-                  <p className="text-xs">{points} {points === 1 ? t("point") : t("points")}</p>
+                  <p className="text-xs">{t("point", {count: points})}</p>
                 </div>
               ) : null}
             </section>

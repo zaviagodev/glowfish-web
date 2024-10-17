@@ -9,16 +9,17 @@ const CheckoutPage = () => {
 
   const t = useTranslate();
   const paymentMethods = ["QR Code", "Bank account"];
+  const numOfItems = 2
 
   return (
     <>
       <Header title="Checkout" rightButton="Detail"/>
-
       <section className="flex flex-col gap-6 mb-[200px]">
         <img src={jameson} className="rounded-xl"/>
-
         <div className="flex flex-col items-center gap-2">
-          <p className="text-[#979797] flex items-center gap-1">Grand total 1 item <ChevronDown className="h-4 w-4"/></p>
+          <p className="text-[#979797] flex items-center gap-1">{t("grand_total_item", {
+            count: numOfItems
+          })}<ChevronDown className="h-4 w-4"/></p>
           <h1 className="text-[39px] font-semibold m-0">฿0.00</h1>
         </div>
 

@@ -27,7 +27,7 @@ const RateForm = ({
   onSubmit
 }: RateFormProps) => {
   const t = useTranslate();
-  const [ratings, setRatings] = useState<RatingProps[]>([
+  const ratings: RatingProps[] = [
     { title: t("Music and Live Show"), key: "music", activeColor: "#9B6CDE" },
     { title: t("Art and Creativity"), key: "art", activeColor: "#F7D767" },
     { title: t("Wellness and Mindfulness"), key: "wellness", activeColor: "#E66C9E" },
@@ -36,7 +36,7 @@ const RateForm = ({
     { title: t("Sports"), key: "sport", activeColor: "#016F64" },
     { title: t("Family Fun and Kid Activity"), key: "family", activeColor: "#016F64" },
     { title: t("Food and Beverages"), key: "food", activeColor: "#016F64" }
-  ]);
+  ];
 
   const defaultValues = ratings.reduce((acc, rating) => {
     acc[rating.key] = 0;

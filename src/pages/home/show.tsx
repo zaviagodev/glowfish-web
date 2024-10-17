@@ -72,10 +72,12 @@ export const HomeShow = () => {
               </div>
               <h2 className="page-title">{numOfParticipants} {numOfParticipants === 1 ? t("Participant") : t("Participants")}</h2>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <h2 className="font-medium text-sm">{t("Description")}</h2>
-              <p className="text-xs">{data.desc}</p>
-            </div>
+            {data.desc ? (
+              <div className="flex flex-col gap-1.5">
+                <h2 className="font-medium text-sm">{t("Description")}</h2>
+                <p className="text-xs">{data.desc}</p>
+              </div>
+            ) : null}
             <div className="flex flex-col gap-1.5">
               <h2 className="font-medium text-sm">{t("Venue & Location")}</h2>
               <p className="text-xs">{data.desc}</p>
@@ -89,7 +91,7 @@ export const HomeShow = () => {
             <Sheet open={isConfirming} onOpenChange={setIsConfirming}>
               <SheetOverlay className="backdrop-blur-sm bg-transparent"/>
               <SheetTrigger className="main-btn !bg-[#EE5736]">{t("Sign up")}</SheetTrigger>
-              <SheetContent className="h-[60%] !p-0 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col justify-between" side="bottom">
+              <SheetContent className="h-[60%] !p-0 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col" side="bottom">
                 <section>
                   <header className="flex justify-between p-5 border-b border-b-header">
                     <GlowfishIcon />
@@ -102,15 +104,14 @@ export const HomeShow = () => {
                   </header>
                   <main className="p-5 space-y-1">
                     <h2 className="font-semibold">{t("Select time")}</h2>
-                    <DateGroup />
+                    <DateGroup onSubmit={() => navigate('/checkout')}/>
                   </main>
                 </section>
-                <footer className="space-y-2 p-5">
+                <footer className="space-y-2 px-5 py-10">
                   <div className="text-center">
                     <p className="text-sm">{t("Total cost")}</p>
                     <h2 className="text-2xl font-sfpro-rounded font-medium">{data.price}</h2>
                   </div>
-                  <Button className="main-btn !bg-[#F4DC53] text-black" onClick={() => navigate("/checkout")}>{t("Confirm booking")}</Button>
                 </footer>
               </SheetContent>
             </Sheet>

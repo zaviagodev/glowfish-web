@@ -2,13 +2,15 @@ import ScanQRCode from "@/components/icons/ScanQRCode"
 import Header from "@/components/main/Header"
 import { event_data } from "@/data/data"
 import { BookedDataCompProps, BookedDataProps } from "@/type/type"
+import { useTranslate } from "@refinedev/core"
 import { useState } from "react"
 import Barcode from "react-barcode"
 import { useParams } from "react-router-dom"
 
 const MyEventDetail = () => {
-  const { id } = useParams()
   const [isQRCode, setIsQRCode] = useState(false)
+  const { id } = useParams();
+  const t = useTranslate();
 
   const BookedDataComp = ({ title, value } : BookedDataCompProps) => {
     return (
@@ -18,7 +20,6 @@ const MyEventDetail = () => {
       </div>
     )
   }
-
   const customerData: BookedDataProps = {
     name: "John Persson",
     order_number: "CLD09738PL",
@@ -27,13 +28,11 @@ const MyEventDetail = () => {
     gate: "1",
     seat: "West B"
   }
-
   const { name, order_number, date, time, gate, seat } = customerData
 
   return (
     <>
-      <Header backButtonClassName="bg-white text-black rounded-sm h-8 w-8 flex items-center justify-center" title="My Event"/>
-
+      <Header backButtonClassName="bg-white text-black rounded-sm h-8 w-8 flex items-center justify-center" title={t("My Event")}/>
       {event_data.filter(data => data.id == id).map(data => (
         <section className="bg-white rounded-xl p-5 relative">
           {isQRCode ? null : <img src={data.image} className="rounded-sm"/>}
@@ -43,12 +42,12 @@ const MyEventDetail = () => {
           </div>
 
           <div className="grid grid-cols-2 pt-5 gap-6">
-            <BookedDataComp title="Name" value={name}/>
-            <BookedDataComp title="Order Number" value={order_number}/>
-            <BookedDataComp title="Date" value={date}/>
-            <BookedDataComp title="Time" value={time}/>
-            <BookedDataComp title="Gate" value={gate}/>
-            <BookedDataComp title="Seat" value={seat}/>
+            <BookedDataComp title={t("Name")} value={name}/>
+            <BookedDataComp title={t("Order Number")} value={order_number}/>
+            <BookedDataComp title={t("Date")} value={date}/>
+            <BookedDataComp title={t("Time")} value={time}/>
+            <BookedDataComp title={t("Gate")} value={gate}/>
+            <BookedDataComp title={t("Seat")} value={seat}/>
           </div>
 
           <div className="relative h-full -bottom-5">
@@ -58,13 +57,9 @@ const MyEventDetail = () => {
           </div>
 
           <div className="flex flex-col items-center relative pt-16">
-            {/* TODO: Change to Barcode and QR Code */}
-            {isQRCode ? 
-              <ScanQRCode />
-            : <Barcode value="Glowfish"/>
-            }
+            {isQRCode ? <ScanQRCode /> : <Barcode value="Glowfish"/>}
             <p className="text-black text-xs" onClick={() => setIsQRCode(!isQRCode)}>
-              {isQRCode ? "Switch to Barcode" : "Switch to QR Code"}
+              {isQRCode ? t("Switch to Barcode") : t("Switch to QR Code")}
             </p>
           </div>
         </section>
