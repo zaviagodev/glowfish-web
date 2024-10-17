@@ -70,7 +70,7 @@ export const HomeShow = () => {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </div>
-              <h2 className="page-title">{numOfParticipants} {numOfParticipants === 1 ? t("Participant") : t("Participants")}</h2>
+              <h2 className="page-title">{t("participant", {count: numOfParticipants})}</h2>
             </div>
             {data.desc ? (
               <div className="flex flex-col gap-1.5">

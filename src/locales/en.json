@@ -11,6 +11,8 @@
   "Valid to": "Valid to",
   "point_one": "{{count}} point",
   "point_other": "{{count}} points",
+  "participant_one": "{{count}} Participant",
+  "participant_other": "{{count}} Participants",
   "Used points": "Used points",
   "Download image": "Download image",
   "Description": "Description",
@@ -30,5 +32,9 @@
   "grand_total_item_other": "Grand total {{count}} items",
   "Rewards": "Rewards",
   "See all": "See all",
-  "Your card": "Your card"
+  "Your card": "Your card",
+  "Search event..": "Search event..",
+  "Upcoming Events": "Upcoming Events",
+  "Events you might enjoy": "Events you might enjoy",
+  "free": "free"
 }

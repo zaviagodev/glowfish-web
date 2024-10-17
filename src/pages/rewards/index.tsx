@@ -21,7 +21,7 @@ const Rewards = () => {
 
   return (
     <>
-      <Header title="Your card" rightButton="Detail"/>
+      <Header title={t("Your card")} rightButton={t("Detail")}/>
       <section>
         <div className="flex items-center justify-between px-5">
           <h1 className="font-semibold text-[28px] m-0">{t("Hello")}, <span className="text-mainorange">{username}</span></h1>

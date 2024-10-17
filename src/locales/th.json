@@ -10,7 +10,7 @@
   "Resend OTP": "ขอ OTP อีกครั้ง",
   "Valid to": "สามารถใช้ได้ถึง",
   "point": "คะแนน",
-  "points": "คะแนน",
+  "participant": "ผู้เข้าร่วม {{count}} คน",
   "Used points": "คะแนนที่ใช้",
   "Download image": "บันทึกรูปภาพ",
   "Description": "คำบรรยาย",
@@ -28,5 +28,10 @@
   "at the storefront to redeem the reward": "ที่หน้าร้านเพื่อรับของรางวัล",
   "grand_total_item": "ทั้งหมด {{count}} ชิ้น",
   "Rewards": "รางวัล",
-  "See all": "ดูทั้งหมด"
+  "See all": "ดูทั้งหมด",
+  "Your card": "บัตรของคุณ",
+  "Search event..": "ค้นหาอีเวนท์..",
+  "Upcoming Events": "อีเวนท์ที่กำลังจะมาถึง",
+  "Events you might enjoy": "อีเวนท์ที่คุณอาจสนใจ",
+  "free": "ฟรี"
 }

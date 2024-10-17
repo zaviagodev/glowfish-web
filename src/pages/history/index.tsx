@@ -8,6 +8,7 @@ import {
   } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { ArrowDown, ArrowUp } from "@/components/icons/MainIcons"
+import { useTranslate } from "@refinedev/core"
 
 type PointActionTypes = "Received" | "Used"
 
@@ -19,7 +20,8 @@ interface PointActionsProps {
 
 const HistoryPage = () => {
 
-  const tabClassNames = "font-semibold w-full bg-transparent text-[#6D6D6D] data-[state=active]:bg-white data-[state=active]:text-[#0D0D0D]"
+  const t = useTranslate();
+  const tabClassNames = "font-semibold w-full bg-transparent text-[#6D6D6D] data-[state=active]:bg-white data-[state=active]:text-[#0D0D0D]";
 
   // These data are the mock-up ones, will be changed to the dynamic data
   const [pointActions, setPointActions] = useState<PointActionsProps[]>([
@@ -38,10 +40,10 @@ const HistoryPage = () => {
       date: "Feb 09",
       amount: 35  
     }
-  ])
+  ]);
 
   const renderAction = (action: PointActionsProps) => {
-    const actionTitle = action.type === "Received" ? "Get Point" : "Spend Point"
+    const actionTitle = action.type === "Received" ? t("Get Point") : t("Spend Point")
 
     return (
       <div key={`${action.type}-${action.date}`} className="flex items-center justify-between py-2 mb-2">
@@ -52,7 +54,7 @@ const HistoryPage = () => {
 
           <div className="space-y-1">
             <h3 className="page-title">{actionTitle}</h3>
-            <p className="text-[#6D6D6D] text-xs">{action.type} • {action.date}</p>
+            <p className="text-[#6D6D6D] text-xs">{t(action.type)} • {action.date}</p>
           </div>
         </div>
 
@@ -63,13 +65,12 @@ const HistoryPage = () => {
 
   return (
     <>
-      <Header title="History" rightButton="Detail"/>
-
+      <Header title={t("History")} rightButton={t("Detail")}/>
       <Tabs defaultValue="All">
         <TabsList className="w-full bg-darkgray border border-input">
-          <TabsTrigger value="All" className={tabClassNames}>All</TabsTrigger>
-          <TabsTrigger value="Received" className={tabClassNames}>Received</TabsTrigger>
-          <TabsTrigger value="Used" className={tabClassNames}>Spend</TabsTrigger>
+          <TabsTrigger value="All" className={tabClassNames}>{t("All")}</TabsTrigger>
+          <TabsTrigger value="Received" className={tabClassNames}>{t("Received")}</TabsTrigger>
+          <TabsTrigger value="Used" className={tabClassNames}>{t("Spend")}</TabsTrigger>
         </TabsList>
         <TabsContent value="All">
           <div className="mt-10">{pointActions.map(action => renderAction(action))}</div>

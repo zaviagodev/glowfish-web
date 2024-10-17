@@ -13,7 +13,7 @@ const CheckoutPage = () => {
 
   return (
     <>
-      <Header title="Checkout" rightButton="Detail"/>
+      <Header title={t("Checkout")} rightButton={t("Detail")}/>
       <section className="flex flex-col gap-6 mb-[200px]">
         <img src={jameson} className="rounded-xl"/>
         <div className="flex flex-col items-center gap-2">
