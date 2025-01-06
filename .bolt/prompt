@@ -1,0 +1,21 @@
+## Generic instructions:
+
+make sure to follow standards and rules of the selected framework.
+
+Create a .md file under "docs" folder for each module and list every functionality/feature added to the project.
+
+manage all type/type def under a folder called "types" in root directory.
+
+make sure to write/update each file fully, I don't want comments like "// ... rest of the code remains the same".
+
+## backend instructions:
+
+OpenAPI spec support with example request and response is must when working with backend/APIs.
+
+write proper js docs when working with backend.
+
+## frontend instructions:
+
+Make webpages that are fully featured and worthy for production.
+
+Use stock photos from unsplash where appropriate.
