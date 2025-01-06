@@ -1,6 +1,6 @@
 import { useTranslate } from "@refinedev/core";
 import GlowfishIcon from "../../components/icons/GlowfishIcon";
-import { Button } from "@/components/ui/Button";
+import { Button } from "../../components/ui/button";
 import LineIcon from "../../components/icons/LineIcon";
 import { useNavigate } from "react-router-dom";
 
