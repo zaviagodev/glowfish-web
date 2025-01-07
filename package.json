@@ -5,7 +5,7 @@
   "type": "module",
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
-    "@radix-ui/react-accordion": "^1.2.1",
+    "@radix-ui/react-accordion": "^1.2.1", 
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
@@ -21,6 +21,7 @@
     "@refinedev/react-router-v6": "^4.5.5",
     "@refinedev/react-table": "^5.6.6",
     "@refinedev/simple-rest": "^5.0.1",
+    "@supabase/supabase-js": "^2.39.7",
     "@tanstack/react-table": "^8.2.6",
     "class-variance-authority": "^0.7.0",
     "date-fns": "^4.1.0",
