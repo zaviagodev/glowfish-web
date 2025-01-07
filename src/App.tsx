@@ -110,10 +110,12 @@ function App() {
                   </Layout>
                 }
               >
-                <Route
-                  index
-                  element={<NavigateToResource resource="home" />}
-                />
+
+
+                <Route index element={<Login/>} />
+                <Route path="/home" element={<NavigateToResource  resource="login" />} />
+
+
                 <Route path="/phone-verification" element={<PhoneVerification />}/>
                 <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />}/>
                 <Route path="/history" element={<HistoryPage />}/>
@@ -152,7 +154,6 @@ function App() {
                   </Authenticated>
                 }
               >
-                <Route path="/login" element={<Login />} />
                 <Route path="/line-callback" element={<LineCallback />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />

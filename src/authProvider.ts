@@ -48,10 +48,18 @@ export const authProvider: AuthProvider = {
         localStorage.setItem(TOKEN_KEY, tokenData.access_token);
         localStorage.setItem(LINE_USER_KEY, JSON.stringify(userData));
 
+
+        console.log('-----------------');
+          console.log(JSON.stringify(userData));
+        console.log('-----------------');
+
+
         return {
           success: true,
           redirectTo: "/",
         };
+
+
       } catch (error) {
         console.error("Line login error:", error);
         return {
