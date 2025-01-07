@@ -1,4 +1,5 @@
 import type { AuthProvider } from "@refinedev/core";
+import { supabase } from "./lib/supabase";
 
 export const TOKEN_KEY = "refine-auth";
 export const LINE_USER_KEY = "line-user";
@@ -14,51 +15,33 @@ export const authProvider: AuthProvider = {
   login: async ({ providerName, code }) => {
     if (providerName === "line" && code) {
       try {
-        // Exchange code for access token
-        const tokenResponse = await fetch("https://api.line.me/oauth2/v2.1/token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            grant_type: "authorization_code",
+        // Exchange code for access token using Edge Function
+        const { data: tokenData, error: functionError } = await supabase.functions.invoke('line-auth', {
+          body: {
             code,
-            redirect_uri: LINE_CONFIG.redirectUri,
-            client_id: LINE_CONFIG.clientId,
-            client_secret: import.meta.env.VITE_LINE_CLIENT_SECRET,
-          }),
+            redirectUri: LINE_CONFIG.redirectUri
+          }
         });
 
-        const tokenData = await tokenResponse.json();
-
-        if (!tokenResponse.ok) {
+        if (functionError) {
           throw new Error("Failed to get access token");
         }
-
         // Get user profile
         const profileResponse = await fetch("https://api.line.me/v2/profile", {
           headers: {
             Authorization: `Bearer ${tokenData.access_token}`,
           },
         });
-
         const userData = await profileResponse.json();
 
-        // Store tokens and user data
         localStorage.setItem(TOKEN_KEY, tokenData.access_token);
         localStorage.setItem(LINE_USER_KEY, JSON.stringify(userData));
 
-
-        console.log('-----------------');
-          console.log(JSON.stringify(userData));
-        console.log('-----------------');
-
-
+        
         return {
           success: true,
-          redirectTo: "/",
+          redirectTo: "/" ,
         };
-
 
       } catch (error) {
         console.error("Line login error:", error);
@@ -82,6 +65,7 @@ export const authProvider: AuthProvider = {
   },
 
   logout: async () => {
+    await supabase.auth.signOut();
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(LINE_USER_KEY);
     return {
@@ -91,8 +75,8 @@ export const authProvider: AuthProvider = {
   },
 
   check: async () => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
       return {
         authenticated: true,
       };
