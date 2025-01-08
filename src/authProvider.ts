@@ -26,21 +26,14 @@ export const authProvider: AuthProvider = {
         if (functionError) {
           throw new Error("Failed to get access token");
         }
-        // Get user profile
-        const profileResponse = await fetch("https://api.line.me/v2/profile", {
-          headers: {
-            Authorization: `Bearer ${tokenData.access_token}`,
-          },
-        });
-        const userData = await profileResponse.json();
 
+        // Store tokens and user data
         localStorage.setItem(TOKEN_KEY, tokenData.access_token);
-        localStorage.setItem(LINE_USER_KEY, JSON.stringify(userData));
-
+        localStorage.setItem(LINE_USER_KEY, JSON.stringify(tokenData.profile));
         
         return {
           success: true,
-          redirectTo: "/" ,
+          redirectTo: tokenData.redirect === "register" ? "/phone-verification" : "/home",
         };
 
       } catch (error) {

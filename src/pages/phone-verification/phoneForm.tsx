@@ -1,7 +1,6 @@
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,14 +30,20 @@ const PhoneForm = ({
 
   const t = useTranslate()
   const [verified, setVerified] = useState(false)
+  const [phone, setPhone] = useState("")
   const form = useForm({
     resolver: yupResolver(phoneSchema),
     defaultValues: initialValues,
   })
 
+  const handleSubmit = (data: {phone_verification: number}) => {
+    setPhone(`+66${data.phone_verification}`);
+    setVerified(true);
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(data => data)} className="flex flex-col gap-y-[30px]">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-y-[30px]">
         <FormField
           control={form.control}
           name="phone_verification"
@@ -61,9 +66,9 @@ const PhoneForm = ({
 
         <p className="text-fadewhite text-sm text-center">{t("You will receive the 6-digit code")}</p>
 
-        <Button className="main-btn !bg-[#FF2F00]" type="submit" disabled={!form.formState.isValid} onClick={() => setVerified(true)}>{t("Get OTP")}</Button>
+        <Button className="main-btn !bg-[#FF2F00]" type="submit" disabled={!form.formState.isValid}>{t("Get OTP")}</Button>
 
-        <GetOTPDrawer isOpen={verified} setIsOpen={setVerified}/>
+        <GetOTPDrawer isOpen={verified} setIsOpen={setVerified} phone={phone}/>
       </form>
     </Form>
   )
