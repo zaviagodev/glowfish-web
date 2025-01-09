@@ -12,12 +12,30 @@ serve(async (req) => {
   }
 
   try {
-    const { otp, phone, line_id, access_token } = await req.json()
+    const { otp, phone, line_id, access_token,token } = await req.json()
+    const apiUrl =  Deno.env.get('SMS2PRO_URL')+'/verify';
+    const apiToken = Deno.env.get('SMS2PRO_API'); // Use your actual token
 
-    // Validate OTP
-    if (otp !== "111111") {
-      throw new Error('Invalid OTP')
+    const payload = {
+      token: token,
+      otp_code: otp,
+    };
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': apiToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if(!result?.data?.is_valid){
+      throw new Error('OTP is wrong')
     }
+
 
     // Get Line profile
     const profileResponse = await fetch('https://api.line.me/v2/profile', {
@@ -52,13 +70,11 @@ serve(async (req) => {
     }
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-    const supabaseAnonKey = Deno.env.get('VITE_SUPABASE_ANON_KEY')
     if (!supabaseUrl || !supabaseServiceKey) {
       throw new Error('Missing Supabase credentials')
     }
     // Initialize admin client
     const adminClient = createClient(supabaseUrl, supabaseServiceKey)
-    const customerClient = createClient(supabaseUrl, supabaseAnonKey);
 
 
     // Create or update user with phone auth

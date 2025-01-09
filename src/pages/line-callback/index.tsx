@@ -19,14 +19,18 @@ export const LineCallback = () => {
     }
 
     if (code) {
-      login({
-        providerName: "line",
-        code,
-      });
+      // Check if we have already processed the code to avoid infinite loop
+      if (!sessionStorage.getItem("line-login-processed")) {
+        sessionStorage.setItem("line-login-processed", "true");
+        login({
+          providerName: "line",
+          code,
+        });
+      }
     } else {
       replace("/login");
     }
-  }, [location.search]);
+  }, [location.search, login, replace]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
