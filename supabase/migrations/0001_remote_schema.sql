@@ -1,18 +1,29 @@
 
 
 SET statement_timeout = 0;
+
 SET lock_timeout = 0;
+
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
+
 SET standard_conforming_strings = on;
+
 SELECT pg_catalog.set_config('search_path', '', false);
+
 SET check_function_bodies = false;
+
 SET xmloption = content;
+
 SET client_min_messages = warning;
+
 SET row_security = off;
 
 
+
 CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
+
 
 
 
@@ -23,7 +34,9 @@ COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
 
+
 CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
+
 
 
 
@@ -37,7 +50,9 @@ CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
 
 
 
+
 CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
+
 
 
 
@@ -51,7 +66,9 @@ CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
 
 
 
+
 CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
+
 
 
 
@@ -65,13 +82,17 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 
 
 
+
 CREATE OR REPLACE FUNCTION "public"."create_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") RETURNS TABLE("id" "uuid", "created_at" timestamp with time zone, "updated_at" timestamp with time zone)
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
 declare
   v_order_id uuid;
+
   v_item jsonb;
+
   v_product_quantity integer;
+
 begin
   -- Create the order
   insert into orders (
@@ -98,6 +119,7 @@ begin
     p_tags
   ) returning orders.id into v_order_id;
 
+
   -- Process each order item
   for v_item in select * from jsonb_array_elements(p_items)
   loop
@@ -109,10 +131,13 @@ begin
     and products.track_quantity = true
     for update;
 
+
     if v_product_quantity is not null then
       if v_product_quantity < (v_item->>'quantity')::integer then
         raise exception 'Insufficient stock for product %', (v_item->>'product_id')::uuid;
+
       end if;
+
 
       -- Update product quantity
       update products
@@ -121,7 +146,9 @@ begin
         updated_at = now()
       where products.id = (v_item->>'product_id')::uuid
       and products.store_name = p_store_name;
+
     end if;
+
 
     -- Create order item
     insert into order_items (
@@ -137,7 +164,9 @@ begin
       (v_item->>'price')::decimal,
       (v_item->>'total')::decimal
     );
+
   end loop;
+
 
   -- Return the created order details
   return query
@@ -147,11 +176,15 @@ begin
     orders.updated_at
   from orders
   where orders.id = v_order_id;
+
 end;
+
 $$;
 
 
+
 ALTER FUNCTION "public"."create_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") OWNER TO "postgres";
+
 
 
 CREATE OR REPLACE FUNCTION "public"."place_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") RETURNS TABLE("id" "uuid", "created_at" timestamp with time zone, "updated_at" timestamp with time zone)
@@ -159,8 +192,11 @@ CREATE OR REPLACE FUNCTION "public"."place_order"("p_store_name" "text", "p_cust
     AS $$
 declare
   v_order_id uuid;
+
   v_item jsonb;
+
   v_product record;
+
 begin
   -- Start transaction
   begin
@@ -189,6 +225,7 @@ begin
       p_tags
     ) returning id into v_order_id;
 
+
     -- Process each order item
     for v_item in select * from jsonb_array_elements(p_items)
     loop
@@ -201,16 +238,21 @@ begin
         and status = 'active'
       for update;
 
+
       if v_product is null then
         raise exception 'Product % not found or is not active', (v_item->>'product_id')::uuid;
+
       end if;
+
 
       -- Check stock if tracking is enabled
       if v_product.track_quantity then
         if v_product.quantity < (v_item->>'quantity')::integer then
           raise exception 'Insufficient stock for product %: % available, % requested',
             v_product.name, v_product.quantity, (v_item->>'quantity')::integer;
+
         end if;
+
 
         -- Update product stock
         update products
@@ -218,7 +260,9 @@ begin
           quantity = quantity - (v_item->>'quantity')::integer,
           updated_at = now()
         where id = v_product.id;
+
       end if;
+
 
       -- Create order item
       insert into order_items (
@@ -234,7 +278,9 @@ begin
         (v_item->>'price')::decimal,
         (v_item->>'total')::decimal
       );
+
     end loop;
+
 
     -- Return the created order details
     return query
@@ -242,19 +288,27 @@ begin
     from orders
     where orders.id = v_order_id;
 
+
     -- Commit transaction
     commit;
+
   exception
     when others then
       -- Rollback transaction on any error
       rollback;
+
       raise;
+
   end;
+
 end;
+
 $$;
 
 
+
 ALTER FUNCTION "public"."place_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") OWNER TO "postgres";
+
 
 
 CREATE OR REPLACE FUNCTION "public"."update_product_stock"("p_product_id" "uuid", "p_quantity" integer) RETURNS "void"
@@ -269,19 +323,27 @@ begin
     id = p_product_id
     and track_quantity = true
     and quantity >= p_quantity;
+
     
   if not found then
     raise exception 'Failed to update product stock';
+
   end if;
+
 end;
+
 $$;
+
 
 
 ALTER FUNCTION "public"."update_product_stock"("p_product_id" "uuid", "p_quantity" integer) OWNER TO "postgres";
 
+
 SET default_tablespace = '';
 
+
 SET default_table_access_method = "heap";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."customer_addresses" (
@@ -306,7 +368,9 @@ CREATE TABLE IF NOT EXISTS "public"."customer_addresses" (
 );
 
 
+
 ALTER TABLE "public"."customer_addresses" OWNER TO "postgres";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."customers" (
@@ -323,7 +387,9 @@ CREATE TABLE IF NOT EXISTS "public"."customers" (
 );
 
 
+
 ALTER TABLE "public"."customers" OWNER TO "postgres";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."order_items" (
@@ -338,7 +404,9 @@ CREATE TABLE IF NOT EXISTS "public"."order_items" (
 );
 
 
+
 ALTER TABLE "public"."order_items" OWNER TO "postgres";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."orders" (
@@ -359,7 +427,9 @@ CREATE TABLE IF NOT EXISTS "public"."orders" (
 );
 
 
+
 ALTER TABLE "public"."orders" OWNER TO "postgres";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_images" (
@@ -373,7 +443,9 @@ CREATE TABLE IF NOT EXISTS "public"."product_images" (
 );
 
 
+
 ALTER TABLE "public"."product_images" OWNER TO "postgres";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_tags" (
@@ -385,7 +457,9 @@ CREATE TABLE IF NOT EXISTS "public"."product_tags" (
 );
 
 
+
 ALTER TABLE "public"."product_tags" OWNER TO "postgres";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."products" (
@@ -412,7 +486,9 @@ CREATE TABLE IF NOT EXISTS "public"."products" (
 );
 
 
+
 ALTER TABLE "public"."products" OWNER TO "postgres";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."profiles" (
@@ -426,11 +502,14 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
 );
 
 
+
 ALTER TABLE "public"."profiles" OWNER TO "postgres";
+
 
 
 ALTER TABLE ONLY "public"."customer_addresses"
     ADD CONSTRAINT "customer_addresses_pkey" PRIMARY KEY ("id");
+
 
 
 
@@ -439,8 +518,10 @@ ALTER TABLE ONLY "public"."customers"
 
 
 
+
 ALTER TABLE ONLY "public"."customers"
     ADD CONSTRAINT "customers_store_name_email_key" UNIQUE ("store_name", "email");
+
 
 
 
@@ -449,8 +530,10 @@ ALTER TABLE ONLY "public"."order_items"
 
 
 
+
 ALTER TABLE ONLY "public"."orders"
     ADD CONSTRAINT "orders_pkey" PRIMARY KEY ("id");
+
 
 
 
@@ -459,8 +542,10 @@ ALTER TABLE ONLY "public"."product_images"
 
 
 
+
 ALTER TABLE ONLY "public"."product_tags"
     ADD CONSTRAINT "product_tags_pkey" PRIMARY KEY ("id");
+
 
 
 
@@ -469,8 +554,10 @@ ALTER TABLE ONLY "public"."products"
 
 
 
+
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_email_key" UNIQUE ("email");
+
 
 
 
@@ -479,8 +566,10 @@ ALTER TABLE ONLY "public"."profiles"
 
 
 
+
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_store_name_key" UNIQUE ("store_name");
+
 
 
 
@@ -488,7 +577,9 @@ CREATE INDEX "customer_addresses_customer_id_idx" ON "public"."customer_addresse
 
 
 
+
 CREATE INDEX "customers_email_idx" ON "public"."customers" USING "btree" ("email");
+
 
 
 
@@ -496,7 +587,9 @@ CREATE INDEX "customers_store_name_idx" ON "public"."customers" USING "btree" ("
 
 
 
+
 CREATE INDEX "order_items_order_id_idx" ON "public"."order_items" USING "btree" ("order_id");
+
 
 
 
@@ -504,7 +597,9 @@ CREATE INDEX "order_items_product_id_idx" ON "public"."order_items" USING "btree
 
 
 
+
 CREATE INDEX "orders_customer_id_idx" ON "public"."orders" USING "btree" ("customer_id");
+
 
 
 
@@ -512,7 +607,9 @@ CREATE INDEX "orders_status_idx" ON "public"."orders" USING "btree" ("status");
 
 
 
+
 CREATE INDEX "orders_store_name_idx" ON "public"."orders" USING "btree" ("store_name");
+
 
 
 
@@ -520,7 +617,9 @@ CREATE INDEX "product_images_product_id_idx" ON "public"."product_images" USING 
 
 
 
+
 CREATE INDEX "product_tags_product_id_idx" ON "public"."product_tags" USING "btree" ("product_id");
+
 
 
 
@@ -528,7 +627,9 @@ CREATE INDEX "products_status_idx" ON "public"."products" USING "btree" ("status
 
 
 
+
 CREATE INDEX "products_store_name_idx" ON "public"."products" USING "btree" ("store_name");
+
 
 
 
@@ -536,7 +637,9 @@ CREATE INDEX "profiles_email_idx" ON "public"."profiles" USING "btree" ("email")
 
 
 
+
 CREATE INDEX "profiles_store_name_idx" ON "public"."profiles" USING "btree" ("store_name");
+
 
 
 
@@ -545,8 +648,10 @@ ALTER TABLE ONLY "public"."customer_addresses"
 
 
 
+
 ALTER TABLE ONLY "public"."customer_addresses"
     ADD CONSTRAINT "customer_addresses_store_name_fkey" FOREIGN KEY ("store_name") REFERENCES "public"."profiles"("store_name") ON DELETE CASCADE;
+
 
 
 
@@ -555,8 +660,10 @@ ALTER TABLE ONLY "public"."customers"
 
 
 
+
 ALTER TABLE ONLY "public"."order_items"
     ADD CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE CASCADE;
+
 
 
 
@@ -565,8 +672,10 @@ ALTER TABLE ONLY "public"."order_items"
 
 
 
+
 ALTER TABLE ONLY "public"."orders"
     ADD CONSTRAINT "orders_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "public"."customers"("id") ON DELETE SET NULL;
+
 
 
 
@@ -575,8 +684,10 @@ ALTER TABLE ONLY "public"."orders"
 
 
 
+
 ALTER TABLE ONLY "public"."product_images"
     ADD CONSTRAINT "product_images_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
+
 
 
 
@@ -585,8 +696,10 @@ ALTER TABLE ONLY "public"."product_tags"
 
 
 
+
 ALTER TABLE ONLY "public"."products"
     ADD CONSTRAINT "products_store_name_fkey" FOREIGN KEY ("store_name") REFERENCES "public"."profiles"("store_name") ON DELETE CASCADE;
+
 
 
 
@@ -595,7 +708,9 @@ ALTER TABLE ONLY "public"."profiles"
 
 
 
+
 CREATE POLICY "Enable insert for authenticated users only" ON "public"."profiles" FOR INSERT WITH CHECK (("auth"."role"() = 'authenticated'::"text"));
+
 
 
 
@@ -603,7 +718,9 @@ CREATE POLICY "Enable read access for all users" ON "public"."profiles" FOR SELE
 
 
 
+
 CREATE POLICY "Enable update for users based on id" ON "public"."profiles" FOR UPDATE USING (("auth"."uid"() = "id"));
+
 
 
 
@@ -613,9 +730,11 @@ CREATE POLICY "Public users can create customer addresses" ON "public"."customer
 
 
 
+
 CREATE POLICY "Public users can create customers" ON "public"."customers" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE ("profiles"."store_name" = "customers"."store_name"))));
+
 
 
 
@@ -625,9 +744,11 @@ CREATE POLICY "Public users can create order items" ON "public"."order_items" FO
 
 
 
+
 CREATE POLICY "Public users can create orders" ON "public"."orders" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE ("profiles"."store_name" = "orders"."store_name"))));
+
 
 
 
@@ -637,15 +758,18 @@ CREATE POLICY "Public users can view active products" ON "public"."products" FOR
 
 
 
+
 CREATE POLICY "Public users can view product images" ON "public"."product_images" FOR SELECT USING ((EXISTS ( SELECT 1
    FROM "public"."products"
   WHERE (("products"."id" = "product_images"."product_id") AND ("products"."status" = 'active'::"text")))));
 
 
 
+
 CREATE POLICY "Public users can view product tags" ON "public"."product_tags" FOR SELECT USING ((EXISTS ( SELECT 1
    FROM "public"."products"
   WHERE (("products"."id" = "product_tags"."product_id") AND ("products"."status" = 'active'::"text")))));
+
 
 
 
@@ -657,9 +781,11 @@ CREATE POLICY "Users can delete their store's customer addresses" ON "public"."c
 
 
 
+
 CREATE POLICY "Users can delete their store's customers" ON "public"."customers" FOR DELETE USING ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE (("profiles"."store_name" = "customers"."store_name") AND ("profiles"."id" = "auth"."uid"())))));
+
 
 
 
@@ -669,9 +795,11 @@ CREATE POLICY "Users can delete their store's orders" ON "public"."orders" FOR D
 
 
 
+
 CREATE POLICY "Users can delete their store's products" ON "public"."products" FOR DELETE USING ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE (("profiles"."store_name" = "products"."store_name") AND ("profiles"."id" = "auth"."uid"())))));
+
 
 
 
@@ -683,9 +811,11 @@ CREATE POLICY "Users can insert addresses to their store's customers" ON "public
 
 
 
+
 CREATE POLICY "Users can insert customers to their store" ON "public"."customers" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE (("profiles"."store_name" = "customers"."store_name") AND ("profiles"."id" = "auth"."uid"())))));
+
 
 
 
@@ -695,9 +825,11 @@ CREATE POLICY "Users can insert orders to their store" ON "public"."orders" FOR 
 
 
 
+
 CREATE POLICY "Users can insert products to their store" ON "public"."products" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE (("profiles"."store_name" = "products"."store_name") AND ("profiles"."id" = "auth"."uid"())))));
+
 
 
 
@@ -709,11 +841,13 @@ CREATE POLICY "Users can manage their store's order items" ON "public"."order_it
 
 
 
+
 CREATE POLICY "Users can manage their store's product images" ON "public"."product_images" USING ((EXISTS ( SELECT 1
    FROM "public"."products"
   WHERE (("products"."id" = "product_images"."product_id") AND (EXISTS ( SELECT 1
            FROM "public"."profiles"
           WHERE (("profiles"."store_name" = "products"."store_name") AND ("profiles"."id" = "auth"."uid"()))))))));
+
 
 
 
@@ -725,11 +859,13 @@ CREATE POLICY "Users can manage their store's product tags" ON "public"."product
 
 
 
+
 CREATE POLICY "Users can update their store's customer addresses" ON "public"."customer_addresses" FOR UPDATE USING ((EXISTS ( SELECT 1
    FROM "public"."customers"
   WHERE (("customers"."id" = "customer_addresses"."customer_id") AND ("customers"."store_name" = "customer_addresses"."store_name") AND (EXISTS ( SELECT 1
            FROM "public"."profiles"
           WHERE (("profiles"."store_name" = "customers"."store_name") AND ("profiles"."id" = "auth"."uid"()))))))));
+
 
 
 
@@ -739,15 +875,18 @@ CREATE POLICY "Users can update their store's customers" ON "public"."customers"
 
 
 
+
 CREATE POLICY "Users can update their store's orders" ON "public"."orders" FOR UPDATE USING ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE (("profiles"."store_name" = "orders"."store_name") AND ("profiles"."id" = "auth"."uid"())))));
 
 
 
+
 CREATE POLICY "Users can update their store's products" ON "public"."products" FOR UPDATE USING ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE (("profiles"."store_name" = "products"."store_name") AND ("profiles"."id" = "auth"."uid"())))));
+
 
 
 
@@ -759,9 +898,11 @@ CREATE POLICY "Users can view their store's customer addresses" ON "public"."cus
 
 
 
+
 CREATE POLICY "Users can view their store's customers" ON "public"."customers" FOR SELECT USING ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE (("profiles"."store_name" = "customers"."store_name") AND ("profiles"."id" = "auth"."uid"())))));
+
 
 
 
@@ -771,31 +912,40 @@ CREATE POLICY "Users can view their store's orders" ON "public"."orders" FOR SEL
 
 
 
+
 CREATE POLICY "Users can view their store's products" ON "public"."products" FOR SELECT USING ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE (("profiles"."store_name" = "products"."store_name") AND ("profiles"."id" = "auth"."uid"())))));
 
 
 
+
 ALTER TABLE "public"."customer_addresses" ENABLE ROW LEVEL SECURITY;
+
 
 
 ALTER TABLE "public"."customers" ENABLE ROW LEVEL SECURITY;
 
 
+
 ALTER TABLE "public"."order_items" ENABLE ROW LEVEL SECURITY;
+
 
 
 ALTER TABLE "public"."orders" ENABLE ROW LEVEL SECURITY;
 
 
+
 ALTER TABLE "public"."product_images" ENABLE ROW LEVEL SECURITY;
+
 
 
 ALTER TABLE "public"."product_tags" ENABLE ROW LEVEL SECURITY;
 
 
+
 ALTER TABLE "public"."products" ENABLE ROW LEVEL SECURITY;
+
 
 
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
@@ -803,16 +953,22 @@ ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
 
 
+
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
+
 
 
 ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."profiles";
 
 
 
+
 GRANT USAGE ON SCHEMA "public" TO "postgres";
+
 GRANT USAGE ON SCHEMA "public" TO "anon";
+
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
+
 GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
@@ -994,20 +1150,29 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
+
 GRANT ALL ON FUNCTION "public"."create_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") TO "anon";
+
 GRANT ALL ON FUNCTION "public"."create_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") TO "authenticated";
+
 GRANT ALL ON FUNCTION "public"."create_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") TO "service_role";
 
 
 
+
 GRANT ALL ON FUNCTION "public"."place_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") TO "anon";
+
 GRANT ALL ON FUNCTION "public"."place_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") TO "authenticated";
+
 GRANT ALL ON FUNCTION "public"."place_order"("p_store_name" "text", "p_customer_id" "uuid", "p_status" "text", "p_subtotal" numeric, "p_discount" numeric, "p_shipping" numeric, "p_tax" numeric, "p_total" numeric, "p_notes" "text", "p_tags" "text"[], "p_items" "jsonb") TO "service_role";
 
 
 
+
 GRANT ALL ON FUNCTION "public"."update_product_stock"("p_product_id" "uuid", "p_quantity" integer) TO "anon";
+
 GRANT ALL ON FUNCTION "public"."update_product_stock"("p_product_id" "uuid", "p_quantity" integer) TO "authenticated";
+
 GRANT ALL ON FUNCTION "public"."update_product_stock"("p_product_id" "uuid", "p_quantity" integer) TO "service_role";
 
 
@@ -1027,57 +1192,85 @@ GRANT ALL ON FUNCTION "public"."update_product_stock"("p_product_id" "uuid", "p_
 
 
 
+
 GRANT ALL ON TABLE "public"."customer_addresses" TO "anon";
+
 GRANT ALL ON TABLE "public"."customer_addresses" TO "authenticated";
+
 GRANT ALL ON TABLE "public"."customer_addresses" TO "service_role";
 
 
 
+
 GRANT ALL ON TABLE "public"."customers" TO "anon";
+
 GRANT ALL ON TABLE "public"."customers" TO "authenticated";
+
 GRANT ALL ON TABLE "public"."customers" TO "service_role";
 
 
 
+
 GRANT ALL ON TABLE "public"."order_items" TO "anon";
+
 GRANT ALL ON TABLE "public"."order_items" TO "authenticated";
+
 GRANT ALL ON TABLE "public"."order_items" TO "service_role";
 
 
 
+
 GRANT ALL ON TABLE "public"."orders" TO "anon";
+
 GRANT ALL ON TABLE "public"."orders" TO "authenticated";
+
 GRANT ALL ON TABLE "public"."orders" TO "service_role";
 
 
 
+
 GRANT ALL ON TABLE "public"."product_images" TO "anon";
+
 GRANT ALL ON TABLE "public"."product_images" TO "authenticated";
+
 GRANT ALL ON TABLE "public"."product_images" TO "service_role";
 
 
 
+
 GRANT ALL ON TABLE "public"."product_tags" TO "anon";
+
 GRANT ALL ON TABLE "public"."product_tags" TO "authenticated";
+
 GRANT ALL ON TABLE "public"."product_tags" TO "service_role";
 
 
 
+
 GRANT ALL ON TABLE "public"."products" TO "anon";
+
 GRANT ALL ON TABLE "public"."products" TO "authenticated";
+
 GRANT ALL ON TABLE "public"."products" TO "service_role";
 
 
 
+
 GRANT ALL ON TABLE "public"."profiles" TO "anon";
+
 GRANT ALL ON TABLE "public"."profiles" TO "authenticated";
+
 GRANT ALL ON TABLE "public"."profiles" TO "service_role";
 
 
 
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "authenticated";
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "service_role";
 
 
@@ -1085,9 +1278,13 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQ
 
 
 
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "postgres";
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "anon";
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "authenticated";
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "service_role";
 
 
@@ -1095,9 +1292,13 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUN
 
 
 
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "postgres";
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "anon";
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "authenticated";
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "service_role";
 
 
@@ -1129,4 +1330,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 
 
 
+
 RESET ALL;
+
+;

@@ -57,19 +57,9 @@ const GetOTPDrawer = ({
     try {
       setIsSubmitting(true);
       setError(null);
-      const verifyResponse = await verifyOTP(data.otp, phone, verification_token);
-      if (!verifyResponse.success) {
-        throw new Error(verifyResponse.error || 'Verification failed');
-      }
-
-      const { email, token } = verifyResponse;
-      if (!email || !token) {
-        throw new Error('Invalid verification response');
-      }
-
-      const sessionSet = await setSupabaseSession(email, token);
-      if (!sessionSet) {
-        throw new Error('Failed to set session');
+      const tokenData = await verifyOTP(data.otp, phone, verification_token);
+      if (!tokenData.success) {
+        throw new Error(tokenData.error || 'Verification failed');
       }
 
       navigate('/tell-us-about-yourself');

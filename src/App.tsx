@@ -1,7 +1,6 @@
 import {
   Authenticated,
   ErrorComponent,
-  GitHubBanner,
   Refine
 } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
@@ -110,53 +109,52 @@ function App() {
                   </Layout>
                 }
               >
-
-
-                <Route index element={<Login/>} />
-                <Route path="/home" element={<NavigateToResource  resource="login" />} />
-
-
-                <Route path="/phone-verification" element={<PhoneVerification />}/>
-                <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />}/>
-                <Route path="/history" element={<HistoryPage />}/>
-                <Route path="/checkout" element={<CheckoutPage />}/>
-                <Route path="/my-event" >
-                  <Route index element={<MyEvent />}/>
-                  <Route path="detail/:id" element={<MyEventDetail />}/>
-                </Route>
-                <Route path="/my-rewards" element={<MyRewards />}/>
-                <Route path="/rewards">
-                  <Route index element={<Rewards />} />
-                  <Route path="detail/:id" element={<RewardDetail />}/>
-                </Route>
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/home">
-                  <Route index element={<HomeList />} />
-                  <Route path="create" element={<HomeCreate />} />
-                  <Route path="edit/:id" element={<HomeEdit />} />
-                  <Route path="show/:id" element={<HomeShow />} />
-                </Route>
-                <Route path="/categories">
-                  <Route index element={<CategoryList />} />
-                  <Route path="create" element={<CategoryCreate />} />
-                  <Route path="edit/:id" element={<CategoryEdit />} />
-                  <Route path="show/:id" element={<CategoryShow />} />
-                </Route>
-                <Route path="*" element={<ErrorComponent />} />
-              </Route>
-              <Route
-                element={
-                  <Authenticated
-                    key="authenticated-outer"
-                    fallback={<Outlet />}
-                  >
-                    <NavigateToResource />
-                  </Authenticated>
-                }
-              >
+                <Route path="/login" element={<Login />} />
                 <Route path="/line-callback" element={<LineCallback />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/phone-verification" element={<PhoneVerification />} />
+                <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />} />
+
+                {/* Protected Routes */}
+                <Route
+                  element={
+                    <Authenticated
+                      key="authenticated-routes"
+                      fallback={<CatchAllNavigate to="/login" />}
+                    >
+                      <Outlet />
+                    </Authenticated>
+                  }
+                >
+                  <Route index element={<HomeList />} />
+                  <Route path="/history" element={<HistoryPage />}/>
+                  <Route path="/checkout" element={<CheckoutPage />}/>
+                  <Route path="/my-event" >
+                    <Route index element={<MyEvent />}/>
+                    <Route path="detail/:id" element={<MyEventDetail />}/>
+                  </Route>
+                  <Route path="/my-rewards" element={<MyRewards />}/>
+                  <Route path="/rewards">
+                    <Route index element={<Rewards />} />
+                    <Route path="detail/:id" element={<RewardDetail />}/>
+                  </Route>
+                  <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/home">
+                    <Route index element={<HomeList />} />
+                    <Route path="create" element={<HomeCreate />} />
+                    <Route path="edit/:id" element={<HomeEdit />} />
+                    <Route path="show/:id" element={<HomeShow />} />
+                  </Route>
+                  <Route path="/categories">
+                    <Route index element={<CategoryList />} />
+                    <Route path="create" element={<CategoryCreate />} />
+                    <Route path="edit/:id" element={<CategoryEdit />} />
+                    <Route path="show/:id" element={<CategoryShow />} />
+                  </Route>
+                </Route>
+
+                <Route path="*" element={<ErrorComponent />} />
               </Route>
             </Routes>
 

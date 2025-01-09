@@ -19,6 +19,10 @@ ALTER TABLE orders
   ADD COLUMN IF NOT EXISTS payment_details JSONB,
   ADD COLUMN IF NOT EXISTS shipping_details JSONB;
 
+-- Drop the existing constraint if it exists
+ALTER TABLE orders
+  DROP CONSTRAINT IF EXISTS valid_payment_details;
+
 -- Add check constraint for payment_details structure
 ALTER TABLE orders
   ADD CONSTRAINT valid_payment_details CHECK (

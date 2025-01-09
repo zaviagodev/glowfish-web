@@ -1,5 +1,7 @@
 import type { AuthProvider } from "@refinedev/core";
 import { supabase } from "./lib/supabase";
+import { setSupabaseSession } from "@/lib/auth";
+
 
 export const TOKEN_KEY = "refine-auth";
 export const LINE_USER_KEY = "line-user";
@@ -27,9 +29,17 @@ export const authProvider: AuthProvider = {
           throw new Error("Failed to get access token");
         }
 
+        if(tokenData.type == 1){
+          const sessionSet = await setSupabaseSession(tokenData);
+          if (!sessionSet) {
+            throw new Error('Failed to set session');
+          }
+          
+        }
+
         // Store tokens and user data
         localStorage.setItem(TOKEN_KEY, tokenData.access_token);
-        localStorage.setItem(LINE_USER_KEY, JSON.stringify(tokenData.profile));
+        localStorage.setItem(LINE_USER_KEY, JSON.stringify(tokenData.line_id));
         
         return {
           success: true,

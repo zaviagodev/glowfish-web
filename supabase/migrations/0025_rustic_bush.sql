@@ -10,6 +10,11 @@
     - Ensure RLS policies handle tier relationships correctly
 */
 
+-- Add a unique constraint to the customer_tiers table
+ALTER TABLE customer_tiers
+  ADD CONSTRAINT customer_tiers_unique_id_store
+  UNIQUE (id, store_name);
+
 -- Add foreign key constraint with store check
 ALTER TABLE customers
   DROP CONSTRAINT IF EXISTS customers_tier_id_fkey,

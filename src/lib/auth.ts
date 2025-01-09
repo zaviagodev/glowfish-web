@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+const USER_PROFILE_KEY = 'user_profile';
 
 interface VerifyOTPResponse {
   success: boolean;
@@ -15,6 +16,29 @@ interface LineAuthResponse {
   access_token?: string;
 }
 
+interface TokenData {
+  access_token: string;
+  refresh_token: string;
+  user?: {
+    id: string;
+    email: string;
+    user_metadata?:{
+      full_name: string;
+      avatar_url: string;
+    }
+  };
+  email?: string;
+}
+
+interface UserProfile {
+  id: string;
+  email: string;
+  full_name: string;
+  avatar_url: string;
+  phone?: string;
+}
+
+
 export const verifyOTP = async (
   otp: string,
   phone: string,
@@ -24,7 +48,7 @@ export const verifyOTP = async (
     const token = localStorage.getItem("refine-auth");
     const lineUser = JSON.parse(localStorage.getItem("line-user") || "{}");
 
-    const { data, error } = await supabase.functions.invoke('verify-otp', {
+    const { data : tokenData, error } = await supabase.functions.invoke('verify-otp', {
       body: {
         otp,
         phone,
@@ -36,10 +60,12 @@ export const verifyOTP = async (
 
     if (error) throw error;
 
+    const sessionSet = await setSupabaseSession(tokenData);
+    if (!sessionSet) {
+      throw new Error('Failed to set session');
+    }
     return {
       success: true,
-      email: data.email,
-      token: data.token
     };
   } catch (error) {
     console.error('OTP verification error:', error);
@@ -81,30 +107,73 @@ export const handleLineAuth = async (code: string, redirectUri: string): Promise
   }
 }
 
-export const setSupabaseSession = async (email: string, token: string): Promise<boolean> => {
-  try {
-    const { data, error } = await supabase.auth.verifyOtp({
-      email,
-      token,
-      type: 'email',
-    });
 
-    if (error) throw error;
+export const setSupabaseSession = async (tokenData: TokenData): Promise<boolean> => {
+  const { access_token, refresh_token, user, email } = tokenData;
 
-    if (data?.session) {
-      // Set session in Supabase client
-      const { error: sessionError } = await supabase.auth.setSession({
-        access_token: data.session.access_token,
-        refresh_token: data.session.refresh_token,
+  const { error: sessionError } = await supabase.auth.setSession({
+    access_token,
+    refresh_token,
+  });
+
+  if (sessionError) {
+    console.error('Session Error:', sessionError);
+    throw sessionError;
+  }
+
+  if (user) {
+    const { id, email: userEmail, user_metadata } = user;
+    if (user_metadata) {
+      await setUserProfile({
+        id: id,
+        email: userEmail || email || '',
+        full_name: user_metadata.full_name || '',
+        avatar_url: user_metadata.avatar_url || '',
       });
-
-      if (sessionError) throw sessionError;
-      return true;
+    } else {
+      console.warn('User metadata is undefined');
     }
+  }
+  return true;
+}
 
-    return false;
+export const getUserProfile = async (): Promise<UserProfile | null> => {
+  try {
+    // Try to get from localStorage first
+    const storedProfile = localStorage.getItem(USER_PROFILE_KEY);
+    if (storedProfile) {
+      return JSON.parse(storedProfile);
+    }
+    // Return null if no profile found
+    return null;
   } catch (error) {
-    console.error('Session setup error:', error);
+    console.error('Error getting user profile:', error);
+    // Return null if there is an error
+    return null;
+  }
+}
+
+export const setUserProfile = async (profile: UserProfile): Promise<boolean> => {
+  try {
+    localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
+
+    // // Store in Supabase
+    // const { error } = await supabase
+    //   .from('profiles')
+    //   .upsert({
+    //     id: profile.id,
+    //     email: profile.email,
+    //     full_name: profile.full_name,
+    //     avatar_url: profile.avatar_url,
+    //     updated_at: new Date().toISOString()
+    //   }, {
+    //     onConflict: 'id'
+    //   });
+
+    // if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error setting user profile:', error);
     return false;
   }
 }

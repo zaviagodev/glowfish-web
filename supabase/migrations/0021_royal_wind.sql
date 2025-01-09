@@ -13,7 +13,13 @@
 */
 
 -- Create type for condition operators
-CREATE TYPE condition_operator AS ENUM ('greater_than', 'less_than', 'equal_to');
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'condition_operator') THEN
+    CREATE TYPE condition_operator AS ENUM ('greater_than', 'less_than', 'equal_to');
+  END IF;
+END;
+$$;
 
 -- Create type for condition types
 CREATE TYPE condition_type AS ENUM ('total_spent', 'order_count', 'last_order', 'location');
@@ -93,6 +99,20 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Drop the existing trigger if it exists
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM pg_trigger
+    WHERE tgname = 'validate_conditions_trigger'
+      AND tgrelid = 'customer_groups'::regclass
+  ) THEN
+    DROP TRIGGER validate_conditions_trigger ON customer_groups;
+  END IF;
+END;
+$$;
 
 -- Create trigger for conditions validation
 CREATE TRIGGER validate_conditions_trigger

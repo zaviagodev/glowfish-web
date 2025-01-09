@@ -5,11 +5,12 @@
     - Add validation for condition values and operators
     - Add check constraints for numeric values
     - Add comments for better documentation
+    - Replace invalid CHECK constraint with a BEFORE INSERT/UPDATE trigger
 
   2. Schema Updates
-    - Add check constraint for condition operators
-    - Add check constraint for numeric values
-    - Add validation function for condition structure
+    - Add condition_operator ENUM type
+    - Add validate_condition function
+    - Add trigger for validating conditions
 */
 
 -- Create enum for condition operators
@@ -71,20 +72,34 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
--- Add check constraint to validate conditions array
-ALTER TABLE customer_groups
-  ADD CONSTRAINT valid_conditions CHECK (
-    conditions IS NULL OR
-    conditions = '[]'::jsonb OR
-    (
-      jsonb_typeof(conditions) = 'array' AND
-      jsonb_array_length(conditions) > 0 AND
-      (
-        SELECT bool_and(validate_condition(elem))
-        FROM jsonb_array_elements(conditions) elem
-      )
-    )
-  );
+-- Create trigger function to validate conditions
+CREATE OR REPLACE FUNCTION validate_conditions_array()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.conditions IS NOT NULL AND NEW.conditions <> '[]'::jsonb THEN
+    -- Ensure conditions is an array
+    IF jsonb_typeof(NEW.conditions) <> 'array' THEN
+      RAISE EXCEPTION 'Conditions must be a JSON array';
+    END IF;
+
+    -- Validate each condition in the array
+    IF NOT (
+      SELECT bool_and(validate_condition(elem))
+      FROM jsonb_array_elements(NEW.conditions) elem
+    ) THEN
+      RAISE EXCEPTION 'Invalid condition structure detected in conditions array';
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Add trigger for customer_groups
+CREATE TRIGGER validate_conditions_trigger
+BEFORE INSERT OR UPDATE ON customer_groups
+FOR EACH ROW
+EXECUTE FUNCTION validate_conditions_array();
 
 -- Add helpful comments
 COMMENT ON TABLE customer_groups IS 'Stores customer group definitions with automated assignment rules';

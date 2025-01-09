@@ -81,19 +81,71 @@ serve(async (req) => {
     if (authError) throw authError;
     const existingUser = existingAuthUser.users.length > 0;
 
-    return new Response(
-      JSON.stringify({
-        ...tokenData,
-        profile: profileData,
-        redirect: existingUser ? 'home' : 'register'
-      }),
-      { 
+    let user_info = [];
+    if (existingUser) {
+      user_info = existingAuthUser.users[0].user_metadata;
+      let email = existingAuthUser.users[0].email;
+
+
+      const { data, error } = await supabase.auth.admin.generateLink({
+        type: 'magiclink',
+        email: email
+      })
+      const email_otp = data.properties.email_otp;
+
+      
+      const apiUrl = supabaseUrl+`/auth/v1/verify`;
+      const payload = {
+        email: email,
+        token: email_otp,
+        type: 'email'
+      };
+      const response = await fetch(apiUrl, {
+        method: 'POST',
         headers: {
-          ...corsHeaders,
+          'Authorization': supabaseServiceKey,
           'Content-Type': 'application/json',
         },
-      },
-    )
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+
+      return new Response(
+        JSON.stringify({
+          access_token: result.access_token,
+          refresh_token: result.refresh_token,
+          user: result.user,
+          type: 1,
+          line_id: profileData.userId,
+          redirect: 'home',
+        }),
+        { 
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+
+    }
+    else{
+      return new Response(
+        JSON.stringify({
+          ...tokenData,
+          type: 0,
+          line_id: profileData.userId,
+          redirect: 'register',
+        }),
+        { 
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+    }
+
+    
 
   } catch (error) {
     return new Response(

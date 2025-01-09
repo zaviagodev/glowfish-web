@@ -48,4 +48,4 @@ ALTER TABLE products
 -- Grant permissions
 GRANT ALL ON TABLE product_categories TO authenticated;
 GRANT SELECT ON TABLE product_categories TO anon;
-GRANT USAGE ON SEQUENCE product_categories_id_seq TO authenticated;
+-- GRANT USAGE ON SEQUENCE product_categories_id_seq TO authenticated;
