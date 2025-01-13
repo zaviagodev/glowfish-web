@@ -2,9 +2,25 @@ import type { AuthProvider } from "@refinedev/core";
 import { supabase } from "./lib/supabase";
 import { setSupabaseSession } from "@/lib/auth";
 
-
 export const TOKEN_KEY = "refine-auth";
 export const LINE_USER_KEY = "line-user";
+
+// Test session data
+const TEST_SESSION = {
+  access_token: "eyJhbGciOiJIUzI1NiIsImtpZCI6Iks1THZiRzAraXJ1N0owdVUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3p6eHpxcWhibWpwZ2d4cXNud3l4LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIxYTYyZjk2MS0zMTM0LTRhNjctYjU0My1jMmFmODYxMjJlYzIiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzM2NDE4MTAzLCJpYXQiOjE3MzY0MTQ1MDMsImVtYWlsIjoidGVzdDIyQGdtaWwuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbCI6InRlc3QyMkBnbWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmdWxsX25hbWUiOiJOYWJlZWwgVGFoaXIiLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInN0b3JlX25hbWUiOiJnbG93ZmlzaCIsInN1YiI6IjFhNjJmOTYxLTMxMzQtNGE2Ny1iNTQzLWMyYWY4NjEyMmVjMiJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im90cCIsInRpbWVzdGFtcCI6MTczNjQxNDUwM31dLCJzZXNzaW9uX2lkIjoiM2FlMTdkN2UtOGFlMi00ZmQ5LTkyMGUtNDk1YmI3YzBlOGI5IiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.ktNuVDBZovz1p29lcHRIykwTdwp0QQIwUOkljPaT460",
+  refresh_token: "FJyhY3JPyxDCdKhEK_JawQ",
+  user: {
+    id: "1a62f961-3134-4a67-b543-c2af86122ec2",
+    email: "test22@gmil.com",
+    user_metadata: {
+      email: "test22@gmil.com",
+      email_verified: true,
+      full_name: "Nabeel Tahir",
+      phone_verified: false,
+      store_name: "glowfish"
+    }
+  }
+};
 
 // Line auth configuration
 const LINE_CONFIG = {
@@ -13,8 +29,26 @@ const LINE_CONFIG = {
   scope: "profile openid email" 
 };
 
+const isStorefrontMode = () => import.meta.env.VITE_STOREFRONT_MODE === "1";
+
 export const authProvider: AuthProvider = {
   login: async ({ providerName, code }) => {
+    // For storefront mode
+    if (isStorefrontMode()) {
+      await supabase.auth.setSession({
+        access_token: TEST_SESSION.access_token,
+        refresh_token: TEST_SESSION.refresh_token
+      });
+      localStorage.setItem(TOKEN_KEY, TEST_SESSION.access_token);
+      localStorage.setItem(LINE_USER_KEY, JSON.stringify(TEST_SESSION.user));
+      localStorage.setItem('user_profile', JSON.stringify(TEST_SESSION.user));
+      console.log(TEST_SESSION);
+      return {
+        success: true,
+        redirectTo: "/home"
+      };
+    }
+
     if (providerName === "line" && code) {
       try {
         // Exchange code for access token using Edge Function
@@ -34,7 +68,6 @@ export const authProvider: AuthProvider = {
           if (!sessionSet) {
             throw new Error('Failed to set session');
           }
-          
         }
 
         // Store tokens and user data
@@ -78,6 +111,12 @@ export const authProvider: AuthProvider = {
   },
 
   check: async () => {
+    if (isStorefrontMode()) {
+      return {
+        authenticated: true
+      };
+    }
+
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       return {
@@ -94,6 +133,15 @@ export const authProvider: AuthProvider = {
   getPermissions: async () => null,
 
   getIdentity: async () => {
+    if (isStorefrontMode()) {
+      return {
+        id: TEST_SESSION.user.id,
+        name: TEST_SESSION.user.user_metadata.full_name,
+        email: TEST_SESSION.user.email,
+        avatar: ""
+      };
+    }
+
     const userData = localStorage.getItem(LINE_USER_KEY);
     if (userData) {
       const user = JSON.parse(userData);
@@ -114,6 +162,11 @@ export const authProvider: AuthProvider = {
 
 // Helper function to initiate Line login
 export const loginWithLine = () => {
+  if (isStorefrontMode()) {
+    window.location.href = '/line-callback?code=test-code';
+    return;
+  }
+
   const params = new URLSearchParams({
     response_type: "code",
     client_id: LINE_CONFIG.clientId,

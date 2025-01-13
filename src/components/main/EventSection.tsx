@@ -22,26 +22,31 @@ const EventSection = ({
   const t = useTranslate();
   const navigate = useNavigate();
 
+  // Debug output
+  console.log('EventSection props:', { list, title, cardType, seeAllLink, eventCardLink });
+
   return (
     <section className="flex flex-col gap-4 mt-[30px]">
       <div className="flex items-center justify-between px-5">
         <h3 className="page-title">{title}</h3>
-        <Link to={seeAllLink || ""} className="text-fadewhite decoration-none text-xs">{t("See all")}</Link>
+        {seeAllLink && (
+          <Link to={seeAllLink} className="text-fadewhite decoration-none text-xs">
+            {t("See all")}
+          </Link>
+        )}
       </div>
       <div className={cn("flex gap-3 overflow-auto px-5 w-full")}>
-        {list.map((event: any) => (
-          <EventCard 
-            key={event.id}
-            image={event.image} 
-            title={event.title} 
-            location={event.location}
-            date={event.date}
-            price={event.price}
-            points={event.points}
-            type={cardType}
-            onClick={() => navigate(`${eventCardLink || '/home/show/'}${event.id}`)}
-          />
-        ))}
+        {list.map((item: any) => {
+          console.log('Rendering event card:', item);
+          return (
+            <EventCard 
+              key={item.id}
+              {...item}
+              type={cardType}
+              onClick={() => navigate(`${eventCardLink || '/home/show/'}${item.id}`)}
+            />
+          );
+        })}
       </div>
     </section>
   )

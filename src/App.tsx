@@ -36,9 +36,9 @@ import { LineCallback } from "./pages/line-callback";
 import PhoneVerification from "./pages/phone-verification";
 import TellUsAboutYourself from "./pages/tell-us-about-yourself";
 import HistoryPage from "./pages/history";
-import MyEvent from "./pages/my-event";
+import MyEventsPage from "./pages/my-events";
+import MyEventDetail from "./pages/my-events/detail";
 import SettingsPage from "./pages/settings";
-import MyEventDetail from "./pages/my-event/detail";
 import MyRewards from "./pages/my-rewards";
 import Rewards from "./pages/rewards";
 import RewardDetail from "./pages/rewards/detail";
@@ -130,9 +130,9 @@ function App() {
                   <Route index element={<HomeList />} />
                   <Route path="/history" element={<HistoryPage />}/>
                   <Route path="/checkout" element={<CheckoutPage />}/>
-                  <Route path="/my-event" >
-                    <Route index element={<MyEvent />}/>
-                    <Route path="detail/:id" element={<MyEventDetail />}/>
+                  <Route path="/my-events">
+                    <Route index element={<MyEventsPage />} />
+                    <Route path="detail/:id" element={<MyEventDetail />} />
                   </Route>
                   <Route path="/my-rewards" element={<MyRewards />}/>
                   <Route path="/rewards">
