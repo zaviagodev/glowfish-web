@@ -44,9 +44,24 @@ export const HomeShow = () => {
   // Find the current product
   const product = products.find(p => p.id === id);
   const variantOptions: VariantOption[] = product?.variant_options || [];
+  const hasVariants = variantOptions.length > 0;
 
   // Fetch variants when sheet opens
   const fetchVariants = async () => {
+    if (!hasVariants) {
+      // If no variants, create a default variant from product data
+      const defaultVariant = {
+        id: product?.product_variants[0]?.id,
+        name: product?.name,
+        price: product?.price || 0,
+        quantity: 0,
+        options: {}
+      };
+      setVariants([defaultVariant]);
+      setSelectedVariant(defaultVariant);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('product_variants')
       .select('*')
@@ -63,36 +78,22 @@ export const HomeShow = () => {
 
   // Find matching variant based on selected attributes
   useEffect(() => {
+    if (!hasVariants) return;
 
-    console.log('----> 1');
-    
     if (Object.keys(selectedAttributes).length === variantOptions.length) {
-      console.log('----> 2');
-
-
-      console.log('----> 3');
-      console.log(variants);
-      
       const matchingVariant = variants.find(variant => {
-        // Check if all selected attributes match the variant's options
         return Object.entries(selectedAttributes).every(([attrName, attrValue]) => {
-          // Find matching option in variant's options array
           return variant.options.some(opt => 
             opt.name === attrName && opt.value === attrValue
           );
         });
       });
-
-
-      console.log(matchingVariant);
-
-
       
       setSelectedVariant(matchingVariant || null);
     } else {
       setSelectedVariant(null);
     }
-  }, [selectedAttributes, variants, variantOptions.length]);
+  }, [selectedAttributes, variants, variantOptions.length, hasVariants]);
 
   const handleAttributeSelect = (optionName: string, value: string) => {
     setSelectedAttributes(prev => ({
@@ -102,21 +103,31 @@ export const HomeShow = () => {
   };
 
   const handleCheckout = () => {
-    if (product && selectedVariant) {
-      navigate('/checkout', {
-        state: {
-          productId: product.id,
-          variantId: selectedVariant.id,
-          productName: product.name,
-          variantName: Object.entries(selectedAttributes)
-            .map(([key, value]) => `${key}: ${value}`)
-            .join(' | '),
-          price: selectedVariant.price,
-          image: product.image
-        }
-      });
-    }
+    if (!product) return;
+  
+    const { id: productId, name: productName, price: productPrice, image, product_variants } = product;
+    const variantId = selectedVariant?.id || product_variants[0].id;
+    const variantName = hasVariants
+      ? Object.entries(selectedAttributes)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join(' | ')
+      : '';
+  
+    const price = selectedVariant?.price || productPrice;
+
+
+    navigate('/checkout', {
+      state: {
+        productId,
+        variantId,
+        productName,
+        variantName,
+        price,
+        image,
+      },
+    });
   };
+  
 
   if (loading) {
     return (
@@ -182,7 +193,9 @@ export const HomeShow = () => {
         <div className="space-y-1">
           <p className="text-xs">{t("Start from")}</p>
           <h2 className="font-sfpro-rounded font-semibold">
-            {selectedVariant ? `฿${selectedVariant.price}` : `฿${product.price}`}
+            {hasVariants 
+              ? (selectedVariant ? `฿${selectedVariant.price}` : `฿${product.price}`)
+              : `฿${product.price}`}
           </h2>
         </div>
         <Sheet 
@@ -208,16 +221,10 @@ export const HomeShow = () => {
                 </span>
               </header>
               <main className="p-5 space-y-4">
-
-                {console.log(selectedAttributes)}
-                
-                {variantOptions.map((option) => (
+                {hasVariants && variantOptions.map((option) => (
                   <div key={option.id} className="space-y-2">
                     <h3 className="font-semibold">{option.name}</h3>
                     <div className="flex flex-wrap gap-2">
-
-
-                      
                       {option.values.map((value) => (
                         <Button
                           key={value}
@@ -240,12 +247,14 @@ export const HomeShow = () => {
               <div className="text-center">
                 <p className="text-sm">{t("Total cost")}</p>
                 <h2 className="text-2xl font-sfpro-rounded font-medium">
-                  {selectedVariant ? `฿${selectedVariant.price}` : '-'}
+                  {hasVariants 
+                    ? (selectedVariant ? `฿${selectedVariant.price}` : '-')
+                    : `฿${product.price}`}
                 </h2>
               </div>
               <Button 
                 className="main-btn !bg-mainorange w-full"
-                disabled={!selectedVariant}
+                disabled={hasVariants && !selectedVariant}
                 onClick={handleCheckout}
               >
                 {t("Continue")}

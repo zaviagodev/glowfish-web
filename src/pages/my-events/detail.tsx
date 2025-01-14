@@ -2,82 +2,16 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import Header from "@/components/main/Header";
-import { supabase } from "@/lib/supabase";
+import { useEvents } from "@/hooks/useEvents";
 import Barcode from "react-barcode";
 import ScanQRCode from "@/components/icons/ScanQRCode";
-
-interface OrderDetails {
-  id: string;
-  status: string;
-  product_name: string;
-  variant_name: string;
-  customer_name: string;
-  location: string;
-  date: string;
-  image: string;
-}
 
 const MyEventDetail = () => {
   const { id } = useParams();
   const t = useTranslate();
   const [isQRCode, setIsQRCode] = useState(false);
-  const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('orders')
-          .select(`
-            id,
-            status,
-            customers (
-              first_name,
-              last_name
-            ),
-            order_items (
-              product_variants (
-                id,
-                name,
-                product:products (
-                  name,
-                  location,
-                  product_images (url)
-                )
-              )
-            )
-          `)
-          .eq('id', id)
-          .single();
-
-        if (error) throw error;
-
-        if (data) {
-          const item = data.order_items[0];
-          const variant = item.product_variants;
-          const product = variant.product;
-
-          setOrderDetails({
-            id: data.id,
-            status: data.status,
-            product_name: product.name,
-            variant_name: variant.name,
-            customer_name: `${data.customers.first_name} ${data.customers.last_name}`,
-            location: product.location,
-            date: new Date().toLocaleDateString(), // Replace with actual event date
-            image: product.product_images?.[0]?.url
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching order details:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrderDetails();
-  }, [id]);
+  const { events, loading, error } = useEvents();
+  const event = events.find(e => e.id === id);
 
   if (loading) {
     return (
@@ -90,12 +24,12 @@ const MyEventDetail = () => {
     );
   }
 
-  if (!orderDetails) {
+  if (error || !event) {
     return (
       <>
         <Header title={t("Event Details")} />
         <div className="flex items-center justify-center h-[60vh]">
-          <p>{t("Event not found")}</p>
+          <p className="text-red-500">{error || t("Event not found")}</p>
         </div>
       </>
     );
@@ -110,24 +44,32 @@ const MyEventDetail = () => {
 
   return (
     <>
-      <Header title={t("Event Details")} />
+      <Header backButtonClassName="bg-white text-black rounded-sm h-8 w-8 flex items-center justify-center" title={t("My Event")}/>
       <section className="bg-white rounded-xl p-5 relative">
-        {!isQRCode && <img src={orderDetails.image} className="rounded-sm" />}
+        {!isQRCode && <img src={event.image} className="rounded-sm"/>}
         <div className="border-b border-b-[#675E5E0D] space-y-2 pt-4 pb-5">
           <h3 className="text-black font-semibold text-lg leading-5">
-            {orderDetails.product_name} - {orderDetails.variant_name}
+            {event.product_name}
           </h3>
           <p className="text-[#5F5A5A] text-xs">
-            {orderDetails.date} - {orderDetails.location}
+            {event.date}
           </p>
         </div>
 
+
         <div className="grid grid-cols-2 pt-5 gap-6">
-          <BookedDataComp title={t("Name")} value={orderDetails.customer_name} />
-          <BookedDataComp title={t("Order Number")} value={orderDetails.id} />
-          <BookedDataComp title={t("Date")} value={orderDetails.date} />
-          <BookedDataComp title={t("Status")} value={orderDetails.status} />
+          <BookedDataComp title={t("Order ID")} value={event.id} />
+          <BookedDataComp title={t("Status")} value={event.status} />
+          <BookedDataComp title={t("Date")} value={event.date} />
+
+          {event.variant_options && event.variant_options.length > 0 &&
+            event.variant_options.map((option, index) => (
+              <BookedDataComp key={index} title={option.name} value={option.value} />
+            ))
+          }
         </div>
+
+
 
         <div className="relative h-full -bottom-5">
           <div className="bg-background h-9 w-9 absolute -left-10 rounded-full"/>
@@ -136,7 +78,7 @@ const MyEventDetail = () => {
         </div>
 
         <div className="flex flex-col items-center relative pt-16">
-          {isQRCode ? <ScanQRCode /> : <Barcode value={orderDetails.id} />}
+          {isQRCode ? <ScanQRCode /> : <Barcode value={event.id}/>}
           <p 
             className="text-black text-xs cursor-pointer" 
             onClick={() => setIsQRCode(!isQRCode)}

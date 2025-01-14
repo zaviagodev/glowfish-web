@@ -23,13 +23,15 @@ export const useProducts = () => {
         const { data, error } = await supabase
           .from('products')
           .select(`
-            id,
-            name,
-            description,
-            price,
-            category_id,
-            variant_options,
-            product_images (url)
+            *,
+            product_images (url),
+            product_variants (
+              id,
+              name,
+              price,
+              status,
+              options
+            )
           `)
           .eq('status', 'active')
           .order('created_at', { ascending: false });
@@ -55,6 +57,7 @@ export const useProducts = () => {
             description: product.description,
             price: product.price,
             variant_options: product.variant_options,
+            product_variants: product.product_variants,
             image: product.product_images?.[0]?.url || '/placeholder-image.jpg',
             location: 'Glowfish, Sathon',
             date: new Date().toLocaleDateString(),

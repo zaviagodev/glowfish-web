@@ -382,10 +382,14 @@ CREATE TABLE IF NOT EXISTS "public"."customers" (
     "phone" "text",
     "accepts_marketing" boolean DEFAULT false,
     "tags" "text"[],
-    "meta" JSONB DEFAULT '{}'::jsonb,
     "created_at" timestamp with time zone DEFAULT "now"(),
     "updated_at" timestamp with time zone DEFAULT "now"()
 );
+
+
+
+ALTER TABLE "public"."customers" OWNER TO "postgres";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."order_items" (

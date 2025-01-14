@@ -196,7 +196,8 @@ serve(async (req) => {
         phone: phone,
         accepts_marketing: true,
         tags: ['line'], // Add relevant tags
-        is_verified: true
+        is_verified: true,
+        auth_id: user.id
       }, {
         onConflict: 'id'
       });
