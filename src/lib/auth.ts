@@ -19,13 +19,11 @@ interface LineAuthResponse {
 interface TokenData {
   access_token: string;
   refresh_token: string;
-  user?: {
+  customer?: {
     id: string;
     email: string;
-    user_metadata?:{
-      full_name: string;
-      avatar_url: string;
-    }
+    full_name: string;
+    avatar_url?: string;
   };
   email?: string;
 }
@@ -34,11 +32,11 @@ interface UserProfile {
   id: string;
   email: string;
   full_name: string;
-  avatar_url: string;
+  avatar_url?: string;
   phone?: string;
 }
 
-
+// Verify OTP and create/update user
 export const verifyOTP = async (
   otp: string,
   phone: string,
@@ -48,11 +46,11 @@ export const verifyOTP = async (
     const token = localStorage.getItem("refine-auth");
     const lineUser = JSON.parse(localStorage.getItem("line-user") || "{}");
 
-    const { data : tokenData, error } = await supabase.functions.invoke('verify-otp', {
+    const { data: tokenData, error } = await supabase.functions.invoke('verify-otp', {
       body: {
         otp,
         phone,
-        token : verification_token,
+        token: verification_token,
         line_id: lineUser.userId,
         access_token: token,
       },
@@ -71,11 +69,12 @@ export const verifyOTP = async (
     console.error('OTP verification error:', error);
     return {
       success: false,
-      error: 'Failed to verify OTP'
+      error: error instanceof Error ? error.message : 'Failed to verify OTP'
     };
   }
-}
+};
 
+// Handle Line authentication
 export const handleLineAuth = async (code: string, redirectUri: string): Promise<LineAuthResponse> => {
   try {
     const { data, error } = await supabase.functions.invoke('line-auth', {
@@ -102,78 +101,106 @@ export const handleLineAuth = async (code: string, redirectUri: string): Promise
     console.error('Line authentication error:', error);
     return {
       success: false,
-      error: 'Failed to authenticate with Line'
+      error: error instanceof Error ? error.message : 'Failed to authenticate with Line'
     };
   }
-}
+};
 
-
+// Set Supabase session and user profile
 export const setSupabaseSession = async (tokenData: TokenData): Promise<boolean> => {
-  const { access_token, refresh_token, user, email } = tokenData;
+  try {
+    const { access_token, refresh_token, customer, email } = tokenData;
 
-  const { error: sessionError } = await supabase.auth.setSession({
-    access_token,
-    refresh_token,
-  });
+    const { error: sessionError } = await supabase.auth.setSession({
+      access_token,
+      refresh_token,
+    });
 
-  if (sessionError) {
-    console.error('Session Error:', sessionError);
-    throw sessionError;
-  }
+    if (sessionError) throw sessionError;
 
-  if (user) {
-    const { id, email: userEmail, user_metadata } = user;
-    if (user_metadata) {
+    if (customer) {
+      const { id, email: customerEmail, full_name, avatar_url } = customer;
       await setUserProfile({
-        id: id,
-        email: userEmail || email || '',
-        full_name: user_metadata.full_name || '',
-        avatar_url: user_metadata.avatar_url || '',
+        id,
+        email: customerEmail || email || '',
+        full_name,
+        avatar_url,
       });
-    } else {
-      console.warn('User metadata is undefined');
     }
-  }
-  return true;
-}
 
+    return true;
+  } catch (error) {
+    console.error('Error setting session:', error);
+    return false;
+  }
+};
+
+// Get user profile from storage
 export const getUserProfile = async (): Promise<UserProfile | null> => {
   try {
-    // Try to get from localStorage first
     const storedProfile = localStorage.getItem(USER_PROFILE_KEY);
-    if (storedProfile) {
-      return JSON.parse(storedProfile);
+    if (!storedProfile) {
+      // Try to fetch from Supabase if not in localStorage
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: customer } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('auth_id', user.id)
+          .single();
+
+        if (customer) {
+          const profile: UserProfile = {
+            id: customer.id,
+            email: customer.email,
+            full_name: customer.full_name,
+            avatar_url: customer.avatar_url,
+            phone: customer.phone
+          };
+          await setUserProfile(profile);
+          return profile;
+        }
+      }
+      return null;
     }
-    // Return null if no profile found
-    return null;
+    return JSON.parse(storedProfile);
   } catch (error) {
     console.error('Error getting user profile:', error);
-    // Return null if there is an error
     return null;
   }
-}
+};
 
-export const setUserProfile = async (profile: UserProfile): Promise<boolean> => {
+// Set user profile in storage and optionally update Supabase
+export const setUserProfile = async (profile: UserProfile, updateSupabase: boolean = false): Promise<boolean> => {
   try {
     localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
 
-    // // Store in Supabase
-    // const { error } = await supabase
-    //   .from('profiles')
-    //   .upsert({
-    //     id: profile.id,
-    //     email: profile.email,
-    //     full_name: profile.full_name,
-    //     avatar_url: profile.avatar_url,
-    //     updated_at: new Date().toISOString()
-    //   }, {
-    //     onConflict: 'id'
-    //   });
+    if (updateSupabase) {
+      const { error } = await supabase
+        .from('customers')
+        .update({
+          email: profile.email,
+          full_name: profile.full_name,
+          avatar_url: profile.avatar_url,
+          phone: profile.phone,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', profile.id);
 
-    // if (error) throw error;
+      if (error) throw error;
+    }
+
     return true;
   } catch (error) {
     console.error('Error setting user profile:', error);
     return false;
   }
-}
+};
+
+// Clear auth data
+export const clearAuthData = async (): Promise<void> => {
+  localStorage.removeItem(USER_PROFILE_KEY);
+  localStorage.removeItem("refine-auth");
+  localStorage.removeItem("line-user");
+  await supabase.auth.signOut();
+};

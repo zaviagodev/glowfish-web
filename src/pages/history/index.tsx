@@ -1,71 +1,77 @@
 import Header from "@/components/main/Header"
-import { useState } from "react"
+import { useCustomer } from "@/hooks/useCustomer"
 import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-  } from "@/components/ui/tabs"
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { ArrowDown, ArrowUp } from "@/components/icons/MainIcons"
 import { useTranslate } from "@refinedev/core"
-
-type PointActionTypes = "Received" | "Used"
-
-interface PointActionsProps {
-  type: PointActionTypes
-  date: string
-  amount: number
-}
+import { format } from "date-fns"
 
 const HistoryPage = () => {
-
   const t = useTranslate();
+  const { customer, loading, error } = useCustomer();
   const tabClassNames = "font-semibold w-full bg-transparent text-[#6D6D6D] data-[state=active]:bg-white data-[state=active]:text-[#0D0D0D]";
 
-  // These data are the mock-up ones, will be changed to the dynamic data
-  const [pointActions, setPointActions] = useState<PointActionsProps[]>([
-    {
-      type: "Received",
-      date: "Feb 10",
-      amount: 123
-    },
-    {
-      type: "Used",
-      date: "Feb 09",
-      amount: -25
-    },
-    {      
-      type: "Received",
-      date: "Feb 09",
-      amount: 35  
-    }
-  ]);
-
-  const renderAction = (action: PointActionsProps) => {
-    const actionTitle = action.type === "Received" ? t("Get Point") : t("Spend Point")
+  const renderAction = (action: any) => {
+    const actionTitle = action.type === "earn" ? t("Get Point") : t("Spend Point");
+    const formattedDate = format(new Date(action.created_at), "MMM dd");
 
     return (
-      <div key={`${action.type}-${action.date}`} className="flex items-center justify-between py-2 mb-2">
+      <div key={action.id} className="flex items-center justify-between py-2 mb-2">
         <div className="flex items-center gap-1.5">
           <div className="border border-[#252525] rounded-full h-9 w-9 flex items-center justify-center">
-            {action.type === "Received" ? <ArrowDown /> : <ArrowUp />}
+            {action.type === "earn" ? <ArrowDown /> : <ArrowUp />}
           </div>
 
           <div className="space-y-1">
             <h3 className="page-title">{actionTitle}</h3>
-            <p className="text-[#6D6D6D] text-xs">{t(action.type)} • {action.date}</p>
+            <p className="text-[#6D6D6D] text-xs">
+              {t(action.type)} • {formattedDate}
+              {action.description && <span className="ml-1">• {action.description}</span>}
+            </p>
           </div>
         </div>
 
-        <p className={cn("page-title", {"text-[#EE3636]": action.type === "Used"})}>{Number(action.amount).toFixed(2)}</p>
+        <p className={cn("page-title", {"text-[#EE3636]": action.type === "redeem"})}>
+          {action.type === "redeem" ? "-" : ""}{action.points}
+        </p>
       </div>
     )
   }
 
+  if (loading) {
+    return (
+      <>
+        <Header title={t("History")} rightButton={t("Detail")}/>
+        <div className="text-center mt-8">Loading...</div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Header title={t("History")} rightButton={t("Detail")}/>
+        <div className="text-center text-red-500 mt-8">{error}</div>
+      </>
+    );
+  }
+
+  const pointsHistory = customer?.points_transactions || [];
+  const earnedPoints = pointsHistory.filter(p => p.type === "earn");
+  const redeemedPoints = pointsHistory.filter(p => p.type === "redeem");
+
   return (
     <>
       <Header title={t("History")} rightButton={t("Detail")}/>
+      <div className="mb-6 px-5">
+        <h2 className="text-lg font-semibold">{t("Total Points")}</h2>
+        <p className="text-2xl font-bold text-mainorange">{customer?.loyalty_points || 0}</p>
+      </div>
       <Tabs defaultValue="All">
         <TabsList className="w-full bg-darkgray border border-input">
           <TabsTrigger value="All" className={tabClassNames}>{t("All")}</TabsTrigger>
@@ -73,25 +79,15 @@ const HistoryPage = () => {
           <TabsTrigger value="Used" className={tabClassNames}>{t("Spend")}</TabsTrigger>
         </TabsList>
         <TabsContent value="All">
-          <div className="mt-10">{pointActions.map(action => renderAction(action))}</div>
+          <div className="mt-10">{pointsHistory.map(action => renderAction(action))}</div>
         </TabsContent>
 
         <TabsContent value="Received">
-          <div className="mt-10">
-            {pointActions
-              .filter(action => action.type === "Received")
-              .map(action => renderAction(action))
-            }
-          </div>
+          <div className="mt-10">{earnedPoints.map(action => renderAction(action))}</div>
         </TabsContent>
 
         <TabsContent value="Used">
-          <div className="mt-10">
-            {pointActions
-              .filter(action => action.type === "Used")
-              .map(action => renderAction(action))
-            }
-          </div>
+          <div className="mt-10">{redeemedPoints.map(action => renderAction(action))}</div>
         </TabsContent>
       </Tabs>
     </>

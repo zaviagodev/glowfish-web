@@ -1,83 +1,63 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useQuery } from '@tanstack/react-query';
+import { ProductService, type Product } from '@/services/productService';
 
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  location: string;
-  date: string;
-}
+// Cache key for localStorage
+const PRODUCTS_CACHE_KEY = 'cached_products';
+const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 export const useProducts = () => {
-  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Use React Query for data fetching and caching
+  const { data: products = [], isLoading, isError, refetch } = useQuery({
+    queryKey: ['products'],
+    queryFn: ProductService.getProducts,
+    staleTime: CACHE_EXPIRY_TIME, // Consider data fresh for 5 minutes
+    cacheTime: CACHE_EXPIRY_TIME * 2, // Keep cache for 10 minutes
+    retry: 2, // Retry failed requests twice
+    onError: (err: any) => {
+      console.error('Error fetching products:', err);
+      setError(err.message || 'Failed to load products');
+    }
+  });
+
+  // Update loading state based on React Query
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        console.log('Fetching products...');
-        const { data, error } = await supabase
-          .from('products')
-          .select(`
-            *,
-            product_images (url),
-            product_variants (
-              id,
-              name,
-              price,
-              status,
-              options
-            )
-          `)
-          .eq('status', 'active')
-          .order('created_at', { ascending: false });
+    setLoading(isLoading);
+  }, [isLoading]);
 
-        if (error) {
-          console.error('Supabase query error:', error);
-          throw error;
-        }
+  // Update error state based on React Query
+  useEffect(() => {
+    if (isError) {
+      setError('Failed to fetch products');
+    } else {
+      setError(null);
+    }
+  }, [isError]);
 
-        if (!data) {
-          console.warn('No data returned from Supabase');
-          setProducts([]);
-          return;
-        }
+  // Function to force refresh the data
+  const refreshProducts = async () => {
+    setLoading(true);
+    try {
+      await refetch();
+    } catch (err) {
+      console.error('Error refreshing products:', err);
+      setError(err instanceof Error ? err.message : 'Failed to refresh products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        console.log('Raw data from Supabase:', data);
-
-        const formattedProducts = data.map(product => {
-          const formatted = {
-            id: product.id,
-            name: product.name,
-            category_id : product.category_id,
-            description: product.description,
-            price: product.price,
-            variant_options: product.variant_options,
-            product_variants: product.product_variants,
-            image: product.product_images?.[0]?.url || '/placeholder-image.jpg',
-            location: 'Glowfish, Sathon',
-            date: new Date().toLocaleDateString(),
-          };
-          console.log('Formatted product:', formatted);
-          return formatted;
-        });
-
-        console.log('All formatted products:', formattedProducts);
-        setProducts(formattedProducts);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch products');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  return { products, loading, error };
+  return { 
+    products, 
+    loading, 
+    error, 
+    refreshProducts,
+    isLoading,
+    isError
+  };
 };
+
+export type { Product };

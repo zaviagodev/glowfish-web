@@ -48,7 +48,6 @@ export const authProvider: AuthProvider = {
         redirectTo: "/home"
       };
     }
-
     if (providerName === "line" && code) {
       try {
         // Exchange code for access token using Edge Function
@@ -60,7 +59,7 @@ export const authProvider: AuthProvider = {
         });
 
         if (functionError) {
-          throw new Error("Failed to get access token");
+          throw new Error("Failed to get access token");av
         }
 
         if(tokenData.type == 1){
@@ -99,11 +98,12 @@ export const authProvider: AuthProvider = {
       },
     };
   },
-
   logout: async () => {
     await supabase.auth.signOut();
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(LINE_USER_KEY);
+    localStorage.removeItem('user_profile');
+    localStorage.removeItem('cached_events');
     return {
       success: true,
       redirectTo: "/login",

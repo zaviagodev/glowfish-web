@@ -1,5 +1,5 @@
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
-import { Filter, Menu, Notification, Search } from "@/components/icons/MainIcons";
+import { Filter, Notification, Search } from "@/components/icons/MainIcons";
 import Header from "@/components/main/Header";
 import { useTranslate } from "@refinedev/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -87,7 +87,7 @@ export const HomeList = () => {
 
   return (
     <>
-      <Header leftButton={<Menu className="text-white"/>} className="border-0" rightButton={<Notification />}/>
+      <Header className="border-0" rightButton={<Notification />}/>
       <section>
         <div className="flex items-center justify-between px-5">
           <GlowfishIcon />

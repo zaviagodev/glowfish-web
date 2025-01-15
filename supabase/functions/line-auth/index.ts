@@ -8,6 +8,7 @@ const corsHeaders = {
   'Access-Control-Max-Age': '86400',
 }
 
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -70,66 +71,61 @@ serve(async (req) => {
     // Initialize Supabase client
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    const { data: allUsers, error: authError } = await supabase
-    .from('oauth_provider_ids')
-    .select('*')
-    .eq('provider_user_id', profileData.userId);
+    // Check if user exists in oauth_provider_ids
+    const { data: existingOAuth, error: oauthError } = await supabase
+      .from('oauth_provider_ids')
+      .select('user_id')
+      .eq('provider', 'line')
+      .eq('provider_user_id', profileData.userId)
+      .single();
 
-    if (authError) {
-      throw new Error('Failed to fetch users: ' + authError.message);
+    if (oauthError && oauthError.code !== 'PGRST116') { // PGRST116 is "not found"
+      throw oauthError;
     }
-    
 
-    if (!allUsers || allUsers.length === 0) {
-      return new Response(
-        JSON.stringify({
-          ...tokenData,
-          type: 0,
-          line_id: profileData.userId,
-          redirect: 'register',
-        }),
-        { 
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-          },
-        },
-      )
-    }
-    else{
-      const { data: user, error: user_authError } = await supabase.auth.admin.getUserById(allUsers[0].user_id);
-      let users_info = user.user; // Access the actual user data
-      let email = user.user.email; // Correct way to access the email
-      let user_info = user.user.user_metadata; // Access user metadata
+    if (existingOAuth?.user_id) {
+      // Get existing customer data
+      const { data: customer, error: customerError } = await supabase
+        .from('customers')
+        .select('*, auth_id')
+        .eq('auth_id', existingOAuth.user_id)
+        .single();
 
-      const { data, error } = await supabase.auth.admin.generateLink({
+      if (customerError) throw customerError;
+
+      // Generate magic link for existing user
+      const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
         type: 'magiclink',
-        email: email
-      })
-      const email_otp = data.properties.email_otp;
-      const apiUrl = supabaseUrl+`/auth/v1/verify`;
-      const payload = {
-        email: email,
-        token: email_otp,
-        type: 'email'
-      };
-      const response = await fetch(apiUrl, {
+        email: customer.email
+      });
+
+      if (linkError) throw linkError;
+
+      // Verify email
+      const verifyUrl = `${supabaseUrl}/auth/v1/verify`;
+      const verifyResponse = await fetch(verifyUrl, {
         method: 'POST',
         headers: {
           'Authorization': supabaseServiceKey,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          email: customer.email,
+          token: linkData.properties.email_otp,
+          type: 'email'
+        }),
       });
-      const result = await response.json();
+
+      const verifyResult = await verifyResponse.json();
 
       return new Response(
         JSON.stringify({
-          access_token: result.access_token,
-          refresh_token: result.refresh_token,
-          user: result.user,
+          ...tokenData,
           type: 1,
-          line_id: profileData.userId,
+          access_token: verifyResult.access_token,
+          refresh_token: verifyResult.refresh_token,
+          user: verifyResult.user,
+          customer: customer,
           redirect: 'home',
         }),
         { 
@@ -138,67 +134,25 @@ serve(async (req) => {
             'Content-Type': 'application/json',
           },
         },
-      )
-
-
+      );
     }
 
-
-
-    
-
-    
-    // if (authError) throw authError;
-    // const existingUser = existingAuthUser.users.length > 0;
-
-    // let user_info = [];
-    // if (existingUser) {
-    //   user_info = existingAuthUser.users[0].user_metadata;
-    //   let email = existingAuthUser.users[0].email;
-
-
-      // const { data, error } = await supabase.auth.admin.generateLink({
-      //   type: 'magiclink',
-      //   email: email
-      // })
-      // const email_otp = data.properties.email_otp;
-
-      
-      // const apiUrl = supabaseUrl+`/auth/v1/verify`;
-      // const payload = {
-      //   email: email,
-      //   token: email_otp,
-      //   type: 'email'
-      // };
-      // const response = await fetch(apiUrl, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Authorization': supabaseServiceKey,
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(payload),
-      // });
-      // const result = await response.json();
-
-    // // }
-    // else{
-    //   return new Response(
-    //     JSON.stringify({
-    //       ...tokenData,
-    //       type: 0,
-    //       line_id: profileData.userId,
-    //       redirect: 'register',
-    //     }),
-    //     { 
-    //       headers: {
-    //         ...corsHeaders,
-    //         'Content-Type': 'application/json',
-    //       },
-    //     },
-    //   )
-    // }
-
-    
+    // If no existing user, return data for registration
+    return new Response(
+      JSON.stringify({
+        ...tokenData,
+        type: 0,
+        line_id: profileData.userId,
+        profile: profileData,
+        redirect: 'register',
+      }),
+      { 
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
 
   } catch (error) {
     return new Response(
@@ -212,4 +166,4 @@ serve(async (req) => {
       },
     )
   }
-})
+});

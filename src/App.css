@@ -112,7 +112,7 @@
   }
 
   .btn-footer {
-    @apply fixed bottom-0 w-full p-5 left-0 bg-background
+    @apply fixed bottom-[70px] w-full p-5 left-0 bg-background
   }
 
   .page-title {

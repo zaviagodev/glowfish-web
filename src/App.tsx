@@ -39,6 +39,8 @@ import HistoryPage from "./pages/history";
 import MyEventsPage from "./pages/my-events";
 import MyEventDetail from "./pages/my-events/detail";
 import SettingsPage from "./pages/settings";
+import ProfileSettings from "./pages/settings/profile";
+import HowToGetPoints from "./pages/settings/how-to-get-points";
 import MyRewards from "./pages/my-rewards";
 import Rewards from "./pages/rewards";
 import RewardDetail from "./pages/rewards/detail";
@@ -139,7 +141,11 @@ function App() {
                     <Route index element={<Rewards />} />
                     <Route path="detail/:id" element={<RewardDetail />}/>
                   </Route>
-                  <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/settings">
+                    <Route index element={<SettingsPage />} />
+                    <Route path="profile" element={<ProfileSettings />} />
+                   <Route path="how-to-get-points" element={<HowToGetPoints />} />
+                  </Route>
                   <Route path="/home">
                     <Route index element={<HomeList />} />
                     <Route path="create" element={<HomeCreate />} />

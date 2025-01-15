@@ -111,7 +111,7 @@ serve(async (req) => {
     const profileData = await profileResponse.json()
 
     // Get email from Line
-    let email = `${profileData.id}@line.com`
+    let email = `${profileData.userId}@line.com`
     try {
       const emailResponse = await fetch('https://api.line.me/v2/profile/email', {
         headers: {
@@ -185,7 +185,7 @@ serve(async (req) => {
     const [firstName, ...lastNameParts] = profileData.displayName.split(' ');
     const lastName = lastNameParts.join(' ');
 
-    const { error: customerError } = await adminClient
+    const { data : customerData, error: customerError } = await adminClient
       .from('customers')
       .upsert({
         id: user.id, // Use the same ID as auth user
@@ -195,6 +195,7 @@ serve(async (req) => {
         email: email,
         phone: phone,
         accepts_marketing: true,
+        avatar_url: profileData.pictureUrl,
         tags: ['line'], // Add relevant tags
         is_verified: true,
         auth_id: user.id
@@ -218,6 +219,17 @@ serve(async (req) => {
         }
       );
     }
+
+    // Create OAuth provider entry
+    const { error: oauthError } = await adminClient
+      .from('oauth_provider_ids')
+      .upsert({
+        provider: 'line',
+        user_id: user.id,
+        provider_user_id: profileData.userId
+      });
+
+    if (oauthError) throw oauthError;
 
     // Generate magic link
     const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
@@ -284,7 +296,8 @@ serve(async (req) => {
         access_token: verifyEmailResult.access_token,
         refresh_token: verifyEmailResult.refresh_token,
         user: verifyEmailResult.user,
-        profile: profileData
+        profile: profileData,
+        customer : customerData
       }),
       { 
         headers: {
