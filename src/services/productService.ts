@@ -50,7 +50,8 @@ const transformProduct = (event: any): Product => ({
   venue_address: event.venue_address, 
   organizer_contact: event.organizer_contact, 
   organizer_name: event.organizer_name, 
-  date: event.start_datetime, // Current date as default
+  start_datetime: event.start_datetime, // Current date as default
+  end_datetime: event.end_datetime,
 });
 
 

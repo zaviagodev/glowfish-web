@@ -36,6 +36,7 @@ const EventSection = ({
       </div>
       <div className={cn("flex gap-3 overflow-auto px-5 w-full")}>
         {list.map((item: any) => {
+          console.log(item);
           return (
             <EventCard 
               key={item.id}

@@ -96,15 +96,6 @@ const HistoryPage = () => {
     <>
       <Header 
         title={t("History")} 
-        rightButton={
-          <Button 
-            onClick={handleRefresh}
-            variant="ghost"
-            className="text-white"
-          >
-            {t("Refresh")}
-          </Button>
-        }
       />
       <div className="mb-6 px-5">
         <h2 className="text-lg font-semibold">{t("Total Points")}</h2>

@@ -9,12 +9,14 @@ import { CalendarIcon, Location, PriceTag } from "../icons/MainIcons"
 import { EventCardProps } from "@/type/type"
 import { cn } from "@/lib/utils"
 import { useTranslate } from "@refinedev/core"
+import { format } from "date-fns"
+
 
 const EventCard = ({
   image,
   title,
   location,
-  date,
+  start_datetime,
   price,
   points,
   type,
@@ -77,10 +79,10 @@ const EventCard = ({
                   <p className="text-xs">{location}</p>
                 </div>
               )}
-              {date && (
+              {start_datetime && (
                 <div className="flex items-center gap-2">
                   <CalendarIcon />
-                  <p className="text-xs">{date}</p>
+                  <p className="text-xs">{format(new Date(start_datetime), 'dd-MM-yyyy HH:mm')}</p>
                 </div>
               )}
               {price && (
@@ -107,10 +109,10 @@ const EventCard = ({
                     <p className="text-xs">{location}</p>
                   </div>
                 )}
-                {date && (
+                {start_datetime && (
                   <div className="flex items-center gap-2">
                     <CalendarIcon />
-                    <p className="text-xs">{date}</p>
+                    <p className="text-xs">{format(new Date(start_datetime), 'dd-MM-yyyy HH:mm')}</p>
                   </div>
                 )}
               </div>
@@ -126,10 +128,10 @@ const EventCard = ({
                   <p className="text-sm">{location}</p>
                 </div>
               )}
-              {date && (
+              {start_datetime && (
                 <div className="flex items-center gap-2">
                   <CalendarIcon />
-                  <p className="text-sm">{date}</p>
+                  <p className="text-xs">{format(new Date(start_datetime), 'dd-MM-yyyy HH:mm')}</p>
                 </div>
               )}
             </section>

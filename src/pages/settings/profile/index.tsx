@@ -110,7 +110,6 @@ const ProfileSettings = () => {
   };
 
   const onSubmit = async (data: any) => {
-    try {
       setIsLoading(true);
       setError("");
       
@@ -122,26 +121,12 @@ const ProfileSettings = () => {
       const firstName = nameParts[0];
       const lastName = nameParts.slice(1).join(' ');
 
-      // Update email if changed
-      if (data.email !== customer.email) {
-        const { data: dataz, error } = await supabase.auth.updateUser({
-          email: data.email
-        });
-
-        // Then update customer email
-        const { error: customerError } = await supabase
-          .from('customers')
-          .update({ email: data.email })
-          .eq('auth_id', user.id);
-          setError("Your email address has been updated. Please verify your new email to continue.");
-      }
-
-      // Update customer data - excluding phone
       const { error: updateError } = await supabase
         .from('customers')
         .update({
           first_name: firstName,
           last_name: lastName || '',
+          email: data.email,
           date_of_birth: data.birthday?.toISOString(),
           updated_at: new Date().toISOString()
         })
@@ -151,12 +136,6 @@ const ProfileSettings = () => {
 
       await refreshCustomer();
       navigate("/settings");
-    } catch (error: any) {
-      console.error("Error updating profile:", error);
-      setError(error.message || "Failed to update profile");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (

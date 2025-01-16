@@ -14,6 +14,8 @@ import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { useState, useEffect } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import { supabase } from "@/lib/supabase";
+import { format } from "date-fns"
+
 
 interface Variant {
   id: string;
@@ -158,10 +160,19 @@ export const HomeShow = () => {
             <Location />
             <p>{product.location}</p>
           </div>
+
+
           <div className="flex items-center gap-2 text-xs">
             <CalendarIcon />
-            <p>{product.date}</p>
+            <p>
+              {product.start_datetime && product.end_datetime ? (
+                `${format(new Date(product.start_datetime), 'dd-MM-yyyy HH:mm')} - ${format(new Date(product.end_datetime), 'dd-MM-yyyy HH:mm')}`
+              ) : (
+                t("Date not available")
+              )}
+            </p>
           </div>
+
         </div>
         <div className="flex gap-4 items-center">
           <div className="flex -space-x-3">

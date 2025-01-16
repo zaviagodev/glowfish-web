@@ -37,6 +37,8 @@ export const HomeList = () => {
       id: product.id,
       image: product.image,
       title: product.name,
+      start_datetime: product.start_datetime,
+      end_datetime: product.end_datetime,
       location: product.location,
       date: product.date,
       price: product.price === 0 ? t("free") : `฿${product.price}`,
