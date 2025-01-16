@@ -10,6 +10,8 @@ import {
   SheetContent,
   SheetOverlay,
 } from "@/components/ui/sheet";
+import { useEvents } from "@/hooks/useEvents";
+
 
 const CheckoutPage = () => {
   const t = useTranslate();
@@ -20,6 +22,8 @@ const CheckoutPage = () => {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [showThankYou, setShowThankYou] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { refreshEvents } = useEvents();
+
 
   const totalPrice = price * 1.07;
   const tax = price * 0.07;
@@ -56,6 +60,7 @@ const CheckoutPage = () => {
       if (error) throw error;
       // Show thank you message
       setShowThankYou(true);
+      refreshEvents();
 
     } catch (error) {
       console.error('Error creating order:', error);

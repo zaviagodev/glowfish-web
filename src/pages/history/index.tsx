@@ -10,11 +10,21 @@ import { cn } from "@/lib/utils"
 import { ArrowDown, ArrowUp } from "@/components/icons/MainIcons"
 import { useTranslate } from "@refinedev/core"
 import { format } from "date-fns"
+import { Button } from "@/components/ui/button" // Add this import
 
 const HistoryPage = () => {
   const t = useTranslate();
-  const { customer, loading, error } = useCustomer();
+  const { customer, loading, error, refreshCustomer } = useCustomer(); // Add refreshCustomer
   const tabClassNames = "font-semibold w-full bg-transparent text-[#6D6D6D] data-[state=active]:bg-white data-[state=active]:text-[#0D0D0D]";
+
+  // Add refresh handler
+  const handleRefresh = async () => {
+    try {
+      await refreshCustomer();
+    } catch (error) {
+      console.error('Error refreshing customer data:', error);
+    }
+  };
 
   const renderAction = (action: any) => {
     const actionTitle = action.type === "earn" ? t("Get Point") : t("Spend Point");
@@ -46,7 +56,16 @@ const HistoryPage = () => {
   if (loading) {
     return (
       <>
-        <Header title={t("History")} rightButton={t("Detail")}/>
+        <Header title={t("History")} rightButton={
+          <Button 
+            onClick={handleRefresh}
+            variant="ghost"
+            className="text-white"
+            disabled={true}
+          >
+            {t("Refreshing...")}
+          </Button>
+        }/>
         <div className="text-center mt-8">Loading...</div>
       </>
     );
@@ -55,7 +74,15 @@ const HistoryPage = () => {
   if (error) {
     return (
       <>
-        <Header title={t("History")} rightButton={t("Detail")}/>
+        <Header title={t("History")} rightButton={
+          <Button 
+            onClick={handleRefresh}
+            variant="ghost"
+            className="text-white"
+          >
+            {t("Refresh")}
+          </Button>
+        }/>
         <div className="text-center text-red-500 mt-8">{error}</div>
       </>
     );
@@ -67,7 +94,18 @@ const HistoryPage = () => {
 
   return (
     <>
-      <Header title={t("History")} rightButton={t("Detail")}/>
+      <Header 
+        title={t("History")} 
+        rightButton={
+          <Button 
+            onClick={handleRefresh}
+            variant="ghost"
+            className="text-white"
+          >
+            {t("Refresh")}
+          </Button>
+        }
+      />
       <div className="mb-6 px-5">
         <h2 className="text-lg font-semibold">{t("Total Points")}</h2>
         <p className="text-2xl font-bold text-mainorange">{customer?.loyalty_points || 0}</p>

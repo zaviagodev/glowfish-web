@@ -23,7 +23,6 @@ const EventSection = ({
   const navigate = useNavigate();
 
   // Debug output
-  console.log('EventSection props:', { list, title, cardType, seeAllLink, eventCardLink });
 
   return (
     <section className="flex flex-col gap-4 mt-[30px]">
@@ -37,7 +36,6 @@ const EventSection = ({
       </div>
       <div className={cn("flex gap-3 overflow-auto px-5 w-full")}>
         {list.map((item: any) => {
-          console.log('Rendering event card:', item);
           return (
             <EventCard 
               key={item.id}

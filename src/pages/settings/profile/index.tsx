@@ -23,8 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarIcon } from "lucide-react";
-import { useCustomer } from "@/hooks/useCustomer"
-
+import { useCustomer } from "@/hooks/useCustomer";
 
 const schema = yup.object().shape({
   full_name: yup.string().required("Full name is required"),
@@ -39,8 +38,7 @@ const ProfileSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const { customer, loading } = useCustomer();
-
+  const { customer, refreshCustomer } = useCustomer();
 
   const form = useForm({
     resolver: yupResolver(schema),
@@ -53,74 +51,18 @@ const ProfileSettings = () => {
   });
 
   useEffect(() => {
-    const loadProfile = async () => {
-      if (customer) {
-        const fullName = `${customer.first_name || ''} ${customer.last_name || ''}`.trim();
-        const birthday = customer.date_of_birth ? new Date(customer.date_of_birth) : null;
-        form.reset({
-          full_name: fullName,
-          email: customer.email || "",
-          phone: customer.phone || "",
-          birthday: birthday,
-        });
-        setAvatarUrl(customer.avatar_url || "");
-      }
-    };
-    loadProfile();
-  }, [customer]);
-
-  const onSubmit = async (data: any) => {
-    try {
-      setIsLoading(true);
-      setError("");
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("No user found");
-
-      // Update email if changed
-      if (data.email !== user.email) {
-        const { error: emailError } = await supabase.auth.updateUser({
-          email: data.email
-        });
-
-        if (emailError) {
-          setError("Failed to update email: " + emailError.message);
-          return;
-        }
-      }
-
-      // Update other user data
-      const { error: updateError } = await supabase.auth.updateUser({
-        data: {
-          full_name: data.full_name,
-          phone: data.phone,
-          birthday: data.birthday?.toISOString(),
-        }
+    if (customer) {
+      const fullName = `${customer.first_name || ''} ${customer.last_name || ''}`.trim();
+      const birthday = customer.date_of_birth ? new Date(customer.date_of_birth) : null;
+      form.reset({
+        full_name: fullName,
+        email: customer.email || "",
+        phone: customer.phone || "",
+        birthday: birthday,
       });
-
-      if (updateError) throw updateError;
-
-      // Update profile in local storage
-      const currentProfile = await getUserProfile();
-      if (currentProfile) {
-        const updatedProfile = {
-          ...currentProfile,
-          full_name: data.full_name,
-          email: data.email,
-          phone: data.phone,
-          birthday: data.birthday?.toISOString(),
-        };
-        localStorage.setItem('user_profile', JSON.stringify(updatedProfile));
-      }
-
-      navigate("/settings");
-    } catch (error: any) {
-      console.error("Error updating profile:", error);
-      setError(error.message || "Failed to update profile");
-    } finally {
-      setIsLoading(false);
+      setAvatarUrl(customer.avatar_url || "");
     }
-  };
+  }, [customer]);
 
   const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -146,18 +88,72 @@ const ProfileSettings = () => {
         .from('product-images')
         .getPublicUrl(filePath);
   
-      // Update customer record with new avatar URL
+      const timestamp = new Date().getTime();
+      const urlWithTimestamp = `${publicUrl}?t=${timestamp}`;
+  
       const { error: updateError } = await supabase
         .from('customers')
-        .update({ avatar_url: publicUrl })
+        .update({ avatar_url: urlWithTimestamp })
         .eq('auth_id', user.id);
   
       if (updateError) throw updateError;
   
-      setAvatarUrl(publicUrl);
+      setAvatarUrl(urlWithTimestamp);
+      await refreshCustomer();
+
     } catch (error: any) {
       console.error("Error uploading avatar:", error);
       setError(error.message || "Failed to upload avatar");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit = async (data: any) => {
+    try {
+      setIsLoading(true);
+      setError("");
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user found");
+
+      // Split full name into first and last name
+      const nameParts = data.full_name.trim().split(/\s+/);
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ');
+
+      // Update email if changed
+      if (data.email !== customer.email) {
+        const { data: dataz, error } = await supabase.auth.updateUser({
+          email: data.email
+        });
+
+        // Then update customer email
+        const { error: customerError } = await supabase
+          .from('customers')
+          .update({ email: data.email })
+          .eq('auth_id', user.id);
+          setError("Your email address has been updated. Please verify your new email to continue.");
+      }
+
+      // Update customer data - excluding phone
+      const { error: updateError } = await supabase
+        .from('customers')
+        .update({
+          first_name: firstName,
+          last_name: lastName || '',
+          date_of_birth: data.birthday?.toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('auth_id', user.id);
+
+      if (updateError) throw updateError;
+
+      await refreshCustomer();
+      navigate("/settings");
+    } catch (error: any) {
+      console.error("Error updating profile:", error);
+      setError(error.message || "Failed to update profile");
     } finally {
       setIsLoading(false);
     }
@@ -233,7 +229,13 @@ const ProfileSettings = () => {
               <FormItem>
                 <FormLabel>{t("Phone")}</FormLabel>
                 <FormControl>
-                  <Input {...field} type="tel" placeholder="+66812345678" />
+                  <Input 
+                    {...field} 
+                    type="tel" 
+                    placeholder="+66812345678" 
+                    disabled={true}
+                    className="opacity-70 cursor-not-allowed"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -62,10 +62,12 @@ export const HomeShow = () => {
       return;
     }
 
+    let product_id = product.pro_id;
+
     const { data, error } = await supabase
       .from('product_variants')
       .select('*')
-      .eq('product_id', id)
+      .eq('product_id', product_id)
       .eq('status', 'active');
 
     if (data) {
@@ -186,7 +188,7 @@ export const HomeShow = () => {
         )}
         <div className="flex flex-col gap-1.5">
           <h2 className="font-medium text-sm">{t("Venue & Location")}</h2>
-          <p className="text-xs">{product.description}</p>
+          <p className="text-xs">{product.venue_address}</p>
         </div>
       </section>
       <footer className="btn-footer flex flex-col gap-7">

@@ -42,7 +42,6 @@ export const authProvider: AuthProvider = {
       localStorage.setItem(TOKEN_KEY, TEST_SESSION.access_token);
       localStorage.setItem(LINE_USER_KEY, JSON.stringify(TEST_SESSION.user));
       localStorage.setItem('user_profile', JSON.stringify(TEST_SESSION.user));
-      console.log(TEST_SESSION);
       return {
         success: true,
         redirectTo: "/home"
@@ -59,7 +58,7 @@ export const authProvider: AuthProvider = {
         });
 
         if (functionError) {
-          throw new Error("Failed to get access token");av
+          throw new Error("Failed to get access token");
         }
 
         if(tokenData.type == 1){

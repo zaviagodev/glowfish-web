@@ -8,7 +8,6 @@ const corsHeaders = {
   'Access-Control-Max-Age': '86400',
 }
 
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -77,11 +76,12 @@ serve(async (req) => {
       .select('user_id')
       .eq('provider', 'line')
       .eq('provider_user_id', profileData.userId)
-      .single();
+      .maybeSingle(); // Use maybeSingle() instead of single()
 
-    if (oauthError && oauthError.code !== 'PGRST116') { // PGRST116 is "not found"
+    if (oauthError) {
       throw oauthError;
     }
+
 
     if (existingOAuth?.user_id) {
       // Get existing customer data
@@ -89,9 +89,10 @@ serve(async (req) => {
         .from('customers')
         .select('*, auth_id')
         .eq('auth_id', existingOAuth.user_id)
-        .single();
+        .maybeSingle(); // Use maybeSingle() here too
 
       if (customerError) throw customerError;
+      if (!customer) throw new Error('Customer not found');
 
       // Generate magic link for existing user
       const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
@@ -106,7 +107,7 @@ serve(async (req) => {
       const verifyResponse = await fetch(verifyUrl, {
         method: 'POST',
         headers: {
-          'Authorization': supabaseServiceKey,
+          'Authorization': `Bearer ${supabaseServiceKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -155,6 +156,7 @@ serve(async (req) => {
     );
 
   } catch (error) {
+    console.error('Line auth error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 

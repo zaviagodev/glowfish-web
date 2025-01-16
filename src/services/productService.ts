@@ -8,6 +8,9 @@ export interface Product {
   category_id: string;
   image: string;
   location: string;
+  organizer_name : string;
+  organizer_contact: string;
+  venue_address : string;
   date: string;
   variant_options: any[];
   product_variants: {
@@ -23,48 +26,67 @@ export interface Product {
   }[];
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+
+
 // Transform product data
-const transformProduct = (product: any): Product => ({
-  id: product.id,
-  name: product.name,
-  description: product.description,
-  price: product.price,
-  category_id: product.category_id,
-  variant_options: product.variant_options || [],
-  product_variants: product.product_variants || [],
-  image: product.product_images?.[0]?.url || '/placeholder-image.jpg',
-  location: 'Glowfish, Sathon', // Default location
-  date: new Date().toLocaleDateString(), // Current date as default
+const transformProduct = (event: any): Product => ({
+  id: event.id,
+  pro_id: event?.product.id,
+  name: event?.product?.name,
+  description: event?.product?.description,
+  price: event?.product?.price,
+  category_id: event?.product?.category_id,
+  variant_options: event?.product?.variant_options || [],
+  product_variants: event?.product?.product_variants || [],
+  image: event?.product?.product_images?.[0]?.url || '/placeholder-image.jpg',
+  location: event.venue_name, // Default location,
+  venue_address: event.venue_address, 
+  organizer_contact: event.organizer_contact, 
+  organizer_name: event.organizer_name, 
+  date: event.start_datetime, // Current date as default
 });
+
+
 
 export const ProductService = {
   async getProducts(): Promise<Product[]> {
     try {
-      console.log('Fetching products...');
       const { data, error } = await supabase
-        .from('products')
-        .select(`
+        .from('events')
+        .select(
+          `
           *,
-          product_images (url),
-          product_variants (
-            id,
-            name,
-            sku,
-            price,
-            compare_at_price,
-            quantity,
-            options,
-            status,
-            position
-          ),
-          product_categories (
-            id,
-            name,
-            slug,
-            description
+          product:products!inner(
+            *,
+            product_images (*),
+            product_variants (
+              id,
+              name,
+              sku,
+              price,
+              compare_at_price,
+              quantity,
+              options,
+              status,
+              position
+            ),
+            product_categories (
+              id,
+              name,
+              slug,
+              description
+            ),
+            product_tags (*)
           )
-        `)
-        .eq('status', 'active')
+        `
+        )
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -77,13 +99,36 @@ export const ProductService = {
         return [];
       }
 
-      console.log('Raw data from Supabase:', data);
       const formattedProducts = data.map(transformProduct);
-      console.log('Formatted products:', formattedProducts);
+
       return formattedProducts;
     } catch (error) {
       console.error('Failed to fetch products:', error);
       throw error;
     }
-  }
+  },
+
+  async getCategories(): Promise<Category[]> {
+    try {
+      const { data, error } = await supabase
+        .from('product_categories')
+        .select('*')
+        .order('name');
+
+      if (error) {
+        console.error('Supabase query error:', error);
+        throw error;
+      }
+
+      if (!data) {
+        console.warn('No categories returned from Supabase');
+        return [];
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+      throw error;
+    }
+  },
 };

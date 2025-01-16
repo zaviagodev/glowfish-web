@@ -52,7 +52,6 @@ const PhoneForm = ({
       // Store verification token
       if (otpData?.token) {
         setVerificationToken(otpData.token);
-        console.log('token______' + otpData.token);
       }
 
       // Show OTP input

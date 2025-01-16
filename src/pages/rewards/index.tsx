@@ -8,26 +8,11 @@ import { getUserProfile } from "@/lib/auth"
 import { useProducts } from "@/hooks/useProducts";
 import { useCustomer } from "@/hooks/useCustomer";
 
+
 const Rewards = () => {
   const t = useTranslate();
   const { products, loading: productsLoading, error: productsError } = useProducts();
   const { customer, loading: customerLoading, error: customerError } = useCustomer();
-  const [userProfile, setUserProfile] = useState<{
-    id: string;
-    full_name: string;
-    avatar_url: string;
-  } | null>(null);
-
-  useEffect(() => {
-    const loadProfile = async () => {
-      const profile = await getUserProfile();
-      if (profile) {
-        setUserProfile(profile);
-      }
-    };
-    loadProfile();
-  }, []);
-
   // Convert products to event format for EventSection
   const productEvents = products.map(product => ({
     id: product.id,
@@ -50,16 +35,20 @@ const Rewards = () => {
     </div>;
   }
 
+  const fullName = customer 
+    ? `${customer.first_name} ${customer.last_name}`.trim()
+    : "User";
+
   return (
     <>
       <Header title={t("Your card")} rightButton={t("Detail")}/>
       <section>
         <div className="flex items-center justify-between px-5">
-          <h1 className="font-semibold text-[28px] m-0">{t("Hello")}, <span className="text-mainorange">{userProfile?.full_name || "User"}</span></h1>
+          <h1 className="font-semibold text-[28px] m-0">{t("Hello")}, <span className="text-mainorange">{fullName}</span></h1>
           <Avatar className="h-[50px] w-[50px]">
-            <AvatarImage src={userProfile?.avatar_url || "https://github.com/shadcn.png"}/>
+            <AvatarImage src={customer?.avatar_url || "https://github.com/shadcn.png"}/>
             <AvatarFallback>
-              {userProfile?.full_name?.charAt(0)?.toUpperCase() || "U"}
+              {fullName?.charAt(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
         </div>

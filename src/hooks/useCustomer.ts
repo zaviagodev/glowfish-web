@@ -1,93 +1,78 @@
+// src/hooks/useCustomer.ts
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { getUserProfile } from '@/lib/auth';
+import { useQuery } from '@tanstack/react-query';
+import { CustomerService, type Customer } from '@/services/customerService';
 
-export interface CustomerProfile {
-  id: string;
-  store_name: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  total_points: number;
-  tier_id: string | null;
-  accepts_marketing: boolean;
-  tags: string[];
-  is_verified: boolean;
-  created_at: string;
-  updated_at: string;
-}
+// Cache key for localStorage
+const CUSTOMERS_CACHE_KEY = 'cached_customers';
+const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 export const useCustomer = () => {
-  const [customer, setCustomer] = useState<CustomerProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Use React Query for data fetching and caching
+  const { 
+    data: result = { customers: [], tiers: [] }, 
+    isLoading: customersLoading, 
+    isError: customersError,
+    refetch: refetchData
+  } = useQuery({
+    queryKey: ['customers'],
+    queryFn: async () => {
+      const [customersData, tiersData] = await Promise.all([
+        CustomerService.getCustomers(),
+        CustomerService.getCustomerTiers()
+      ]);
+      return {
+        customers: customersData,
+        tiers: tiersData
+      };
+    },
+    staleTime: CACHE_EXPIRY_TIME,
+    cacheTime: CACHE_EXPIRY_TIME * 2,
+    retry: 2,
+    onError: (err: any) => {
+      console.error('Error fetching customers:', err);
+      setError(err.message || 'Failed to load customers');
+    }
+  });
+
+  // Update loading state based on React Query
   useEffect(() => {
-    const loadCustomer = async () => {
-      try {
-        setLoading(true);
-        
-        // Get authenticated user profile
-        const profile = await getUserProfile();
-        if (!profile) {
-          throw new Error('User not authenticated');
-        }
+    setLoading(customersLoading);
+  }, [customersLoading]);
 
-        // Fetch customer data
-        const { data, error: customerError } = await supabase
-          .from('customers')
-          .select(`
-            *,
-            points_transactions(*)
-          `)
-          .eq('auth_id', profile.id)
-          .single();
+  // Update error state based on React Query
+  useEffect(() => {
+    if (customersError) {
+      setError('Failed to fetch customers or tiers');
+    } else {
+      setError(null);
+    }
+  }, [customersError]);
 
-        if (customerError) throw customerError;
-        if (!data) throw new Error('Customer not found');
-
-        setCustomer(data);
-      } catch (err) {
-        console.error('Error loading customer:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load customer data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadCustomer();
-  }, []);
-
-  // Function to refresh customer data
+  // Function to force refresh the data
   const refreshCustomer = async () => {
     setLoading(true);
     try {
-      const profile = await getUserProfile();
-      if (!profile) {
-        throw new Error('User not authenticated');
-      }
-
-      const { data, error: customerError } = await supabase
-        .from('customers')
-        .select(`
-          *,
-            points_transactions(*)
-        `)
-        .eq('auth_id', profile.id)
-        .single();
-
-      if (customerError) throw customerError;
-      if (!data) throw new Error('Customer not found');
-
-      setCustomer(data);
+      await refetchData();
     } catch (err) {
-      console.error('Error refreshing customer:', err);
-      setError(err instanceof Error ? err.message : 'Failed to refresh customer data');
+      console.error('Error refreshing customers:', err);
+      setError(err instanceof Error ? err.message : 'Failed to refresh customers');
     } finally {
       setLoading(false);
     }
   };
-
-  return { customer, loading, error, refreshCustomer };
+  return { 
+    customer: result.customers, 
+    tiers: result.tiers,
+    loading, 
+    error, 
+    refreshCustomer,
+    isLoading: customersLoading,
+    isError: customersError
+  };
 };
+
+export type { Customer };
