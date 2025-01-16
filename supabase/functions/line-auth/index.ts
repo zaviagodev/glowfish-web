@@ -8,6 +8,7 @@ const corsHeaders = {
   'Access-Control-Max-Age': '86400',
 }
 
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -76,12 +77,11 @@ serve(async (req) => {
       .select('user_id')
       .eq('provider', 'line')
       .eq('provider_user_id', profileData.userId)
-      .maybeSingle(); // Use maybeSingle() instead of single()
+      .single();
 
-    if (oauthError) {
+    if (oauthError && oauthError.code !== 'PGRST116') { // PGRST116 is "not found"
       throw oauthError;
     }
-
 
     if (existingOAuth?.user_id) {
       // Get existing customer data
@@ -89,15 +89,18 @@ serve(async (req) => {
         .from('customers')
         .select('*, auth_id')
         .eq('auth_id', existingOAuth.user_id)
-        .maybeSingle(); // Use maybeSingle() here too
+        .single();
 
       if (customerError) throw customerError;
-      if (!customer) throw new Error('Customer not found');
+
+      const userid = existingOAuth?.user_id;
+      const { data : userData, error } = await supabase.auth.admin.getUserById(userid)
+      const user_email = userData.user.email;
 
       // Generate magic link for existing user
       const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
         type: 'magiclink',
-        email: customer.email
+        email: user_email
       });
 
       if (linkError) throw linkError;
@@ -107,11 +110,11 @@ serve(async (req) => {
       const verifyResponse = await fetch(verifyUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${supabaseServiceKey}`,
+          'Authorization': supabaseServiceKey,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: customer.email,
+          email: user_email,
           token: linkData.properties.email_otp,
           type: 'email'
         }),
@@ -156,7 +159,6 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Line auth error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 

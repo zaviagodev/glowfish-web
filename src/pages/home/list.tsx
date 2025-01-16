@@ -8,11 +8,9 @@ import { Button } from "@/components/ui/button";
 import EventSection from "@/components/main/EventSection";
 import { event_you_might_enjoy } from "@/data/data";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useProducts } from '@/hooks/useProducts';
 import { useCustomer } from "@/hooks/useCustomer";
-
-
 
 export const HomeList = () => {
   const t = useTranslate();
@@ -31,21 +29,53 @@ export const HomeList = () => {
     }
   }, [selectedCategory, products]);
 
-  // Convert products to event format
-  const productEvents = filteredProducts.map(product => {
-    const event = {
-      id: product.id,
-      image: product.image,
-      title: product.name,
-      start_datetime: product.start_datetime,
-      end_datetime: product.end_datetime,
-      location: product.location,
-      date: product.date,
-      price: product.price === 0 ? t("free") : `฿${product.price}`,
-      desc: product.description
-    };
-    return event;
-  });
+  // Convert and filter products to upcoming events
+  const upcomingProductEvents = useMemo(() => {
+    return filteredProducts
+      .filter(product => {
+        if (!product.start_datetime) return false;
+        const startDate = new Date(product.start_datetime);
+        return startDate > new Date();
+      })
+      .map(product => ({
+        id: product.id,
+        image: product.image,
+        title: product.name,
+        start_datetime: product.start_datetime,
+        end_datetime: product.end_datetime,
+        location: product.location,
+        date: product.date,
+        price: product.price === 0 ? t("free") : `฿${product.price}`,
+        desc: product.description
+      }))
+      .sort((a, b) => {
+        const dateA = new Date(a.start_datetime || 0);
+        const dateB = new Date(b.start_datetime || 0);
+        return dateA.getTime() - dateB.getTime();
+      });
+  }, [filteredProducts, t]);
+
+  const ongoingEvents = useMemo(() => {
+    const now = new Date();
+    return filteredProducts
+      .filter(product => {
+        if (!product.start_datetime || !product.end_datetime) return false;
+        const startDate = new Date(product.start_datetime);
+        const endDate = new Date(product.end_datetime);
+        return startDate <= now && endDate >= now;
+      })
+      .map(product => ({
+        id: product.id,
+        image: product.image,
+        title: product.name,
+        start_datetime: product.start_datetime,
+        end_datetime: product.end_datetime,
+        location: product.location,
+        date: product.date,
+        price: product.price === 0 ? t("free") : `฿${product.price}`,
+        desc: product.description
+      }));
+  }, [filteredProducts, t])
 
   const categoryColors = {
     'music-concert': '#FF5050',
@@ -118,12 +148,12 @@ export const HomeList = () => {
             ))}
           </div>
           <EventSection 
-            list={productEvents} 
+            list={upcomingProductEvents} 
             title={t("Upcoming Events")}
             isFullWidth={true}
           />
           <EventSection 
-            list={event_you_might_enjoy} 
+            list={ongoingEvents} 
             title={t("Events you might enjoy")} 
             cardType="small"
           />
