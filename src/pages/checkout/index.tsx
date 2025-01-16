@@ -8,6 +8,7 @@ import { QuestionChat, DownloadIcon } from "@/components/icons/MainIcons";
 import { supabase } from "@/lib/supabase";
 import RegisterDrawer from "@/components/main/RegisterDrawer";
 import { useEvents } from "@/hooks/useEvents";
+import { useCustomer } from "@/hooks/useCustomer";
 
 const QR_CODE_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png';
 // Example bank details
@@ -28,6 +29,7 @@ const CheckoutPage = () => {
   const [showThankYou, setShowThankYou] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { refreshEvents } = useEvents();
+  const { customer } = useCustomer();
 
   const totalPrice = price * 1.07;
   const tax = price * 0.07;
@@ -42,7 +44,7 @@ const CheckoutPage = () => {
 
       const { data: newOrder, error } = await supabase.rpc('place_order', {
         p_store_name: 'glowfish',
-        p_customer_id: user.id,
+        p_customer_id: customer.id,
         p_status: 'pending',
         p_subtotal: price,
         p_discount: 0,

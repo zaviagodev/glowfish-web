@@ -1,14 +1,24 @@
+// src/pages/login/index.tsx
 import { useTranslate } from "@refinedev/core";
 import GlowfishIcon from "../../components/icons/GlowfishIcon";
 import { Button } from "../../components/ui/button";
 import LineIcon from "../../components/icons/LineIcon";
 import { loginWithLine } from "../../authProvider";
+import { supabase } from "../../lib/supabase";
+import { createTestSession } from "../../authProvider"
+
 
 export const Login = () => {
   const t = useTranslate();
 
   const handleLineLogin = () => {
     loginWithLine();
+  };
+
+  const handleTestLogin = async () => {
+    await createTestSession();
+    // Redirect to home
+    window.location.href = '/home';
   };
 
   return (
@@ -27,6 +37,13 @@ export const Login = () => {
         >
           <LineIcon className="absolute left-4"/>
           {t("Continue with Line")}
+        </Button>
+
+        <Button 
+          className="main-btn !bg-gray-600 text-white relative font-semibold mt-2" 
+          onClick={handleTestLogin}
+        >
+          {t("Test Login")}
         </Button>
 
         <p className="text-center font-light text-xs">

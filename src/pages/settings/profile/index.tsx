@@ -28,7 +28,6 @@ import { useCustomer } from "@/hooks/useCustomer";
 const schema = yup.object().shape({
   full_name: yup.string().required("Full name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
-  phone: yup.string().required("Phone number is required"),
   birthday: yup.date().nullable().required("Birthday is required"),
 });
 

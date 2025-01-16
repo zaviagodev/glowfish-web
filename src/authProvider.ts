@@ -1,26 +1,11 @@
+// src/authProvider.ts
 import type { AuthProvider } from "@refinedev/core";
 import { supabase } from "./lib/supabase";
 import { setSupabaseSession } from "@/lib/auth";
+import { custom } from "zod";
 
 export const TOKEN_KEY = "refine-auth";
 export const LINE_USER_KEY = "line-user";
-
-// Test session data
-const TEST_SESSION = {
-  access_token: "eyJhbGciOiJIUzI1NiIsImtpZCI6Iks1THZiRzAraXJ1N0owdVUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3p6eHpxcWhibWpwZ2d4cXNud3l4LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIxYTYyZjk2MS0zMTM0LTRhNjctYjU0My1jMmFmODYxMjJlYzIiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzM2NDE4MTAzLCJpYXQiOjE3MzY0MTQ1MDMsImVtYWlsIjoidGVzdDIyQGdtaWwuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbCI6InRlc3QyMkBnbWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmdWxsX25hbWUiOiJOYWJlZWwgVGFoaXIiLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInN0b3JlX25hbWUiOiJnbG93ZmlzaCIsInN1YiI6IjFhNjJmOTYxLTMxMzQtNGE2Ny1iNTQzLWMyYWY4NjEyMmVjMiJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im90cCIsInRpbWVzdGFtcCI6MTczNjQxNDUwM31dLCJzZXNzaW9uX2lkIjoiM2FlMTdkN2UtOGFlMi00ZmQ5LTkyMGUtNDk1YmI3YzBlOGI5IiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.ktNuVDBZovz1p29lcHRIykwTdwp0QQIwUOkljPaT460",
-  refresh_token: "FJyhY3JPyxDCdKhEK_JawQ",
-  user: {
-    id: "1a62f961-3134-4a67-b543-c2af86122ec2",
-    email: "test22@gmil.com",
-    user_metadata: {
-      email: "test22@gmil.com",
-      email_verified: true,
-      full_name: "Nabeel Tahir",
-      phone_verified: false,
-      store_name: "glowfish"
-    }
-  }
-};
 
 // Line auth configuration
 const LINE_CONFIG = {
@@ -31,22 +16,94 @@ const LINE_CONFIG = {
 
 const isStorefrontMode = () => import.meta.env.VITE_STOREFRONT_MODE === "1";
 
+// Function to create test session
+export const createTestSession = async () => {
+  try {
+    // Create anonymous session with limited permissions
+    const { data: { session }, error } = await supabase.auth.signInWithPassword({
+      email: import.meta.env.VITE_TEST_EMAIL || 'test@example.com',
+      password: import.meta.env.VITE_TEST_PASSWORD || 'test123'
+    });
+
+    if (error) throw error;
+
+    // Get or create test customer
+    const { data: customer, error: customerError } = await supabase
+      .from('customers')
+      .select('*')
+      .eq('email', session.user.email)
+      .single();
+
+    if (customerError && customerError.code !== 'PGRST116') {
+      throw customerError;
+    }
+
+    let testCustomer = customer;
+
+    if (!testCustomer) {
+      const { data: newCustomer, error: createError } = await supabase
+        .from('customers')
+        .insert({
+          email: session.user.email,
+          first_name: 'Test',
+          last_name: 'User',
+          store_name: 'glowfish',
+          is_verified: true,
+          meta: {
+            is_test_account: true
+          }
+        })
+        .select()
+        .single();
+
+      if (createError) throw createError;
+      testCustomer = newCustomer;
+    }
+
+    const testSession =  {
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+      user : session.user,
+      customer : testCustomer,
+    };
+    await setSupabaseSession(testSession);
+    return {
+      success: true,
+      redirectTo: "/home"
+    };
+  } catch (error) {
+    console.error('Error creating test session:', error);
+    throw error;
+  }
+};
+
 export const authProvider: AuthProvider = {
   login: async ({ providerName, code }) => {
     // For storefront mode
     if (isStorefrontMode()) {
-      await supabase.auth.setSession({
-        access_token: TEST_SESSION.access_token,
-        refresh_token: TEST_SESSION.refresh_token
-      });
-      localStorage.setItem(TOKEN_KEY, TEST_SESSION.access_token);
-      localStorage.setItem(LINE_USER_KEY, JSON.stringify(TEST_SESSION.user));
-      localStorage.setItem('user_profile', JSON.stringify(TEST_SESSION.user));
-      return {
-        success: true,
-        redirectTo: "/home"
-      };
+      try {
+        const testSession = await createTestSession();
+        const sessionSet = await setSupabaseSession(testSession);
+        if (!sessionSet) {
+          throw new Error('Failed to set session');
+        }
+
+        return {
+          success: true,
+          redirectTo: "/home"
+        };
+      } catch (error) {
+        console.error('Test login error:', error);
+        return {
+          success: false,
+          error: {
+            name: "LoginError",
+            message: "Failed to create test session"
+          }
+        };
+      }
     }
+
     if (providerName === "line" && code) {
       try {
         // Exchange code for access token using Edge Function
@@ -97,6 +154,7 @@ export const authProvider: AuthProvider = {
       },
     };
   },
+
   logout: async () => {
     await supabase.auth.signOut();
     localStorage.removeItem(TOKEN_KEY);
@@ -111,8 +169,9 @@ export const authProvider: AuthProvider = {
 
   check: async () => {
     if (isStorefrontMode()) {
+      const { data: { session } } = await supabase.auth.getSession();
       return {
-        authenticated: true
+        authenticated: !!session
       };
     }
 
@@ -133,11 +192,20 @@ export const authProvider: AuthProvider = {
 
   getIdentity: async () => {
     if (isStorefrontMode()) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data: customer } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('auth_id', user.id)
+        .single();
+
       return {
-        id: TEST_SESSION.user.id,
-        name: TEST_SESSION.user.user_metadata.full_name,
-        email: TEST_SESSION.user.email,
-        avatar: ""
+        id: user.id,
+        name: customer?.full_name || 'Test User',
+        email: customer?.email || user.email,
+        avatar: customer?.avatar_url || ""
       };
     }
 
