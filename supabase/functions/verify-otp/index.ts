@@ -35,7 +35,7 @@ serve(async (req) => {
     const { otp, phone, line_id, access_token, token } = await req.json()
     
     // Verify OTP
-    const apiUrl = Deno.env.get('SMS2PRO_URL') + '/verify';
+    const apiUrl = 'https://portal.sms2pro.com/sms-api/otp-sms/verify';
     const apiToken = Deno.env.get('SMS2PRO_API');
 
     if (!apiUrl || !apiToken) {
