@@ -38,4 +38,5 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_AI_COMMERCE_C1F4D }}
           channelId: live
           site: glowfish-store
+          target: glowfish-store
           projectId: ai-commerce-c1f4d
