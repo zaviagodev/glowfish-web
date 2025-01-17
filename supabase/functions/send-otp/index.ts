@@ -55,7 +55,7 @@ serve(async (req) => {
   //   .insert({ ip_address: ip, last_request: now.toISOString() });
 
   // Proceed with sending the OTP
-  const apiUrl =  Deno.env.get('SMS2PRO_URL')+'/send';
+  const apiUrl =  'https://portal.sms2pro.com/sms-api/otp-sms/send';
   const apiToken = Deno.env.get('SMS2PRO_API'); // Use your actual token
 
   const payload = {
