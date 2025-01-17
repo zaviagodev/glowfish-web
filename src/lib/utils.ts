@@ -47,3 +47,16 @@ export function formatCurrency(value: number, currency: string = "THB") {
 
   return `${currencySymbol} ${numberValue}`;
 }
+
+export const generateTimeSlots = (): string[] => {
+  const times: string[] = [];
+
+  for (let hour = 0; hour < 24; hour++) {
+    const period = hour < 12 ? 'AM' : 'PM';
+    const formattedHour = hour % 12 === 0 ? 12 : hour % 12; // Convert to 12-hour format
+    const time = `${formattedHour.toString().padStart(2, '0')}:00 ${period}`;
+    times.push(time);
+  }
+
+  return times;
+};
