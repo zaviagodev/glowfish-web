@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "ai-commerce-c1f4d"
+  },
+  "targets": {
+    "ai-commerce-c1f4d": {
+      "hosting": {
+        "ai-commerce-c1f4d": [
+          "ai-commerce-c1f4d"
+        ],
+        "glowfish-store": [
+          "glowfish-store"
+        ]
+      }
+    }
   }
 }
