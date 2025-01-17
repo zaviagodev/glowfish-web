@@ -1,3 +1,15 @@
+-- Add date_of_birth and avatar_url columns to customers table
+ALTER TABLE customers
+  ADD COLUMN IF NOT EXISTS date_of_birth date,
+  ADD COLUMN IF NOT EXISTS avatar_url text;
+
+-- Add helpful comments
+COMMENT ON COLUMN customers.date_of_birth IS 'Customer''s date of birth';
+COMMENT ON COLUMN customers.avatar_url IS 'URL to customer''s avatar image';
+
+-- Create index for date_of_birth for birthday queries
+CREATE INDEX IF NOT EXISTS customers_date_of_birth_idx ON customers(date_of_birth);
+
 -- Allow public access to customer avatars in product-images bucket
 CREATE POLICY "Public Access to Customer Avatars" ON storage.objects FOR SELECT
 USING (
@@ -16,7 +28,6 @@ WITH CHECK (
     )
     AND (storage.foldername(name))[2] = 'customers'
     AND (storage.foldername(name))[3] = 'avatars'
-    AND (OCTET_LENGTH(DECODE(SUBSTRING(name FROM '%#"_____"#"%' FOR '#'), 'base64')) < 5242880)
 );
 
 -- Allow users to update their own avatars

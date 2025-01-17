@@ -50,4 +50,4 @@ CREATE TRIGGER update_loyalty_points_trigger
 
 -- Add helpful comments
 COMMENT ON COLUMN customers.loyalty_points IS 'Current balance of loyalty points for the customer';
-COMMENT ON FUNCTION update_customer_loyalty_points IS 'Updates customer loyalty points when points_transactions change';
+COMMENT ON FUNCTION update_customer_loyalty_points IS 'Updates customer loyalty points when points_transactions change'; 

@@ -135,4 +135,4 @@ BEGIN
   ) THEN
     ALTER TABLE orders ADD COLUMN applied_coupons jsonb;
   END IF;
-END $$;
+END $$; 
