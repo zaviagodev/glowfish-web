@@ -75,7 +75,7 @@ const ProfileSettings = () => {
       if (!user) throw new Error("No user found");
   
       const fileExt = file.name.split('.').pop();
-      const filePath = `glowfish/customers/avatars/${user.id}.${fileExt}`;
+      const filePath = `UMER/customers/avatars/${user.id}.${fileExt}`;
   
       const { error: uploadError } = await supabase.storage
         .from('product-images')
