@@ -6,52 +6,29 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Standard error response structure
-interface ErrorResponse {
-  success: false;
-  error: {
-    code: string;
-    message: string;
-    details?: any;
-  };
-}
-
-// Helper function to create standardized error responses
-const createErrorResponse = (code: string, message: string, details?: any): ErrorResponse => ({
-  success: false,
-  error: {
-    code,
-    message,
-    ...(details && { details })
-  }
-});
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  let createdUser = null;
+  const adminClient = createClient(
+    Deno.env.get('SUPABASE_URL') || '',
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+  );
+
   try {
-    const { otp, phone, line_id, access_token, token } = await req.json()
-    
+    const { otp, phone, token, line_id, access_token, store_name } = await req.json()
+
+    // Use store_name from request if provided, otherwise use env variable
+    const effectiveStore = store_name || Deno.env.get('VITE_DEFAULT_STORE');
+
     // Verify OTP
     const apiUrl = 'https://portal.sms2pro.com/sms-api/otp-sms/verify';
     const apiToken = Deno.env.get('SMS2PRO_API');
 
     if (!apiUrl || !apiToken) {
-      return new Response(
-        JSON.stringify(createErrorResponse(
-          'CONFIG_ERROR',
-          'Missing SMS service configuration'
-        )),
-        { 
-          status: 500,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      throw new Error('Missing SMS service configuration');
     }
 
     const verifyResponse = await fetch(apiUrl, {
@@ -69,19 +46,7 @@ serve(async (req) => {
     const verifyResult = await verifyResponse.json();
 
     if (!verifyResult?.data?.is_valid) {
-      return new Response(
-        JSON.stringify(createErrorResponse(
-          'INVALID_OTP',
-          'Invalid OTP code provided'
-        )),
-        { 
-          status: 400,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      throw new Error('Invalid OTP code');
     }
 
     // Get Line profile
@@ -89,66 +54,39 @@ serve(async (req) => {
       headers: {
         'Authorization': `Bearer ${access_token}`
       }
-    })
+    });
 
     if (!profileResponse.ok) {
-      return new Response(
-        JSON.stringify(createErrorResponse(
-          'LINE_PROFILE_ERROR',
-          'Failed to get Line profile',
-          { status: profileResponse.status }
-        )),
-        { 
-          status: 400,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      throw new Error('Failed to get Line profile');
     }
 
-    const profileData = await profileResponse.json()
+    const profileData = await profileResponse.json();
 
     // Get email from Line
-    let email = `${profileData.userId}@line.com`
+    let email = `${profileData.userId}@line.com`;
     try {
       const emailResponse = await fetch('https://api.line.me/v2/profile/email', {
         headers: {
           'Authorization': `Bearer ${access_token}`
         }
-      })
+      });
       if (emailResponse.ok) {
-        const emailData = await emailResponse.json()
+        const emailData = await emailResponse.json();
         if (emailData.email) {
-          email = emailData.email
+          email = emailData.email;
         }
       }
     } catch (error) {
-      console.error('Failed to get Line email:', error)
+      console.error('Failed to get Line email:', error);
       // Continue with default email
     }
 
     // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     if (!supabaseUrl || !supabaseServiceKey) {
-      return new Response(
-        JSON.stringify(createErrorResponse(
-          'SUPABASE_CONFIG_ERROR',
-          'Missing Supabase configuration'
-        )),
-        { 
-          status: 500,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      throw new Error('Missing Supabase configuration');
     }
-
-    const adminClient = createClient(supabaseUrl, supabaseServiceKey)
 
     // Create or update user
     const { data: { user }, error: createUserError } = await adminClient.auth.admin.createUser({
@@ -162,41 +100,31 @@ serve(async (req) => {
       },
       email_confirm: true,
       phone_confirm: true
-    })
+    });
 
     if (createUserError) {
-      return new Response(
-        JSON.stringify(createErrorResponse(
-          'USER_CREATE_ERROR',
-          'Failed to create user',
-          { details: createUserError }
-        )),
-        { 
-          status: 400,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      throw createUserError;
     }
+
+    // Store the created user for potential cleanup
+    createdUser = user;
 
     // Create customer record
     const [firstName, ...lastNameParts] = profileData.displayName.split(' ');
     const lastName = lastNameParts.join(' ');
 
-    const { data : customerData, error: customerError } = await adminClient
+    const { data: customerData, error: customerError } = await adminClient
       .from('customers')
       .upsert({
-        id: user.id, // Use the same ID as auth user
-        store_name: 'glowfish', // Replace with actual store name
+        id: user.id,
+        store_name: effectiveStore,
         first_name: firstName,
-        last_name: lastName || firstName, // Use firstName as lastName if no lastName provided
+        last_name: lastName || firstName,
         email: email,
         phone: phone,
         accepts_marketing: true,
         avatar_url: profileData.pictureUrl,
-        tags: ['line'], // Add relevant tags
+        tags: ['line'],
         is_verified: true,
         auth_id: user.id
       }, {
@@ -204,20 +132,7 @@ serve(async (req) => {
       });
 
     if (customerError) {
-      return new Response(
-        JSON.stringify(createErrorResponse(
-          'CUSTOMER_CREATE_ERROR',
-          'Failed to create customer record',
-          { details: customerError }
-        )),
-        { 
-          status: 400,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      throw customerError;
     }
 
     // Create OAuth provider entry
@@ -235,29 +150,16 @@ serve(async (req) => {
     const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
       type: 'magiclink',
       email: email
-    })
+    });
 
     if (linkError) {
-      return new Response(
-        JSON.stringify(createErrorResponse(
-          'MAGIC_LINK_ERROR',
-          'Failed to generate magic link',
-          { details: linkError }
-        )),
-        { 
-          status: 400,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      throw linkError;
     }
 
-    const email_otp = linkData.properties.email_otp
+    const email_otp = linkData.properties.email_otp;
 
     // Verify email OTP
-    const verifyUrl = `${supabaseUrl}/auth/v1/verify`
+    const verifyUrl = `${supabaseUrl}/auth/v1/verify`;
     const verifyEmailResponse = await fetch(verifyUrl, {
       method: 'POST',
       headers: {
@@ -269,23 +171,11 @@ serve(async (req) => {
         token: email_otp,
         type: 'email'
       }),
-    })
+    });
 
-    const verifyEmailResult = await verifyEmailResponse.json()
+    const verifyEmailResult = await verifyEmailResponse.json();
     if (!verifyEmailResult.access_token) {
-      return new Response(
-        JSON.stringify(createErrorResponse(
-          'EMAIL_VERIFY_ERROR',
-          'Failed to verify email'
-        )),
-        { 
-          status: 400,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      throw new Error('Failed to verify email');
     }
 
     // Success response
@@ -297,7 +187,7 @@ serve(async (req) => {
         refresh_token: verifyEmailResult.refresh_token,
         user: verifyEmailResult.user,
         profile: profileData,
-        customer : customerData
+        customer: customerData
       }),
       { 
         headers: {
@@ -305,23 +195,30 @@ serve(async (req) => {
           'Content-Type': 'application/json'
         }
       }
-    )
+    );
 
   } catch (error) {
-    // Handle unexpected errors
+    // If we created a user but subsequent operations failed, delete the user
+    if (createdUser) {
+      try {
+        await adminClient.auth.admin.deleteUser(createdUser.id);
+      } catch (deleteError) {
+        console.error('Failed to delete user after error:', deleteError);
+      }
+    }
+
     return new Response(
-      JSON.stringify(createErrorResponse(
-        'INTERNAL_ERROR',
-        'An unexpected error occurred',
-        { message: error.message }
-      )),
+      JSON.stringify({
+        success: false,
+        error: error.message || 'An unexpected error occurred'
+      }),
       { 
-        status: 500,
+        status: 400,
         headers: {
           ...corsHeaders,
           'Content-Type': 'application/json'
         }
       }
-    )
+    );
   }
-})
+});

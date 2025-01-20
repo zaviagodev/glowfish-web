@@ -45,6 +45,7 @@ export const verifyOTP = async (
   try {
     const token = localStorage.getItem("refine-auth");
     const lineUser = JSON.parse(localStorage.getItem("line-user") || "{}");
+    const store = localStorage.getItem("store") || ""; // Get store from localStorage
 
     const { data: tokenData, error } = await supabase.functions.invoke('verify-otp', {
       body: {
@@ -53,9 +54,11 @@ export const verifyOTP = async (
         token: verification_token,
         line_id: lineUser.userId,
         access_token: token,
+        store_name: store
       },
     });
 
+    
     if (error) throw error;
 
     const sessionSet = await setSupabaseSession(tokenData);

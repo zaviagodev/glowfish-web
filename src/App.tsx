@@ -13,7 +13,7 @@ import routerBindings, {
   UnsavedChangesNotifier,
 } from "@refinedev/react-router-v6";
 import dataProvider from "@refinedev/simple-rest";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes, useSearchParams } from "react-router-dom";
 import "./App.css";
 import { authProvider } from "./authProvider";
 import { Layout } from "./components/layout";
@@ -65,10 +65,25 @@ function App() {
     getLocale: () => i18n.language,
   };
 
+  const StoreHandler = () => {
+    const [searchParams] = useSearchParams();
+    
+    useEffect(() => {
+      const store = searchParams.get('store');
+      if (store) {
+        localStorage.setItem('store', store);
+      }
+    }, [searchParams]);
+  
+    return null;
+  };
+
   return (
     <BrowserRouter>
       <RefineKbarProvider>
         <DevtoolsProvider>
+          {/* Add StoreHandler at the top level */}
+          <StoreHandler />
           <Refine
             dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
             routerProvider={routerBindings}
