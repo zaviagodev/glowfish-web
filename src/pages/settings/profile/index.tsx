@@ -73,9 +73,11 @@ const ProfileSettings = () => {
       
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
+
+      const store_name = localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
   
       const fileExt = file.name.split('.').pop();
-      const filePath = `UMER/customers/avatars/${user.id}.${fileExt}`;
+      const filePath = `${store_name}/customers/avatars/${user.id}.${fileExt}`;
   
       const { error: uploadError } = await supabase.storage
         .from('product-images')
