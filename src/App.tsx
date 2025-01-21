@@ -6,15 +6,18 @@ import {
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { useTranslation } from "react-i18next"
+import VoucherDetail from "./pages/my-items/VoucherDetail";
+import TicketsPage from "./pages/tickets";
+import TicketDetails from "./pages/tickets/TicketDetails";
 import routerBindings, {
   CatchAllNavigate,
-  DocumentTitleHandler,
   NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router-v6";
 import dataProvider from "@refinedev/simple-rest";
-import { BrowserRouter, Outlet, Route, Routes, useSearchParams } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import "./App.css";
+import { ConfigProvider } from "./hooks/useConfig";
 import { authProvider } from "./authProvider";
 import { Layout } from "./components/layout";
 import {
@@ -35,17 +38,32 @@ import { Register } from "./pages/register";
 import { LineCallback } from "./pages/line-callback";
 import PhoneVerification from "./pages/phone-verification";
 import TellUsAboutYourself from "./pages/tell-us-about-yourself";
+import ThankYouPage from "./pages/checkout/thank-you";
 import HistoryPage from "./pages/history";
 import MyEventsPage from "./pages/my-events";
 import MyEventDetail from "./pages/my-events/detail";
+import MyOrdersPage from "./pages/my-orders";
+import OrderDetailPage from "./pages/my-orders/detail";
 import SettingsPage from "./pages/settings";
 import ProfileSettings from "./pages/settings/profile";
 import HowToGetPoints from "./pages/settings/how-to-get-points";
+import HowToSpendPoints from "./pages/settings/how-to-spend-points";
+import MemberLevel from "./pages/settings/member-level";
 import MyRewards from "./pages/my-rewards";
 import Rewards from "./pages/rewards";
 import RewardDetail from "./pages/rewards/detail";
+import CartPage from "./pages/cart";
 import CheckoutPage from "./pages/checkout";
-import useConfig, { ConfigProvider } from "./hooks/useConfig";
+import AddressSelection from "./pages/checkout/address-selection";
+import PromotionsPage from "./pages/promotions";
+import CouponsPage from "./pages/checkout/coupons";
+import PointsPage from "./pages/checkout/points";
+import VatInvoicePage from "./pages/checkout/vat-invoice";
+import PaymentPage from "./pages/checkout/payment";
+import MyItemsPage from "./pages/my-items";
+import MyPointsPage from "./pages/points";
+import ProductsPage from "./pages/products";
+import useConfig from "./hooks/useConfig";
 import { useEffect } from "react";
 
 function App() {
@@ -53,7 +71,7 @@ function App() {
   const { config } = useConfig();
 
   useEffect(() => {
-    i18n.changeLanguage("en");
+    i18n.changeLanguage(config.default_language);
   }, [config]);
 
   const i18nProvider = {
@@ -65,25 +83,10 @@ function App() {
     getLocale: () => i18n.language,
   };
 
-  const StoreHandler = () => {
-    const [searchParams] = useSearchParams();
-    
-    useEffect(() => {
-      const store = searchParams.get('store');
-      if (store) {
-        localStorage.setItem('store', store);
-      }
-    }, [searchParams]);
-  
-    return null;
-  };
-
   return (
     <BrowserRouter>
       <RefineKbarProvider>
         <DevtoolsProvider>
-          {/* Add StoreHandler at the top level */}
-          <StoreHandler />
           <Refine
             dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
             routerProvider={routerBindings}
@@ -134,6 +137,7 @@ function App() {
                 <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />} />
 
                 {/* Protected Routes */}
+                {/* Protected Routes */}
                 <Route
                   element={
                     <Authenticated
@@ -147,20 +151,42 @@ function App() {
                   <Route index element={<HomeList />} />
                   <Route path="/history" element={<HistoryPage />}/>
                   <Route path="/checkout" element={<CheckoutPage />}/>
+                  <Route path="/promotions" element={<PromotionsPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/checkout/address" element={<AddressSelection />} />
+                  <Route path="/checkout/payment" element={<PaymentPage />} />
+                 <Route path="/checkout/vat-invoice" element={<VatInvoicePage />} />
+                 <Route path="/checkout/coupons" element={<CouponsPage />} />
+                 <Route path="/checkout/points" element={<PointsPage />} />
+                 <Route path="/checkout/thank-you" element={<ThankYouPage />} />
                   <Route path="/my-events">
                     <Route index element={<MyEventsPage />} />
                     <Route path="detail/:id" element={<MyEventDetail />} />
                   </Route>
+                  <Route path="/my-orders">
+                    <Route index element={<MyOrdersPage />} />
+                    <Route path=":id" element={<OrderDetailPage />} />
+                  </Route>
+                 <Route path="/my-items">
+                   <Route index element={<MyItemsPage />} />
+                   <Route path=":id" element={<VoucherDetail />} />
+                 </Route>
                   <Route path="/my-rewards" element={<MyRewards />}/>
                   <Route path="/rewards">
                     <Route index element={<Rewards />} />
                     <Route path="detail/:id" element={<RewardDetail />}/>
                   </Route>
+                 <Route path="/products" element={<ProductsPage />} />
                   <Route path="/settings">
                     <Route index element={<SettingsPage />} />
                     <Route path="profile" element={<ProfileSettings />} />
-                   <Route path="how-to-get-points" element={<HowToGetPoints />} />
+                    <Route path="how-to-get-points" element={<HowToGetPoints />} />
+                    <Route path="how-to-spend-points" element={<HowToSpendPoints />} />
+                    <Route path="member-level" element={<MemberLevel />} />
+                   <Route path="points" element={<MyPointsPage />} />
                   </Route>
+                 <Route path="/tickets" element={<TicketsPage />} />
+                 <Route path="/tickets/:id" element={<TicketDetails />} />
                   <Route path="/home">
                     <Route index element={<HomeList />} />
                     <Route path="create" element={<HomeCreate />} />
@@ -181,7 +207,6 @@ function App() {
 
             <RefineKbar />
             <UnsavedChangesNotifier />
-            <DocumentTitleHandler />
           </Refine>
           <DevtoolsPanel />
         </DevtoolsProvider>

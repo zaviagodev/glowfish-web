@@ -1,11 +1,26 @@
-// src/authProvider.ts
 import type { AuthProvider } from "@refinedev/core";
 import { supabase } from "./lib/supabase";
 import { setSupabaseSession } from "@/lib/auth";
-import { custom } from "zod";
 
 export const TOKEN_KEY = "refine-auth";
 export const LINE_USER_KEY = "line-user";
+
+// Test session data for storefront mode
+const TEST_SESSION = {
+  access_token: "eyJhbGciOiJIUzI1NiIsImtpZCI6Iks1THZiRzAraXJ1N0owdVUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3p6eHpxcWhibWpwZ2d4cXNud3l4LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIxYTYyZjk2MS0zMTM0LTRhNjctYjU0My1jMmFmODYxMjJlYzIiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzM2NDE4MTAzLCJpYXQiOjE3MzY0MTQ1MDMsImVtYWlsIjoidGVzdDIyQGdtaWwuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbCI6InRlc3QyMkBnbWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmdWxsX25hbWUiOiJOYWJlZWwgVGFoaXIiLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInN0b3JlX25hbWUiOiJnbG93ZmlzaCIsInN1YiI6IjFhNjJmOTYxLTMxMzQtNGE2Ny1iNTQzLWMyYWY4NjEyMmVjMiJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im90cCIsInRpbWVzdGFtcCI6MTczNjQxNDUwM31dLCJzZXNzaW9uX2lkIjoiM2FlMTdkN2UtOGFlMi00ZmQ5LTkyMGUtNDk1YmI3YzBlOGI5IiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.ktNuVDBZovz1p29lcHRIykwTdwp0QQIwUOkljPaT460",
+  refresh_token: "FJyhY3JPyxDCdKhEK_JawQ",
+  user: {
+    id: "1a62f961-3134-4a67-b543-c2af86122ec2",
+    email: "test22@gmil.com",
+    user_metadata: {
+      email: "test22@gmil.com",
+      email_verified: true,
+      full_name: "Nabeel Tahir",
+      phone_verified: false,
+      store_name: "glowfish"
+    }
+  }
+};
 
 // Line auth configuration
 const LINE_CONFIG = {
@@ -16,97 +31,34 @@ const LINE_CONFIG = {
 
 const isStorefrontMode = () => import.meta.env.VITE_STOREFRONT_MODE === "1";
 
-// Function to create test session
-export const createTestSession = async () => {
-  try {
-    // Create anonymous session with limited permissions
-    const { data: { session }, error } = await supabase.auth.signInWithPassword({
-      email: import.meta.env.VITE_TEST_EMAIL || 'test@example.com',
-      password: import.meta.env.VITE_TEST_PASSWORD || 'test123'
-    });
-
-    if (error) throw error;
-
-    // Get or create test customer
-    const { data: customer, error: customerError } = await supabase
-      .from('customers')
-      .select('*')
-      .eq('email', session.user.email)
-      .single();
-
-    if (customerError && customerError.code !== 'PGRST116') {
-      throw customerError;
-    }
-
-    let testCustomer = customer;
-
-    if (!testCustomer) {
-      const { data: newCustomer, error: createError } = await supabase
-        .from('customers')
-        .insert({
-          email: session.user.email,
-          first_name: 'Test',
-          last_name: 'User',
-          store_name: 'glowfish',
-          is_verified: true,
-          meta: {
-            is_test_account: true
-          }
-        })
-        .select()
-        .single();
-
-      if (createError) throw createError;
-      testCustomer = newCustomer;
-    }
-
-    const testSession =  {
-      access_token: session.access_token,
-      refresh_token: session.refresh_token,
-      user : session.user,
-      customer : testCustomer,
-    };
-    await setSupabaseSession(testSession);
-    return {
-      success: true,
-      redirectTo: "/home"
-    };
-  } catch (error) {
-    console.error('Error creating test session:', error);
-    throw error;
-  }
+// Helper function to clear all auth-related storage
+const clearAuthStorage = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(LINE_USER_KEY);
+  localStorage.removeItem('user_profile');
+  localStorage.removeItem('cached_events');
 };
 
 export const authProvider: AuthProvider = {
   login: async ({ providerName, code }) => {
-    // For storefront mode
-    if (isStorefrontMode()) {
-      try {
-        const testSession = await createTestSession();
-        const sessionSet = await setSupabaseSession(testSession);
-        if (!sessionSet) {
-          throw new Error('Failed to set session');
-        }
-
+    try {
+      // Handle storefront mode
+      if (isStorefrontMode()) {
+        await supabase.auth.setSession({
+          access_token: TEST_SESSION.access_token,
+          refresh_token: TEST_SESSION.refresh_token
+        });
+        localStorage.setItem(TOKEN_KEY, TEST_SESSION.access_token);
+        localStorage.setItem(LINE_USER_KEY, JSON.stringify(TEST_SESSION.user));
+        localStorage.setItem('user_profile', JSON.stringify(TEST_SESSION.user));
         return {
           success: true,
           redirectTo: "/home"
         };
-      } catch (error) {
-        console.error('Test login error:', error);
-        return {
-          success: false,
-          error: {
-            name: "LoginError",
-            message: "Failed to create test session"
-          }
-        };
       }
-    }
 
-    if (providerName === "line" && code) {
-      try {
-        // Exchange code for access token using Edge Function
+      // Handle Line login
+      if (providerName === "line" && code) {
         const { data: tokenData, error: functionError } = await supabase.functions.invoke('line-auth', {
           body: {
             code,
@@ -114,11 +66,9 @@ export const authProvider: AuthProvider = {
           }
         });
 
-        if (functionError) {
-          throw new Error("Failed to get access token");
-        }
+        if (functionError) throw new Error("Failed to get access token");
 
-        if(tokenData.type == 1){
+        if (tokenData.type === 1) {
           const sessionSet = await setSupabaseSession(tokenData);
           if (!sessionSet) {
             throw new Error('Failed to set session');
@@ -133,96 +83,108 @@ export const authProvider: AuthProvider = {
           success: true,
           redirectTo: tokenData.redirect === "register" ? "/phone-verification" : "/home",
         };
-
-      } catch (error) {
-        console.error("Line login error:", error);
-        return {
-          success: false,
-          error: {
-            name: "LoginError",
-            message: "Failed to login with Line",
-          },
-        };
       }
-    }
 
-    return {
-      success: false,
-      error: {
-        name: "LoginError", 
-        message: "Invalid login method",
-      },
-    };
+      throw new Error("Invalid login method");
+    } catch (error) {
+      console.error("Login error:", error);
+      return {
+        success: false,
+        error: {
+          name: "LoginError",
+          message: error instanceof Error ? error.message : "Failed to login",
+        },
+      };
+    }
   },
 
   logout: async () => {
-    await supabase.auth.signOut();
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(LINE_USER_KEY);
-    localStorage.removeItem('user_profile');
-    localStorage.removeItem('cached_events');
-    return {
-      success: true,
-      redirectTo: "/login",
-    };
+    try {
+      await supabase.auth.signOut();
+      clearAuthStorage();
+      return {
+        success: true,
+        redirectTo: "/login",
+      };
+    } catch (error) {
+      console.error("Logout error:", error);
+      return {
+        success: false,
+        error: {
+          name: "LogoutError",
+          message: "Failed to logout",
+        },
+      };
+    }
   },
 
   check: async () => {
-    if (isStorefrontMode()) {
+    try {
+      if (isStorefrontMode()) {
+        return { authenticated: true };
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       return {
-        authenticated: !!session
+        authenticated: !!session,
+        redirectTo: session ? undefined : "/login",
       };
-    }
-
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
+    } catch (error) {
+      console.error("Auth check error:", error);
       return {
-        authenticated: true,
+        authenticated: false,
+        redirectTo: "/login",
       };
     }
-
-    return {
-      authenticated: false,
-      redirectTo: "/login",
-    };
   },
 
-  getPermissions: async () => null,
+  getPermissions: async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      return session?.user?.role || null;
+    } catch (error) {
+      console.error("Get permissions error:", error);
+      return null;
+    }
+  },
 
   getIdentity: async () => {
-    if (isStorefrontMode()) {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
+    try {
+      if (isStorefrontMode()) {
+        return {
+          id: TEST_SESSION.user.id,
+          name: TEST_SESSION.user.user_metadata.full_name,
+          email: TEST_SESSION.user.email,
+          avatar: ""
+        };
+      }
 
-      const { data: customer } = await supabase
-        .from('customers')
-        .select('*')
-        .eq('auth_id', user.id)
-        .single();
+      const userData = localStorage.getItem(LINE_USER_KEY);
+      if (!userData) return null;
 
-      return {
-        id: user.id,
-        name: customer?.full_name || 'Test User',
-        email: customer?.email || user.email,
-        avatar: customer?.avatar_url || ""
-      };
-    }
-
-    const userData = localStorage.getItem(LINE_USER_KEY);
-    if (userData) {
       const user = JSON.parse(userData);
       return {
         id: user.userId,
         name: user.displayName,
         avatar: user.pictureUrl,
       };
+    } catch (error) {
+      console.error("Get identity error:", error);
+      return null;
     }
-    return null;
   },
 
   onError: async (error) => {
-    console.error(error);
+    console.error("Auth error:", error);
+    const notAuthenticated = error.statusCode === "UNAUTHENTICATED";
+    if (notAuthenticated) {
+      clearAuthStorage();
+      return {
+        error,
+        logout: true,
+        redirectTo: "/login",
+      };
+    }
     return { error };
   },
 };
