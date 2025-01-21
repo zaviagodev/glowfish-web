@@ -3,7 +3,7 @@ import { ReactNode } from "react"
 type EventDataTypes = "small" | "event"
 
 export interface EventDataProps {
-    id?: number,
+    id: number | string,
     image: string
     title: string
     location?: string
