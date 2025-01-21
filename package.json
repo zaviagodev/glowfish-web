@@ -59,7 +59,7 @@
     "vite": "^4.3.1"
   },
   "scripts": {
-    "dev": "refine dev",
+    "dev": "refine dev --devtools=false",
     "build": "refine build",
     "start": "refine start",
     "refine": "refine"
