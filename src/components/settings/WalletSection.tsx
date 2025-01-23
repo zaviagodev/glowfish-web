@@ -2,6 +2,7 @@ import { useTranslate } from "@refinedev/core";
 import { useNavigate } from "react-router-dom";
 import { Wallet, Gift, Ticket, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEvents } from "@/hooks/useEvents";
 
 interface WalletItem {
   icon: React.ReactNode;
@@ -16,6 +17,20 @@ interface WalletItem {
 export function WalletSection() {
   const t = useTranslate();
   const navigate = useNavigate();
+  const { events } = useEvents();
+
+  // Calculate total active tickets count
+  const activeTicketsCount = events.reduce((total, eventData) => {
+    if (!eventData.event || !eventData.tickets) return total;
+    const eventDate = new Date(eventData.event.start_datetime);
+    // Only count tickets for upcoming events
+    if (eventDate > new Date()) {
+      const unusedTickets = eventData.tickets.filter(ticket => ticket.status === 'unused').length;
+      return total + unusedTickets;
+    }
+    return total;
+  }, 0);
+
 
   const walletItems: WalletItem[] = [
     {
@@ -106,7 +121,7 @@ export function WalletSection() {
           </div>
           <div className="flex items-center gap-2">
             <div className="px-2.5 py-1 rounded-full bg-[rgba(3, 169, 244, 0.1)] text-[#03A9F4] text-xs font-medium">
-              2
+              {activeTicketsCount}
             </div>
           </div>
         </div>

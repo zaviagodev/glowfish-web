@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
 import { usePoints } from "@/lib/points";
+import { useOrders } from "@/hooks/useOrders";
 import { supabase } from "@/lib/supabase";
 import { AddressCard } from "@/components/shared/AddressCard";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -23,6 +24,7 @@ export default function CheckoutPage() {
   const { items: allItems } = useCart();
   const { getTotalDiscount } = useCoupons();
   const { getDiscountAmount } = usePoints();
+  const { refreshOrders } = useOrders();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cash");
@@ -105,6 +107,8 @@ export default function CheckoutPage() {
         throw new Error('No order data returned');
       }
 
+      // Refresh orders after successful creation
+      await refreshOrders();
       setShowSuccess(true);
     } catch (error) {
       console.error('Error creating order:', error);
