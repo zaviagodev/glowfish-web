@@ -42,6 +42,7 @@ export const HomeList = () => {
   const filteredProducts = selectedCategory
     ? products.filter(product => product.category_id === selectedCategory)
     : products;
+
   
   const searchResults = filteredProducts.filter(product => 
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -49,18 +50,59 @@ export const HomeList = () => {
   );
 
   const handleProductSelect = (product: any) => {
-    // Get the default variant if product has variants
-    const defaultVariant = product.product_variants?.[0];
-    if (defaultVariant) {
+    // If product has no variants, just set the product
+    if (!product.product_variants || product.product_variants.length === 0) {
       setSelectedProduct({
         ...product,
-        variant_id: defaultVariant.id,
-        quantity: defaultVariant.quantity
+        track_quantity: product.track_quantity,
+        variant_id: undefined,
+        quantity: product.quantity
       });
-    } else {
-      setSelectedProduct(product);
+      setIsSearchOpen(false);
+      return;
     }
+
+    // If product has only one variant, select it
+    if (product.product_variants.length === 1) {
+      const variant = product.product_variants[0];
+      setSelectedProduct({
+        ...product,
+        track_quantity: product.track_quantity,
+        variant_id: variant.id,
+        quantity: variant.quantity
+      });
+      setIsSearchOpen(false);
+      return;
+    }
+
+    // If product has multiple variants, don't select any by default
+    setSelectedProduct({
+      ...product,
+      track_quantity: product.track_quantity,
+      variant_id: undefined,
+      quantity: product.quantity
+    });
     setIsSearchOpen(false);
+  };
+
+  const getPriceDisplay = (product: any) => {
+    if (!product.product_variants || product.product_variants.length === 0) {
+      return product.price === 0 ? t("free") : `${product.price.toLocaleString()}`;
+    }
+
+    if (product.product_variants.length === 1) {
+      return `${product.product_variants[0].price.toLocaleString()}`;
+    }
+
+    const prices = product.product_variants.map((v: any) => v.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+
+    if (minPrice === maxPrice) {
+      return `${minPrice.toLocaleString()}`;
+    }
+
+    return `${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
   };
 
   useEffect(() => {
@@ -162,7 +204,7 @@ export const HomeList = () => {
                     <div>
                       <p className="font-medium">{product.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {product.price === 0 ? t("free") : `฿${product.price}`}
+                        {getPriceDisplay(product)}
                       </p>
                     </div>
                   </div>
@@ -233,7 +275,7 @@ export const HomeList = () => {
                   id={product.id}
                   image={product.image}
                   title={product.name}
-                  price={product.price}
+                  price={getPriceDisplay(product)}
                   compareAtPrice={product.compare_at_price}
                   description={product.description}
                 />

@@ -7,6 +7,21 @@ import { createPortal } from "react-dom";
 import { useCart } from "@/lib/cart";
 import { VariantDrawer } from "./VariantDrawer";
 import { useState } from "react";
+import { useToast } from "@/components/ui/toast";
+
+interface ProductVariantOption {
+  name: string;
+  value: string;
+}
+
+interface ProductVariant {
+  id: string;
+  price: number;
+  quantity: number;
+  options: ProductVariantOption[];
+  name: Record<string, string>;
+  track_quantity: boolean;
+}
 
 interface ProductDetailProps {
   id: string | number;
@@ -19,9 +34,10 @@ interface ProductDetailProps {
   points?: string | number;
   variant_id?: string;
   quantity?: number;
+  track_quantity?: boolean;
   onClose: () => void;
   variant_options?: any[];
-  product_variants?: any[];
+  product_variants?: ProductVariant[];
 }
 
 export function ProductDetail({
@@ -35,6 +51,7 @@ export function ProductDetail({
   points,
   variant_id,
   quantity = 1,
+  track_quantity = false,
   onClose,
   variant_options,
   product_variants
@@ -42,18 +59,40 @@ export function ProductDetail({
   const t = useTranslate();
   const navigate = useNavigate();
   const addItem = useCart((state) => state.addItem);
+  const { addToast } = useToast();
   const [showVariantDrawer, setShowVariantDrawer] = useState(false);
   const [selectedVariantId, setSelectedVariantId] = useState<string | undefined>(variant_id);
 
   // Find selected variant
   const selectedVariant = product_variants?.find(v => v.id === selectedVariantId);
 
+  // Get price display
+  const getPriceDisplay = () => {
+    if (selectedVariant) {
+      return `฿${selectedVariant.price.toLocaleString()}`;
+    }
+
+    if (!product_variants || product_variants.length === 0) {
+      return price === 0 ? t("free") : `฿${Number(price).toLocaleString()}`;
+    }
+
+    const prices = product_variants.map(v => v.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+
+    if (minPrice === maxPrice) {
+      return `฿${minPrice.toLocaleString()}`;
+    }
+
+    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+  };
+
   // Format variant options for display
   const getSelectedOptionsDisplay = () => {
     if (!selectedVariant) {
       return t("Select Options");
     }
-    return Object.values(selectedVariant.options).join(' / ');
+    return Object.values(selectedVariant.name);
   };
 
   const handleVariantSelect = (variantId: string) => {
@@ -68,19 +107,32 @@ export function ProductDetail({
         return;
       }
     } else if (!selectedVariantId) {
-      console.error('No variant selected');
+      addToast(t("Please select product options"), "error");
+      return;
+    }
+    // Check stock quantity if tracking is enabled
+    const stockQuantity = selectedVariant?.quantity || quantity;
+    const shouldTrackQuantity = track_quantity;
+
+    if (shouldTrackQuantity && stockQuantity <= 0) {
+      addToast(t("This item is out of stock"), "error");
       return;
     }
     
     addItem({
-      variantId: selectedVariantId,
+      variantId: selectedVariantId!,
       productId: id.toString(),
       name,
       image,
       price: selectedVariant?.price || Number(price),
-      maxQuantity: selectedVariant?.quantity || quantity
+      maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
+      variant: selectedVariant?.options?.reduce((acc, opt: ProductVariantOption) => ({
+        ...acc,
+        [opt.name]: opt.value
+      }), {} as Record<string, string>)
     });
 
+    addToast(t("Added to cart"), "success");
     if (toCart) navigate('/cart');
   };
 
@@ -138,7 +190,7 @@ export function ProductDetail({
         <div className="p-6 space-y-8">
           <div className="space-y-4">
             <div className="space-y-3">
-              {price && (
+              {getPriceDisplay() && (
                 <motion.div className="flex items-center gap-2">
                   <div className="flex items-baseline gap-2">
                     <motion.span 
@@ -148,7 +200,7 @@ export function ProductDetail({
                         transform: 'translateZ(0)'
                       }}
                     >
-                      ฿{(selectedVariant?.price || price).toLocaleString()}
+                      {getPriceDisplay()}
                     </motion.span>
                     {selectedVariant?.compare_at_price && (
                       <motion.span
@@ -269,27 +321,33 @@ export function ProductDetail({
                 </Button>
               )}
 
+              {/* Stock Status */}
+              {(selectedVariant?.track_quantity ?? track_quantity) && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">{t("Stock")}:</span>{" "}
+                  {selectedVariant ? (
+                    <span className={selectedVariant.quantity > 0 ? "text-green-600" : "text-red-500"}>
+                      {selectedVariant.quantity > 0 ? t("In Stock") : t("Out of Stock")} 
+                      ({selectedVariant.quantity} {t("available")})
+                    </span>
+                  ) : (
+                    <span className={quantity > 0 ? "text-green-600" : "text-red-500"}>
+                      {quantity > 0 ? t("In Stock") : t("Out of Stock")} 
+                      ({quantity} {t("available")})
+                    </span>
+                  )}
+                </div>
+              )}
+
               <Button 
                 className="w-full bg-[rgba(245,245,245,0.5)] text-black hover:bg-[#EBEBEB] border border-[#E5E5E5]"
-                onClick={() => {
-                  if (variant_options && variant_options.length > 0) {
-                    setShowVariantDrawer(true);
-                  } else {
-                    handleAddToCart(false);
-                  }
-                }}
+                onClick={() => handleAddToCart(false)}
               >
                 {t("Add to Cart")}
               </Button>
               <Button 
                 className="w-full bg-[#EE4D2D] text-white hover:bg-[#EE4D2D]/90"
-                onClick={() => {
-                  if (variant_options && variant_options.length > 0) {
-                    setShowVariantDrawer(true);
-                  } else {
-                    handleAddToCart(true);
-                  }
-                }}
+                onClick={() => handleAddToCart(true)}
               >
                 {t("Buy Now")}
               </Button>

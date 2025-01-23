@@ -9,6 +9,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   maxQuantity: number;
+  variant?: Record<string, string>;
 }
 
 type NewCartItem = Omit<CartItem, 'quantity'>;

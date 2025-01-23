@@ -58,6 +58,8 @@ import CouponsPage from "./pages/checkout/coupons";
 import PointsPage from "./pages/checkout/points";
 import VatInvoicePage from "./pages/checkout/vat-invoice";
 import PaymentPage from "./pages/checkout/payment";
+import CartPage from "./pages/cart";
+import { ToastProvider } from "@/components/ui/toast";
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -158,6 +160,7 @@ function App() {
                   <Route index element={<HomeList />} />
                   <Route path="/history" element={<HistoryPage />}/>
                   <Route path="/checkout" element={<CheckoutPage />}/>
+                  <Route path="/cart" element={<CartPage />}/>
                   <Route path="/my-rewards" element={<MyRewards />}/>
                   <Route path="/rewards">
                     <Route index element={<Rewards />} />
@@ -220,7 +223,9 @@ function App() {
 function AppWrapper() {
   return (
     <ConfigProvider>
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </ConfigProvider>
   );
 }

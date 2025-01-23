@@ -19,7 +19,10 @@ interface ProductVariant {
   price: number;
   compare_at_price: number | null;
   quantity: number;
-  options: Record<string, any>;
+  options: Array<{
+    name: string;
+    value: string;
+  }>;
   status: string;
   position: number;
 }
@@ -56,7 +59,11 @@ export function VariantDrawer({
     if (selectedVariantId) {
       const variant = variants.find(v => v.id === selectedVariantId);
       if (variant) {
-        setSelectedOptions(variant.options);
+        const optionsRecord = variant.options.reduce((acc, opt) => ({
+          ...acc,
+          [opt.name]: opt.value
+        }), {});
+        setSelectedOptions(optionsRecord);
       }
     }
   }, [selectedVariantId, variants]);
@@ -65,27 +72,31 @@ export function VariantDrawer({
   const findMatchingVariant = () => {
     return variants.find(variant => {
       return Object.entries(selectedOptions).every(([key, value]) => 
-        variant.options[key] === value
+        variant.options.some(opt => opt.name === key && opt.value === value)
       );
     });
   };
 
   // Get available values for an option based on current selections
   const getAvailableValues = (optionName: string) => {
+    if (!variants || variants.length === 0) {
+      return [];
+    }
+
     const otherSelections = { ...selectedOptions };
     delete otherSelections[optionName];
 
     const availableValues = variants
       .filter(variant => 
         Object.entries(otherSelections).every(([key, value]) => 
-          variant.options[key] === value
+          variant.options.some(opt => opt.name === key && opt.value === value)
         )
       )
-      .map(variant => variant.options[optionName])
+      .map(variant => 
+        variant.options.find(opt => opt.name === optionName)?.value
+      )
+      .filter((value): value is string => value !== undefined)
       .filter((value, index, self) => self.indexOf(value) === index);
-
-    // Log available values for debugging
-    console.log(`Available values for ${optionName}:`, availableValues);
     
     return availableValues;
   };
@@ -101,7 +112,7 @@ export function VariantDrawer({
     // Find matching variant
     const matchingVariant = variants.find(variant => 
       Object.entries(newSelections).every(([key, val]) => 
-        variant.options[key] === val
+        variant.options.some(opt => opt.name === key && opt.value === val)
       )
     );
 
@@ -213,7 +224,7 @@ export function VariantDrawer({
           >
             {currentVariant?.quantity === 0 
               ? t("Out of Stock")
-              : t("Add to Cart")}
+              : t("Select Options")}
           </Button>
         </div>
       </SheetContent>

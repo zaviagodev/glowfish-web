@@ -1,221 +1,175 @@
-// src/pages/checkout/index.tsx
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import Header from "@/components/main/Header";
-import { Button } from "@/components/ui/button";
 import { useTranslate } from "@refinedev/core";
-import { QuestionChat, DownloadIcon } from "@/components/icons/MainIcons";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useCart } from "@/lib/cart";
+import { useCoupons } from "@/lib/coupon";
+import { usePoints } from "@/lib/points";
 import { supabase } from "@/lib/supabase";
-import RegisterDrawer from "@/components/main/RegisterDrawer";
-import { useEvents } from "@/hooks/useEvents";
-import { useCustomer } from "@/hooks/useCustomer";
+import { AddressCard } from "@/components/shared/AddressCard";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { ProductList } from "@/components/checkout/ProductList";
+import { PaymentMethod } from "@/components/checkout/PaymentMethod";
+import { OrderSummary } from "@/components/checkout/OrderSummary";
+import { PointsCoupons } from "@/components/checkout/PointsCoupons";
+import { MessageDialog } from "@/components/checkout/MessageDialog";
+import { CheckoutFooter } from "@/components/checkout/CheckoutFooter";
+import { ShippingMethod } from "@/components/checkout/ShippingMethod";
+import { SuccessDialog } from "@/components/checkout/SuccessDialog";
 
-const QR_CODE_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png';
-// Example bank details
-const BANK_DETAILS = {
-  bankName: "Kasikorn Bank",
-  accountName: "Glowfish Co., Ltd",
-  accountNumber: "xxx-x-xxxxx-x",
-  swiftCode: "KASITHBK"
-};
-
-const CheckoutPage = () => {
+export default function CheckoutPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { productId, variantId, productName, variantName, price, image } = location.state || {};
-  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
-  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
-  const [showThankYou, setShowThankYou] = useState(false);
+  const { items: allItems } = useCart();
+  const { getTotalDiscount } = useCoupons();
+  const { getDiscountAmount } = usePoints();
   const [isProcessing, setIsProcessing] = useState(false);
-  const { refreshEvents } = useEvents();
-  const { customer } = useCustomer();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [storeMessage, setStoreMessage] = useState("");
+  const [showMessageDialog, setShowMessageDialog] = useState(false);
+  const [vatInvoiceData, setVatInvoiceData] = useState({
+    enabled: false,
+    companyName: "",
+    taxId: "",
+    branch: "",
+    address: ""
+  });
 
-  const totalPrice = price * 1.07;
-  const tax = price * 0.07;
+  // Get selected items from location state, fallback to all items if accessed directly
+  const items = location.state?.selectedItems || allItems;
+
+  // Redirect to cart if accessed directly without selected items
+  if (!location.state?.selectedItems) {
+    navigate('/cart', { replace: true });
+    return null;
+  }
+
+  // Calculate order summary
+  const subtotal = items.reduce((total: number, item: CartItem) => total + item.price * item.quantity, 0);
+  const discount = getTotalDiscount(subtotal);
+  const pointsDiscount = getDiscountAmount();
+  const tax = subtotal * 0.07; // 7% tax
+  const total = subtotal - discount - pointsDiscount + tax;
 
   const handleCreateOrder = async () => {
-    if (!paymentMethod) return;
-
     setIsProcessing(true);
     try {
+      // Validate cart is not empty
+      if (items.length === 0) {
+        throw new Error('Cart is empty');
+      }
+
+      if (paymentMethod === 'promptpay') {
+        navigate('/checkout/payment');
+        return;
+      }
+
+      // Get current user
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Prepare order items with variant IDs
+      const orderItems = items.map(item => ({
+        variant_id: item.variantId,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.price * item.quantity
+      }));
+
+      // Create order using place_order function
       const { data: newOrder, error } = await supabase.rpc('place_order', {
         p_store_name: 'glowfish',
-        p_customer_id: customer.id,
+        p_customer_id: user.id,
         p_status: 'pending',
-        p_subtotal: price,
-        p_discount: 0,
+        p_subtotal: subtotal,
+        p_discount: discount + pointsDiscount,
         p_shipping: 0,
         p_tax: tax,
-        p_total: totalPrice,
-        p_notes: null,
-        p_tags: [],
-        p_items: [{
-          variant_id: variantId,
-          quantity: 1,
-          price: price,
-          total: price
-        }]
+        p_total: total,
+        p_notes: JSON.stringify({
+          message: storeMessage,
+          vatInvoice: vatInvoiceData.enabled ? vatInvoiceData : null,
+          paymentMethod: paymentMethod
+        }),
+        p_tags: ['web'],
+        p_items: orderItems
       });
 
-      if (error) throw error;
-      setShowPaymentDetails(false);
-      setShowThankYou(true);
-      refreshEvents();
+      if (error) {
+        console.error('Order creation error:', error);
+        throw new Error(error.message || 'Failed to create order');
+      }
 
+      if (!newOrder) {
+        throw new Error('No order data returned');
+      }
+
+      setShowSuccess(true);
     } catch (error) {
       console.error('Error creating order:', error);
-      alert('Failed to process order. Please try again.');
+      alert(t(error instanceof Error ? error.message : "Failed to process order. Please try again."));
     } finally {
       setIsProcessing(false);
     }
   };
 
   return (
-    <>
-      <Header title={t("Checkout")} rightButton={t("Detail")}/>
-      <section className="flex flex-col gap-6 mb-[200px]">
-        {image && <img src={image} className="rounded-xl"/>}
-        <div className="flex flex-col items-center gap-2">
-          <h2 className="text-lg font-semibold text-center">{productName}</h2>
-          {variantName && <p className="text-[#979797]">{variantName}</p>}
+    <div className="min-h-screen bg-background">
+      <PageHeader title={t("Checkout")} />
+
+      <div className="pt-14 pb-32">
+        <div className="p-4 space-y-6">
+          <AddressCard
+            title={t("Delivery Address")}
+            name="John Doe"
+            phone="(+66) 123-456-789"
+            address="123 Sample Street, Bangkok, 10110"
+          />
+
+          <ProductList 
+            items={items}
+            storeMessage={storeMessage}
+            vatInvoiceData={vatInvoiceData}
+            onMessageClick={() => setShowMessageDialog(true)} 
+            onVatClick={() => navigate('/checkout/vat-invoice')}
+          />
+
+          <PointsCoupons subtotal={subtotal} />
+
+          <PaymentMethod 
+            value={paymentMethod}
+            onChange={setPaymentMethod}
+          />
+
+          <OrderSummary
+            subtotal={subtotal}
+            discount={discount}
+            pointsDiscount={pointsDiscount}
+            shipping={0}
+            tax={tax}
+            total={total}
+          />
         </div>
+      </div>
 
-        <div className="flex flex-col gap-4 py-4">
-          <h3 className="text-[#5F5A5A] page-title">{t("Payment method")}</h3>
-          <Button 
-            className={`main-btn ${paymentMethod === 'bank_transfer' ? '!bg-mainorange' : '!bg-darkgray border border-[#181818]'}`}
-            onClick={() => setPaymentMethod('bank_transfer')}
-          >
-            {t("Bank Transfer")}
-          </Button>
-          <Button 
-            className={`main-btn ${paymentMethod === 'qr_code' ? '!bg-mainorange' : '!bg-darkgray border border-[#181818]'}`}
-            onClick={() => setPaymentMethod('qr_code')}
-          >
-            {t("QR Code")}
-          </Button>
-        </div>
+      <CheckoutFooter
+        total={total}
+        isProcessing={isProcessing}
+        onPlaceOrder={handleCreateOrder}
+      />
 
-        <div className="flex flex-col gap-4 py-4 border-b border-b-[#282828]">
-          <div className="flex items-center justify-between page-title">
-            <h3>{t("Subtotal")}</h3>
-            <p>฿ {price}</p>
-          </div>
-          <div className="flex items-center justify-between page-title">
-            <h3 className="text-[#5F5A5A]">{t("Tax")} (7%)</h3>
-            <p className="text-[#979797]">฿ {tax.toFixed(2)}</p>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between page-title">
-          <h3>{t("Total cost")}</h3>
-          <p>฿ {totalPrice.toFixed(2)}</p>
-        </div>
-
-        <footer className="btn-footer">
-          <Button 
-            className="main-btn !bg-mainorange"
-            disabled={!paymentMethod || isProcessing}
-            onClick={() => setShowPaymentDetails(true)}
-          >
-            {t("Make a payment")}
-          </Button>
-
-          <p className="text-sm font-medium pt-6">
-            {t("By clicking 'Make a payment' you agree to our")} 
-            <span className="text-mainorange"> {t("Privacy Policy")}</span> 
-            {t("and")} 
-            <span className="text-mainorange"> {t("Terms of Service")}</span>
-          </p>
-
-          <Button className="!bg-transparent w-full flex items-center gap-2">
-            <QuestionChat />
-            {t("Ask for help")}
-          </Button>
-        </footer>
-      </section>
-
-      {/* Payment Details Drawer */}
-      <RegisterDrawer 
-        isOpen={showPaymentDetails} 
-        setIsOpen={setShowPaymentDetails}
-        className="p-5 flex flex-col items-center justify-center"
-      >
-        <div className="member-card w-full h-auto p-5 flex flex-col items-center gap-6">
-          <h2 className="text-2xl font-bold">
-            {paymentMethod === 'qr_code' ? t("Scan QR Code") : t("Bank Transfer Details")}
-          </h2>
-
-          <div className="w-full text-center mb-4">
-            <p className="text-[#979797]">{t("Total Amount")}</p>
-            <p className="text-2xl font-bold">฿ {totalPrice.toFixed(2)}</p>
-          </div>
-          
-          {paymentMethod === 'qr_code' ? (
-            <>
-              <img src={QR_CODE_URL} alt="QR Code" className="w-full max-w-[300px] aspect-square"/>
-              <Button 
-                onClick={() => {/* Download QR code */}}
-                className="!bg-transparent w-full flex items-center justify-center gap-2 text-white"
-              >
-                <DownloadIcon className="w-6 h-6" />
-                {t("Download QR Code")}
-              </Button>
-            </>
-          ) : (
-            <div className="w-full space-y-4 text-left">
-              <div className="space-y-1">
-                <p className="text-[#979797]">{t("Bank Name")}</p>
-                <p className="font-semibold">{BANK_DETAILS.bankName}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[#979797]">{t("Account Name")}</p>
-                <p className="font-semibold">{BANK_DETAILS.accountName}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[#979797]">{t("Account Number")}</p>
-                <p className="font-semibold">{BANK_DETAILS.accountNumber}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[#979797]">{t("SWIFT Code")}</p>
-                <p className="font-semibold">{BANK_DETAILS.swiftCode}</p>
-              </div>
-            </div>
-          )}
-
-          <Button 
-            className="main-btn !bg-mainorange w-full"
-            onClick={handleCreateOrder}
-            disabled={isProcessing}
-          >
-            {isProcessing ? t("Processing...") : t("Confirm Payment")}
-          </Button>
-        </div>
-      </RegisterDrawer>
-
-      {/* Thank You Drawer */}
-      <RegisterDrawer 
-        isOpen={showThankYou} 
-        setIsOpen={setShowThankYou}
-        className="p-5 flex flex-col items-center justify-center"
-      >
-        <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold">{t("Thank you!")}</h2>
-          <p>{t("Your order has been placed successfully.")}</p>
-          <Button 
-            className="main-btn !bg-mainorange"
-            onClick={() => navigate('/home')}
-          >
-            {t("Continue Shopping")}
-          </Button>
-        </div>
-      </RegisterDrawer>
-    </>
+      <SuccessDialog
+        open={showSuccess}
+        onOpenChange={setShowSuccess}
+      />
+      
+      <MessageDialog
+        open={showMessageDialog}
+        onOpenChange={setShowMessageDialog}
+        initialMessage={storeMessage}
+        onSave={setStoreMessage}
+      />
+    </div>
   );
-};
-
-export default CheckoutPage;
+}

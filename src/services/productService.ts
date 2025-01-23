@@ -44,6 +44,7 @@ const transformProduct = (event: any): Product => ({
   price: event?.product?.price,
   category_id: event?.product?.category_id,
   variant_options: event?.product?.variant_options || [],
+  track_quantity: event?.product?.track_quantity || false,
   product_variants: event?.product?.product_variants || [],
   image: event?.product?.product_images?.[0]?.url || '/placeholder-image.jpg',
   location: event.venue_name, // Default location,
