@@ -234,21 +234,10 @@ export function ProductDetail({
               </motion.h2>
 
               <div className="space-y-2">
-                <div className="flex items-center gap-3 text-sm text-[#999999] mb-2.5">
-                  <div className="flex items-center gap-1">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-[#EE4D2D] text-[#EE4D2D]" />
-                      <span>4.8</span>
-                    </div>
-                    <span>•</span>
-                    <span>(128 reviews)</span>
-                    <span>•</span>
-                    <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4 text-[#999999]" />
-                      <span>238 sold</span>
-                    </div>
-                  </div>
-                </div>
+               
+
+               {console.log(selectedVariant)}
+
 
                 <div className="space-y-2.5">
                   {location && (
