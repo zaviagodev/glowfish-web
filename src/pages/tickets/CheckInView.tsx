@@ -4,7 +4,7 @@ import { useState } from "react";
 import { QrCode, Barcode, Hash, Calendar, MapPin } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import QRCode from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
 import Barcode1D from "react-barcode";
 import { TestCheckInView } from "./TestCheckInView";
 import { format } from "date-fns";
@@ -114,7 +114,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   className="flex flex-col items-center"
                 >
                   <div className="w-64 h-64 bg-white rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
-                    <QRCode 
+                    <QRCodeSVG 
                       value={ticket.ticketNumber}
                       size={224}
                       level="H"

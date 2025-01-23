@@ -60,6 +60,7 @@ import VatInvoicePage from "./pages/checkout/vat-invoice";
 import PaymentPage from "./pages/checkout/payment";
 import CartPage from "./pages/cart";
 import { ToastProvider } from "@/components/ui/toast";
+import ProductsPage from "./pages/products";
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -190,7 +191,7 @@ function App() {
                  <Route path="/tickets" element={<TicketsPage />} />
                  <Route path="/tickets/:id" element={<TicketDetails />} />
 
-
+                 <Route path="/products" element={<ProductsPage />} />
                   <Route path="/home">
                     <Route index element={<HomeList />} />
                     <Route path="create" element={<HomeCreate />} />

@@ -84,14 +84,21 @@ export const EventService = {
 
       if (eventsError) throw eventsError;
 
-      // Group tickets by order_item_id and combine with event data
-      const groupedData = tickets.reduce((acc: { [key: string]: any }, ticket) => {
-        if (!acc[ticket.order_item_id]) {
-          const event = events?.find(e => e.id === ticket.metadata?.eventId);
-          acc[ticket.order_item_id] = {
-            id: ticket.order_item_id,
-            tickets: [],
-            event: event ? {
+      // Group by events first and include all related tickets
+      const groupedData = events?.reduce((acc: { [key: string]: any }, event) => {
+        const eventTickets = tickets.filter(ticket => ticket.metadata?.eventId === event.id);
+        
+        if (eventTickets.length > 0) {
+          acc[event.id] = {
+            id: event.id,
+            tickets: eventTickets.map(ticket => ({
+              id: ticket.id,
+              code: ticket.code,
+              status: ticket.status,
+              metadata: ticket.metadata,
+              order_item_id: ticket.order_item_id
+            })),
+            event: {
               id: event.id,
               name: event.products?.name,
               google_maps_link: event.google_maps_link,
@@ -102,15 +109,9 @@ export const EventService = {
               venue_address: event.venue_address,
               venue_name: event.venue_name,
               images: event.products?.product_images?.[0]?.url,
-            } : null,
+            }
           };
         }
-        acc[ticket.order_item_id].tickets.push({
-          id: ticket.id,
-          code: ticket.code,
-          status: ticket.status,
-          metadata: ticket.metadata
-        });
         return acc;
       }, {});
 

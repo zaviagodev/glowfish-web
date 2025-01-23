@@ -18,6 +18,8 @@ export default function TicketsPage() {
     return activeTab === "upcoming" ? isUpcoming : !isUpcoming;
   });
 
+  console.log(events);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -80,8 +82,6 @@ export default function TicketsPage() {
             ) : (
               <div className="px-4 space-y-4">
                 {filteredTickets.map((event, index) => (
-
-                  
                   <motion.div
                     key={event.order_item_id}
                     initial={{ opacity: 0, y: 20 }}
