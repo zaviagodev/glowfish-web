@@ -4,7 +4,7 @@ import { useState } from "react";
 import { QrCode, Barcode, Hash, Calendar, MapPin } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import QRCode from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 import Barcode1D from "react-barcode";
 import { TestCheckInView } from "./TestCheckInView";
 import { format } from "date-fns";
@@ -40,14 +40,12 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         className="absolute bottom-0 left-0 right-0 bg-background rounded-t-[20px] overflow-hidden"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="relative px-4 py-6 text-center border-b">
           <div className="absolute left-1/2 -top-3 w-12 h-1 bg-[#E5E5EA] rounded-full transform -translate-x-1/2" />
-          <h2 className="text-lg font-semibold">
-            {t("Check In")}
-          </h2>
+          <h2 className="text-lg font-semibold">{t("Check In")}</h2>
           <p className="text-sm text-muted-foreground mt-1">
             {t("Show this code to check in")}
           </p>
@@ -114,7 +112,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   className="flex flex-col items-center"
                 >
                   <div className="w-64 h-64 bg-white rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
-                    <QRCode 
+                    <QRCodeCanvas
                       value={ticket.ticketNumber}
                       size={224}
                       level="H"
