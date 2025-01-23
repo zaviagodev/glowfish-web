@@ -1,75 +1,102 @@
-import { CardIcon, SettingsIcon, ShowPin, SpeedIcon, UnlockIcon } from "@/components/icons/MainIcons"
-import Header from "@/components/main/Header"
-import { useTranslate, useLogout } from "@refinedev/core"
-import { ChevronRight } from "lucide-react"
-import { useNavigate } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { useTranslate, useLogout } from "@refinedev/core"; 
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button"; 
+import { getUserProfile } from "@/lib/auth";
+import { UserProfile } from "@/components/settings/UserProfile";
+import { OrderStatusBar } from "@/components/settings/OrderStatusBar";
+import { SettingsSection } from "@/components/settings/SettingsSection";
+import { WalletSection } from "@/components/settings/WalletSection";
+import LanguageSwitcher from "@/components/language-switcher";
 
 const SettingsPage = () => {
   const t = useTranslate();
-  const navigate = useNavigate();
   const { mutate: logout } = useLogout();
+  const [userProfile, setUserProfile] = useState<{
+    full_name: string;
+    tier_id?: string;
+  } | null>(null);
 
-  const menus = [
+  useEffect(() => {
+    const loadProfile = async () => {
+      const profile = await getUserProfile();
+      if (profile) {
+        setUserProfile(profile);
+      }
+    };
+    loadProfile();
+  }, []);
+
+  const sections = [
     {
-      title: t("Profiles"),
-      icon: <SettingsIcon />,
-      link: "/settings/profile"
+      title: t("Account"),
+      items: [
+        {
+          icon: "👤",
+          label: t("Profile"),
+          path: "/settings/profile",
+          showArrow: true
+        }
+      ]
     },
     {
-      title: t("Show PIN"),
-      icon: <ShowPin />,
-      link: ""
+      title: t("Points & Rewards"),
+      items: [
+        {
+          icon: "⭐️",
+          label: t("How to Get Points"),
+          path: "/settings/how-to-get-points",
+          showArrow: true
+        },
+        {
+          icon: "🎁",
+          label: t("How to Spend Points"),
+          path: "/settings/how-to-spend-points",
+          showArrow: true
+        },
+        {
+          icon: "👑",
+          label: t("Member Level"),
+          path: "/settings/member-level",
+          showArrow: true
+        }
+      ]
     },
-    {
-      title: t("How to Get Points"),
-      icon: <UnlockIcon />,
-      link: "/settings/how-to-get-points"
-    },
-    {
-      title: t("How to Spend Point"),
-      icon: <CardIcon />,
-      link: ""
-    },
-    {
-      title: t("Member Level"),
-      icon: <SpeedIcon />,
-      link: ""
-    }
   ];
 
-  return (
-    <>
-      <Header title={t("Settings")} rightButton={t("Detail")}/>
-      <section>
-        <h2 className="font-semibold text-[28px]">{t("Manage")}</h2>
-        <section className="flex flex-col gap-4 mt-10">
-          {menus.map(menu => (
-            <button 
-              key={menu.title}
-              onClick={() => navigate(menu.link)} 
-              className="flex items-center justify-between w-full"
-            >
-              <div className="flex items-center gap-1.5">
-                <span className="h-9 w-9 flex items-center justify-center text-white rounded-full border border-[#252525]">{menu.icon}</span>
-                <span className="page-title">{menu.title}</span>
-              </div>
-              <ChevronRight />
-            </button>
-          ))}
-        </section>
 
-        <div className="fixed bottom-[90px] left-0 w-full px-5">
-          <Button 
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
+        <UserProfile fullName={userProfile?.full_name} />
+      </div>
+
+      {/* Main Content */}
+      <div className="pt-[100px] pb-32">
+        <OrderStatusBar />
+        <WalletSection />
+        {sections.map((section, index) => (
+          <SettingsSection
+            key={section.title}
+            title={section.title}
+            items={section.items}
+            index={index}
+          />
+        ))}
+
+        {/* Logout Button */}
+        <div className="px-4">
+          <Button
+            variant="destructive"
+            className="w-full h-12"
             onClick={() => logout()}
-            className="main-btn !bg-destructive w-full"
           >
             {t("Logout")}
           </Button>
         </div>
-      </section>
-    </>
-  )
-}
+      </div>
+    </div>
+  );
+};
 
 export default SettingsPage;

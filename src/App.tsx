@@ -36,17 +36,28 @@ import { LineCallback } from "./pages/line-callback";
 import PhoneVerification from "./pages/phone-verification";
 import TellUsAboutYourself from "./pages/tell-us-about-yourself";
 import HistoryPage from "./pages/history";
-import MyEventsPage from "./pages/my-events";
-import MyEventDetail from "./pages/my-events/detail";
 import SettingsPage from "./pages/settings";
 import ProfileSettings from "./pages/settings/profile";
 import HowToGetPoints from "./pages/settings/how-to-get-points";
+import HowToSpendPoints from "./pages/settings/how-to-spend-points";
+import MemberLevel from "./pages/settings/member-level";
 import MyRewards from "./pages/my-rewards";
 import Rewards from "./pages/rewards";
 import RewardDetail from "./pages/rewards/detail";
 import CheckoutPage from "./pages/checkout";
 import useConfig, { ConfigProvider } from "./hooks/useConfig";
 import { useEffect } from "react";
+import MyOrdersPage from "./pages/my-orders";
+import OrderDetailPage from "./pages/my-orders/detail";
+import MyItemsPage from "./pages/my-items";
+import VoucherDetail from "./pages/my-items/VoucherDetail";
+import MyPointsPage from "./pages/points";
+import TicketsPage from "./pages/tickets";
+import TicketDetails from "./pages/tickets/TicketDetails";
+import CouponsPage from "./pages/checkout/coupons";
+import PointsPage from "./pages/checkout/points";
+import VatInvoicePage from "./pages/checkout/vat-invoice";
+import PaymentPage from "./pages/checkout/payment";
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -147,10 +158,6 @@ function App() {
                   <Route index element={<HomeList />} />
                   <Route path="/history" element={<HistoryPage />}/>
                   <Route path="/checkout" element={<CheckoutPage />}/>
-                  <Route path="/my-events">
-                    <Route index element={<MyEventsPage />} />
-                    <Route path="detail/:id" element={<MyEventDetail />} />
-                  </Route>
                   <Route path="/my-rewards" element={<MyRewards />}/>
                   <Route path="/rewards">
                     <Route index element={<Rewards />} />
@@ -159,8 +166,28 @@ function App() {
                   <Route path="/settings">
                     <Route index element={<SettingsPage />} />
                     <Route path="profile" element={<ProfileSettings />} />
-                   <Route path="how-to-get-points" element={<HowToGetPoints />} />
+                    <Route path="how-to-get-points" element={<HowToGetPoints />} />
+                    <Route path="how-to-spend-points" element={<HowToSpendPoints />} />
+                    <Route path="member-level" element={<MemberLevel />} />
+                    <Route path="points" element={<MyPointsPage />} />
                   </Route>
+
+                  <Route path="/my-orders">
+                    <Route index element={<MyOrdersPage />} />
+                    <Route path=":id" element={<OrderDetailPage />} />
+                  </Route>
+                  <Route path="/my-items">
+                    <Route index element={<MyItemsPage />} />
+                    <Route path=":id" element={<VoucherDetail />} />
+                  </Route>
+                  <Route path="/checkout/coupons" element={<CouponsPage />} />
+                 <Route path="/checkout/points" element={<PointsPage />} />
+                 <Route path="/checkout/payment" element={<PaymentPage />} />
+                 <Route path="/checkout/vat-invoice" element={<VatInvoicePage />} />
+                 <Route path="/tickets" element={<TicketsPage />} />
+                 <Route path="/tickets/:id" element={<TicketDetails />} />
+
+
                   <Route path="/home">
                     <Route index element={<HomeList />} />
                     <Route path="create" element={<HomeCreate />} />

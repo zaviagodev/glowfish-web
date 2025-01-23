@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { EventService, type Event } from '@/services/eventService';
+import { useStore } from '@/hooks/useStore';
 
 // Cache key for localStorage
 const EVENTS_CACHE_KEY = 'cached_events';
@@ -10,6 +11,7 @@ const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 export const useEvents = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { storeName } = useStore();
 
   // Use React Query for data fetching and caching
   const { 
@@ -18,8 +20,8 @@ export const useEvents = () => {
     isError: eventsError,
     refetch: refetchData
   } = useQuery({
-    queryKey: ['events'],
-    queryFn: EventService.getEvents,
+    queryKey: ['events', storeName],
+    queryFn: () => EventService.getEvents(storeName),
     staleTime: CACHE_EXPIRY_TIME,
     cacheTime: CACHE_EXPIRY_TIME * 2,
     retry: 2,
@@ -33,6 +35,7 @@ export const useEvents = () => {
   useEffect(() => {
     setLoading(eventsLoading);
   }, [eventsLoading]);
+
 
   // Update error state based on React Query
   useEffect(() => {

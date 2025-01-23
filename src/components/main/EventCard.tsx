@@ -1,152 +1,88 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { CalendarIcon, Location, PriceTag } from "../icons/MainIcons"
-import { EventCardProps } from "@/type/type"
-import { cn } from "@/lib/utils"
-import { useTranslate } from "@refinedev/core"
-import { format } from "date-fns"
-
+import { CalendarIcon, Location, PriceTag } from "@/components/icons/MainIcons";
+import { useTranslate } from "@refinedev/core";
+import { cn } from "@/lib/utils";
+import { EventCardProps } from "@/type/type";
 
 const EventCard = ({
+  id,
   image,
   title,
   location,
-  start_datetime,
+  date,
   price,
   points,
   type,
   validDate,
   onClick
-} : EventCardProps) => {
+}: EventCardProps) => {
   const t = useTranslate();
+
   return (    
-    <Card 
-      className={cn(
-        "border-0 p-2 relative rounded-lg overflow-hidden text-background cursor-pointer", 
-        "min-w-[346px] h-full", 
-        {
-          "bg-[#202020] border border-[#F1EAD61C] min-w-0": type === "small", 
-          "bg-[#202020] flex min-w-0 p-0": type === "event"
-        }
-      )} 
+    <div
       onClick={onClick}
+      className={cn(
+        "relative overflow-hidden rounded-lg cursor-pointer w-full",
+        "bg-card border border-border/10",
+        "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]",
+        type === "event" && "flex"
+      )}
     >
-      <CardContent className="p-0">
+      <div className={cn(
+        "relative overflow-hidden",
+        type === "small" ? "h-48 w-full" : "h-56 w-full",
+        type === "event" && "w-[125px] min-w-[125px]"
+      )}>
         <img 
           src={image} 
-          className={cn(
-            "absolute top-0 left-0 object-cover", 
-            {
-              "relative rounded-md mb-2 w-[346px]": type === "small", 
-              "relative min-w-[125px] max-w-[125px] w-full h-full object-cover": type === "event"
-            }
-          )}
+          alt={title}
+          className="w-full h-full object-cover"
         />
-      </CardContent>
-      <CardHeader 
-        className={cn(
-          "gap-1.5", 
-          "mt-20 backdrop-blur-[30px] p-4 bg-white/15 rounded-lg", 
-          {
-            "mt-0 p-0 bg-transparent backdrop-blur-none": type === "small", 
-            "mt-0 bg-transparent p-3.5 backdrop-blur-none justify-between": type === "event"
-          }
+        {price && (
+          <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">
+            {price}
+          </div>
         )}
-      >
-        <CardTitle 
-          className={cn(
-            "text-sm font-semibold", 
-            "text-background", 
-            {
-              "text-white": type === "small", 
-              "text-white text-base": type === "event"
-            }
-          )}
-        >
-          {title}
-        </CardTitle>
-        {type === "small" ? (
-          <CardDescription className={cn("justify-between flex items-center text-white")}>
-            <section className="flex flex-col gap-1.5">
-              {location && (
-                <div className="flex items-center gap-2">
-                  <Location />
-                  <p className="text-xs">{location}</p>
-                </div>
-              )}
-              {start_datetime && (
-                <div className="flex items-center gap-2">
-                  <CalendarIcon />
-                  <p className="text-xs">{format(new Date(start_datetime), 'dd-MM-yyyy HH:mm')}</p>
-                </div>
-              )}
-              {price && (
-                <div className="flex items-center gap-2 mt-1">
-                  <PriceTag />
-                  <p className="text-xs">{price}</p>
-                </div>
-              )}
-              {points && (
-                <div className="flex items-center gap-2 mt-1 text-mainorange font-semibold">
-                  <PriceTag />
-                  <p className="text-xs">{t("point", {count: points})}</p>
-                </div>
-              )}
-            </section>
-          </CardDescription>
-        ) : type === "event" ? (
-          <CardDescription className={cn("justify-between flex items-center text-white")}>
-            <section className="flex flex-col justify-between h-full">
-              <div className="flex flex-col gap-1.5">
-                {location && (
-                  <div className="flex items-center gap-2">
-                    <Location />
-                    <p className="text-xs">{location}</p>
-                  </div>
-                )}
-                {start_datetime && (
-                  <div className="flex items-center gap-2">
-                    <CalendarIcon />
-                    <p className="text-xs">{format(new Date(start_datetime), 'dd-MM-yyyy HH:mm')}</p>
-                  </div>
-                )}
-              </div>
-              {validDate && <p className="text-xs text-[#FFFFFF99] mt-4">{t("Valid to")} {validDate}</p>}
-            </section>
-          </CardDescription>
-        ) : (
-          <CardDescription className={cn("justify-between flex items-center text-background")}>
-            <section className="flex flex-col gap-1.5">
-              {location && (
-                <div className="flex items-center gap-2">
-                  <Location />
-                  <p className="text-sm">{location}</p>
-                </div>
-              )}
-              {start_datetime && (
-                <div className="flex items-center gap-2">
-                  <CalendarIcon />
-                  <p className="text-xs">{format(new Date(start_datetime), 'dd-MM-yyyy HH:mm')}</p>
-                </div>
-              )}
-            </section>
+      </div>
 
-            {price && (
-              <div>
-                <p className="text-sm">{t("Price")}</p>
-                <h2 className="text-lg font-semibold">{price}</h2>
+      <div className={cn(
+        "p-4 space-y-4",
+        type === "event" ? "flex-1" : "bg-card"
+      )}>
+        <div className="space-y-2">
+          <h3 className="font-semibold text-card-foreground line-clamp-2">
+            {title}
+          </h3>
+          
+          <div className="space-y-2">
+            {location && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Location className="w-3.5 h-3.5" />
+                <span className="line-clamp-1">{location}</span>
               </div>
             )}
-          </CardDescription>
-        )}
-      </CardHeader>
-    </Card>
-  )
-}
+            {date && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <CalendarIcon className="w-3.5 h-3.5" />
+                <span>{date}</span>
+              </div>
+            )}
+            {points && (
+              <div className="flex items-center gap-2 text-xs text-primary font-medium">
+                <PriceTag className="w-3.5 h-3.5" />
+                <span>{t("point", {count: points})}</span>
+              </div>
+            )}
+          </div>
+        </div>
 
-export default EventCard
+        {validDate && (
+          <p className="text-xs text-muted-foreground">
+            {t("Valid to")} {validDate}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default EventCard;
