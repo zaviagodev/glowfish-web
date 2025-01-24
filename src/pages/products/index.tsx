@@ -32,8 +32,7 @@ interface Category {
 
 export default function ProductsPage() {
   const t = useTranslate();
-  const { products, loading } = useProducts();
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { products, categories, loading } = useProducts();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
@@ -42,21 +41,6 @@ export default function ProductsPage() {
   const [priceRange, setPriceRange] = useState<{min: number, max: number | null}>({ min: 0, max: null });
   const [inStock, setInStock] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-
-  // Fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const { data } = await supabase
-        .from('product_categories')
-        .select('*')
-        .order('name');
-      
-      if (data) {
-        setCategories(data);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   // Filter and sort products
   const filteredProducts = products
@@ -77,11 +61,34 @@ export default function ProductsPage() {
         case "price-high":
           return b.price - a.price;
         case "oldest":
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+          return (a.created_at ? new Date(a.created_at).getTime() : 0) - 
+                 (b.created_at ? new Date(b.created_at).getTime() : 0);
         default: // newest
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          return (b.created_at ? new Date(b.created_at).getTime() : 0) - 
+                 (a.created_at ? new Date(a.created_at).getTime() : 0);
       }
     });
+
+  // Get price display for a product
+  const getPriceDisplay = (product: any) => {
+    if (!product.product_variants || product.product_variants.length === 0) {
+      return product.price === 0 ? t("free") : `฿${product.price.toLocaleString()}`;
+    }
+
+    if (product.product_variants.length === 1) {
+      return `฿${product.product_variants[0].price.toLocaleString()}`;
+    }
+
+    const prices = product.product_variants.map((v: any) => v.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+
+    if (minPrice === maxPrice) {
+      return `฿${minPrice.toLocaleString()}`;
+    }
+
+    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -156,7 +163,7 @@ export default function ProductsPage() {
                 id={product.id}
                 image={product.image}
                 title={product.name}
-                price={product.price}
+                price={getPriceDisplay(product)}
                 compareAtPrice={product.compare_at_price}
                 onClick={() => {
                   // Get the default variant if product has variants

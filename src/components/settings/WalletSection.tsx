@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Wallet, Gift, Ticket, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEvents } from "@/hooks/useEvents";
+import { useCustomer } from "@/hooks/useCustomer";
 
 interface WalletItem {
   icon: React.ReactNode;
@@ -18,6 +19,7 @@ export function WalletSection() {
   const t = useTranslate();
   const navigate = useNavigate();
   const { events } = useEvents();
+  const { customer, loading: customerLoading } = useCustomer();
 
   // Calculate total active tickets count
   const activeTicketsCount = events.reduce((total, eventData) => {
@@ -55,7 +57,7 @@ export function WalletSection() {
       icon: <Coins className="w-5 h-5" />,
       label: t("My Points"),
       path: "/settings/points",
-      count: 1500,
+      count: customer?.loyalty_points || 0,
       description: t("Available points"),
       color: "#2196F3", // Blue
       bgColor: "rgba(33, 150, 243, 0.1)"

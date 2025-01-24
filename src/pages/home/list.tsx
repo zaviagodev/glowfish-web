@@ -26,13 +26,12 @@ interface Category {
 
 export const HomeList = () => {
   const t = useTranslate();
-  const { products, loading, error } = useProducts();
+  const { products, categories, loading, error } = useProducts();
   const [userProfile, setUserProfile] = useState<{
     id: string;
     full_name: string;
     avatar_url: string;
   } | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -113,19 +112,6 @@ export const HomeList = () => {
       }
     };
     loadProfile();
-
-    // Fetch categories
-    const fetchCategories = async () => {
-      const { data, error } = await supabase
-        .from('product_categories')
-        .select('*')
-        .order('name');
-      
-      if (data) {
-        setCategories(data);
-      }
-    };
-    fetchCategories();
   }, []);
 
   return (

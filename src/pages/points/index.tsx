@@ -12,33 +12,41 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useState } from "react";
+import { useCustomer } from "@/hooks/useCustomer";
+import { format } from "date-fns";
 
 export default function MyPointsPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const [showQR, setShowQR] = useState(false);
+  const { customer, loading, error, refreshCustomer } = useCustomer();
 
-  // Mock data - replace with actual data
-  const points = {
-    available: 1500,
-    nextTier: 2000,
-    history: [
-      {
-        id: 1,
-        type: "earn",
-        amount: 100,
-        description: "Purchase at Glowfish Cafe",
-        date: "2024-01-20"
-      },
-      {
-        id: 2,
-        type: "redeem",
-        amount: -50,
-        description: "Redeemed for discount",
-        date: "2024-01-18"
-      }
-    ]
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <PageHeader title={t("My Points")} />
+        <div className="text-center mt-8">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <PageHeader title={t("My Points")} />
+        <div className="text-center text-red-500 mt-8">{error}</div>
+      </div>
+    );
+  }
+
+  const pointsTransactions = customer?.points_transactions || [];
+  const availablePoints = customer?.loyalty_points || 0;
+  const nextTierPoints = 2000; // This should come from tiers data when available
+
+  // Sort transactions by date in descending order
+  const sortedTransactions = [...pointsTransactions].sort((a, b) => 
+    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -60,7 +68,7 @@ export default function MyPointsPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold">
-                    {points.available.toLocaleString()}
+                    {availablePoints.toLocaleString()}
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     {t("Available Points")}
@@ -86,20 +94,20 @@ export default function MyPointsPage() {
                     {t("Next Tier")}
                   </span>
                   <span className="font-medium">
-                    {points.nextTier.toLocaleString()} {t("points")}
+                    {nextTierPoints.toLocaleString()} {t("points")}
                   </span>
                 </div>
                 <div className="h-2 bg-[#F2F2F7] rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-primary rounded-full"
                     initial={{ width: "0%" }}
-                    animate={{ width: `${(points.available / points.nextTier) * 100}%` }}
+                    animate={{ width: `${(availablePoints / nextTierPoints) * 100}%` }}
                     transition={{ duration: 1, ease: "easeOut" }}
                   />
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {t("{{points}} points until next tier", { 
-                    points: (points.nextTier - points.available).toLocaleString() 
+                    points: (nextTierPoints - availablePoints).toLocaleString() 
                   })}
                 </p>
               </div>
@@ -172,7 +180,7 @@ export default function MyPointsPage() {
             </h3>
           </div>
           <div className="space-y-px">
-            {points.history.map((transaction, index) => (
+            {sortedTransactions.slice(0, 10).map((transaction, index) => (
               <motion.div
                 key={transaction.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -199,10 +207,10 @@ export default function MyPointsPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium">
-                        {transaction.description}
+                        {transaction.description || t(transaction.type === "earn" ? "Points Earned" : "Points Redeemed")}
                       </p>
                       <p className="text-xs text-[#8E8E93]">
-                        {new Date(transaction.date).toLocaleDateString()}
+                        {format(new Date(transaction.created_at), "MMM dd")}
                       </p>
                     </div>
                   </div>
@@ -212,12 +220,28 @@ export default function MyPointsPage() {
                       ? "text-[#34C759]" 
                       : "text-[#FF3B30]"
                   )}>
-                    {transaction.type === "earn" ? "+" : ""}{transaction.amount}
+                    {transaction.type === "earn" ? "+" : "-"}{transaction.points}
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
+          {pointsTransactions.length > 10 && (
+            <motion.div 
+              className="px-6 mt-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate('/history')}
+              >
+                {t("View All History")}
+              </Button>
+            </motion.div>
+          )}
         </div>
 
         {/* Info Box */}
