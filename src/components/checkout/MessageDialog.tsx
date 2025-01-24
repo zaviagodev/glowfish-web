@@ -43,7 +43,7 @@ export function MessageDialog({
         <div className="p-4 space-y-4">
           <Textarea
             placeholder={t("Enter your message to the store...")}
-            className="min-h-[120px] bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0 resize-none"
+            className="min-h-[120px] bg-background border-[#E5E5E5] focus:border-primary focus:ring-0 resize-none"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
@@ -100,7 +100,7 @@ export function MessageDialogAlt({
 
         {/* Content */}
         <div className="px-6 pb-6 space-y-6">
-          <div className="bg-[#F8F8F8] rounded-xl p-4">
+          <div className="bg-background rounded-xl p-4">
             <Textarea
               placeholder={t("Enter your message to the store...")}
               className="min-h-[120px] bg-transparent border-0 focus:ring-0 resize-none placeholder:text-muted-foreground/50"

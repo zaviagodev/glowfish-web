@@ -110,7 +110,7 @@ const MemberLevel = () => {
                   </span>
                   <span className="font-medium">{levels[1].name}</span>
                 </div>
-                <div className="h-2 bg-[#F2F2F7] rounded-full overflow-hidden">
+                <div className="h-2 bg-background/50 rounded-full overflow-hidden">
                   <motion.div
                     className="h-full rounded-full"
                     style={{ backgroundColor: levels[0].color }}

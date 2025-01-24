@@ -46,8 +46,7 @@ export function AnimatedCard({
       layoutId={`card-${id}`}
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-background",
-        "border border-[#E5E5E5] hover:shadow-sm",
+        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-card",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]",
         type === "event" && "flex"
       )}
@@ -66,16 +65,13 @@ export function AnimatedCard({
           layoutId={`image-${id}`}
           src={image}
           alt={title}
-          className="w-full h-full object-cover bg-[#fafafa]"
+          className="w-full h-full object-cover bg-[#fafafa] rounded-lg"
           transition={springConfig}
         />
       </motion.div>
 
       <div
-        className={cn(
-          "p-3 space-y-2",
-          type === "event" ? "flex-1" : "bg-tertiary"
-        )}
+        className={cn("p-3 space-y-2", type === "event" ? "flex-1" : "bg-card")}
       >
         <div className="space-y-2">
           <motion.h3
@@ -145,7 +141,7 @@ export function AnimatedCard({
               )}
             </span>
             {compareAtPrice && (
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-[#EE4D2D]/10 text-[#EE4D2D]">
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-mainbutton/10">
                 {Math.round((1 - Number(price) / Number(compareAtPrice)) * 100)}
                 % OFF
               </span>

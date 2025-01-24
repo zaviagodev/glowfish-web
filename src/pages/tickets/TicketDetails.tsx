@@ -176,7 +176,7 @@ export default function TicketDetails() {
               <div key={ticket.id}>
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#F8F8F8] flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center">
                       <Ticket className="w-5 h-5 text-primary" />
                     </div>
                     <h3 className="font-medium">

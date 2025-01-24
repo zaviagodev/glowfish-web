@@ -69,7 +69,8 @@ export default function VoucherDetail() {
 
       <div className="pt-14 pb-32">
         {/* Hero Section */}
-        <div className="relative bg-gradient-to-b from-white to-[#F8F8F8] pb-6">
+        {/* MAY BE USED: <div className="relative bg-gradient-to-b from-white to-[#F8F8F8] pb-6"> */}
+        <div className="relative pb-6">
           <motion.div
             className="p-6"
             initial={{ opacity: 0, y: 20 }}
@@ -155,7 +156,7 @@ export default function VoucherDetail() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="w-48 h-48 bg-[#F8F8F8] rounded-2xl flex items-center justify-center mb-4">
+                  <div className="w-48 h-48 rounded-2xl flex items-center justify-center mb-4">
                     <QrCode className="w-32 h-32 text-secondary-foreground" />
                   </div>
                   <p className="text-sm text-[#8E8E93]">
@@ -171,7 +172,7 @@ export default function VoucherDetail() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="w-full h-32 bg-[#F8F8F8] rounded-2xl flex items-center justify-center mb-4">
+                  <div className="w-full h-32 rounded-2xl flex items-center justify-center mb-4">
                     <Barcode className="w-48 h-24 text-secondary-foreground" />
                   </div>
                   <p className="text-sm text-[#8E8E93]">
@@ -187,7 +188,7 @@ export default function VoucherDetail() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="space-y-4"
                 >
-                  <div className="bg-[#F8F8F8] rounded-xl p-4 flex items-center justify-between">
+                  <div className="rounded-xl p-4 flex items-center justify-between">
                     <div className="font-mono text-lg font-medium">
                       {voucher.code}
                     </div>

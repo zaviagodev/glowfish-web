@@ -15,10 +15,11 @@ export default function CartPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const debounceTimeout = useRef<NodeJS.Timeout>();
-  const { items, updateQuantity, removeItem, getTotalItems, getTotalPrice } = useCart();
+  const { items, updateQuantity, removeItem, getTotalItems, getTotalPrice } =
+    useCart();
   const { getTotalDiscount } = useCoupons();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  
+
   const handleQuantityChange = (id: string, newQuantity: number) => {
     if (newQuantity > 0) {
       updateQuantity(id, newQuantity);
@@ -35,19 +36,19 @@ export default function CartPage() {
   }, []);
 
   const handleSelectItem = (id: string, checked: boolean) => {
-    setSelectedItems(prev => 
-      checked ? [...prev, id] : prev.filter(itemId => itemId !== id)
+    setSelectedItems((prev) =>
+      checked ? [...prev, id] : prev.filter((itemId) => itemId !== id)
     );
   };
 
   const handleSelectAll = (checked: boolean) => {
-    setSelectedItems(checked ? items.map(item => item.variantId) : []);
+    setSelectedItems(checked ? items.map((item) => item.variantId) : []);
   };
 
   const subtotal = items
-    .filter(item => selectedItems.includes(item.variantId))
-    .reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  
+    .filter((item) => selectedItems.includes(item.variantId))
+    .reduce((sum, item) => sum + item.price * item.quantity, 0);
+
   const discount = getTotalDiscount(subtotal);
   const tax = subtotal * 0.07; // 7% tax
   const total = subtotal - discount + tax;
@@ -76,25 +77,36 @@ export default function CartPage() {
               >
                 <Checkbox
                   checked={selectedItems.includes(item.variantId)}
-                  onCheckedChange={(checked) => handleSelectItem(item.variantId, checked as boolean)}
+                  onCheckedChange={(checked) =>
+                    handleSelectItem(item.variantId, checked as boolean)
+                  }
                 />
                 <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium line-clamp-2 mb-1">{item.name}</h3>
+                  <h3 className="text-sm font-medium line-clamp-2 mb-1">
+                    {item.name}
+                  </h3>
                   {item.variant && (
                     <p className="text-xs text-muted-foreground mb-1.5 space-x-1">
-                      {Object.entries(item.variant).map(([key, value], index, arr) => (
-                        <span key={key}>
-                          <span className="text-muted-foreground/70">{key}:</span> {value}
-                          {index < arr.length - 1 && <span className="mx-1">•</span>}
-                        </span>
-                      ))}
+                      {Object.entries(item.variant).map(
+                        ([key, value], index, arr) => (
+                          <span key={key}>
+                            <span className="text-muted-foreground/70">
+                              {key}:
+                            </span>{" "}
+                            {value}
+                            {index < arr.length - 1 && (
+                              <span className="mx-1">•</span>
+                            )}
+                          </span>
+                        )
+                      )}
                     </p>
                   )}
                   <div className="flex items-center justify-between">
@@ -116,17 +128,29 @@ export default function CartPage() {
                         variant="ghost"
                         size="icon"
                         className="h-6 w-6 rounded-none hover:bg-muted"
-                        onClick={() => handleQuantityChange(item.variantId, item.quantity - 1)}
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.variantId,
+                            item.quantity - 1
+                          )
+                        }
                         disabled={item.quantity <= 1}
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
-                      <span className="w-8 text-center text-xs">Qty: {item.quantity}</span>
+                      <span className="w-8 text-center text-xs">
+                        Qty: {item.quantity}
+                      </span>
                       <Button
                         variant="ghost"
                         size="icon"
                         className="h-6 w-6 rounded-none hover:bg-muted"
-                        onClick={() => handleQuantityChange(item.variantId, item.quantity + 1)}
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.variantId,
+                            item.quantity + 1
+                          )
+                        }
                         disabled={item.quantity >= item.maxQuantity}
                       >
                         <Plus className="h-4 w-4" />
@@ -147,40 +171,59 @@ export default function CartPage() {
           <div className="flex items-center justify-between">
             {/* Select All */}
             <div className="flex items-center gap-3">
-            <Checkbox
-              checked={selectedItems.length === items.length && items.length > 0}
-              onCheckedChange={(checked) => handleSelectAll(checked as boolean)}
-            />
-            <span className="text-sm">{t("All")}</span>
+              <Checkbox
+                checked={
+                  selectedItems.length === items.length && items.length > 0
+                }
+                onCheckedChange={(checked) =>
+                  handleSelectAll(checked as boolean)
+                }
+              />
+              <span className="text-sm">{t("All")}</span>
             </div>
 
             {/* Total and Checkout */}
             <div className="flex items-center gap-3">
-            <div className="flex flex-col items-end">
-              <div className="text-sm font-medium">
-                {t("Total")}: <span className="text-[#EE4D2D] font-bold">฿{total.toLocaleString()}</span>
+              <div className="flex flex-col items-end">
+                <div className="text-sm font-medium">
+                  {t("Total")}:{" "}
+                  <span className="text-[#EE4D2D] font-bold">
+                    ฿{total.toLocaleString()}
+                  </span>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {discount > 0 && (
+                    <>
+                      <span>
+                        {t("Discount")}:{" "}
+                        <span className="text-[#EE4D2D]">
+                          -฿{discount.toLocaleString()}
+                        </span>
+                      </span>
+                      <span>•</span>
+                    </>
+                  )}
+                  <span>
+                    {t("Tax")}:{" "}
+                    <span className="text-[#EE4D2D]">฿{tax.toFixed(2)}</span>
+                  </span>
+                </div>
               </div>
-              <div className="text-xs text-muted-foreground">
-                {discount > 0 && (
-                  <>
-                    <span>{t("Discount")}: <span className="text-[#EE4D2D]">-฿{discount.toLocaleString()}</span></span>
-                    <span>•</span>
-                  </>
-                )}
-                <span>{t("Tax")}: <span className="text-[#EE4D2D]">฿{tax.toFixed(2)}</span></span>
-              </div>
-            </div>
-            <Button 
-              className="bg-[#EE4D2D] text-white hover:bg-[#EE4D2D]/90 h-10 w-[100px]"
-              disabled={selectedItems.length === 0}
-              onClick={() => navigate('/checkout', {
-                state: { 
-                  selectedItems: items.filter(item => selectedItems.includes(item.variantId))
+              <Button
+                className="!bg-mainbutton rounded-full h-10 w-[100px]"
+                disabled={selectedItems.length === 0}
+                onClick={() =>
+                  navigate("/checkout", {
+                    state: {
+                      selectedItems: items.filter((item) =>
+                        selectedItems.includes(item.variantId)
+                      ),
+                    },
+                  })
                 }
-              })}
-            >
-              {t("Checkout")} ({selectedItems.length})
-            </Button>
+              >
+                {t("Checkout")} ({selectedItems.length})
+              </Button>
             </div>
           </div>
         </div>

@@ -140,7 +140,7 @@ export function ReviewDialog({
 
             {/* Points Info */}
             <motion.div
-              className="bg-[#F8F8F8] rounded-lg p-4 flex items-center gap-3"
+              className="bg-background rounded-lg p-4 flex items-center gap-3"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3, duration: 0.4 }}
@@ -204,7 +204,7 @@ export function ReviewDialog({
                 value={review}
                 onChange={(e) => setReview(e.target.value)}
                 placeholder={t("Share your experience with this product...")}
-                className="min-h-[120px] bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0 resize-none"
+                className="min-h-[120px] bg-background border-[#E5E5E5] focus:border-primary focus:ring-0 resize-none"
               />
             </motion.div>
 
@@ -259,7 +259,7 @@ export function ReviewDialog({
                       htmlFor="media-upload"
                       className="w-full h-full flex flex-col items-center justify-center gap-2 border-2 border-dashed border-[#E5E5E5] rounded-lg cursor-pointer hover:border-primary/50 transition-colors"
                     >
-                      <div className="w-8 h-8 rounded-full bg-[#F8F8F8] flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-background flex items-center justify-center">
                         <Upload className="w-4 h-4 text-muted-foreground" />
                       </div>
                       <span className="text-xs text-muted-foreground">
@@ -276,7 +276,7 @@ export function ReviewDialog({
 
             {/* Tips Box */}
             <motion.div
-              className="bg-[#F8F8F8] rounded-lg p-4 space-y-3"
+              className="bg-background rounded-lg p-4 space-y-3"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1 }}

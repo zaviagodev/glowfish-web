@@ -113,7 +113,7 @@ export default function OrderDetailPage() {
                     "shadow-sm border border-[#E5E5EA]",
                     "transition-all duration-300",
                     event.isPending
-                      ? "bg-[#F2F2F7] scale-90 opacity-50"
+                      ? "bg-background scale-90 opacity-50"
                       : event.isActive
                       ? "bg-[#007AFF]/10 scale-110 ring-4 ring-[#007AFF]/10"
                       : "bg-[#34C759]/10"
@@ -172,7 +172,7 @@ export default function OrderDetailPage() {
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
             {t("Customer Information")}
           </h2>
-          <div className="bg-[#F8F8F8] rounded-lg p-5">
+          <div className="bg-background rounded-lg p-5">
             <div className="space-y-2">
               <h3 className="text-base font-medium">
                 {order.customer.first_name + " " + order.customer.last_name}
@@ -235,7 +235,7 @@ export default function OrderDetailPage() {
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
             {t("Order Summary")}
           </h2>
-          <div className="bg-[#F8F8F8] rounded-lg p-5">
+          <div className="bg-background rounded-lg p-5">
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-[15px] text-[#8E8E93]">{t("Total")}</span>

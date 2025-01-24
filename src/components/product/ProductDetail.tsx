@@ -232,7 +232,7 @@ export function ProductDetail({
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-[#EE4D2D] rounded"
+                      className="inline-flex items-center px-2 py-1 text-xs font-medium bg-mainbutton rounded"
                     >
                       {Math.round(
                         (1 -
@@ -380,7 +380,7 @@ export function ProductDetail({
                 {t("Add to Cart")}
               </Button>
               <Button
-                className="w-full bg-[#EE4D2D] text-white"
+                className="w-full !bg-mainbutton rounded-full"
                 onClick={() => handleAddToCart(true)}
               >
                 {t("Buy Now")}

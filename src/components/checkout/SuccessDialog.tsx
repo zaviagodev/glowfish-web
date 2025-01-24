@@ -27,16 +27,18 @@ export function SuccessDialog({ open, onOpenChange }: SuccessDialogProps) {
             {t("Order Placed Successfully!")}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-sm text-muted-foreground mt-2">
-            {t("Your order has been placed successfully. You can track your order in the My Orders section.")}
+            {t(
+              "Your order has been placed successfully. You can track your order in the My Orders section."
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction 
+          <AlertDialogAction
             onClick={() => {
               onOpenChange(false);
-              navigate('/home');
+              navigate("/home");
             }}
-            className="bg-[#EE4D2D] text-white hover:bg-[#EE4D2D]/90 w-full"
+            className="!bg-mainbutton rounded-full w-full"
           >
             {t("Continue Shopping")}
           </AlertDialogAction>

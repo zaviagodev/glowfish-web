@@ -69,8 +69,10 @@ export default {
 			tertiary: {
 				DEFAULT: 'hsl(var(--tertiary))',
 			},
-  			darkgray: '#303030',
-  			mainorange: '#EC441E',
+			mainbutton: {
+				DEFAULT: 'hsl(var(--mainbutton))'
+			},
+  			darkgray: 'hsl(var(--darkgray))',
   			border: 'hsl(var(--border))',
   			header: '#181818',
   			input: 'hsl(var(--input))',

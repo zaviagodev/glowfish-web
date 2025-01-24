@@ -54,7 +54,7 @@ export function CouponCard({ subtotal, className }: CouponCardProps) {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
             {selectedCoupons.length > 0 && (
-              <div className="px-2 py-1 rounded-full bg-[#EE4D2D]/10 text-[#EE4D2D] text-xs font-medium">
+              <div className="px-2 py-1 rounded-full bg-mainbutton/10 text-xs font-medium">
                 {selectedCoupons.length}
               </div>
             )}

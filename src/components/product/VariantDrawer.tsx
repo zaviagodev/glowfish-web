@@ -49,20 +49,25 @@ export function VariantDrawer({
   onSelect,
   variants,
   variantOptions,
-  selectedVariantId
+  selectedVariantId,
 }: VariantDrawerProps) {
   const t = useTranslate();
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >({});
 
   // Initialize selected options from current variant
   useEffect(() => {
     if (selectedVariantId) {
-      const variant = variants.find(v => v.id === selectedVariantId);
+      const variant = variants.find((v) => v.id === selectedVariantId);
       if (variant) {
-        const optionsRecord = variant.options.reduce((acc, opt) => ({
-          ...acc,
-          [opt.name]: opt.value
-        }), {});
+        const optionsRecord = variant.options.reduce(
+          (acc, opt) => ({
+            ...acc,
+            [opt.name]: opt.value,
+          }),
+          {}
+        );
         setSelectedOptions(optionsRecord);
       }
     }
@@ -70,9 +75,9 @@ export function VariantDrawer({
 
   // Find matching variant based on selected options
   const findMatchingVariant = () => {
-    return variants.find(variant => {
-      return Object.entries(selectedOptions).every(([key, value]) => 
-        variant.options.some(opt => opt.name === key && opt.value === value)
+    return variants.find((variant) => {
+      return Object.entries(selectedOptions).every(([key, value]) =>
+        variant.options.some((opt) => opt.name === key && opt.value === value)
       );
     });
   };
@@ -87,17 +92,18 @@ export function VariantDrawer({
     delete otherSelections[optionName];
 
     const availableValues = variants
-      .filter(variant => 
-        Object.entries(otherSelections).every(([key, value]) => 
-          variant.options.some(opt => opt.name === key && opt.value === value)
+      .filter((variant) =>
+        Object.entries(otherSelections).every(([key, value]) =>
+          variant.options.some((opt) => opt.name === key && opt.value === value)
         )
       )
-      .map(variant => 
-        variant.options.find(opt => opt.name === optionName)?.value
+      .map(
+        (variant) =>
+          variant.options.find((opt) => opt.name === optionName)?.value
       )
       .filter((value): value is string => value !== undefined)
       .filter((value, index, self) => self.indexOf(value) === index);
-    
+
     return availableValues;
   };
 
@@ -105,20 +111,22 @@ export function VariantDrawer({
   const handleOptionSelect = (optionName: string, value: string) => {
     const newSelections = {
       ...selectedOptions,
-      [optionName]: value
+      [optionName]: value,
     };
     setSelectedOptions(newSelections);
 
     // Find matching variant
-    const matchingVariant = variants.find(variant => 
-      Object.entries(newSelections).every(([key, val]) => 
-        variant.options.some(opt => opt.name === key && opt.value === val)
+    const matchingVariant = variants.find((variant) =>
+      Object.entries(newSelections).every(([key, val]) =>
+        variant.options.some((opt) => opt.name === key && opt.value === val)
       )
     );
 
     // If we have a complete match, call onSelect
-    if (matchingVariant && 
-        Object.keys(newSelections).length === variantOptions.length) {
+    if (
+      matchingVariant &&
+      Object.keys(newSelections).length === variantOptions.length
+    ) {
       onSelect(matchingVariant.id);
     }
   };
@@ -128,8 +136,8 @@ export function VariantDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent 
-        side="bottom" 
+      <SheetContent
+        side="bottom"
         className="h-[85%] p-0 bg-background rounded-t-[14px]"
       >
         <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
@@ -150,34 +158,36 @@ export function VariantDrawer({
 
         <div className="p-4 space-y-6">
           {/* Variant Options */}
-          {variantOptions.sort((a, b) => a.position - b.position).map((option) => (
-            <div key={option.id} className="space-y-3">
-              <h3 className="text-sm font-medium">
-                {option.name}
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {option.values.map((value) => {
-                  const isAvailable = getAvailableValues(option.name).includes(value);
-                  const isSelected = selectedOptions[option.name] === value;
+          {variantOptions
+            .sort((a, b) => a.position - b.position)
+            .map((option) => (
+              <div key={option.id} className="space-y-3">
+                <h3 className="text-sm font-medium">{option.name}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {option.values.map((value) => {
+                    const isAvailable = getAvailableValues(
+                      option.name
+                    ).includes(value);
+                    const isSelected = selectedOptions[option.name] === value;
 
-                  return (
-                    <Button
-                      key={value}
-                      variant={isSelected ? "default" : "outline"}
-                      className={cn(
-                        "h-9 px-4 rounded-full",
-                        !isAvailable && "opacity-50 cursor-not-allowed"
-                      )}
-                      disabled={!isAvailable}
-                      onClick={() => handleOptionSelect(option.name, value)}
-                    >
-                      {value}
-                    </Button>
-                  );
-                })}
+                    return (
+                      <Button
+                        key={value}
+                        variant={isSelected ? "default" : "outline"}
+                        className={cn(
+                          "h-9 px-4 rounded-full",
+                          !isAvailable && "opacity-50 cursor-not-allowed"
+                        )}
+                        disabled={!isAvailable}
+                        onClick={() => handleOptionSelect(option.name, value)}
+                      >
+                        {value}
+                      </Button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
           {/* Price Display */}
           {currentVariant && (
@@ -191,8 +201,14 @@ export function VariantDrawer({
                     <span className="text-sm line-through text-muted-foreground">
                       ฿{currentVariant.compare_at_price.toLocaleString()}
                     </span>
-                    <span className="text-xs font-medium px-2 py-1 rounded-full bg-[#EE4D2D]/10 text-[#EE4D2D]">
-                      {Math.round((1 - (currentVariant.price / currentVariant.compare_at_price)) * 100)}% OFF
+                    <span className="text-xs font-medium px-2 py-1 rounded-full !bg-mainbutton rounded-full/10">
+                      {Math.round(
+                        (1 -
+                          currentVariant.price /
+                            currentVariant.compare_at_price) *
+                          100
+                      )}
+                      % OFF
                     </span>
                   </>
                 )}
@@ -212,7 +228,7 @@ export function VariantDrawer({
 
         {/* Add to Cart Button */}
         <div className="p-4 border-t bg-background/80 backdrop-blur-xl">
-          <Button 
+          <Button
             className="w-full bg-black text-white h-12"
             disabled={!currentVariant || currentVariant.quantity === 0}
             onClick={() => {
@@ -222,7 +238,7 @@ export function VariantDrawer({
               }
             }}
           >
-            {currentVariant?.quantity === 0 
+            {currentVariant?.quantity === 0
               ? t("Out of Stock")
               : t("Select Options")}
           </Button>

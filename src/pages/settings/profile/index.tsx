@@ -7,7 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 import Header from "@/components/main/Header";
@@ -51,8 +55,12 @@ const ProfileSettings = () => {
 
   useEffect(() => {
     if (customer) {
-      const fullName = `${customer.first_name || ''} ${customer.last_name || ''}`.trim();
-      const birthday = customer.date_of_birth ? new Date(customer.date_of_birth) : null;
+      const fullName = `${customer.first_name || ""} ${
+        customer.last_name || ""
+      }`.trim();
+      const birthday = customer.date_of_birth
+        ? new Date(customer.date_of_birth)
+        : null;
       form.reset({
         full_name: fullName,
         email: customer.email || "",
@@ -63,45 +71,49 @@ const ProfileSettings = () => {
     }
   }, [customer]);
 
-  const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     try {
       const file = event.target.files?.[0];
       if (!file) return;
-  
+
       setIsLoading(true);
       setError("");
-      
-      const { data: { user } } = await supabase.auth.getUser();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
 
-      const store_name = localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
-  
-      const fileExt = file.name.split('.').pop();
+      const store_name =
+        localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
+
+      const fileExt = file.name.split(".").pop();
       const filePath = `${store_name}/customers/avatars/${user.id}.${fileExt}`;
-  
+
       const { error: uploadError } = await supabase.storage
-        .from('product-images')
+        .from("product-images")
         .upload(filePath, file, { upsert: true });
-  
+
       if (uploadError) throw uploadError;
-  
-      const { data: { publicUrl } } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(filePath);
-  
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("product-images").getPublicUrl(filePath);
+
       const timestamp = new Date().getTime();
       const urlWithTimestamp = `${publicUrl}?t=${timestamp}`;
-  
+
       const { error: updateError } = await supabase
-        .from('customers')
+        .from("customers")
         .update({ avatar_url: urlWithTimestamp })
-        .eq('auth_id', user.id);
-  
+        .eq("auth_id", user.id);
+
       if (updateError) throw updateError;
-  
+
       setAvatarUrl(urlWithTimestamp);
       await refreshCustomer();
-
     } catch (error: any) {
       console.error("Error uploading avatar:", error);
       setError(error.message || "Failed to upload avatar");
@@ -111,45 +123,50 @@ const ProfileSettings = () => {
   };
 
   const onSubmit = async (data: any) => {
-      setIsLoading(true);
-      setError("");
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("No user found");
+    setIsLoading(true);
+    setError("");
 
-      // Split full name into first and last name
-      const nameParts = data.full_name.trim().split(/\s+/);
-      const firstName = nameParts[0];
-      const lastName = nameParts.slice(1).join(' ');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("No user found");
 
-      const { error: updateError } = await supabase
-        .from('customers')
-        .update({
-          first_name: firstName,
-          last_name: lastName || '',
-          email: data.email,
-          date_of_birth: data.birthday?.toISOString(),
-          updated_at: new Date().toISOString()
-        })
-        .eq('auth_id', user.id);
+    // Split full name into first and last name
+    const nameParts = data.full_name.trim().split(/\s+/);
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(" ");
 
-      if (updateError) throw updateError;
+    const { error: updateError } = await supabase
+      .from("customers")
+      .update({
+        first_name: firstName,
+        last_name: lastName || "",
+        email: data.email,
+        date_of_birth: data.birthday?.toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("auth_id", user.id);
 
-      await refreshCustomer();
-      navigate("/settings");
+    if (updateError) throw updateError;
+
+    await refreshCustomer();
+    navigate("/settings");
   };
 
   return (
     <>
       <Header title={t("Profile Settings")} />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-5">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="pt-20 space-y-6 p-5"
+        >
           {error && (
             <div className="bg-destructive/15 text-destructive px-4 py-2 rounded-md text-sm">
               {error}
             </div>
           )}
-          
+
           <div className="flex flex-col items-center gap-4">
             <Avatar className="h-24 w-24">
               <AvatarImage src={avatarUrl} />
@@ -195,7 +212,11 @@ const ProfileSettings = () => {
               <FormItem>
                 <FormLabel>{t("Email")}</FormLabel>
                 <FormControl>
-                  <Input {...field} type="email" placeholder="Enter your email address" />
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="Enter your email address"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -209,10 +230,10 @@ const ProfileSettings = () => {
               <FormItem>
                 <FormLabel>{t("Phone")}</FormLabel>
                 <FormControl>
-                  <Input 
-                    {...field} 
-                    type="tel" 
-                    placeholder="+66812345678" 
+                  <Input
+                    {...field}
+                    type="tel"
+                    placeholder="+66812345678"
                     disabled={true}
                     className="opacity-70 cursor-not-allowed"
                   />
@@ -246,7 +267,10 @@ const ProfileSettings = () => {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 bg-darkgray border-0" align="start">
+                  <PopoverContent
+                    className="w-auto p-0 bg-darkgray border-0"
+                    align="start"
+                  >
                     <Calendar
                       mode="single"
                       selected={field.value}
@@ -259,24 +283,29 @@ const ProfileSettings = () => {
                       classNames={{
                         months: "space-y-4",
                         month: "space-y-4",
-                        caption: "flex justify-center pt-1 relative items-center",
+                        caption:
+                          "flex justify-center pt-1 relative items-center",
                         caption_label: "text-sm font-medium",
                         nav: "space-x-1 flex items-center",
-                        nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
+                        nav_button:
+                          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
                         table: "w-full border-collapse space-y-1",
                         head_row: "flex",
-                        head_cell: "text-white rounded-md w-9 font-normal text-[0.8rem]",
+                        head_cell:
+                          "text-white rounded-md w-9 font-normal text-[0.8rem]",
                         row: "flex w-full mt-2",
                         cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
                         day: cn(
                           "h-9 w-9 p-0 font-normal text-white aria-selected:opacity-100 hover:bg-[#6D6D6D] focus:bg-[#6D6D6D]"
                         ),
                         day_range_end: "day-range-end",
-                        day_selected: "bg-[#6D6D6D] text-white hover:bg-[#6D6D6D] hover:text-white focus:bg-[#6D6D6D] focus:text-white",
+                        day_selected:
+                          "bg-[#6D6D6D] text-white hover:bg-[#6D6D6D] hover:text-white focus:bg-[#6D6D6D] focus:text-white",
                         day_today: "bg-[#6D6D6D] text-white",
-                        day_outside: "text-[#979797] opacity-50 aria-selected:bg-accent/50 aria-selected:opacity-30",
+                        day_outside:
+                          "text-[#979797] opacity-50 aria-selected:bg-accent/50 aria-selected:opacity-30",
                         day_disabled: "text-[#979797] opacity-50",
-                        day_hidden: "invisible"
+                        day_hidden: "invisible",
                       }}
                     />
                   </PopoverContent>
@@ -287,9 +316,9 @@ const ProfileSettings = () => {
           />
 
           <div className="pt-4">
-            <Button 
-              type="submit" 
-              className="main-btn !bg-mainorange w-full"
+            <Button
+              type="submit"
+              className="main-btn !bg-mainbutton rounded-full w-full"
               disabled={isLoading}
             >
               {isLoading ? t("Saving...") : t("Save Changes")}

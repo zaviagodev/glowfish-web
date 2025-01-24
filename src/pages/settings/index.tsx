@@ -1,12 +1,14 @@
-import { useTranslate, useLogout } from "@refinedev/core"; 
+import { useTranslate, useLogout } from "@refinedev/core";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button"; 
+import { Button } from "@/components/ui/button";
 import { getUserProfile } from "@/lib/auth";
 import { UserProfile } from "@/components/settings/UserProfile";
 import { OrderStatusBar } from "@/components/settings/OrderStatusBar";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { WalletSection } from "@/components/settings/WalletSection";
 import LanguageSwitcher from "@/components/language-switcher";
+import { Switch } from "@/components/ui/switch";
+import { useTheme } from "@/hooks/useTheme";
 
 const SettingsPage = () => {
   const t = useTranslate();
@@ -34,9 +36,9 @@ const SettingsPage = () => {
           icon: "👤",
           label: t("Profile"),
           path: "/settings/profile",
-          showArrow: true
-        }
-      ]
+          showArrow: true,
+        },
+      ],
     },
     {
       title: t("Points & Rewards"),
@@ -45,24 +47,25 @@ const SettingsPage = () => {
           icon: "⭐️",
           label: t("How to Get Points"),
           path: "/settings/how-to-get-points",
-          showArrow: true
+          showArrow: true,
         },
         {
           icon: "🎁",
           label: t("How to Spend Points"),
           path: "/settings/how-to-spend-points",
-          showArrow: true
+          showArrow: true,
         },
         {
           icon: "👑",
           label: t("Member Level"),
           path: "/settings/member-level",
-          showArrow: true
-        }
-      ]
+          showArrow: true,
+        },
+      ],
     },
   ];
 
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,6 +86,14 @@ const SettingsPage = () => {
             index={index}
           />
         ))}
+
+        <div className="flex items-center justify-between p-4">
+          <span className="text-sm font-medium">Dark mode</span>
+          <Switch
+            onClick={toggleTheme}
+            checked={theme === "dark" ? true : false}
+          />
+        </div>
 
         {/* Logout Button */}
         <div className="px-4">

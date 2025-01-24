@@ -96,7 +96,7 @@ export default function MyPointsPage() {
                     {points.nextTier.toLocaleString()} {t("points")}
                   </span>
                 </div>
-                <div className="h-2 bg-[#F2F2F7] rounded-full overflow-hidden">
+                <div className="h-2 bg-[#F2F2F7]/20 rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-primary rounded-full"
                     initial={{ width: "0%" }}
@@ -243,7 +243,7 @@ export default function MyPointsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <div className="bg-[#F2F2F7] rounded-lg p-4 flex items-start gap-3">
+          <div className="bg-background rounded-lg p-4 flex items-start gap-3">
             <Info className="w-5 h-5 text-[#8E8E93] flex-shrink-0 mt-0.5" />
             <div className="space-y-1">
               <p className="text-sm font-medium text-muted-foreground">
@@ -271,7 +271,7 @@ export default function MyPointsPage() {
             </SheetTitle>
           </SheetHeader>
           <div className="p-6 flex flex-col items-center justify-center h-full">
-            <div className="w-64 h-64 bg-[#F8F8F8] rounded-2xl flex items-center justify-center mb-6">
+            <div className="w-64 h-64 bg-background rounded-2xl flex items-center justify-center mb-6">
               <QrCode className="w-40 h-40 text-secondary-foreground" />
             </div>
             <p className="text-sm text-[#8E8E93] text-center">

@@ -64,7 +64,7 @@ export function ProductList({
         <div className="p-4 space-y-4">
           <Button
             variant="ghost"
-            className="w-full flex items-center justify-between text-sm font-normal h-auto p-4 bg-[#F8F8F8] rounded-xl"
+            className="w-full flex items-center justify-between text-sm font-normal h-auto p-4 rounded-xl"
             onClick={onMessageClick}
           >
             <div className="flex items-center gap-3">
@@ -83,7 +83,7 @@ export function ProductList({
 
           <Button
             variant="ghost"
-            className="w-full flex items-center justify-between text-sm font-normal h-auto p-4 bg-[#F8F8F8] rounded-xl hover:bg-[#F0F0F0]"
+            className="w-full flex items-center justify-between text-sm font-normal h-auto p-4 rounded-xl"
             onClick={onVatClick}
           >
             <div className="flex items-center gap-3">

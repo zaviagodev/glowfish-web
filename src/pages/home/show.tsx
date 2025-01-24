@@ -265,7 +265,7 @@ export const HomeShow = () => {
                             }
                             className={`px-4 py-2 ${
                               selectedAttributes[option.name] === value
-                                ? "bg-mainorange"
+                                ? "!bg-mainbutton rounded-full"
                                 : "bg-darkgray"
                             }`}
                           >
@@ -289,7 +289,7 @@ export const HomeShow = () => {
                 </h2>
               </div>
               <Button
-                className="main-btn !bg-mainorange w-full"
+                className="main-btn !bg-mainbutton rounded-full w-full"
                 disabled={hasVariants && !selectedVariant}
                 onClick={handleCheckout}
               >

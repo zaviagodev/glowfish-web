@@ -103,7 +103,7 @@ const RewardDetail = () => {
             <footer className="btn-footer flex flex-col gap-7">
               <Sheet open={isUsingCoupon} onOpenChange={setIsUsingCoupon}>
                 <SheetOverlay className="backdrop-blur-sm bg-transparent" />
-                <SheetTrigger className="main-btn !bg-mainorange flex gap-2 items-center justify-center">
+                <SheetTrigger className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center">
                   <Gift />
                   {t("Use the coupon")}
                 </SheetTrigger>

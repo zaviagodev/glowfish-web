@@ -58,8 +58,8 @@ export default function MyOrdersPage() {
         <OrdersSearch value={searchQuery} onChange={setSearchQuery} />
 
         <Tabs defaultValue="all" onValueChange={setActiveTab}>
-          <div className="px-4">
-            <TabsList className="w-full h-auto p-1 bg-tertiary grid grid-cols-6 gap-1">
+          <div className="px-4 overflow-auto">
+            <TabsList className="w-full h-auto p-1 bg-tertiary min-w-fit gap-1">
               <TabsTrigger
                 value="all"
                 className="text-xs py-2.5 data-[state=active]:bg-background"

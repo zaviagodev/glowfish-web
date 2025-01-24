@@ -140,7 +140,7 @@ export function VatInvoiceDialog({
                     className={`flex items-start p-3 rounded-lg border ${
                       selectedProfile === profile.id
                         ? "border-primary bg-primary/5"
-                        : "border-[#E5E5E5] bg-[#F8F8F8]"
+                        : "border-[#E5E5E5] bg-background"
                     }`}
                   >
                     <RadioGroupItem
@@ -172,7 +172,7 @@ export function VatInvoiceDialog({
                   className={`flex items-start p-3 rounded-lg border ${
                     showNewForm
                       ? "border-primary bg-primary/5"
-                      : "border-[#E5E5E5] bg-[#F8F8F8]"
+                      : "border-[#E5E5E5] bg-background"
                   }`}
                 >
                   <RadioGroupItem value="new" id="new" className="mt-1" />
@@ -202,7 +202,7 @@ export function VatInvoiceDialog({
                         }))
                       }
                       placeholder={t("Enter company name")}
-                      className="h-12 bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0"
+                      className="h-12 bg-background border-[#E5E5E5] focus:border-primary focus:ring-0"
                     />
                   </div>
 
@@ -215,7 +215,7 @@ export function VatInvoiceDialog({
                         setData((prev) => ({ ...prev, taxId: e.target.value }))
                       }
                       placeholder={t("Enter tax ID")}
-                      className="h-12 bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0"
+                      className="h-12 bg-background border-[#E5E5E5] focus:border-primary focus:ring-0"
                     />
                   </div>
 
@@ -230,7 +230,7 @@ export function VatInvoiceDialog({
                         setData((prev) => ({ ...prev, branch: e.target.value }))
                       }
                       placeholder={t("Enter branch number")}
-                      className="h-12 bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0"
+                      className="h-12 bg-background border-[#E5E5E5] focus:border-primary focus:ring-0"
                     />
                   </div>
 
@@ -246,7 +246,7 @@ export function VatInvoiceDialog({
                         }))
                       }
                       placeholder={t("Enter company address")}
-                      className="h-12 bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0"
+                      className="h-12 bg-background border-[#E5E5E5] focus:border-primary focus:ring-0"
                     />
                   </div>
                 </div>
