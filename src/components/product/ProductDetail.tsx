@@ -235,10 +235,6 @@ export function ProductDetail({
 
               <div className="space-y-2">
                
-
-               {console.log(selectedVariant)}
-
-
                 <div className="space-y-2.5">
                   {location && (
                     <div className="flex items-center gap-2 text-sm">

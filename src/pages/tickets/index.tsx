@@ -18,8 +18,6 @@ export default function TicketsPage() {
     return activeTab === "upcoming" ? isUpcoming : !isUpcoming;
   });
 
-  console.log(events);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background">

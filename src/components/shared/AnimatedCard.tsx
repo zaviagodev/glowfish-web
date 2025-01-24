@@ -129,11 +129,11 @@ export function AnimatedCard({
                 "font-medium text-black",
                 "text-base"
               )}>
-                ฿{typeof price === 'number' ? price.toLocaleString() : price}
+                {typeof price === 'number' ? price.toLocaleString() : price}
               </span>
               {compareAtPrice && (
                 <span className="text-xs line-through text-[#999999]">
-                  ฿{typeof compareAtPrice === 'number' ? compareAtPrice.toLocaleString() : compareAtPrice}
+                  {typeof compareAtPrice === 'number' ? compareAtPrice.toLocaleString() : compareAtPrice}
                 </span>
               )}
             </span>
