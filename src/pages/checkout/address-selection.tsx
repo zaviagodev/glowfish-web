@@ -33,46 +33,46 @@ interface Address {
   state: string;
   postal_code: string;
   is_default: boolean;
-  type: 'home' | 'office';
+  type: "home" | "office";
 }
 
 // Sample addresses
 const sampleAddresses: Address[] = [
   {
-    id: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-    full_name: 'John Doe',
-    phone: '(+66) 123-456-789',
-    address1: '123 Sukhumvit Road',
-    address2: 'Apartment 4B',
-    city: 'Bangkok',
-    state: 'Bangkok',
-    postal_code: '10110',
+    id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    full_name: "John Doe",
+    phone: "(+66) 123-456-789",
+    address1: "123 Sukhumvit Road",
+    address2: "Apartment 4B",
+    city: "Bangkok",
+    state: "Bangkok",
+    postal_code: "10110",
     is_default: true,
-    type: 'home'
+    type: "home",
   },
   {
-    id: '38c3c53f-967c-4c0e-9c0f-7b9e0c6f8d9e',
-    full_name: 'John Doe',
-    phone: '(+66) 098-765-432',
-    address1: '456 Silom Road',
-    address2: 'Office Building, Floor 12',
-    city: 'Bangkok',
-    state: 'Bangkok',
-    postal_code: '10500',
+    id: "38c3c53f-967c-4c0e-9c0f-7b9e0c6f8d9e",
+    full_name: "John Doe",
+    phone: "(+66) 098-765-432",
+    address1: "456 Silom Road",
+    address2: "Office Building, Floor 12",
+    city: "Bangkok",
+    state: "Bangkok",
+    postal_code: "10500",
     is_default: false,
-    type: 'office'
+    type: "office",
   },
   {
-    id: 'c2d8f8d1-5c9a-4b9c-9c0f-7b9e0c6f8d9e',
-    full_name: 'John Doe',
-    phone: '(+66) 111-222-333',
-    address1: '789 Ratchada Road',
-    city: 'Bangkok',
-    state: 'Bangkok',
-    postal_code: '10400',
+    id: "c2d8f8d1-5c9a-4b9c-9c0f-7b9e0c6f8d9e",
+    full_name: "John Doe",
+    phone: "(+66) 111-222-333",
+    address1: "789 Ratchada Road",
+    city: "Bangkok",
+    state: "Bangkok",
+    postal_code: "10400",
     is_default: false,
-    type: 'home'
-  }
+    type: "home",
+  },
 ];
 
 export default function AddressSelection() {
@@ -86,7 +86,7 @@ export default function AddressSelection() {
 
   const handleAddressSelect = (addressId: string) => {
     setSelectedAddress(addressId);
-    navigate('/checkout', { state: { selectedAddressId: addressId } });
+    navigate("/checkout", { state: { selectedAddressId: addressId } });
   };
 
   const handleEditAddress = (address: Address) => {
@@ -97,15 +97,15 @@ export default function AddressSelection() {
   const handleDeleteAddress = async (addressId: string) => {
     try {
       const { error } = await supabase
-        .from('customer_addresses')
+        .from("customer_addresses")
         .delete()
-        .eq('id', addressId);
+        .eq("id", addressId);
 
       if (error) throw error;
-      setAddresses(addresses.filter(addr => addr.id !== addressId));
+      setAddresses(addresses.filter((addr) => addr.id !== addressId));
       setAddressToDelete(null);
     } catch (error) {
-      console.error('Error deleting address:', error);
+      console.error("Error deleting address:", error);
     }
   };
 
@@ -126,14 +126,16 @@ export default function AddressSelection() {
           {addresses.map((address) => (
             <div
               key={address.id}
-              className={`bg-[rgba(245,245,245,0.5)] p-3 rounded-lg border transition-all ${
-                selectedAddress === address.id ? 'border-primary ring-2 ring-primary/10' : 'border-[#E5E5E5]'
+              className={`bg-tertiary p-3 rounded-lg border transition-all ${
+                selectedAddress === address.id
+                  ? "border-primary ring-2 ring-primary/10"
+                  : "border-[#E5E5E5]"
               } cursor-pointer hover:border-primary/50`}
               onClick={() => handleAddressSelect(address.id)}
             >
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex-shrink-0 flex items-center justify-center">
-                  {address.type === 'home' ? (
+                  {address.type === "home" ? (
                     <Home className="w-4 h-4 text-foreground" />
                   ) : (
                     <Building2 className="w-4 h-4 text-foreground" />
@@ -142,7 +144,9 @@ export default function AddressSelection() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="font-medium truncate">{address.full_name}</span>
+                      <span className="font-medium truncate">
+                        {address.full_name}
+                      </span>
                       {address.is_default && (
                         <span className="text-[10px] bg-primary/10 text-primary font-medium px-1.5 py-0.5 rounded-full flex-shrink-0">
                           {t("Default")}
@@ -202,8 +206,8 @@ export default function AddressSelection() {
       </div>
 
       {/* Add/Edit Address Sheet */}
-      <Sheet 
-        open={showAddForm} 
+      <Sheet
+        open={showAddForm}
         onOpenChange={(open) => {
           if (!open) {
             setShowAddForm(false);
@@ -211,8 +215,8 @@ export default function AddressSelection() {
           }
         }}
       >
-        <SheetContent 
-          side="bottom" 
+        <SheetContent
+          side="bottom"
           className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-w-[600px] mx-auto flex flex-col"
         >
           <SheetHeader className="px-4 py-3 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-between">
@@ -233,21 +237,21 @@ export default function AddressSelection() {
           </SheetHeader>
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
-            <AddressForm
-              initialData={editingAddress}
-              onSubmit={async (data) => {
-                setShowAddForm(false);
-                setEditingAddress(null);
-              }}
-            />
+              <AddressForm
+                initialData={editingAddress}
+                onSubmit={async (data) => {
+                  setShowAddForm(false);
+                  setEditingAddress(null);
+                }}
+              />
             </div>
           </div>
         </SheetContent>
       </Sheet>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog 
-        open={!!addressToDelete} 
+      <AlertDialog
+        open={!!addressToDelete}
         onOpenChange={(open) => {
           if (!open) {
             setAddressToDelete(null);
@@ -258,11 +262,13 @@ export default function AddressSelection() {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("Delete Address")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("Are you sure you want to delete this address? This action cannot be undone.")}
+              {t(
+                "Are you sure you want to delete this address? This action cannot be undone."
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel 
+            <AlertDialogCancel
               onClick={() => setAddressToDelete(null)}
               className="bg-muted text-foreground hover:bg-muted/90 w-full sm:w-auto"
             >
@@ -270,7 +276,9 @@ export default function AddressSelection() {
             </AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90 w-full sm:w-auto"
-              onClick={() => addressToDelete && handleDeleteAddress(addressToDelete)}
+              onClick={() =>
+                addressToDelete && handleDeleteAddress(addressToDelete)
+              }
             >
               {t("Delete")}
             </AlertDialogAction>

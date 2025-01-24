@@ -3,7 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Coins, Gift, Sparkles, Receipt, ArrowRight } from "lucide-react";
+import {
+  ChevronLeft,
+  Coins,
+  Gift,
+  Sparkles,
+  Receipt,
+  ArrowRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePoints } from "@/lib/points";
@@ -11,14 +18,14 @@ import { usePoints } from "@/lib/points";
 export default function PointsPage() {
   const t = useTranslate();
   const navigate = useNavigate();
-  const { 
-    availablePoints, 
-    selectedPoints, 
+  const {
+    availablePoints,
+    selectedPoints,
     exchangeRate,
     minRedeem,
     maxRedeem,
     setSelectedPoints,
-    getDiscountAmount
+    getDiscountAmount,
   } = usePoints();
   const [showAnimation, setShowAnimation] = useState(false);
   const [inputValue, setInputValue] = useState(selectedPoints.toString());
@@ -30,11 +37,17 @@ export default function PointsPage() {
 
   const handleInputChange = (value: string) => {
     const prevValue = parseInt(inputValue) || 0;
-    const cleanValue = value.replace(/^0+/, '');
-    
-    if (cleanValue === '' || (parseInt(cleanValue) >= 0 && parseInt(cleanValue) <= availablePoints)) {
+    const cleanValue = value.replace(/^0+/, "");
+
+    if (
+      cleanValue === "" ||
+      (parseInt(cleanValue) >= 0 && parseInt(cleanValue) <= availablePoints)
+    ) {
       setInputValue(cleanValue);
-      const newValue = Math.max(0, Math.min(parseInt(cleanValue) || 0, availablePoints));
+      const newValue = Math.max(
+        0,
+        Math.min(parseInt(cleanValue) || 0, availablePoints)
+      );
       setSelectedPoints(newValue);
 
       if (newValue > prevValue) {
@@ -56,7 +69,7 @@ export default function PointsPage() {
   };
 
   const handleConfirm = () => {
-    navigate('/checkout');
+    navigate("/checkout");
   };
 
   return (
@@ -80,33 +93,29 @@ export default function PointsPage() {
       <div className="pt-14 pb-32">
         <div className="p-4 space-y-6">
           {/* Points Balance Card */}
-          <motion.div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5]">
+          <motion.div className="bg-tertiary rounded-lg border border-[#E5E5E5]">
             <div className="flex items-center gap-3 p-3 border-b border-[#E5E5E5]">
-              <motion.div 
-                className="w-8 h-8 bg-[rgba(245,245,245,0.5)] flex items-center justify-center"
+              <motion.div
+                className="w-8 h-8 bg-tertiary flex items-center justify-center"
                 initial={{ rotate: 0 }}
                 animate={{ rotate: 360 }}
-                transition={{ 
+                transition={{
                   duration: 2,
                   ease: "easeInOut",
                   repeat: Infinity,
-                  repeatType: "reverse"
+                  repeatType: "reverse",
                 }}
               >
                 <Coins className="w-4 h-4 text-primary" />
               </motion.div>
-              <h2 className="text-sm font-medium">
-                {t("Available Points")}
-              </h2>
+              <h2 className="text-sm font-medium">{t("Available Points")}</h2>
             </div>
             <div className="p-3">
               <div className="flex items-baseline gap-2 mb-2">
                 <span className="text-2xl font-bold">
                   {availablePoints.toLocaleString()}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  PTS
-                </span>
+                <span className="text-xs text-muted-foreground">PTS</span>
               </div>
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
@@ -137,14 +146,12 @@ export default function PointsPage() {
           </motion.div>
 
           {/* Points Input Section */}
-          <motion.div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-3 mt-4">
+          <motion.div className="bg-tertiary rounded-lg border border-[#E5E5E5] p-3 mt-4">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-[rgba(245,245,245,0.5)] flex items-center justify-center">
-                <Gift className="w-4 h-4 text-[#1A1A1A]" />
+              <div className="w-8 h-8 bg-tertiary flex items-center justify-center">
+                <Gift className="w-4 h-4 text-muted-foreground" />
               </div>
-              <h2 className="text-sm font-medium">
-                {t("Redeem Points")}
-              </h2>
+              <h2 className="text-sm font-medium">{t("Redeem Points")}</h2>
             </div>
 
             <div className="relative mb-6">
@@ -156,7 +163,7 @@ export default function PointsPage() {
                 inputMode="numeric"
                 value={inputValue}
                 onChange={(e) => handleInputChange(e.target.value)}
-                className="text-2xl font-bold h-14 text-center pr-20 bg-white border-[#E5E5E5] text-primary"
+                className="text-2xl font-bold h-14 text-center pr-20 bg-background border-[#E5E5E5] text-primary"
                 placeholder="0"
               />
               <Button
@@ -181,7 +188,8 @@ export default function PointsPage() {
                     size="sm"
                     className={cn(
                       "rounded-full border-[#E5E5E5] hover:bg-primary hover:text-white",
-                      parseInt(inputValue) === points && "bg-primary text-white border-primary"
+                      parseInt(inputValue) === points &&
+                        "bg-primary text-white border-primary"
                     )}
                     disabled={points > availablePoints}
                     onClick={() => handleInputChange(points.toString())}
@@ -194,29 +202,35 @@ export default function PointsPage() {
           </motion.div>
 
           {/* Summary Section */}
-          <motion.div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] mt-4">
+          <motion.div className="bg-tertiary rounded-lg border border-[#E5E5E5] mt-4">
             <div className="flex items-center gap-3 p-3 border-b border-[#E5E5E5]">
-              <div className="w-8 h-8 bg-[rgba(245,245,245,0.5)] flex items-center justify-center">
-                <Receipt className="w-4 h-4 text-black" />
+              <div className="w-8 h-8 bg-tertiary flex items-center justify-center">
+                <Receipt className="w-4 h-4 text-secondary-foreground" />
               </div>
-              <h2 className="text-sm font-medium">
-                {t("Summary")}
-              </h2>
+              <h2 className="text-sm font-medium">{t("Summary")}</h2>
             </div>
             <div className="p-3 space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">{t("Points to spend")}</span>
-                <span className="font-medium text-primary">{selectedPoints.toLocaleString()}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t("Points to spend")}
+                </span>
+                <span className="font-medium text-primary">
+                  {selectedPoints.toLocaleString()}
+                </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">{t("Discount amount")}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t("Discount amount")}
+                </span>
                 <span className="font-medium text-primary">
                   ฿{getDiscountAmount().toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">{t("Remaining points")}</span>
-                <motion.span 
+                <span className="text-sm text-muted-foreground">
+                  {t("Remaining points")}
+                </span>
+                <motion.span
                   className="font-medium text-primary"
                   animate={showDecrease ? { scale: [1, 0.95, 1] } : {}}
                 >
@@ -232,7 +246,11 @@ export default function PointsPage() {
       <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t p-3 z-50">
         <Button
           className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90"
-          disabled={selectedPoints === 0 || selectedPoints < minRedeem || (maxRedeem && selectedPoints > maxRedeem)}
+          disabled={
+            selectedPoints === 0 ||
+            selectedPoints < minRedeem ||
+            (maxRedeem && selectedPoints > maxRedeem)
+          }
           onClick={handleConfirm}
         >
           <span className="mr-2">

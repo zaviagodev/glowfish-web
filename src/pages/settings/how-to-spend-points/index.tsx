@@ -13,7 +13,7 @@ const HowToSpendPoints = () => {
     description: t("Convert your points to discounts"),
     value: "100 Points = ฿10",
     color: "#34C759",
-    bgColor: "rgba(52, 199, 89, 0.1)"
+    bgColor: "rgba(52, 199, 89, 0.1)",
   };
 
   const spendingMethods = [
@@ -23,7 +23,7 @@ const HowToSpendPoints = () => {
       value: "500 points = ฿50",
       icon: Tag,
       color: "#007AFF",
-      bgColor: "rgba(0, 122, 255, 0.1)"
+      bgColor: "rgba(0, 122, 255, 0.1)",
     },
     {
       title: t("Free Shipping"),
@@ -31,7 +31,7 @@ const HowToSpendPoints = () => {
       value: "300 points",
       icon: Truck,
       color: "#FF9500",
-      bgColor: "rgba(255, 149, 0, 0.1)"
+      bgColor: "rgba(255, 149, 0, 0.1)",
     },
     {
       title: t("Event Tickets"),
@@ -39,7 +39,7 @@ const HowToSpendPoints = () => {
       value: "1000 points",
       icon: Ticket,
       color: "#AF52DE",
-      bgColor: "rgba(175, 82, 222, 0.1)"
+      bgColor: "rgba(175, 82, 222, 0.1)",
     },
     {
       title: t("Birthday Bonus"),
@@ -47,7 +47,7 @@ const HowToSpendPoints = () => {
       value: "2x value",
       icon: Gift,
       color: "#FF2D55",
-      bgColor: "rgba(255, 45, 85, 0.1)"
+      bgColor: "rgba(255, 45, 85, 0.1)",
     },
     {
       title: t("VIP Rewards"),
@@ -55,8 +55,8 @@ const HowToSpendPoints = () => {
       value: t("Tier based"),
       icon: Crown,
       color: "#5856D6",
-      bgColor: "rgba(88, 86, 214, 0.1)"
-    }
+      bgColor: "rgba(88, 86, 214, 0.1)",
+    },
   ];
 
   const terms = [
@@ -64,7 +64,7 @@ const HowToSpendPoints = () => {
     t("Minimum redemption is 100 points (฿10 value)"),
     t("Points expire 12 months after being earned"),
     t("Points cannot be redeemed for cash"),
-    t("Redemption cannot be cancelled or reversed")
+    t("Redemption cannot be cancelled or reversed"),
   ];
 
   return (
@@ -77,26 +77,32 @@ const HowToSpendPoints = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-4"
+            className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4"
           >
             <div className="flex items-center gap-3">
-              <div 
+              <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center"
                 style={{ backgroundColor: pointsValue.bgColor }}
               >
-                <pointsValue.icon 
+                <pointsValue.icon
                   className="w-6 h-6"
                   style={{ color: pointsValue.color }}
                 />
               </div>
               <div>
-                <h3 className="font-medium" style={{ color: pointsValue.color }}>
+                <h3
+                  className="font-medium"
+                  style={{ color: pointsValue.color }}
+                >
                   {pointsValue.title}
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   {pointsValue.description}
                 </p>
-                <p className="text-sm font-medium mt-1" style={{ color: pointsValue.color }}>
+                <p
+                  className="text-sm font-medium mt-1"
+                  style={{ color: pointsValue.color }}
+                >
                   {pointsValue.value}
                 </p>
               </div>
@@ -116,28 +122,26 @@ const HowToSpendPoints = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + index * 0.1 }}
-                className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-4"
+                className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4"
               >
                 <div className="flex items-center gap-4">
-                  <div 
+                  <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ backgroundColor: method.bgColor }}
                   >
-                    <method.icon 
+                    <method.icon
                       className="w-6 h-6"
                       style={{ color: method.color }}
                     />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-medium truncate">
-                        {method.title}
-                      </h3>
-                      <span 
+                      <h3 className="font-medium truncate">{method.title}</h3>
+                      <span
                         className="text-sm font-medium px-2 py-1 rounded-full"
-                        style={{ 
+                        style={{
                           backgroundColor: method.bgColor,
-                          color: method.color
+                          color: method.color,
                         }}
                       >
                         {method.value}
@@ -162,7 +166,7 @@ const HowToSpendPoints = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-4 space-y-3"
+            className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4 space-y-3"
           >
             {terms.map((term, index) => (
               <motion.div

@@ -41,11 +41,9 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
       color: "#007AFF",
       bgColor: "rgba(0, 122, 255, 0.1)",
       data: {
-        guests: [
-          { name: "John Doe", seat: "A1" }
-        ],
-        expectedDuration: 2000
-      }
+        guests: [{ name: "John Doe", seat: "A1" }],
+        expectedDuration: 2000,
+      },
     },
     {
       id: "group",
@@ -58,10 +56,10 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
         guests: [
           { name: "Alice Smith", seat: "B1" },
           { name: "Bob Johnson", seat: "B2" },
-          { name: "Carol White", seat: "B3" }
+          { name: "Carol White", seat: "B3" },
         ],
-        expectedDuration: 3000
-      }
+        expectedDuration: 3000,
+      },
     },
     {
       id: "slow",
@@ -71,11 +69,9 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
       color: "#FF9500",
       bgColor: "rgba(255, 149, 0, 0.1)",
       data: {
-        guests: [
-          { name: "David Brown", seat: "C1" }
-        ],
-        expectedDuration: 5000
-      }
+        guests: [{ name: "David Brown", seat: "C1" }],
+        expectedDuration: 5000,
+      },
     },
     {
       id: "error",
@@ -85,12 +81,10 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
       color: "#FF3B30",
       bgColor: "rgba(255, 59, 48, 0.1)",
       data: {
-        guests: [
-          { name: "Error Test", seat: "ERROR" }
-        ],
-        expectedDuration: 2000
-      }
-    }
+        guests: [{ name: "Error Test", seat: "ERROR" }],
+        expectedDuration: 2000,
+      },
+    },
   ];
 
   const handleTestSelect = async (test: TestCase) => {
@@ -98,7 +92,9 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
     setIsProcessing(true);
 
     // Simulate processing
-    await new Promise(resolve => setTimeout(resolve, test.data.expectedDuration));
+    await new Promise((resolve) =>
+      setTimeout(resolve, test.data.expectedDuration)
+    );
 
     if (test.id === "error") {
       // Simulate error
@@ -132,14 +128,12 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         className="absolute bottom-0 left-0 right-0 bg-background rounded-t-[20px] overflow-hidden"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="relative px-4 py-6 text-center border-b">
           <div className="absolute left-1/2 -top-3 w-12 h-1 bg-[#E5E5EA] rounded-full transform -translate-x-1/2" />
-          <h2 className="text-lg font-semibold">
-            {t("Test Check-in")}
-          </h2>
+          <h2 className="text-lg font-semibold">{t("Test Check-in")}</h2>
           <p className="text-sm text-muted-foreground mt-1">
             {t("Select a test scenario")}
           </p>
@@ -159,25 +153,25 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
                   key={test.id}
                   className="w-full text-left"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ 
-                    opacity: 1, 
+                  animate={{
+                    opacity: 1,
                     y: 0,
-                    transition: { delay: index * 0.1 }
+                    transition: { delay: index * 0.1 },
                   }}
                   onClick={() => handleTestSelect(test)}
                 >
-                  <div 
+                  <div
                     className={cn(
-                      "bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-4",
+                      "bg-tertiary rounded-lg border border-[#E5E5E5] p-4",
                       "hover:border-[#D1D1D6] transition-colors"
                     )}
                   >
                     <div className="flex items-center gap-4">
-                      <div 
+                      <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center"
                         style={{ backgroundColor: test.bgColor }}
                       >
-                        <test.icon 
+                        <test.icon
                           className="w-6 h-6"
                           style={{ color: test.color }}
                         />
@@ -206,10 +200,10 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
                   <>
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ 
+                      transition={{
                         duration: 2,
                         repeat: Infinity,
-                        ease: "linear"
+                        ease: "linear",
                       }}
                       className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent mb-4"
                     />
@@ -228,7 +222,7 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
                       transition={{
                         type: "spring",
                         stiffness: 300,
-                        damping: 20
+                        damping: 20,
                       }}
                       className="w-16 h-16 rounded-full bg-[#34C759]/10 flex items-center justify-center mb-4"
                     >
@@ -237,10 +231,13 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
                     <h3 className="text-lg font-semibold mb-4">
                       {t("Check-in Successful!")}
                     </h3>
-                    <div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-4 w-full mb-6">
+                    <div className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4 w-full mb-6">
                       <div className="space-y-4">
                         {selectedTest.data.guests.map((guest, index) => (
-                          <div key={index} className="flex justify-between items-center">
+                          <div
+                            key={index}
+                            className="flex justify-between items-center"
+                          >
                             <div className="text-sm">
                               <div className="font-medium">{guest.name}</div>
                               <div className="text-muted-foreground">

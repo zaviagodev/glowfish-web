@@ -12,7 +12,7 @@ export default function TicketsPage() {
   const [activeTab, setActiveTab] = useState<"upcoming" | "passed">("upcoming");
   const { events, loading, error } = useEvents();
 
-  const filteredTickets = events.filter(event => {
+  const filteredTickets = events.filter((event) => {
     const eventDate = new Date(event.event.start_datetime);
     const isUpcoming = eventDate > new Date();
     return activeTab === "upcoming" ? isUpcoming : !isUpcoming;
@@ -45,18 +45,23 @@ export default function TicketsPage() {
       <PageHeader title={t("My Tickets")} />
 
       <div className="pt-14 pb-4">
-        <Tabs defaultValue="upcoming" onValueChange={(value) => setActiveTab(value as "upcoming" | "passed")}>
+        <Tabs
+          defaultValue="upcoming"
+          onValueChange={(value) =>
+            setActiveTab(value as "upcoming" | "passed")
+          }
+        >
           <div className="px-4">
-            <TabsList className="w-full h-auto p-1 bg-[rgba(245,245,245,0.5)] grid grid-cols-2 gap-1">
-              <TabsTrigger 
-                value="upcoming" 
-                className="text-sm py-2.5 data-[state=active]:bg-white"
+            <TabsList className="w-full h-auto p-1 bg-tertiary grid grid-cols-2 gap-1">
+              <TabsTrigger
+                value="upcoming"
+                className="text-sm py-2.5 data-[state=active]:bg-background"
               >
                 {t("Upcoming")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="passed"
-                className="text-sm py-2.5 data-[state=active]:bg-white"
+                className="text-sm py-2.5 data-[state=active]:bg-background"
               >
                 {t("Past Events")}
               </TabsTrigger>
@@ -72,23 +77,21 @@ export default function TicketsPage() {
               >
                 <TicketIcon className="w-12 h-12 text-muted-foreground/50 mb-4" />
                 <p className="text-muted-foreground text-center">
-                  {activeTab === "upcoming" 
-                    ? t("No upcoming events") 
+                  {activeTab === "upcoming"
+                    ? t("No upcoming events")
                     : t("No past events")}
                 </p>
               </motion.div>
             ) : (
               <div className="px-4 space-y-4">
                 {filteredTickets.map((event, index) => (
-
-                  
                   <motion.div
                     key={event.order_item_id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <TicketCard 
+                    <TicketCard
                       ticket={{
                         id: event.id,
                         eventName: event.event.name,
@@ -98,9 +101,11 @@ export default function TicketsPage() {
                         status: activeTab,
                         used: activeTab === "passed",
                         ticketNumber: `T-${event.order_item_id}`,
-                        seat: event.tickets[0]?.metadata?.attendeeName || "General Admission",
-                        groupSize: event.tickets.length || 1
-                      }} 
+                        seat:
+                          event.tickets[0]?.metadata?.attendeeName ||
+                          "General Admission",
+                        groupSize: event.tickets.length || 1,
+                      }}
                     />
                   </motion.div>
                 ))}

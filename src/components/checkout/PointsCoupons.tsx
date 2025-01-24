@@ -12,11 +12,11 @@ interface PointsCouponsProps {
   subtotal: number;
 }
 
-export function PointsCoupons({ 
-  onCouponClick, 
+export function PointsCoupons({
+  onCouponClick,
   onPointsClick,
   className,
-  subtotal
+  subtotal,
 }: PointsCouponsProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -26,29 +26,37 @@ export function PointsCoupons({
   const pointsDiscount = getDiscountAmount();
 
   return (
-    <div className={cn(
-      "bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5]",
-      className
-    )}>
+    <div
+      className={cn(
+        "bg-tertiary rounded-lg border border-[#E5E5E5]",
+        className
+      )}
+    >
       <div className="p-4 space-y-2">
         <button
-          onClick={() => navigate('/checkout/coupons')}
+          onClick={() => navigate("/checkout/coupons")}
           className="w-full flex items-center justify-between bg-[rgba(23,23,23,0.05)] rounded-lg p-3 text-left"
         >
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex items-center justify-center">
-              <Ticket className="w-4 h-4 text-[#1A1A1A]" />
+              <Ticket className="w-4 h-4 text-muted-foreground" />
             </div>
             <div>
-              <div className="text-sm font-medium text-[#1A1A1A]">
-                {selectedCoupons.length > 0 
-                  ? t("{{count}} Coupons Applied", { count: selectedCoupons.length })
+              <div className="text-sm font-medium text-muted-foreground">
+                {selectedCoupons.length > 0
+                  ? t("{{count}} Coupons Applied", {
+                      count: selectedCoupons.length,
+                    })
                   : t("My Coupons")}
               </div>
-              <div className="text-xs text-[#666666]">
-                {selectedCoupons.length > 0
-                  ? <span className="text-primary">-฿{totalDiscount.toLocaleString()}</span>
-                  : t("Select a coupon to get discount")}
+              <div className="text-xs text-secondary-foreground">
+                {selectedCoupons.length > 0 ? (
+                  <span className="text-primary">
+                    -฿{totalDiscount.toLocaleString()}
+                  </span>
+                ) : (
+                  t("Select a coupon to get discount")
+                )}
               </div>
             </div>
           </div>
@@ -58,31 +66,35 @@ export function PointsCoupons({
                 {selectedCoupons.length}
               </div>
             )}
-            <ChevronRight className="w-4 h-4 text-[#666666]" />
+            <ChevronRight className="w-4 h-4 text-secondary-foreground" />
           </div>
         </button>
 
         <button
-          onClick={() => navigate('/checkout/points')}
+          onClick={() => navigate("/checkout/points")}
           className="w-full flex items-center justify-between bg-[rgba(23,23,23,0.05)] rounded-lg p-3 text-left"
         >
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex items-center justify-center">
-              <Gift className="w-4 h-4 text-[#1A1A1A]" />
+              <Gift className="w-4 h-4 text-muted-foreground" />
             </div>
             <div>
-              <div className="text-sm font-medium text-[#1A1A1A]">
+              <div className="text-sm font-medium text-muted-foreground">
                 {t("Use MyPoints")}
                 {selectedPoints > 0 && ` (${selectedPoints.toLocaleString()})`}
               </div>
-              <div className="text-xs text-[#666666]">
-                {selectedPoints > 0
-                  ? <span className="text-primary">-฿${pointsDiscount.toLocaleString()}</span>
-                  : t("Use your points to get discount")}
+              <div className="text-xs text-secondary-foreground">
+                {selectedPoints > 0 ? (
+                  <span className="text-primary">
+                    -฿${pointsDiscount.toLocaleString()}
+                  </span>
+                ) : (
+                  t("Use your points to get discount")
+                )}
               </div>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#666666]" />
+          <ChevronRight className="w-4 h-4 text-secondary-foreground" />
         </button>
       </div>
     </div>

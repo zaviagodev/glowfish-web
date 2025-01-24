@@ -7,12 +7,15 @@ interface UserProfileProps {
   memberLevel?: string;
 }
 
-export function UserProfile({ fullName, memberLevel = "Gold Member" }: UserProfileProps) {
+export function UserProfile({
+  fullName,
+  memberLevel = "Gold Member",
+}: UserProfileProps) {
   const t = useTranslate();
   const navigate = useNavigate();
 
   const handleEditClick = () => {
-    navigate('/settings/profile');
+    navigate("/settings/profile");
   };
 
   return (
@@ -31,7 +34,7 @@ export function UserProfile({ fullName, memberLevel = "Gold Member" }: UserProfi
         <Button
           variant="outline"
           size="sm"
-          className="h-8 border-[#E5E5E5] hover:bg-[#F8F8F8]"
+          className="h-8 border-[#E5E5E5]"
           onClick={handleEditClick}
         >
           {t("Edit")}

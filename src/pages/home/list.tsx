@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslate } from "@refinedev/core";
-import { Filter, Notification, Search } from "@/components/icons/MainIcons";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { ChevronLeft, ChevronRight, SearchIcon } from "lucide-react";
 import Header from "@/components/main/Header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -11,11 +9,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { getUserProfile } from "@/lib/auth";
 import { useProducts } from "@/hooks/useProducts";
 import { supabase } from "@/lib/supabase";
-import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
-import { ProductDetail } from "@/components/product/ProductDetail"; 
+import { ProductDetail } from "@/components/product/ProductDetail";
 
 interface Category {
   id: string;
@@ -40,13 +46,13 @@ export const HomeList = () => {
   const productSliderRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = selectedCategory
-    ? products.filter(product => product.category_id === selectedCategory)
+    ? products.filter((product) => product.category_id === selectedCategory)
     : products;
 
-  
-  const searchResults = filteredProducts.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  const searchResults = filteredProducts.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleProductSelect = (product: any) => {
@@ -56,7 +62,7 @@ export const HomeList = () => {
         ...product,
         track_quantity: product.track_quantity,
         variant_id: undefined,
-        quantity: product.quantity
+        quantity: product.quantity,
       });
       setIsSearchOpen(false);
       return;
@@ -69,7 +75,7 @@ export const HomeList = () => {
         ...product,
         track_quantity: product.track_quantity,
         variant_id: variant.id,
-        quantity: variant.quantity
+        quantity: variant.quantity,
       });
       setIsSearchOpen(false);
       return;
@@ -80,14 +86,16 @@ export const HomeList = () => {
       ...product,
       track_quantity: product.track_quantity,
       variant_id: undefined,
-      quantity: product.quantity
+      quantity: product.quantity,
     });
     setIsSearchOpen(false);
   };
 
   const getPriceDisplay = (product: any) => {
     if (!product.product_variants || product.product_variants.length === 0) {
-      return product.price === 0 ? t("free") : `${product.price.toLocaleString()}`;
+      return product.price === 0
+        ? t("free")
+        : `${product.price.toLocaleString()}`;
     }
 
     if (product.product_variants.length === 1) {
@@ -117,10 +125,10 @@ export const HomeList = () => {
     // Fetch categories
     const fetchCategories = async () => {
       const { data, error } = await supabase
-        .from('product_categories')
-        .select('*')
-        .order('name');
-      
+        .from("product_categories")
+        .select("*")
+        .order("name");
+
       if (data) {
         setCategories(data);
       }
@@ -132,29 +140,39 @@ export const HomeList = () => {
     <div className="min-h-full relative">
       {/* Hero Section */}
       <div className="relative">
-        <section className={cn(
-          "relative w-full overflow-hidden",
-          "bg-gradient-to-br from-primary/5 via-primary/10 to-transparent",
-          "pb-[25px]"
-        )}>
+        <section
+          className={cn(
+            "relative w-full overflow-hidden",
+            "bg-gradient-to-br from-primary/5 via-primary/10 to-transparent",
+            "pb-[25px]"
+          )}
+        >
           {/* Background Pattern */}
-          <div className={cn(
-            "absolute inset-0 opacity-[0.15]",
-            "bg-[radial-gradient(circle_at_1px_1px,var(--primary)_1px,transparent_0)]",
-            "bg-[size:24px_24px]",
-            "[mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_70%)]"
-          )} />
+          <div
+            className={cn(
+              "absolute inset-0 opacity-[0.15]",
+              "bg-[radial-gradient(circle_at_1px_1px,var(--primary)_1px,transparent_0)]",
+              "bg-[size:24px_24px]",
+              "[mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_70%)]"
+            )}
+          />
 
           {/* Content Container */}
           <div className="relative py-6">
             <div className="flex items-center justify-between">
               <div className="px-5">
-                <GlowfishIcon />
+                {/* TODO: add GlowfishIcon */}
+                GlowfishIcon
               </div>
               <Link to="/rewards">
                 <div className="px-5">
                   <Avatar className="h-[50px] w-[50px] border-2 border-border">
-                    <AvatarImage src={userProfile?.avatar_url || "https://github.com/shadcn.png"}/>
+                    <AvatarImage
+                      src={
+                        userProfile?.avatar_url ||
+                        "https://github.com/shadcn.png"
+                      }
+                    />
                     <AvatarFallback>
                       {userProfile?.full_name?.charAt(0)?.toUpperCase() || "U"}
                     </AvatarFallback>
@@ -165,13 +183,13 @@ export const HomeList = () => {
 
             <div className="relative flex items-center text-sm mt-6 px-5">
               <div className="relative w-full shadow-lg">
-                <Input 
-                  className="h-10 pl-10 bg-background text-foreground border border-input rounded-full" 
+                <Input
+                  className="h-10 pl-10 bg-background text-foreground border border-input rounded-full"
                   placeholder={t("Search event..")}
                   onClick={() => setIsSearchOpen(true)}
                   readOnly
                 />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"/>
+                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               </div>
             </div>
           </div>
@@ -182,7 +200,7 @@ export const HomeList = () => {
       <CommandDialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
         <Command>
           <div className="sr-only">{t("Search Products")}</div>
-          <CommandInput 
+          <CommandInput
             placeholder={t("Search events...")}
             value={searchQuery}
             onValueChange={setSearchQuery}
@@ -196,9 +214,9 @@ export const HomeList = () => {
                   onSelect={() => handleProductSelect(product)}
                 >
                   <div className="flex items-center gap-2">
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
+                    <img
+                      src={product.image}
+                      alt={product.name}
                       className="w-8 h-8 rounded object-cover"
                     />
                     <div>
@@ -218,18 +236,20 @@ export const HomeList = () => {
       {/* Category Bar */}
       <div className="sticky top-0 z-50 bg-background border-y">
         <div className="flex items-center gap-4 px-5 overflow-auto py-6 scrollbar-hide">
-          <Button 
+          <Button
             onClick={() => setSelectedCategory(null)}
             variant={selectedCategory === null ? "default" : "secondary"}
             className="rounded-full text-sm font-medium"
           >
             {t("All")}
           </Button>
-          {categories.map(category => (
-            <Button 
+          {categories.map((category) => (
+            <Button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              variant={selectedCategory === category.id ? "default" : "secondary"}
+              variant={
+                selectedCategory === category.id ? "default" : "secondary"
+              }
               className="rounded-full text-sm font-medium whitespace-nowrap"
             >
               {category.name}
@@ -241,8 +261,13 @@ export const HomeList = () => {
       {/* Product Section */}
       <section className="px-5 py-8 space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold tracking-tight">{t("Products")}</h2>
-          <Link to="/products" className="text-sm text-muted-foreground hover:text-foreground">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            {t("Products")}
+          </h2>
+          <Link
+            to="/products"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
             {t("See all")}
           </Link>
         </div>
@@ -254,14 +279,17 @@ export const HomeList = () => {
             className="absolute -left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
             onClick={() => {
               if (productSliderRef.current) {
-                productSliderRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+                productSliderRef.current.scrollBy({
+                  left: -300,
+                  behavior: "smooth",
+                });
               }
             }}
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
 
-          <div 
+          <div
             ref={productSliderRef}
             className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-6"
           >
@@ -289,7 +317,10 @@ export const HomeList = () => {
             className="absolute -right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
             onClick={() => {
               if (productSliderRef.current) {
-                productSliderRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+                productSliderRef.current.scrollBy({
+                  left: 300,
+                  behavior: "smooth",
+                });
               }
             }}
           >

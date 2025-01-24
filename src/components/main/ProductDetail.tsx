@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
-import { CalendarIcon, Location, PriceTag } from "@/components/icons/MainIcons";
+import { Tag, X, MapPin, Calendar } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { createPortal } from "react-dom";
@@ -20,7 +19,7 @@ const springConfig = {
   type: "spring",
   stiffness: 350,
   damping: 30,
-  mass: 0.8
+  mass: 0.8,
 };
 
 export function ProductDetail({
@@ -31,7 +30,7 @@ export function ProductDetail({
   date,
   price,
   points,
-  onClose
+  onClose,
 }: ProductDetailProps) {
   const t = useTranslate();
 
@@ -58,7 +57,7 @@ export function ProductDetail({
           type: "spring",
           stiffness: 350,
           damping: 30,
-          mass: 0.8
+          mass: 0.8,
         }}
       >
         <Button
@@ -77,7 +76,7 @@ export function ProductDetail({
             type: "spring",
             stiffness: 350,
             damping: 30,
-            mass: 0.8
+            mass: 0.8,
           }}
         >
           <motion.img
@@ -89,7 +88,7 @@ export function ProductDetail({
               type: "spring",
               stiffness: 350,
               damping: 30,
-              mass: 0.8
+              mass: 0.8,
             }}
           />
           {price && (
@@ -100,7 +99,7 @@ export function ProductDetail({
                 type: "spring",
                 stiffness: 350,
                 damping: 30,
-                mass: 0.8
+                mass: 0.8,
               }}
             >
               {price}
@@ -113,9 +112,7 @@ export function ProductDetail({
           className="p-4 space-y-6"
           transition={springConfig}
         >
-          <motion.div 
-            className="space-y-2"
-          >
+          <motion.div className="space-y-2">
             <motion.h1
               layoutId={`title-${id}`}
               className="text-2xl font-bold tracking-tight"
@@ -124,7 +121,7 @@ export function ProductDetail({
                 stiffness: 350,
                 damping: 30,
                 mass: 0.8,
-                layout: { duration: 0.3 }
+                layout: { duration: 0.3 },
               }}
             >
               {title}
@@ -147,7 +144,7 @@ export function ProductDetail({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  <Location className="w-4 h-4" />
+                  <MapPin className="w-4 h-4" />
                   <span>{location}</span>
                 </motion.div>
               )}
@@ -158,7 +155,7 @@ export function ProductDetail({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25 }}
                 >
-                  <CalendarIcon className="w-4 h-4" />
+                  <Calendar className="w-4 h-4" />
                   <span>{date}</span>
                 </motion.div>
               )}
@@ -169,8 +166,8 @@ export function ProductDetail({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  <PriceTag className="w-4 h-4" />
-                  <span>{t("point", {count: points})}</span>
+                  <Tag className="w-4 h-4" />
+                  <span>{t("point", { count: points })}</span>
                 </motion.div>
               )}
             </div>
@@ -185,7 +182,8 @@ export function ProductDetail({
             <div className="space-y-2">
               <h2 className="font-semibold">{t("Description")}</h2>
               <p className="text-sm text-muted-foreground">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
               </p>
             </div>
 

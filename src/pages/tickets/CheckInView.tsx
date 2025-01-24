@@ -111,7 +111,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="w-64 h-64 bg-white rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
+                  <div className="w-64 h-64 bg-background rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
                     <QRCodeCanvas
                       value={ticket.ticketNumber}
                       size={224}
@@ -133,7 +133,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="w-full h-32 bg-white rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
+                  <div className="w-full h-32 bg-background rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
                     <Barcode1D
                       value={ticket.ticketNumber}
                       width={2}
@@ -155,7 +155,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="w-full bg-white rounded-2xl p-6 shadow-sm mb-4">
+                  <div className="w-full bg-background rounded-2xl p-6 shadow-sm mb-4">
                     <div className="text-center">
                       <div className="text-sm text-muted-foreground mb-2">
                         {t("Ticket Number")}
@@ -176,7 +176,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
 
         {/* Event Details */}
         <div className="px-6 pb-6">
-          <div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-4">
+          <div className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4">
             <h3 className="font-medium mb-3">{ticket.eventName}</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">

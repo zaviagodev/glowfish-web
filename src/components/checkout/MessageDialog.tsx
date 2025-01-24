@@ -21,14 +21,14 @@ export function MessageDialog({
   open,
   onOpenChange,
   initialMessage = "",
-  onSave
+  onSave,
 }: MessageDialogProps) {
   const t = useTranslate();
   const [message, setMessage] = useState(initialMessage);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-white max-w-[90%] w-[400px] rounded-lg p-0 border-0">
+      <DialogContent className="bg-background max-w-[90%] w-[400px] rounded-lg p-0 border-0">
         {/* Header */}
         <DialogHeader className="p-4 border-b">
           <div className="flex items-center gap-2">
@@ -47,12 +47,12 @@ export function MessageDialog({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          
+
           {/* Footer */}
           <div className="flex gap-3">
             <Button
               variant="outline"
-              className="flex-1 h-12 border-[#E5E5E5] hover:bg-[#F8F8F8]"
+              className="flex-1 h-12 border-[#E5E5E5]"
               onClick={() => onOpenChange(false)}
             >
               {t("Cancel")}
@@ -78,14 +78,14 @@ export function MessageDialogAlt({
   open,
   onOpenChange,
   initialMessage = "",
-  onSave
+  onSave,
 }: MessageDialogProps) {
   const t = useTranslate();
   const [message, setMessage] = useState(initialMessage);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-white max-w-[90%] w-[400px] rounded-[20px] p-0 border-0">
+      <DialogContent className="bg-background max-w-[90%] w-[400px] rounded-[20px] p-0 border-0">
         {/* Header */}
         <DialogHeader className="p-6 text-center">
           <div className="flex flex-col items-center gap-4">
@@ -108,12 +108,12 @@ export function MessageDialogAlt({
               onChange={(e) => setMessage(e.target.value)}
             />
           </div>
-          
+
           {/* Footer */}
           <div className="grid grid-cols-2 gap-3">
             <Button
               variant="outline"
-              className="h-12 border-[#E5E5E5] hover:bg-[#F8F8F8] rounded-xl font-medium"
+              className="h-12 border-[#E5E5E5] rounded-xl font-medium"
               onClick={() => onOpenChange(false)}
             >
               {t("Cancel")}

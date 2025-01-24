@@ -1,6 +1,5 @@
 import { motion, AnimatePresence, useSpring } from "framer-motion";
-import { X } from "lucide-react";
-import { CalendarIcon, Location, PriceTag } from "@/components/icons/MainIcons";
+import { Calendar, X, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { createPortal } from "react-dom";
@@ -22,7 +21,7 @@ const springConfig = {
   mass: 1,
   stiffness: 300,
   damping: 30,
-  restDelta: 0.001
+  restDelta: 0.001,
 };
 
 export const ProductPage = ({
@@ -33,17 +32,17 @@ export const ProductPage = ({
   location,
   date,
   points,
-  onClose
+  onClose,
 }: ProductPageProps) => {
   const t = useTranslate();
   const opacity = useSpring(0, {
     stiffness: 300,
-    damping: 30
+    damping: 30,
   });
 
   return createPortal(
     <AnimatePresence mode="sync">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -51,7 +50,7 @@ export const ProductPage = ({
         className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[8px]"
         onClick={(e) => e.target === e.currentTarget && onClose()}
       >
-        <motion.div 
+        <motion.div
           layoutId={`card-${id}`}
           className="relative h-full w-full bg-background overflow-y-auto"
           transition={springConfig}
@@ -65,7 +64,7 @@ export const ProductPage = ({
             <X className="h-6 w-6" />
           </Button>
 
-          <motion.div 
+          <motion.div
             layoutId={`image-container-${id}`}
             className="relative w-full aspect-[4/3] overflow-hidden"
             transition={springConfig}
@@ -89,7 +88,7 @@ export const ProductPage = ({
                 {title}
               </motion.h1>
               {price && (
-                <motion.p 
+                <motion.p
                   layoutId={`price-${id}`}
                   className="text-xl font-semibold text-primary"
                   transition={springConfig}
@@ -101,33 +100,33 @@ export const ProductPage = ({
 
             <div className="space-y-2">
               {location && (
-                <motion.div 
+                <motion.div
                   layoutId={`location-${id}`}
                   className="flex items-center gap-2 text-sm"
                   transition={springConfig}
                 >
-                  <Location className="w-4 h-4" />
+                  <MapPin className="w-4 h-4" />
                   <span>{location}</span>
                 </motion.div>
               )}
               {date && (
-                <motion.div 
+                <motion.div
                   layoutId={`date-${id}`}
                   className="flex items-center gap-2 text-sm"
                   transition={springConfig}
                 >
-                  <CalendarIcon className="w-4 h-4" />
+                  <Calendar className="w-4 h-4" />
                   <span>{date}</span>
                 </motion.div>
               )}
               {points && (
-                <motion.div 
+                <motion.div
                   layoutId={`points-${id}`}
                   className="flex items-center gap-2 text-sm text-primary font-medium"
                   transition={springConfig}
                 >
-                  <PriceTag className="w-4 h-4" />
-                  <span>{t("point", {count: points})}</span>
+                  <Tag className="w-4 h-4" />
+                  <span>{t("point", { count: points })}</span>
                 </motion.div>
               )}
             </div>
@@ -135,27 +134,28 @@ export const ProductPage = ({
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ 
+              transition={{
                 delay: 0.2,
                 duration: 0.3,
-                ease: [0.32, 0.72, 0, 1]
+                ease: [0.32, 0.72, 0, 1],
               }}
               className="space-y-4"
             >
               <div className="space-y-2">
                 <h2 className="font-semibold">{t("Description")}</h2>
                 <p className="text-sm text-muted-foreground">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </p>
               </div>
 
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ 
+                transition={{
                   delay: 0.3,
                   duration: 0.3,
-                  ease: [0.32, 0.72, 0, 1]
+                  ease: [0.32, 0.72, 0, 1],
                 }}
               >
                 <Button className="w-full bg-primary text-primary-foreground">

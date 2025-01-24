@@ -18,24 +18,25 @@ interface SettingsSectionProps {
   index?: number;
 }
 
-export function SettingsSection({ title, items, index = 0 }: SettingsSectionProps) {
+export function SettingsSection({
+  title,
+  items,
+  index = 0,
+}: SettingsSectionProps) {
   const t = useTranslate();
   const navigate = useNavigate();
 
   return (
-    <div className={cn(
-      "px-4 py-6",
-      index > 0 && "border-t border-[#F5F5F5]"
-    )}>
+    <div className={cn("px-4 py-6", index > 0 && "border-t border-[#F5F5F5]")}>
       <h2 className="text-sm font-medium text-muted-foreground mb-2">
         {title}
       </h2>
-      <div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] overflow-hidden">
+      <div className="bg-tertiary rounded-lg border border-[#E5E5E5] overflow-hidden">
         {items.map((item, itemIndex) => (
           <div
             key={item.label}
             className={cn(
-              "flex items-center justify-between px-3 py-2.5 bg-white",
+              "flex items-center justify-between px-3 py-2.5 bg-background",
               itemIndex > 0 && "border-t border-[#F5F5F5]"
             )}
             onClick={() => item.path && navigate(item.path)}
@@ -44,15 +45,13 @@ export function SettingsSection({ title, items, index = 0 }: SettingsSectionProp
               <div className="w-8 h-8 rounded-lg bg-[#F5F5F5] flex items-center justify-center text-lg">
                 {item.icon}
               </div>
-              <span className="text-sm font-medium">
-                {item.label}
-              </span>
+              <span className="text-sm font-medium">{item.label}</span>
             </div>
-            {item.component ? (
-              item.component
-            ) : item.showArrow && (
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            )}
+            {item.component
+              ? item.component
+              : item.showArrow && (
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                )}
           </div>
         ))}
       </div>

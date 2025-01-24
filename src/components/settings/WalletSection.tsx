@@ -25,7 +25,7 @@ export function WalletSection() {
       count: 2500,
       description: t("Active items"),
       color: "#4CAF50", // Green
-      bgColor: "rgba(76, 175, 80, 0.1)"
+      bgColor: "rgba(76, 175, 80, 0.1)",
     },
     {
       icon: <Gift className="w-5 h-5" />,
@@ -34,7 +34,7 @@ export function WalletSection() {
       count: 3,
       description: t("Active coupons"),
       color: "#FF9800", // Orange
-      bgColor: "rgba(255, 152, 0, 0.1)"
+      bgColor: "rgba(255, 152, 0, 0.1)",
     },
     {
       icon: <Coins className="w-5 h-5" />,
@@ -43,8 +43,8 @@ export function WalletSection() {
       count: 1500,
       description: t("Available points"),
       color: "#2196F3", // Blue
-      bgColor: "rgba(33, 150, 243, 0.1)"
-    }
+      bgColor: "rgba(33, 150, 243, 0.1)",
+    },
   ];
 
   return (
@@ -53,32 +53,33 @@ export function WalletSection() {
       <h2 className="text-sm font-medium text-muted-foreground mb-2">
         {t("My Items")}
       </h2>
-      <div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] overflow-hidden">
+      <div className="bg-tertiary rounded-lg border border-[#E5E5E5] overflow-hidden">
         <div className="divide-y">
           {walletItems.map((item) => (
             <button
               key={item.label}
               onClick={() => navigate(item.path)}
-              className="w-full flex items-center gap-3 p-4 hover:bg-[#F8F8F8] transition-colors"
+              className="w-full flex items-center gap-3 p-4 transition-colors"
             >
-              <div 
+              <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: item.bgColor }}
               >
-                <div style={{ color: item.color }}>
-                  {item.icon}
-                </div>
+                <div style={{ color: item.color }}>{item.icon}</div>
               </div>
               <div className="flex-1 text-left">
-                <div className="text-sm font-medium text-[#1A1A1A]">
+                <div className="text-sm font-medium text-muted-foreground">
                   {item.label}
                 </div>
-                <div className="text-xs text-[#666666]">
+                <div className="text-xs text-secondary-foreground">
                   {item.description}
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-semibold" style={{ color: item.color }}>
+                <div
+                  className="text-sm font-semibold"
+                  style={{ color: item.color }}
+                >
                   {item.count?.toLocaleString()}
                 </div>
               </div>
@@ -89,18 +90,18 @@ export function WalletSection() {
 
       {/* Standalone Tickets Button */}
       <button
-        onClick={() => navigate('/tickets')}
-        className="w-full bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-3 hover:bg-[#F8F8F8] transition-colors"
+        onClick={() => navigate("/tickets")}
+        className="w-full bg-tertiary rounded-lg border border-[#E5E5E5] p-3 transition-colors"
       >
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#E1F5FE] flex items-center justify-center">
             <Ticket className="w-5 h-5 text-[#03A9F4]" />
           </div>
           <div className="flex-1 text-left">
-            <div className="text-sm font-medium text-[#1A1A1A]">
+            <div className="text-sm font-medium text-muted-foreground">
               {t("My Tickets")}
             </div>
-            <div className="text-xs text-[#666666]">
+            <div className="text-xs text-secondary-foreground">
               {t("View all your event tickets")}
             </div>
           </div>

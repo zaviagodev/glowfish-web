@@ -19,13 +19,15 @@ export default function OrderDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { orders } = useOrders();
-  
-  const order = orders?.find(order => order.id === id);
+
+  const order = orders?.find((order) => order.id === id);
 
   if (!order) {
-    return <div className="min-h-screen bg-background p-6">
-      <h1 className="text-xl font-semibold">{t("Order not found")}</h1>
-    </div>;
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <h1 className="text-xl font-semibold">{t("Order not found")}</h1>
+      </div>
+    );
   }
 
   // Map status to timeline
@@ -37,7 +39,7 @@ export default function OrderDetailPage() {
       icon: Package2,
       color: "#4CAF50",
       isActive: order.status === "pending",
-      isPending: 0
+      isPending: 0,
     },
     {
       status: "Processing",
@@ -46,7 +48,7 @@ export default function OrderDetailPage() {
       icon: Package2,
       color: "#FF9800",
       isActive: order.status === "processing",
-      isPending: !["processing", "shipped"].includes(order.status)
+      isPending: !["processing", "shipped"].includes(order.status),
     },
     {
       status: "Completed and Shipped",
@@ -55,8 +57,8 @@ export default function OrderDetailPage() {
       icon: Truck,
       color: "#2196F3",
       isActive: order.status === "shipped",
-      isPending: !["shipped"].includes(order.status)
-    }
+      isPending: !["shipped"].includes(order.status),
+    },
   ] as const;
 
   return (
@@ -65,7 +67,7 @@ export default function OrderDetailPage() {
 
       <div className="pt-14 pb-32">
         {/* Order Status Header */}
-        <div className="px-6 py-5 border-b bg-white">
+        <div className="px-6 py-5 border-b bg-background">
           <div className="flex items-center justify-between mb-2">
             <div className="text-base font-medium">
               {t("Order")} #{order.id}
@@ -83,7 +85,7 @@ export default function OrderDetailPage() {
         <div className="h-2 bg-[#F5F5F5]" />
 
         {/* Timeline */}
-        <div className="p-6 space-y-4 bg-white">
+        <div className="p-6 space-y-4 bg-background">
           <h2 className="text-sm font-medium text-[#8E8E93] uppercase tracking-wide">
             {t("Order Timeline")}
           </h2>
@@ -105,7 +107,7 @@ export default function OrderDetailPage() {
                 )}
               >
                 {/* Icon */}
-                <div 
+                <div
                   className={cn(
                     "absolute left-0 w-[30px] h-[30px] rounded-full flex items-center justify-center",
                     "shadow-sm border border-[#E5E5EA]",
@@ -113,33 +115,38 @@ export default function OrderDetailPage() {
                     event.isPending
                       ? "bg-[#F2F2F7] scale-90 opacity-50"
                       : event.isActive
-                        ? "bg-[#007AFF]/10 scale-110 ring-4 ring-[#007AFF]/10"
-                        : "bg-[#34C759]/10"
+                      ? "bg-[#007AFF]/10 scale-110 ring-4 ring-[#007AFF]/10"
+                      : "bg-[#34C759]/10"
                   )}
                   style={{
-                    color: event.isPending 
-                      ? "#8E8E93" 
-                      : event.isActive 
-                        ? "#007AFF" 
-                        : "#34C759"
+                    color: event.isPending
+                      ? "#8E8E93"
+                      : event.isActive
+                      ? "#007AFF"
+                      : "#34C759",
                   }}
                 >
-                  <event.icon className={cn(
-                    "w-4 h-4 stroke-[1.5]",
-                    event.isActive && "animate-pulse"
-                  )} />
+                  <event.icon
+                    className={cn(
+                      "w-4 h-4 stroke-[1.5]",
+                      event.isActive && "animate-pulse"
+                    )}
+                  />
                 </div>
 
                 {/* Content */}
-                <div className={cn(
-                  "relative",
-                  event.isActive && "animate-pulse"
-                )}>
+                <div
+                  className={cn("relative", event.isActive && "animate-pulse")}
+                >
                   <div className="flex items-center justify-between mb-1.5">
-                    <h3 className={cn(
-                      "text-[15px] font-semibold leading-none tracking-tight",
-                      event.isPending ? "text-muted-foreground" : "text-foreground"
-                    )}>
+                    <h3
+                      className={cn(
+                        "text-[15px] font-semibold leading-none tracking-tight",
+                        event.isPending
+                          ? "text-muted-foreground"
+                          : "text-foreground"
+                      )}
+                    >
                       {t(event.status)}
                     </h3>
                     {event.date && (
@@ -161,7 +168,7 @@ export default function OrderDetailPage() {
         <div className="h-2 bg-[#F5F5F5]" />
 
         {/* Customer Information */}
-        <div className="p-6 space-y-4 bg-white">
+        <div className="p-6 space-y-4 bg-background">
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
             {t("Customer Information")}
           </h2>
@@ -181,7 +188,7 @@ export default function OrderDetailPage() {
         <div className="h-2 bg-[#F5F5F5]" />
 
         {/* Order Items */}
-        <div className="p-6 space-y-5 bg-white">
+        <div className="p-6 space-y-5 bg-background">
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
             {t("Order Items")}
           </h2>
@@ -189,8 +196,8 @@ export default function OrderDetailPage() {
             {order.order_items.map((item) => (
               <div key={item.id} className="flex gap-5">
                 <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                  <img 
-                    src={item.product.image} 
+                  <img
+                    src={item.product.image}
                     alt={item.product.name}
                     className="w-full h-full object-cover"
                   />
@@ -224,7 +231,7 @@ export default function OrderDetailPage() {
         <div className="h-2 bg-[#F5F5F5]" />
 
         {/* Order Summary */}
-        <div className="p-6 space-y-5 bg-white">
+        <div className="p-6 space-y-5 bg-background">
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
             {t("Order Summary")}
           </h2>
@@ -245,7 +252,9 @@ export default function OrderDetailPage() {
       <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t px-6 py-5">
         <Button
           className="w-full bg-black text-white hover:bg-black/90 h-12"
-          onClick={() => {/* Add help functionality */}}
+          onClick={() => {
+            /* Add help functionality */
+          }}
         >
           <MessageCircle className="w-4 h-4 mr-2" />
           {t("Need Help?")}

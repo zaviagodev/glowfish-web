@@ -14,7 +14,7 @@ export function OrdersSearch({ value, onChange }: OrdersSearchProps) {
     <div className="p-4">
       <div className="relative">
         <Input
-          className="pl-10 h-12 bg-[rgba(245,245,245,0.5)] border-[#E5E5E5]"
+          className="pl-10 h-12 bg-tertiary border-[#E5E5E5]"
           placeholder={t("Search orders...")}
           value={value}
           onChange={(e) => onChange(e.target.value)}

@@ -3,7 +3,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { cn } from "@/lib/utils";
-import { Gift, Clock, QrCode, Barcode, Copy, ChevronDown, Info } from "lucide-react";
+import {
+  Gift,
+  Clock,
+  QrCode,
+  Barcode,
+  Copy,
+  ChevronDown,
+  Info,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { GlowingEdges } from "@/components/ui/glowing-edges";
@@ -13,7 +21,8 @@ const mockVoucher = {
   id: "1",
   type: "gift",
   title: "50% Off Any Coffee",
-  description: "Get 50% off on any coffee drink at any Glowfish location. Valid for one-time use only.",
+  description:
+    "Get 50% off on any coffee drink at any Glowfish location. Valid for one-time use only.",
   expiryDate: "2024-02-28",
   status: "ready",
   image: "https://picsum.photos/200/300",
@@ -25,8 +34,8 @@ const mockVoucher = {
     "Not valid on holidays",
     "No cash value",
     "Must present code at time of purchase",
-    "Management reserves the right to modify or cancel promotion at any time"
-  ]
+    "Management reserves the right to modify or cancel promotion at any time",
+  ],
 };
 
 export default function VoucherDetail() {
@@ -49,10 +58,11 @@ export default function VoucherDetail() {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("Voucher Details")} />
       <div className="fixed inset-0 pointer-events-none">
-        <div 
+        <div
           className="absolute inset-0 bg-gradient-to-b from-white/50 to-transparent opacity-50"
           style={{
-            background: 'radial-gradient(circle at top, rgba(255,255,255,0.8) 0%, transparent 70%)'
+            background:
+              "radial-gradient(circle at top, rgba(255,255,255,0.8) 0%, transparent 70%)",
           }}
         />
       </div>
@@ -60,15 +70,15 @@ export default function VoucherDetail() {
       <div className="pt-14 pb-32">
         {/* Hero Section */}
         <div className="relative bg-gradient-to-b from-white to-[#F8F8F8] pb-6">
-          <motion.div 
+          <motion.div
             className="p-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Image */}
             <div className="w-full aspect-[2/1] rounded-2xl overflow-hidden mb-6 shadow-lg">
-              <img 
-                src={voucher.image} 
+              <img
+                src={voucher.image}
                 alt={voucher.title}
                 className="w-full h-full object-cover"
               />
@@ -92,7 +102,8 @@ export default function VoucherDetail() {
             <div className="mt-4 flex items-center gap-1.5 text-sm text-[#8E8E93]">
               <Clock className="w-4 h-4" />
               <span>
-                {t("Valid until")} {new Date(voucher.expiryDate).toLocaleDateString()}
+                {t("Valid until")}{" "}
+                {new Date(voucher.expiryDate).toLocaleDateString()}
               </span>
             </div>
           </motion.div>
@@ -104,15 +115,15 @@ export default function VoucherDetail() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl border border-[#E5E5EA] overflow-hidden shadow-sm"
+            className="bg-background rounded-2xl border border-[#E5E5EA] overflow-hidden shadow-sm"
           >
             {/* Tabs */}
             <div className="flex border-b border-[#E5E5EA]">
               {[
-                { id: 'qr', icon: QrCode, label: 'QR Code' },
-                { id: 'barcode', icon: Barcode, label: 'Barcode' },
-                { id: 'code', icon: Copy, label: 'Code' }
-              ].map(tab => (
+                { id: "qr", icon: QrCode, label: "QR Code" },
+                { id: "barcode", icon: Barcode, label: "Barcode" },
+                { id: "code", icon: Copy, label: "Code" },
+              ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
@@ -145,7 +156,7 @@ export default function VoucherDetail() {
                   className="flex flex-col items-center"
                 >
                   <div className="w-48 h-48 bg-[#F8F8F8] rounded-2xl flex items-center justify-center mb-4">
-                    <QrCode className="w-32 h-32 text-black" />
+                    <QrCode className="w-32 h-32 text-secondary-foreground" />
                   </div>
                   <p className="text-sm text-[#8E8E93]">
                     {t("Scan to redeem")}
@@ -161,7 +172,7 @@ export default function VoucherDetail() {
                   className="flex flex-col items-center"
                 >
                   <div className="w-full h-32 bg-[#F8F8F8] rounded-2xl flex items-center justify-center mb-4">
-                    <Barcode className="w-48 h-24 text-black" />
+                    <Barcode className="w-48 h-24 text-secondary-foreground" />
                   </div>
                   <p className="text-sm text-[#8E8E93]">
                     {t("Show barcode to staff")}
@@ -205,7 +216,7 @@ export default function VoucherDetail() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <div className="bg-white rounded-2xl border border-[#E5E5EA] overflow-hidden">
+          <div className="bg-background rounded-2xl border border-[#E5E5EA] overflow-hidden">
             <div className="p-4 border-b border-[#E5E5EA] flex items-center gap-2">
               <Info className="w-4 h-4 text-[#8E8E93]" />
               <h2 className="text-base font-medium">

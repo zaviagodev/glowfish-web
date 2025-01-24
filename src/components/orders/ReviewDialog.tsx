@@ -26,7 +26,7 @@ interface ReviewDialogProps {
 }
 
 interface MediaFile {
-  type: 'image' | 'video';
+  type: "image" | "video";
   file: File;
   preview: string;
 }
@@ -35,7 +35,7 @@ export function ReviewDialog({
   open,
   onOpenChange,
   item,
-  orderId
+  orderId,
 }: ReviewDialogProps) {
   const t = useTranslate();
   const [rating, setRating] = useState(0);
@@ -53,15 +53,15 @@ export function ReviewDialog({
     const remainingSlots = maxFiles - mediaFiles.length;
     const newFiles = Array.from(files).slice(0, remainingSlots);
 
-    newFiles.forEach(file => {
-      const type = file.type.startsWith('image/') ? 'image' : 'video';
+    newFiles.forEach((file) => {
+      const type = file.type.startsWith("image/") ? "image" : "video";
       const preview = URL.createObjectURL(file);
-      setMediaFiles(prev => [...prev, { type, file, preview }]);
+      setMediaFiles((prev) => [...prev, { type, file, preview }]);
     });
   };
 
   const removeFile = (index: number) => {
-    setMediaFiles(prev => {
+    setMediaFiles((prev) => {
       const newFiles = [...prev];
       URL.revokeObjectURL(newFiles[index].preview);
       newFiles.splice(index, 1);
@@ -71,7 +71,7 @@ export function ReviewDialog({
 
   const handleSubmit = async () => {
     if (rating === 0) return;
-    
+
     setIsSubmitting(true);
     try {
       // Add your review submission logic here
@@ -80,15 +80,15 @@ export function ReviewDialog({
         itemId: item.id,
         rating,
         review,
-        mediaFiles
+        mediaFiles,
       });
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       onOpenChange(false);
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error("Error submitting review:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -96,7 +96,10 @@ export function ReviewDialog({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[85%] p-0 border-0 bg-background rounded-t-[14px]">
+      <SheetContent
+        side="bottom"
+        className="h-[85%] p-0 border-0 bg-background rounded-t-[14px]"
+      >
         <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -112,15 +115,15 @@ export function ReviewDialog({
         <div className="overflow-y-auto h-full">
           <div className="p-4 space-y-6">
             {/* Product Info */}
-            <motion.div 
+            <motion.div
               className="flex gap-3"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.4 }}
             >
               <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                <img 
-                  src={item.image} 
+                <img
+                  src={item.image}
                   alt={item.name}
                   className="w-full h-full object-cover"
                 />
@@ -136,7 +139,7 @@ export function ReviewDialog({
             </motion.div>
 
             {/* Points Info */}
-            <motion.div 
+            <motion.div
               className="bg-[#F8F8F8] rounded-lg p-4 flex items-center gap-3"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -156,15 +159,13 @@ export function ReviewDialog({
             </motion.div>
 
             {/* Rating */}
-            <motion.div 
-              className="space-y-2" 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+            <motion.div
+              className="space-y-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              <label className="text-sm font-medium">
-                {t("Rating")}
-              </label>
+              <label className="text-sm font-medium">{t("Rating")}</label>
               <div className="flex items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <motion.button
@@ -192,15 +193,13 @@ export function ReviewDialog({
             </motion.div>
 
             {/* Review Text */}
-            <motion.div 
+            <motion.div
               className="space-y-2"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
             >
-              <label className="text-sm font-medium">
-                {t("Your Review")}
-              </label>
+              <label className="text-sm font-medium">{t("Your Review")}</label>
               <Textarea
                 value={review}
                 onChange={(e) => setReview(e.target.value)}
@@ -210,10 +209,10 @@ export function ReviewDialog({
             </motion.div>
 
             {/* Media Upload */}
-            <motion.div 
-              className="space-y-3" 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+            <motion.div
+              className="space-y-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.9 }}
             >
               <label className="text-sm font-medium">
@@ -222,7 +221,7 @@ export function ReviewDialog({
               <div className="grid grid-cols-5 gap-2">
                 {mediaFiles.map((file, index) => (
                   <div key={index} className="relative aspect-square">
-                    {file.type === 'image' ? (
+                    {file.type === "image" ? (
                       <motion.img
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -276,10 +275,10 @@ export function ReviewDialog({
             </motion.div>
 
             {/* Tips Box */}
-            <motion.div 
-              className="bg-[#F8F8F8] rounded-lg p-4 space-y-3" 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
+            <motion.div
+              className="bg-[#F8F8F8] rounded-lg p-4 space-y-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1 }}
             >
               <div className="flex items-center gap-2 text-sm font-medium">
@@ -289,21 +288,23 @@ export function ReviewDialog({
               <ul className="text-xs text-muted-foreground space-y-2">
                 <li>• {t("Share your honest experience")}</li>
                 <li>• {t("Include photos to show product quality")}</li>
-                <li>• {t("Mention specific features you liked or disliked")}</li>
+                <li>
+                  • {t("Mention specific features you liked or disliked")}
+                </li>
                 <li>• {t("Keep it respectful and constructive")}</li>
               </ul>
             </motion.div>
 
             {/* Submit Button */}
-            <motion.div 
-              className="flex gap-3" 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
+            <motion.div
+              className="flex gap-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1 }}
             >
               <Button
                 variant="outline"
-                className="flex-1 h-12 border-[#E5E5E5] hover:bg-[#F8F8F8]"
+                className="flex-1 h-12 border-[#E5E5E5]"
                 onClick={() => onOpenChange(false)}
               >
                 {t("Cancel")}

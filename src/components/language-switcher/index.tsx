@@ -1,7 +1,7 @@
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
-import { ThaiFlag } from "@/components/icons/MainIcons";
 import useConfig from "@/hooks/useConfig";
+import { Languages } from "lucide-react";
 
 const LanguageSwitcher = () => {
   const t = useTranslate();
@@ -14,12 +14,12 @@ const LanguageSwitcher = () => {
   };
 
   return (
-    <Button 
-      variant="ghost" 
+    <Button
+      variant="ghost"
       onClick={toggleLanguage}
       className="flex items-center gap-2 h-8 px-2 hover:bg-transparent"
     >
-      <ThaiFlag className="w-5 h-5" />
+      <Languages className="w-5 h-5" />
       <span className="text-sm font-medium">
         {config.default_language === "en" ? "ไทย" : "English"}
       </span>

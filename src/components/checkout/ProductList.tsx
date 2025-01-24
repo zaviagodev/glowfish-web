@@ -17,16 +17,20 @@ interface ProductListProps {
   onVatClick?: () => void;
 }
 
-export function ProductList({ items, storeMessage, vatInvoiceData, onMessageClick, onVatClick }: ProductListProps) {
+export function ProductList({
+  items,
+  storeMessage,
+  vatInvoiceData,
+  onMessageClick,
+  onVatClick,
+}: ProductListProps) {
   const t = useTranslate();
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-[#E5E5E5]">
+    <div className="bg-background rounded-xl shadow-sm border border-[#E5E5E5]">
       <div className="p-4">
-        <h2 className="text-sm font-medium mb-3">
-          {t("Products Ordered")}
-        </h2>
-        <div className="text-xs text-[#666666]">
+        <h2 className="text-sm font-medium mb-3">{t("Products Ordered")}</h2>
+        <div className="text-xs text-secondary-foreground">
           {items.length} {t("items")}
         </div>
       </div>
@@ -35,21 +39,21 @@ export function ProductList({ items, storeMessage, vatInvoiceData, onMessageClic
         {items.map((item) => (
           <div key={item.variantId} className="p-4 flex gap-3">
             <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-              <img 
-                src={item.image} 
+              <img
+                src={item.image}
                 alt={item.name}
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm text-[#1A1A1A] line-clamp-2 font-normal">
+              <h4 className="text-sm text-muted-foreground line-clamp-2 font-normal">
                 {item.name}
               </h4>
               <div className="flex items-center justify-between mt-2">
-                <p className="text-sm font-semibold text-[#1A1A1A]">
+                <p className="text-sm font-semibold text-muted-foreground">
                   ฿{item.price.toLocaleString()}
                 </p>
-                <p className="text-xs text-[#666666]">
+                <p className="text-xs text-secondary-foreground">
                   x{item.quantity}
                 </p>
               </div>
@@ -60,19 +64,21 @@ export function ProductList({ items, storeMessage, vatInvoiceData, onMessageClic
         <div className="p-4 space-y-4">
           <Button
             variant="ghost"
-            className="w-full flex items-center justify-between text-sm font-normal h-auto p-4 bg-[#F8F8F8] rounded-xl hover:bg-[#F0F0F0]"
+            className="w-full flex items-center justify-between text-sm font-normal h-auto p-4 bg-[#F8F8F8] rounded-xl"
             onClick={onMessageClick}
           >
             <div className="flex items-center gap-3">
-              <MessageCircle className="w-5 h-5 text-[#1A1A1A]" />
+              <MessageCircle className="w-5 h-5 text-muted-foreground" />
               <div className="text-left">
-                <div className="font-medium text-[#1A1A1A]">{t("Message to Store")}</div>
-                <div className="text-xs text-[#666666]">
+                <div className="font-medium text-muted-foreground">
+                  {t("Message to Store")}
+                </div>
+                <div className="text-xs text-secondary-foreground">
                   {storeMessage ? storeMessage : t("Any special requests?")}
                 </div>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#666666]" />
+            <ChevronRight className="w-4 h-4 text-secondary-foreground" />
           </Button>
 
           <Button
@@ -81,17 +87,19 @@ export function ProductList({ items, storeMessage, vatInvoiceData, onMessageClic
             onClick={onVatClick}
           >
             <div className="flex items-center gap-3">
-              <Receipt className="w-5 h-5 text-[#1A1A1A]" />
+              <Receipt className="w-5 h-5 text-muted-foreground" />
               <div className="text-left">
-                <div className="font-medium text-[#1A1A1A]">{t("Request VAT Invoice")}</div>
-                <div className="text-xs text-[#666666]">
+                <div className="font-medium text-muted-foreground">
+                  {t("Request VAT Invoice")}
+                </div>
+                <div className="text-xs text-secondary-foreground">
                   {vatInvoiceData?.enabled
                     ? `${vatInvoiceData.companyName} (${vatInvoiceData.taxId})`
                     : t("Add your tax information")}
                 </div>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#666666]" />
+            <ChevronRight className="w-4 h-4 text-secondary-foreground" />
           </Button>
         </div>
       </div>

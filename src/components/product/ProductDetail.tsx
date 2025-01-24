@@ -1,5 +1,13 @@
 import { motion } from "framer-motion";
-import { X, Users, MapPin, Calendar, Tag, Star, ChevronRight } from "lucide-react";
+import {
+  X,
+  Users,
+  MapPin,
+  Calendar,
+  Tag,
+  Star,
+  ChevronRight,
+} from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -54,17 +62,21 @@ export function ProductDetail({
   track_quantity = false,
   onClose,
   variant_options,
-  product_variants
+  product_variants,
 }: ProductDetailProps) {
   const t = useTranslate();
   const navigate = useNavigate();
   const addItem = useCart((state) => state.addItem);
   const { addToast } = useToast();
   const [showVariantDrawer, setShowVariantDrawer] = useState(false);
-  const [selectedVariantId, setSelectedVariantId] = useState<string | undefined>(variant_id);
+  const [selectedVariantId, setSelectedVariantId] = useState<
+    string | undefined
+  >(variant_id);
 
   // Find selected variant
-  const selectedVariant = product_variants?.find(v => v.id === selectedVariantId);
+  const selectedVariant = product_variants?.find(
+    (v) => v.id === selectedVariantId
+  );
 
   // Get price display
   const getPriceDisplay = () => {
@@ -76,7 +88,7 @@ export function ProductDetail({
       return price === 0 ? t("free") : `฿${Number(price).toLocaleString()}`;
     }
 
-    const prices = product_variants.map(v => v.price);
+    const prices = product_variants.map((v) => v.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
@@ -118,7 +130,7 @@ export function ProductDetail({
       addToast(t("This item is out of stock"), "error");
       return;
     }
-    
+
     addItem({
       variantId: selectedVariantId!,
       productId: id.toString(),
@@ -126,14 +138,17 @@ export function ProductDetail({
       image,
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
-      variant: selectedVariant?.options?.reduce((acc, opt: ProductVariantOption) => ({
-        ...acc,
-        [opt.name]: opt.value
-      }), {} as Record<string, string>)
+      variant: selectedVariant?.options?.reduce(
+        (acc, opt: ProductVariantOption) => ({
+          ...acc,
+          [opt.name]: opt.value,
+        }),
+        {} as Record<string, string>
+      ),
     });
 
     addToast(t("Added to cart"), "success");
-    if (toCart) navigate('/cart');
+    if (toCart) navigate("/cart");
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -154,10 +169,10 @@ export function ProductDetail({
         onClick={handleBackdropClick}
       />
 
-      <motion.div 
+      <motion.div
         layoutId={`card-${id}`}
-        transition={{ 
-          layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] }
+        transition={{
+          layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
         }}
         className="absolute inset-0 overflow-y-auto bg-background"
       >
@@ -170,11 +185,11 @@ export function ProductDetail({
           <X className="h-6 w-6" />
         </Button>
 
-        <motion.div 
+        <motion.div
           layoutId={`image-container-${id}`}
           className="relative w-full aspect-[4/3] overflow-hidden"
-          transition={{ 
-            layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] }
+          transition={{
+            layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
           }}
         >
           <motion.img
@@ -182,9 +197,10 @@ export function ProductDetail({
             src={image}
             alt={name}
             className="w-full h-full object-cover"
-            transition={{ 
-              layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] }
-            }} />
+            transition={{
+              layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
+            }}
+          />
         </motion.div>
 
         <div className="p-6 space-y-8">
@@ -193,11 +209,11 @@ export function ProductDetail({
               {getPriceDisplay() && (
                 <motion.div className="flex items-center gap-2">
                   <div className="flex items-baseline gap-2">
-                    <motion.span 
-                      className="text-2xl font-bold tracking-tight text-black"
-                      style={{ 
-                        willChange: 'transform',
-                        transform: 'translateZ(0)'
+                    <motion.span
+                      className="text-2xl font-bold tracking-tight text-secondary-foreground"
+                      style={{
+                        willChange: "transform",
+                        transform: "translateZ(0)",
                       }}
                     >
                       {getPriceDisplay()}
@@ -218,16 +234,22 @@ export function ProductDetail({
                       animate={{ opacity: 1, scale: 1 }}
                       className="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-[#EE4D2D] rounded"
                     >
-                      {Math.round((1 - (selectedVariant.price / selectedVariant.compare_at_price)) * 100)}% OFF
+                      {Math.round(
+                        (1 -
+                          selectedVariant.price /
+                            selectedVariant.compare_at_price) *
+                          100
+                      )}
+                      % OFF
                     </motion.div>
                   )}
                 </motion.div>
               )}
               <motion.h2
                 layoutId={`title-${id}`}
-                className="text-2xl tracking-tight text-[#222222]"
-                transition={{ 
-                  layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] }
+                className="text-2xl tracking-tight text-muted-foreground"
+                transition={{
+                  layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
                 }}
               >
                 {name}
@@ -266,7 +288,7 @@ export function ProductDetail({
                   {points && (
                     <div className="flex items-center gap-2 text-sm text-primary font-medium">
                       <Tag className="w-4 h-4 text-[#999999]" />
-                      <span>{t("point", {count: points})}</span>
+                      <span>{t("point", { count: points })}</span>
                     </div>
                   )}
                 </div>
@@ -289,7 +311,7 @@ export function ProductDetail({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="text-sm text-[#666666]"
+                  className="text-sm text-secondary-foreground"
                 >
                   {description}
                 </motion.p>
@@ -306,7 +328,7 @@ export function ProductDetail({
               {variant_options && variant_options.length > 0 && (
                 <Button
                   variant="ghost"
-                  className="w-full h-12 flex items-center justify-between bg-[rgba(245,245,245,0.5)] border border-[#E5E5E5] hover:bg-[#F8F8F8]"
+                  className="w-full h-12 flex items-center justify-between bg-tertiary border border-[#E5E5E5]"
                   onClick={() => setShowVariantDrawer(true)}
                 >
                   <div className="flex flex-col items-start">
@@ -326,27 +348,39 @@ export function ProductDetail({
                 <div className="text-sm">
                   <span className="text-muted-foreground">{t("Stock")}:</span>{" "}
                   {selectedVariant ? (
-                    <span className={selectedVariant.quantity > 0 ? "text-green-600" : "text-red-500"}>
-                      {selectedVariant.quantity > 0 ? t("In Stock") : t("Out of Stock")} 
+                    <span
+                      className={
+                        selectedVariant.quantity > 0
+                          ? "text-green-600"
+                          : "text-red-500"
+                      }
+                    >
+                      {selectedVariant.quantity > 0
+                        ? t("In Stock")
+                        : t("Out of Stock")}
                       ({selectedVariant.quantity} {t("available")})
                     </span>
                   ) : (
-                    <span className={quantity > 0 ? "text-green-600" : "text-red-500"}>
-                      {quantity > 0 ? t("In Stock") : t("Out of Stock")} 
-                      ({quantity} {t("available")})
+                    <span
+                      className={
+                        quantity > 0 ? "text-green-600" : "text-red-500"
+                      }
+                    >
+                      {quantity > 0 ? t("In Stock") : t("Out of Stock")}(
+                      {quantity} {t("available")})
                     </span>
                   )}
                 </div>
               )}
 
-              <Button 
-                className="w-full bg-[rgba(245,245,245,0.5)] text-black hover:bg-[#EBEBEB] border border-[#E5E5E5]"
+              <Button
+                className="w-full bg-tertiary text-secondary-foreground border border-[#E5E5E5]"
                 onClick={() => handleAddToCart(false)}
               >
                 {t("Add to Cart")}
               </Button>
-              <Button 
-                className="w-full bg-[#EE4D2D] text-white hover:bg-[#EE4D2D]/90"
+              <Button
+                className="w-full bg-[#EE4D2D] text-white"
                 onClick={() => handleAddToCart(true)}
               >
                 {t("Buy Now")}

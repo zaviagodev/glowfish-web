@@ -66,6 +66,9 @@ export default {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
   			},
+			tertiary: {
+				DEFAULT: 'hsl(var(--tertiary))',
+			},
   			darkgray: '#303030',
   			mainorange: '#EC441E',
   			border: 'hsl(var(--border))',
