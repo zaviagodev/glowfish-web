@@ -33,7 +33,7 @@ export default function CheckoutPage() {
     companyName: "",
     taxId: "",
     branch: "",
-    address: ""
+    address: "",
   });
 
   // Get selected items from location state, fallback to all items if accessed directly
@@ -41,12 +41,15 @@ export default function CheckoutPage() {
 
   // Redirect to cart if accessed directly without selected items
   if (!location.state?.selectedItems) {
-    navigate('/cart', { replace: true });
+    navigate("/cart", { replace: true });
     return null;
   }
 
   // Calculate order summary
-  const subtotal = items.reduce((total: number, item: CartItem) => total + item.price * item.quantity, 0);
+  const subtotal = items.reduce(
+    (total: number, item: CartItem) => total + item.price * item.quantity,
+    0
+  );
   const discount = getTotalDiscount(subtotal);
   const pointsDiscount = getDiscountAmount();
   const tax = subtotal * 0.07; // 7% tax
@@ -57,31 +60,33 @@ export default function CheckoutPage() {
     try {
       // Validate cart is not empty
       if (items.length === 0) {
-        throw new Error('Cart is empty');
+        throw new Error("Cart is empty");
       }
 
-      if (paymentMethod === 'promptpay') {
-        navigate('/checkout/payment');
+      if (paymentMethod === "promptpay") {
+        navigate("/checkout/payment");
         return;
       }
 
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
 
       // Prepare order items with variant IDs
-      const orderItems = items.map(item => ({
+      const orderItems = items.map((item) => ({
         variant_id: item.variantId,
         quantity: item.quantity,
         price: item.price,
-        total: item.price * item.quantity
+        total: item.price * item.quantity,
       }));
 
       // Create order using place_order function
-      const { data: newOrder, error } = await supabase.rpc('place_order', {
-        p_store_name: 'glowfish',
+      const { data: newOrder, error } = await supabase.rpc("place_order", {
+        p_store_name: "glowfish",
         p_customer_id: user.id,
-        p_status: 'pending',
+        p_status: "pending",
         p_subtotal: subtotal,
         p_discount: discount + pointsDiscount,
         p_shipping: 0,
@@ -90,25 +95,31 @@ export default function CheckoutPage() {
         p_notes: JSON.stringify({
           message: storeMessage,
           vatInvoice: vatInvoiceData.enabled ? vatInvoiceData : null,
-          paymentMethod: paymentMethod
+          paymentMethod: paymentMethod,
         }),
-        p_tags: ['web'],
-        p_items: orderItems
+        p_tags: ["web"],
+        p_items: orderItems,
       });
 
       if (error) {
-        console.error('Order creation error:', error);
-        throw new Error(error.message || 'Failed to create order');
+        console.error("Order creation error:", error);
+        throw new Error(error.message || "Failed to create order");
       }
 
       if (!newOrder) {
-        throw new Error('No order data returned');
+        throw new Error("No order data returned");
       }
 
       setShowSuccess(true);
     } catch (error) {
-      console.error('Error creating order:', error);
-      alert(t(error instanceof Error ? error.message : "Failed to process order. Please try again."));
+      console.error("Error creating order:", error);
+      alert(
+        t(
+          error instanceof Error
+            ? error.message
+            : "Failed to process order. Please try again."
+        )
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -118,7 +129,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("Checkout")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         <div className="p-4 space-y-6">
           <AddressCard
             title={t("Delivery Address")}
@@ -127,20 +138,17 @@ export default function CheckoutPage() {
             address="123 Sample Street, Bangkok, 10110"
           />
 
-          <ProductList 
+          <ProductList
             items={items}
             storeMessage={storeMessage}
             vatInvoiceData={vatInvoiceData}
-            onMessageClick={() => setShowMessageDialog(true)} 
-            onVatClick={() => navigate('/checkout/vat-invoice')}
+            onMessageClick={() => setShowMessageDialog(true)}
+            onVatClick={() => navigate("/checkout/vat-invoice")}
           />
 
           <PointsCoupons subtotal={subtotal} />
 
-          <PaymentMethod 
-            value={paymentMethod}
-            onChange={setPaymentMethod}
-          />
+          <PaymentMethod value={paymentMethod} onChange={setPaymentMethod} />
 
           <OrderSummary
             subtotal={subtotal}
@@ -159,11 +167,8 @@ export default function CheckoutPage() {
         onPlaceOrder={handleCreateOrder}
       />
 
-      <SuccessDialog
-        open={showSuccess}
-        onOpenChange={setShowSuccess}
-      />
-      
+      <SuccessDialog open={showSuccess} onOpenChange={setShowSuccess} />
+
       <MessageDialog
         open={showMessageDialog}
         onOpenChange={setShowMessageDialog}

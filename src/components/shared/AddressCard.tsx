@@ -22,10 +22,7 @@ export function AddressCard({
 
   return (
     <div
-      className={cn(
-        "bg-tertiary rounded-lg border border-[#E5E5E5]",
-        className
-      )}
+      className={cn("bg-darkgray rounded-lg", className)}
       onClick={() => navigate("/checkout/address")}
     >
       <div className="flex items-center justify-between p-3">

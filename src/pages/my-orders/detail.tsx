@@ -65,7 +65,7 @@ export default function OrderDetailPage() {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("Order Details")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         {/* Order Status Header */}
         <div className="px-6 py-5 border-b bg-background">
           <div className="flex items-center justify-between mb-2">
@@ -110,7 +110,7 @@ export default function OrderDetailPage() {
                 <div
                   className={cn(
                     "absolute left-0 w-[30px] h-[30px] rounded-full flex items-center justify-center",
-                    "shadow-sm border border-[#E5E5EA]",
+                    "shadow-sm",
                     "transition-all duration-300",
                     event.isPending
                       ? "bg-background scale-90 opacity-50"

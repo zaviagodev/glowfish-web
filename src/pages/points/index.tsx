@@ -47,11 +47,13 @@ export default function MyPointsPage() {
     ],
   };
 
+  console.log(points.nextTier.toLocaleString());
+
   return (
     <div className="min-h-screen bg-background">
       <PageHeader title={t("My Points")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         {/* Points Overview Card */}
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
@@ -60,7 +62,7 @@ export default function MyPointsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-background rounded-2xl border border-[#E5E5EA] p-6 shadow-sm">
+            <div className="bg-background rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center">
                   <Coins className="w-6 h-6 text-primary" />
@@ -127,7 +129,7 @@ export default function MyPointsPage() {
           >
             <Button
               variant="outline"
-              className="w-full h-auto p-4 justify-between hover:bg-transparent border-[#E5E5EA] group"
+              className="w-full h-auto p-4 justify-between bg-darkgray group"
               onClick={() => navigate("/settings/member-level")}
             >
               <div className="flex items-center gap-3">
@@ -138,12 +140,12 @@ export default function MyPointsPage() {
                   <div className="font-medium text-muted-foreground">
                     {t("View Benefits")}
                   </div>
-                  <div className="text-xs text-[#8E8E93]">
+                  <div className="text-xs text-secondary-foreground">
                     {t("See your tier benefits and rewards")}
                   </div>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-[#8E8E93] group-hover:text-muted-foreground transition-colors" />
+              <ChevronRight className="w-5 h-5 text-secondary-foreground group-hover:text-muted-foreground transition-colors" />
             </Button>
           </motion.div>
 
@@ -154,7 +156,7 @@ export default function MyPointsPage() {
           >
             <Button
               variant="outline"
-              className="w-full h-auto p-4 justify-between hover:bg-transparent border-[#E5E5EA] group"
+              className="w-full h-auto p-4 justify-between bg-darkgray group"
               onClick={() => navigate("/settings/how-to-get-points")}
             >
               <div className="flex items-center gap-3">
@@ -165,12 +167,12 @@ export default function MyPointsPage() {
                   <div className="font-medium text-muted-foreground">
                     {t("How to Earn Points")}
                   </div>
-                  <div className="text-xs text-[#8E8E93]">
+                  <div className="text-xs text-secondary-foreground">
                     {t("Learn ways to earn more points")}
                   </div>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-[#8E8E93] group-hover:text-muted-foreground transition-colors" />
+              <ChevronRight className="w-5 h-5 text-secondary-foreground group-hover:text-muted-foreground transition-colors" />
             </Button>
           </motion.div>
         </div>

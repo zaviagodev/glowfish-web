@@ -158,7 +158,7 @@ export default function ThankYouPage() {
             {t("What's Next?")}
           </h2>
           <div className="space-y-3">
-            <div className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4">
+            <div className="bg-darkgray rounded-lg p-4">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-lg bg-[#4CAF50]/10 flex items-center justify-center">
                   <Package2 className="w-5 h-5 text-[#4CAF50]" />
@@ -174,7 +174,7 @@ export default function ThankYouPage() {
               </div>
             </div>
 
-            <div className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4">
+            <div className="bg-darkgray rounded-lg p-4">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-lg bg-[#2196F3]/10 flex items-center justify-center">
                   <Clock className="w-5 h-5 text-[#2196F3]" />

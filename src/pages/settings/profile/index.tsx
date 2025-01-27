@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarIcon } from "lucide-react";
 import { useCustomer } from "@/hooks/useCustomer";
+import { useToast } from "@/components/ui/toast";
 
 const schema = yup.object().shape({
   full_name: yup.string().required("Full name is required"),
@@ -37,6 +38,7 @@ const schema = yup.object().shape({
 
 const ProfileSettings = () => {
   const t = useTranslate();
+  const { addToast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
@@ -150,6 +152,7 @@ const ProfileSettings = () => {
     if (updateError) throw updateError;
 
     await refreshCustomer();
+    addToast(t("Profile updated successfully"), "success");
     navigate("/settings");
   };
 
@@ -231,11 +234,11 @@ const ProfileSettings = () => {
                 <FormLabel>{t("Phone")}</FormLabel>
                 <FormControl>
                   <Input
-                    {...field}
                     type="tel"
                     placeholder="+66812345678"
                     disabled={true}
                     className="opacity-70 cursor-not-allowed"
+                    {...field}
                   />
                 </FormControl>
                 <FormMessage />
@@ -318,7 +321,7 @@ const ProfileSettings = () => {
           <div className="pt-4">
             <Button
               type="submit"
-              className="main-btn !bg-mainbutton rounded-full w-full"
+              className="main-btn w-full"
               disabled={isLoading}
             >
               {isLoading ? t("Saving...") : t("Save Changes")}

@@ -34,7 +34,7 @@ export function UserProfile({
         <Button
           variant="outline"
           size="sm"
-          className="h-8 border-[#E5E5E5]"
+          className="main-btn"
           onClick={handleEditClick}
         >
           {t("Edit")}

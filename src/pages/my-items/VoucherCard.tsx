@@ -63,7 +63,6 @@ export function VoucherCard({ voucher }: VoucherCardProps) {
       className={cn(
         "relative overflow-hidden rounded-2xl",
         "shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
-        "border border-[#E5E5EA]",
         "backdrop-blur-xl",
         voucher.status === "used" && "opacity-60"
       )}
@@ -76,7 +75,7 @@ export function VoucherCard({ voucher }: VoucherCardProps) {
         {/* Top Section */}
         <div className="p-4 flex items-start gap-4">
           {/* Image */}
-          <div className="w-[100px] h-[100px] rounded-xl overflow-hidden flex-shrink-0 border border-[#E5E5EA]">
+          <div className="w-[100px] h-[100px] rounded-xl overflow-hidden flex-shrink-0">
             <img
               src={voucher.image}
               alt={voucher.title}
@@ -105,12 +104,6 @@ export function VoucherCard({ voucher }: VoucherCardProps) {
               {voucher.description}
             </p>
           </div>
-        </div>
-
-        {/* Divider with Notches */}
-        <div className="relative h-[1px] bg-[#E5E5EA] mx-4 before:absolute before:inset-0 before:bg-[linear-gradient(90deg,transparent,rgba(0,0,0,0.03),transparent)]">
-          <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-background rounded-full" />
-          <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-background rounded-full" />
         </div>
 
         {/* Bottom Section */}

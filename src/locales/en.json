@@ -6,7 +6,7 @@
   "Please fill the OTP": "Please fill the OTP",
   "Fill the OTP": "Fill the OTP",
   "Your OTP will be sent to your phone number": "Your OTP will be sent to your phone number",
-  "Didn't receive the OTP": "Didn't receive the OTP",
+  "Didn't receive the OTP?": "Didn't receive the OTP?",
   "Resend OTP": "Resend OTP",
   "Valid to": "Valid to",
   "point_one": "{{count}} point",
@@ -33,7 +33,7 @@
   "Rewards": "Rewards",
   "See all": "See all",
   "Your card": "Your card",
-  "Search event..": "Search event..",
+  "Search events...": "Search events...",
   "Upcoming Events": "Upcoming Events",
   "Events you might enjoy": "Events you might enjoy",
   "free": "free"

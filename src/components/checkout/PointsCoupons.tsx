@@ -26,12 +26,7 @@ export function PointsCoupons({
   const pointsDiscount = getDiscountAmount();
 
   return (
-    <div
-      className={cn(
-        "bg-tertiary rounded-lg border border-[#E5E5E5]",
-        className
-      )}
-    >
+    <div className={cn("bg-darkgray rounded-lg]", className)}>
       <div className="p-4 space-y-2">
         <button
           onClick={() => navigate("/checkout/coupons")}

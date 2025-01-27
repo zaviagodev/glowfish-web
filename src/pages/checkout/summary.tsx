@@ -47,7 +47,7 @@ export default function PaymentSummaryPage() {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("Order Summary")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         {/* Status Section */}
         <motion.div
           className="py-8 text-center border-b"

@@ -132,7 +132,7 @@ export default function CouponsPage() {
         <Button
           variant="ghost"
           size="icon"
-          className="hover:bg-transparent"
+          className="hover:bg-transparent -ml-2"
           onClick={() => navigate(-1)}
         >
           <ChevronLeft className="h-6 w-6" />
@@ -147,7 +147,7 @@ export default function CouponsPage() {
         {/* Search Bar */}
         <div className="relative mb-4">
           <Input
-            className="pl-10 h-12 bg-tertiary border-[#E5E5E5]"
+            className="pl-10 h-12 bg-darkgray border border-input"
             placeholder={t("Search coupons...")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -160,7 +160,7 @@ export default function CouponsPage() {
           {filteredCoupons.map((coupon) => (
             <div
               key={coupon.id}
-              className={`bg-tertiary p-4 rounded-lg border ${
+              className={`bg-darkgray p-4 rounded-lg ${
                 coupon.isApplicable
                   ? selectedCoupons.some((c) => c.id === coupon.id)
                     ? "border-primary ring-2 ring-primary/10 cursor-pointer"

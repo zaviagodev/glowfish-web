@@ -226,7 +226,7 @@
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
   }
- 
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -272,7 +272,7 @@
 
 @layer base {
   input, .main-input {
-    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-secondary-foreground
+    @apply flex w-full !rounded-[8px] border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 text-secondary-foreground
   }
 
   input[type="submit"] {
@@ -356,7 +356,7 @@
   }
 
   .main-btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-black text-white hover:bg-black/90 h-10 px-4 py-2
+    @apply inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 !bg-mainbutton !rounded-full text-primary-foreground h-10 px-4 py-2
   }
 
   .main-container {
@@ -372,7 +372,7 @@
   }
 
   .btn-footer {
-    @apply fixed bottom-[70px] w-full max-w-[600px] p-5 left-[50%] translate-x-[-50%] bg-background
+    @apply fixed bottom-0 w-full max-w-[600px] p-5 left-[50%] translate-x-[-50%] bg-background
   }
 
   .page-title {
@@ -417,6 +417,8 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --mainbutton: 0 0% 7%;
+    --darkgray: 0 0% 97%;
     --radius: 0.5rem;
   }
   .dark {
@@ -424,7 +426,7 @@
     --foreground: 210 40% 98%;
     --card: 0 0% 13%;
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+    --popover: 0 0% 5%;
     --popover-foreground: 210 40% 98%;
     --primary: 345 6% 87%;
     --primary-foreground: 222.2 47.4% 11.2%;

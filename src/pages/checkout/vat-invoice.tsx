@@ -105,7 +105,7 @@ export default function VatInvoicePage() {
 
       <div className="mt-14 mb-20 p-4">
         {/* VAT Enable/Disable Switch */}
-        <div className="bg-tertiary p-4 rounded-lg border border-[#E5E5E5] mb-6">
+        <div className="bg-darkgray p-4 rounded-lg mb-6">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label className="text-base font-medium">

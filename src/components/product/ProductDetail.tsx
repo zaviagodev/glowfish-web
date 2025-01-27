@@ -328,7 +328,7 @@ export function ProductDetail({
               {variant_options && variant_options.length > 0 && (
                 <Button
                   variant="ghost"
-                  className="w-full h-12 flex items-center justify-between bg-tertiary border border-[#E5E5E5]"
+                  className="w-full h-12 flex items-center justify-between bg-darkgray"
                   onClick={() => setShowVariantDrawer(true)}
                 >
                   <div className="flex flex-col items-start">
@@ -374,13 +374,13 @@ export function ProductDetail({
               )}
 
               <Button
-                className="w-full bg-tertiary text-secondary-foreground border border-[#E5E5E5]"
+                className="w-full bg-darkgray text-secondary-foreground rounded-full"
                 onClick={() => handleAddToCart(false)}
               >
                 {t("Add to Cart")}
               </Button>
               <Button
-                className="w-full !bg-mainbutton rounded-full"
+                className="w-full main-btn"
                 onClick={() => handleAddToCart(true)}
               >
                 {t("Buy Now")}

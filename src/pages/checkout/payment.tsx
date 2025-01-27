@@ -108,7 +108,7 @@ export default function PaymentPage() {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("PromptPay QR")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -270,7 +270,7 @@ export default function PaymentPage() {
         {/* Upload Section */}
         <div className="px-4">
           <motion.div
-            className="bg-background rounded-2xl p-6 shadow-lg border border-[#E5E5E5]"
+            className="bg-darkgray rounded-2xl p-6 shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.4 }}

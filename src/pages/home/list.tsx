@@ -22,6 +22,7 @@ import { DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { ProductDetail } from "@/components/product/ProductDetail";
+import { motion } from "framer-motion";
 
 interface Category {
   id: string;
@@ -185,7 +186,7 @@ export const HomeList = () => {
               <div className="relative w-full shadow-lg">
                 <Input
                   className="h-10 pl-10 bg-background text-foreground border border-input rounded-full"
-                  placeholder={t("Search event..")}
+                  placeholder={t("Search events...")}
                   onClick={() => setIsSearchOpen(true)}
                   readOnly
                 />
@@ -204,6 +205,7 @@ export const HomeList = () => {
             placeholder={t("Search events...")}
             value={searchQuery}
             onValueChange={setSearchQuery}
+            className="pl-0 pr-7"
           />
           <CommandList>
             <CommandEmpty>{t("No results found.")}</CommandEmpty>
@@ -236,31 +238,43 @@ export const HomeList = () => {
       {/* Category Bar */}
       <div className="sticky top-0 z-50 bg-background border-y">
         <div className="flex items-center gap-4 px-5 overflow-auto py-6 scrollbar-hide">
-          <Button
-            onClick={() => setSelectedCategory(null)}
-            variant={selectedCategory === null ? "default" : "secondary"}
-            className="rounded-full text-sm font-medium"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
           >
-            {t("All")}
-          </Button>
-          {categories.map((category) => (
             <Button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              variant={
-                selectedCategory === category.id ? "default" : "secondary"
-              }
-              className="rounded-full text-sm font-medium whitespace-nowrap"
+              onClick={() => setSelectedCategory(null)}
+              variant={selectedCategory === null ? "default" : "secondary"}
+              className="rounded-full text-sm font-medium"
             >
-              {category.name}
+              {t("All")}
             </Button>
+          </motion.div>
+          {categories.map((category, index) => (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 + index * 0.1 }}
+            >
+              <Button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                variant={
+                  selectedCategory === category.id ? "default" : "secondary"
+                }
+                className="rounded-full text-sm font-medium whitespace-nowrap"
+              >
+                {category.name}
+              </Button>
+            </motion.div>
           ))}
         </div>
       </div>
 
       {/* Product Section */}
-      <section className="px-5 py-8 space-y-6">
-        <div className="flex items-center justify-between">
+      <section className="py-8 space-y-6">
+        <div className="flex items-center justify-between px-5">
           <h2 className="text-2xl font-semibold tracking-tight">
             {t("Products")}
           </h2>
@@ -272,7 +286,7 @@ export const HomeList = () => {
           </Link>
         </div>
 
-        <div className="relative group -mx-5 px-5">
+        <div className="relative group">
           <Button
             variant="outline"
             size="icon"
@@ -291,7 +305,7 @@ export const HomeList = () => {
 
           <div
             ref={productSliderRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-6"
+            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-6 px-5"
           >
             {products.map((product) => (
               <div

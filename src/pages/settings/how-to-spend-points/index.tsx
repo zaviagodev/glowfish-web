@@ -71,13 +71,13 @@ const HowToSpendPoints = () => {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("How to Spend Points")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         {/* Points Value Card */}
         <div className="p-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4"
+            className="bg-darkgray rounded-lg p-4"
           >
             <div className="flex items-center gap-3">
               <div
@@ -112,9 +112,14 @@ const HowToSpendPoints = () => {
 
         {/* Redemption Methods */}
         <div className="px-6">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+          <motion.h2
+            className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
             {t("Ways to Redeem")}
-          </h2>
+          </motion.h2>
           <div className="space-y-4">
             {spendingMethods.map((method, index) => (
               <motion.div
@@ -122,9 +127,9 @@ const HowToSpendPoints = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + index * 0.1 }}
-                className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4"
+                className="bg-darkgray rounded-lg p-4"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ backgroundColor: method.bgColor }}
@@ -159,14 +164,19 @@ const HowToSpendPoints = () => {
 
         {/* Terms & Conditions */}
         <div className="px-6 mt-8">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+          <motion.h2
+            className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
             {t("Terms & Conditions")}
-          </h2>
+          </motion.h2>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4 space-y-3"
+            className="bg-darkgray rounded-lg p-4 space-y-3"
           >
             {terms.map((term, index) => (
               <motion.div

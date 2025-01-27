@@ -30,7 +30,7 @@ export const Login = () => {
 
       <div className="flex flex-col gap-2.5">
         <Button
-          className="main-btn !bg-line text-background relative font-semibold"
+          className="main-btn relative font-semibold"
           onClick={handleLineLogin}
         >
           {/* TODO: add LineIcon className="absolute left-4" */}
@@ -38,7 +38,7 @@ export const Login = () => {
         </Button>
 
         <Button
-          className="main-btn !bg-gray-600 text-white relative font-semibold mt-2"
+          className="main-btn relative font-semibold mt-2"
           onClick={handleTestLogin}
         >
           {t("Test Login")}

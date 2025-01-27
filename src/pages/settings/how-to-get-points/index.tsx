@@ -65,7 +65,7 @@ const HowToGetPoints = () => {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("How to Get Points")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         {/* Points Rules */}
         <div className="p-6">
           <motion.div
@@ -79,7 +79,7 @@ const HowToGetPoints = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4"
+                className="bg-darkgray rounded-lg p-4"
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -107,9 +107,14 @@ const HowToGetPoints = () => {
 
         {/* Ways to Earn */}
         <div className="px-6">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+          <motion.h2
+            className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
             {t("Ways to Earn Points")}
-          </h2>
+          </motion.h2>
           <div className="space-y-4">
             {earnMethods.map((method, index) => (
               <motion.div
@@ -117,9 +122,9 @@ const HowToGetPoints = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
-                className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4"
+                className="bg-darkgray rounded-lg p-4"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ backgroundColor: method.bgColor }}
@@ -154,14 +159,19 @@ const HowToGetPoints = () => {
 
         {/* Terms & Conditions */}
         <div className="px-6 mt-8">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+          <motion.h2
+            className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
             {t("Terms & Conditions")}
-          </h2>
+          </motion.h2>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4 space-y-3"
+            className="bg-darkgray rounded-lg p-4 space-y-3"
           >
             {[
               t("Points are valid for 12 months from the date of issue"),

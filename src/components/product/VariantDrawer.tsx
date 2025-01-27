@@ -156,7 +156,7 @@ export function VariantDrawer({
           </div>
         </SheetHeader>
 
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-6 pb-20">
           {/* Variant Options */}
           {variantOptions
             .sort((a, b) => a.position - b.position)
@@ -173,9 +173,12 @@ export function VariantDrawer({
                     return (
                       <Button
                         key={value}
-                        variant={isSelected ? "default" : "outline"}
+                        // variant={isSelected ? "default" : "outline"}
                         className={cn(
                           "h-9 px-4 rounded-full",
+                          !isSelected
+                            ? "bg-darkgray border-input text-primary"
+                            : "main-btn",
                           !isAvailable && "opacity-50 cursor-not-allowed"
                         )}
                         disabled={!isAvailable}
@@ -218,7 +221,7 @@ export function VariantDrawer({
                   {t("{{count}} in stock", { count: currentVariant.quantity })}
                 </p>
               ) : (
-                <p className="text-sm text-destructive mt-1">
+                <p className="text-sm text-red-500 font-semibold mt-1">
                   {t("Out of stock")}
                 </p>
               )}
@@ -227,9 +230,9 @@ export function VariantDrawer({
         </div>
 
         {/* Add to Cart Button */}
-        <div className="p-4 border-t bg-background/80 backdrop-blur-xl">
+        <div className="p-4 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0">
           <Button
-            className="w-full bg-black text-white h-12"
+            className="w-full main-btn"
             disabled={!currentVariant || currentVariant.quantity === 0}
             onClick={() => {
               if (currentVariant) {

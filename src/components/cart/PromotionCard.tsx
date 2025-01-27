@@ -12,12 +12,7 @@ export function PromotionCard({ className }: PromotionCardProps) {
   const navigate = useNavigate();
 
   return (
-    <div
-      className={cn(
-        "bg-tertiary rounded-lg border border-[#E5E5E5] overflow-hidden",
-        className
-      )}
-    >
+    <div className={cn("bg-darkgray rounded-lg overflow-hidden", className)}>
       <button
         onClick={() => navigate("/promotions")}
         className="w-full flex items-center justify-between p-3 text-left"

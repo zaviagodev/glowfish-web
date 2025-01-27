@@ -11,7 +11,7 @@ const HistoryPage = () => {
   const t = useTranslate();
   const { customer, loading, error, refreshCustomer } = useCustomer(); // Add refreshCustomer
   const tabClassNames =
-    "font-semibold w-full bg-transparent text-[#6D6D6D] data-[state=active]:bg-white data-[state=active]:text-[#0D0D0D]";
+    "font-semibold w-full rounded-xl bg-transparent text-[#6D6D6D] data-[state=active]:bg-white data-[state=active]:text-[#0D0D0D]";
 
   // Add refresh handler
   const handleRefresh = async () => {
@@ -118,36 +118,38 @@ const HistoryPage = () => {
           {customer?.loyalty_points || 0}
         </p>
       </div>
-      <Tabs defaultValue="All">
-        <TabsList className="w-full bg-darkgray border border-input">
-          <TabsTrigger value="All" className={tabClassNames}>
-            {t("All")}
-          </TabsTrigger>
-          <TabsTrigger value="Received" className={tabClassNames}>
-            {t("Received")}
-          </TabsTrigger>
-          <TabsTrigger value="Used" className={tabClassNames}>
-            {t("Spend")}
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="All">
-          <div className="mt-10">
-            {pointsHistory.map((action) => renderAction(action))}
-          </div>
-        </TabsContent>
+      <section className="px-6">
+        <Tabs defaultValue="All">
+          <TabsList className="w-full bg-darkgray border border-input rounded-xl">
+            <TabsTrigger value="All" className={tabClassNames}>
+              {t("All")}
+            </TabsTrigger>
+            <TabsTrigger value="Received" className={tabClassNames}>
+              {t("Received")}
+            </TabsTrigger>
+            <TabsTrigger value="Used" className={tabClassNames}>
+              {t("Spend")}
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="All">
+            <div className="mt-10">
+              {pointsHistory.map((action) => renderAction(action))}
+            </div>
+          </TabsContent>
 
-        <TabsContent value="Received">
-          <div className="mt-10">
-            {earnedPoints.map((action) => renderAction(action))}
-          </div>
-        </TabsContent>
+          <TabsContent value="Received">
+            <div className="mt-10">
+              {earnedPoints.map((action) => renderAction(action))}
+            </div>
+          </TabsContent>
 
-        <TabsContent value="Used">
-          <div className="mt-10">
-            {redeemedPoints.map((action) => renderAction(action))}
-          </div>
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="Used">
+            <div className="mt-10">
+              {redeemedPoints.map((action) => renderAction(action))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </section>
     </>
   );
 };

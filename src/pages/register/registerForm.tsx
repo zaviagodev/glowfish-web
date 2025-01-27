@@ -48,14 +48,14 @@ const RegisterForm = ({
           name="first_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="first_name">
+              <FormLabel htmlFor="first_name" className="text-muted-foreground">
                 {t("What should we call you?")}
               </FormLabel>
               <FormControl>
                 <Input
                   placeholder={t("First name")}
                   {...field}
-                  className="font-sfpro-rounded font-semibold"
+                  className="font-sfpro-rounded font-semibold main-input"
                 />
               </FormControl>
               <FormMessage />
@@ -67,14 +67,14 @@ const RegisterForm = ({
           name="last_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="last_name">
+              <FormLabel htmlFor="last_name" className="text-muted-foreground">
                 {t("What is your last name")}
               </FormLabel>
               <FormControl>
                 <Input
                   placeholder={t("Last name")}
                   {...field}
-                  className="font-sfpro-rounded font-semibold"
+                  className="font-sfpro-rounded font-semibold main-input"
                 />
               </FormControl>
               <FormMessage />
@@ -86,12 +86,14 @@ const RegisterForm = ({
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="phone">{t("Phone")}</FormLabel>
+              <FormLabel htmlFor="phone" className="text-muted-foreground">
+                {t("Phone")}
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder={t("Phone")}
                   {...field}
-                  className="font-sfpro-rounded font-semibold"
+                  className="font-sfpro-rounded font-semibold main-input"
                 />
               </FormControl>
               <FormMessage />
@@ -103,12 +105,14 @@ const RegisterForm = ({
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="email">{t("Email")}</FormLabel>
+              <FormLabel htmlFor="email" className="text-muted-foreground">
+                {t("Email")}
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder={t("Email")}
                   {...field}
-                  className="font-sfpro-rounded font-semibold"
+                  className="font-sfpro-rounded font-semibold main-input"
                 />
               </FormControl>
               <FormMessage />
@@ -116,7 +120,7 @@ const RegisterForm = ({
           )}
         />
         <Button
-          className="main-btn !bg-[#F3EBD7] text-secondary-foreground"
+          className="main-btn w-full"
           type="submit"
           onClick={() => navigate("/phone-verification")}
         >

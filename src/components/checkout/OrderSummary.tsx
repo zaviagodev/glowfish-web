@@ -21,7 +21,7 @@ export function OrderSummary({
   const t = useTranslate();
 
   return (
-    <div className="bg-tertiary rounded-lg border border-[#E5E5E5]">
+    <div className="bg-darkgray rounded-lg">
       <div className="flex items-center gap-3 p-3 border-b border-[#E5E5E5]">
         <div className="w-8 h-8 bg-tertiary flex items-center justify-center">
           <Receipt className="w-4 h-4 text-secondary-foreground" />

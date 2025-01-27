@@ -44,7 +44,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="rounded-lg border border-[#E5E5E5] overflow-hidden hover:bg-background transition-colors duration-200 cursor-pointer"
+      className="rounded-lg bg-darkgray overflow-hidden hover:bg-background transition-colors duration-200 cursor-pointer"
     >
       {/* Order Header */}
       <div className="p-4 border-b border-[#E5E5E5] flex items-center justify-between">

@@ -73,7 +73,7 @@ export default function CartPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="p-3 flex gap-2.5"
+                className="p-3 flex gap-2.5 items-center"
               >
                 <Checkbox
                   checked={selectedItems.includes(item.variantId)}
@@ -210,7 +210,7 @@ export default function CartPage() {
                 </div>
               </div>
               <Button
-                className="!bg-mainbutton rounded-full h-10 w-[100px]"
+                className="main-btn w-[100px]"
                 disabled={selectedItems.length === 0}
                 onClick={() =>
                   navigate("/checkout", {

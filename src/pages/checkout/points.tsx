@@ -90,11 +90,11 @@ export default function PointsPage() {
         <div className="w-10" />
       </header>
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         <div className="p-4 space-y-6">
           {/* Points Balance Card */}
-          <motion.div className="bg-tertiary rounded-lg border border-[#E5E5E5]">
-            <div className="flex items-center gap-3 p-3 border-b border-[#E5E5E5]">
+          <motion.div className="bg-darkgray rounded-lg">
+            <div className="flex items-center gap-3 p-3">
               <motion.div
                 className="w-8 h-8 bg-tertiary flex items-center justify-center"
                 initial={{ rotate: 0 }}
@@ -120,7 +120,7 @@ export default function PointsPage() {
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
                   <div className="px-2 py-1 rounded-md bg-primary/5 text-primary text-sm">
-                    1 {t("point")} = ฿{exchangeRate}
+                    {t("point", { count: 1 })} = ฿{exchangeRate}
                   </div>
                   <span className="text-xs text-muted-foreground">
                     ≈ ฿{(availablePoints * exchangeRate).toLocaleString()}
@@ -136,7 +136,7 @@ export default function PointsPage() {
                     <>
                       <span className="text-xs text-muted-foreground">•</span>
                       <p className="text-xs text-muted-foreground">
-                        {t("Max")}: {maxRedeem.toLocaleString()} {t("points")}
+                        {t("Min")}: {maxRedeem.toLocaleString()} {t("points")}
                       </p>
                     </>
                   )}
@@ -146,7 +146,7 @@ export default function PointsPage() {
           </motion.div>
 
           {/* Points Input Section */}
-          <motion.div className="bg-tertiary rounded-lg border border-[#E5E5E5] p-3 mt-4">
+          <motion.div className="bg-darkgray rounded-lg p-3 mt-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-tertiary flex items-center justify-center">
                 <Gift className="w-4 h-4 text-muted-foreground" />
@@ -163,7 +163,7 @@ export default function PointsPage() {
                 inputMode="numeric"
                 value={inputValue}
                 onChange={(e) => handleInputChange(e.target.value)}
-                className="text-2xl font-bold h-14 text-center pr-20 bg-background border-[#E5E5E5] text-primary"
+                className="text-2xl font-bold h-14 text-center pr-20 bg-background text-primary"
                 placeholder="0"
               />
               <Button
@@ -202,8 +202,8 @@ export default function PointsPage() {
           </motion.div>
 
           {/* Summary Section */}
-          <motion.div className="bg-tertiary rounded-lg border border-[#E5E5E5] mt-4">
-            <div className="flex items-center gap-3 p-3 border-b border-[#E5E5E5]">
+          <motion.div className="bg-darkgray rounded-lg mt-4">
+            <div className="flex items-center gap-3 p-3 border-b">
               <div className="w-8 h-8 bg-tertiary flex items-center justify-center">
                 <Receipt className="w-4 h-4 text-secondary-foreground" />
               </div>
@@ -245,7 +245,7 @@ export default function PointsPage() {
       {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t p-3 z-50">
         <Button
-          className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90"
+          className="w-full main-btn"
           disabled={
             selectedPoints === 0 ||
             selectedPoints < minRedeem ||

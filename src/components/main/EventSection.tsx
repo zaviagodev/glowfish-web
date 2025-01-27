@@ -9,22 +9,22 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface EventSectionProps {
-  list: EventDataProps[],
-  title?: string
-  cardType?: string
-  seeAllLink?: string
-  eventCardLink?: string
-  isFullWidth?: boolean
+  list: EventDataProps[];
+  title?: string;
+  cardType?: string;
+  seeAllLink?: string;
+  eventCardLink?: string;
+  isFullWidth?: boolean;
 }
 
-const EventSection = ({ 
+const EventSection = ({
   list,
   title,
   cardType,
   seeAllLink,
   eventCardLink,
-  isFullWidth
-} : EventSectionProps) => {
+  isFullWidth,
+}: EventSectionProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -34,17 +34,20 @@ const EventSection = ({
       const scrollAmount = direction === "left" ? -400 : 400;
       scrollContainerRef.current.scrollBy({
         left: scrollAmount,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
 
   return (
     <section className="flex flex-col gap-4 mt-[30px]">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-5">
         <h3 className="page-title">{title}</h3>
         {seeAllLink && (
-          <Link to={seeAllLink} className="text-muted-foreground hover:text-foreground text-xs transition-colors">
+          <Link
+            to={seeAllLink}
+            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+          >
             {t("See all")}
           </Link>
         )}
@@ -74,11 +77,13 @@ const EventSection = ({
           )}
         </AnimatePresence>
 
-        <div 
+        <div
           ref={scrollContainerRef}
           className={cn(
-            "flex gap-4",
-            isFullWidth ? "flex-col" : "overflow-x-auto scrollbar-hide scroll-smooth",
+            "flex gap-4 px-5",
+            isFullWidth
+              ? "flex-col"
+              : "overflow-x-auto scrollbar-hide scroll-smooth",
             !isFullWidth && "pb-4"
           )}
         >
@@ -93,11 +98,13 @@ const EventSection = ({
                 isFullWidth ? "w-full" : "w-[280px]"
               )}
             >
-              <EventCard 
+              <EventCard
                 id={item.id}
                 {...item}
                 type={cardType}
-                onClick={() => navigate(`${eventCardLink || '/home/show/'}${item.id}`)}
+                onClick={() =>
+                  navigate(`${eventCardLink || "/home/show/"}${item.id}`)
+                }
               />
             </motion.div>
           ))}

@@ -89,7 +89,7 @@ const GetOTPDrawer = ({
             name="otp"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="otp" className="page-title">
+                <FormLabel htmlFor="otp" className="text-muted-foreground">
                   {t("Fill the OTP")}
                 </FormLabel>
                 <FormControl>
@@ -100,21 +100,23 @@ const GetOTPDrawer = ({
             )}
           />
 
-          {error && <p className="text-destructive text-sm mt-2">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-sm mt-2 font-semibold">{error}</p>
+          )}
 
           <SheetFooter className="pt-8 items-center gap-8">
             <Button
-              className="main-btn !bg-mainbutton rounded-full"
+              className="main-btn w-full"
               type="submit"
               disabled={!form.formState.isValid || isSubmitting}
             >
               {isSubmitting ? t("Verifying...") : t("Confirm OTP")}
             </Button>
-            <p>
-              {t("Didn't receive the OTP")}
+            <p className="text-muted-foreground text-sm">
+              {t("Didn't receive the OTP?")}
               <button
                 type="button"
-                className="text-mainorange ml-1"
+                className="text-mainbutton ml-1 underline"
                 onClick={() => {
                   /* Add resend OTP logic */
                 }}

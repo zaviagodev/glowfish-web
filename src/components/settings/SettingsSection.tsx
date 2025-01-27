@@ -27,17 +27,18 @@ export function SettingsSection({
   const navigate = useNavigate();
 
   return (
-    <div className={cn("px-4 py-6", index > 0 && "border-t border-[#F5F5F5]")}>
+    // <div className={cn("px-4 py-6", index > 0 && "border-t border-[#F5F5F5]")}>
+    <div className={cn("px-4 py-6")}>
       <h2 className="text-sm font-medium text-muted-foreground mb-2">
         {title}
       </h2>
-      <div className="bg-tertiary rounded-lg border border-[#E5E5E5] overflow-hidden">
+      <div className="rounded-lg bg-darkgray overflow-hidden">
         {items.map((item, itemIndex) => (
           <div
             key={item.label}
             className={cn(
-              "flex items-center justify-between px-3 py-2.5 bg-background",
-              itemIndex > 0 && "border-t border-[#F5F5F5]"
+              "flex items-center justify-between p-4"
+              // itemIndex > 0 && "border-t border-[#F5F5F5]"
             )}
             onClick={() => item.path && navigate(item.path)}
           >

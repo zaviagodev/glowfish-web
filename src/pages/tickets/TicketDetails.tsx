@@ -70,7 +70,7 @@ export default function TicketDetails() {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("Event Details")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         {/* Hero Section */}
         <div className="relative">
           <motion.div
@@ -168,7 +168,7 @@ export default function TicketDetails() {
 
           {event.tickets.map((ticket, index) => (
             <motion.div
-              className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4 space-y-6"
+              className="bg-darkgray rounded-lg p-4 space-y-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
@@ -248,7 +248,7 @@ export default function TicketDetails() {
             transition={{ delay: 0.7 }}
           >
             <h3 className="font-medium">{t("Venue")}</h3>
-            <div className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4">
+            <div className="bg-darkgray rounded-lg p-4">
               <h4 className="font-medium mb-1">
                 {event.event.venue_name || t("Venue TBD")}
               </h4>

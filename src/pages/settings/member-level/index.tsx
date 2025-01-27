@@ -69,13 +69,13 @@ const MemberLevel = () => {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("Member Level")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-10">
         {/* Current Level Card */}
         <div className="p-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-tertiary rounded-lg border border-[#E5E5E5] overflow-hidden"
+            className="bg-darkgray rounded-lg overflow-hidden"
           >
             <div className="p-4 space-y-4">
               <div className="flex items-center gap-3">
@@ -142,10 +142,8 @@ const MemberLevel = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className={cn(
-                  "bg-tertiary rounded-lg border overflow-hidden transition-all",
-                  level.current
-                    ? "border-primary ring-2 ring-primary/10"
-                    : "border-[#E5E5E5]"
+                  "bg-darkgray rounded-lg border overflow-hidden transition-all",
+                  level.current ? "border-primary ring-2 ring-primary/10" : ""
                 )}
               >
                 <div className="p-4">

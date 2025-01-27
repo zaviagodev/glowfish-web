@@ -76,7 +76,10 @@ const PhoneForm = ({
             name="phone_verification"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="phone_verification">
+                <FormLabel
+                  htmlFor="phone_verification"
+                  className="text-muted-foreground"
+                >
                   {t("Fill the phone number")}
                 </FormLabel>
                 <div className="flex gap-3">
@@ -103,7 +106,7 @@ const PhoneForm = ({
           </p>
 
           <Button
-            className="main-btn !bg-[#FF2F00]"
+            className="main-btn"
             type="submit"
             disabled={!form.formState.isValid}
           >

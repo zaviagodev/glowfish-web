@@ -63,7 +63,7 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
 
   return (
     <>
-      <div className="bg-tertiary rounded-lg border border-[#E5E5E5]">
+      <div className="bg-darkgray rounded-lg">
         <div className="p-4">
           <h2 className="text-sm font-medium mb-3">{t("Payment Method")}</h2>
 

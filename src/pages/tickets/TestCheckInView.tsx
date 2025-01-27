@@ -162,7 +162,7 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
                 >
                   <div
                     className={cn(
-                      "bg-tertiary rounded-lg border border-[#E5E5E5] p-4",
+                      "bg-darkgray rounded-lg p-4",
                       "hover:border-[#D1D1D6] transition-colors"
                     )}
                   >
@@ -231,7 +231,7 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
                     <h3 className="text-lg font-semibold mb-4">
                       {t("Check-in Successful!")}
                     </h3>
-                    <div className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4 w-full mb-6">
+                    <div className="bg-darkgray rounded-lg p-4 w-full mb-6">
                       <div className="space-y-4">
                         {selectedTest.data.guests.map((guest, index) => (
                           <div

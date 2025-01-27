@@ -176,7 +176,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
 
         {/* Event Details */}
         <div className="px-6 pb-6">
-          <div className="bg-tertiary rounded-lg border border-[#E5E5E5] p-4">
+          <div className="bg-darkgray rounded-lg p-4">
             <h3 className="font-medium mb-3">{ticket.eventName}</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">

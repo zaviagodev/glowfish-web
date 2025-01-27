@@ -75,7 +75,7 @@ const SettingsPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="pt-[100px] pb-32">
+      <div className="pt-[100px] pb-10">
         <OrderStatusBar />
         <WalletSection />
         {sections.map((section, index) => (
@@ -87,21 +87,19 @@ const SettingsPage = () => {
           />
         ))}
 
-        <div className="flex items-center justify-between p-4">
-          <span className="text-sm font-medium">Dark mode</span>
-          <Switch
-            onClick={toggleTheme}
-            checked={theme === "dark" ? true : false}
-          />
-        </div>
+        {/* <div className="p-4">
+          <div className="flex items-center justify-between p-4 bg-darkgray rounded-lg">
+            <span className="text-sm font-medium">Dark mode</span>
+            <Switch
+              onClick={toggleTheme}
+              checked={theme === "dark" ? true : false}
+            />
+          </div>
+        </div> */}
 
         {/* Logout Button */}
         <div className="px-4">
-          <Button
-            variant="destructive"
-            className="w-full h-12"
-            onClick={() => logout()}
-          >
+          <Button className="w-full main-btn" onClick={() => logout()}>
             {t("Logout")}
           </Button>
         </div>

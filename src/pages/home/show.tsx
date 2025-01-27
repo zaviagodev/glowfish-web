@@ -233,9 +233,7 @@ export const HomeShow = () => {
           }}
         >
           <SheetOverlay className="backdrop-blur-sm bg-transparent" />
-          <SheetTrigger className="main-btn !bg-[#EE5736]">
-            {t("Sign up")}
-          </SheetTrigger>
+          <SheetTrigger className="main-btn">{t("Sign up")}</SheetTrigger>
           <SheetContent
             className="h-[60%] !p-0 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col"
             side="bottom"

@@ -59,7 +59,7 @@ export default function VoucherDetail() {
       <PageHeader title={t("Voucher Details")} />
       <div className="fixed inset-0 pointer-events-none">
         <div
-          className="absolute inset-0 bg-gradient-to-b from-white/50 to-transparent opacity-50"
+          className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20"
           style={{
             background:
               "radial-gradient(circle at top, rgba(255,255,255,0.8) 0%, transparent 70%)",
@@ -67,17 +67,16 @@ export default function VoucherDetail() {
         />
       </div>
 
-      <div className="pt-14 pb-32">
+      <div className="pb-10">
         {/* Hero Section */}
         {/* MAY BE USED: <div className="relative bg-gradient-to-b from-white to-[#F8F8F8] pb-6"> */}
-        <div className="relative pb-6">
+        <div className="relative">
           <motion.div
-            className="p-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Image */}
-            <div className="w-full aspect-[2/1] rounded-2xl overflow-hidden mb-6 shadow-lg">
+            <div className="w-full aspect-[4/3] overflow-hidden mb-6 shadow-lg">
               <img
                 src={voucher.image}
                 alt={voucher.title}
@@ -86,21 +85,21 @@ export default function VoucherDetail() {
             </div>
 
             {/* Type Badge */}
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FF9500]/10 text-[#FF9500] text-xs font-medium mb-3">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FF9500]/10 text-[#FF9500] text-xs font-medium mb-3 mx-6">
               <Gift className="w-3.5 h-3.5" />
               <span>{t(voucher.type === "gift" ? "Gift" : "Coupon")}</span>
             </div>
 
             {/* Title and Description */}
-            <h1 className="text-2xl font-bold tracking-tight mb-2">
+            <h1 className="px-6 text-2xl font-bold tracking-tight mb-2">
               {voucher.title}
             </h1>
-            <p className="text-base text-[#8E8E93] leading-relaxed">
+            <p className="px-6 text-base text-[#8E8E93] leading-relaxed">
               {voucher.description}
             </p>
 
             {/* Expiry */}
-            <div className="mt-4 flex items-center gap-1.5 text-sm text-[#8E8E93]">
+            <div className="px-6 mt-4 flex items-center gap-1.5 text-sm text-[#8E8E93]">
               <Clock className="w-4 h-4" />
               <span>
                 {t("Valid until")}{" "}
@@ -111,12 +110,12 @@ export default function VoucherDetail() {
         </div>
 
         {/* Code Section */}
-        <div className="px-6">
+        <div className="p-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-background rounded-2xl border border-[#E5E5EA] overflow-hidden shadow-sm"
+            className="bg-background rounded-2xl overflow-hidden shadow-sm"
           >
             {/* Tabs */}
             <div className="flex border-b border-[#E5E5EA]">
@@ -132,15 +131,15 @@ export default function VoucherDetail() {
                     "flex-1 h-12 flex items-center justify-center gap-2",
                     "text-sm font-medium transition-colors relative",
                     activeTab === tab.id
-                      ? "text-[#007AFF]"
-                      : "text-[#8E8E93] hover:text-[#8E8E93]/80"
+                      ? "text-mainbutton"
+                      : "text-muted-foreground"
                   )}
                 >
                   <tab.icon className="w-4 h-4" />
                   {t(tab.label)}
                   {activeTab === tab.id && (
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#007AFF]"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-mainbutton"
                       layoutId="activeTab"
                     />
                   )}
@@ -148,7 +147,7 @@ export default function VoucherDetail() {
               ))}
             </div>
 
-            <div className="p-6">
+            <div>
               {activeTab === "qr" && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -159,7 +158,7 @@ export default function VoucherDetail() {
                   <div className="w-48 h-48 rounded-2xl flex items-center justify-center mb-4">
                     <QrCode className="w-32 h-32 text-secondary-foreground" />
                   </div>
-                  <p className="text-sm text-[#8E8E93]">
+                  <p className="text-sm text-muted-foreground">
                     {t("Scan to redeem")}
                   </p>
                 </motion.div>
@@ -201,7 +200,7 @@ export default function VoucherDetail() {
                       <Copy className="w-4 h-4" />
                     </Button>
                   </div>
-                  <p className="text-sm text-center text-[#8E8E93]">
+                  <p className="text-sm text-center text-muted-foreground">
                     {t("Show code to staff")}
                   </p>
                 </motion.div>
@@ -217,8 +216,8 @@ export default function VoucherDetail() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <div className="bg-background rounded-2xl border border-[#E5E5EA] overflow-hidden">
-            <div className="p-4 border-b border-[#E5E5EA] flex items-center gap-2">
+          <div className="bg-background rounded-2xl overflow-hidden">
+            <div className="p-4 border-b flex items-center gap-2">
               <Info className="w-4 h-4 text-[#8E8E93]" />
               <h2 className="text-base font-medium">
                 {t("Terms & Conditions")}
@@ -234,8 +233,8 @@ export default function VoucherDetail() {
                     transition={{ delay: 0.4 + index * 0.1 }}
                     className="flex items-start gap-3"
                   >
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#007AFF] mt-2 flex-shrink-0" />
-                    <p className="text-sm text-[#8E8E93] leading-relaxed">
+                    <div className="w-1.5 h-1.5 rounded-full bg-mainbutton mt-2 flex-shrink-0" />
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {term}
                     </p>
                   </motion.div>
