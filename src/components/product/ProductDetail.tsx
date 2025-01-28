@@ -21,7 +21,10 @@ interface ProductVariant {
   price: number;
   compare_at_price: number | null;
   quantity: number;
-  options: Record<string, any>;
+  options: Array<{
+    name: string;
+    value: string;
+  }>;
   status: string;
   position: number;
 }
@@ -95,7 +98,7 @@ export function ProductDetail({
     if (!selectedVariant) {
       return t("Select Options");
     }
-    return selectedVariant.name;
+    return selectedVariant.options.map(opt => opt.value).join(' / ');
   };
 
   const handleVariantSelect = (variantId: string) => {
@@ -129,7 +132,10 @@ export function ProductDetail({
       image,
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
-      variant: selectedVariant?.options
+      variant: selectedVariant?.options?.reduce((acc, opt) => ({
+        ...acc,
+        [opt.name]: opt.value
+      }), {})
     });
 
     addToast(t("Added to cart"), "success");
