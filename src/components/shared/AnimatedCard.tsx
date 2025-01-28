@@ -46,7 +46,7 @@ export function AnimatedCard({
       layoutId={`card-${id}`}
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-card",
+        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]",
         type === "event" && "flex"
       )}
@@ -56,7 +56,7 @@ export function AnimatedCard({
         layoutId={`image-container-${id}`}
         className={cn(
           "relative overflow-hidden",
-          type === "small" ? "h-48 w-full" : "h-56 w-full",
+          type === "small" ? "h-32 w-full" : "h-40 w-full",
           type === "event" && "w-[125px] min-w-[125px]"
         )}
         transition={springConfig}
@@ -76,7 +76,7 @@ export function AnimatedCard({
         <div className="space-y-2">
           <motion.h3
             layoutId={`title-${id}`}
-            className="text-sm font-normal text-muted-foreground line-clamp-2 min-h-[32px]"
+            className="font-semibold text-card-foreground line-clamp-2"
             transition={springConfig}
           >
             {title}
@@ -123,12 +123,7 @@ export function AnimatedCard({
             transition={springConfig}
           >
             <span className="flex items-baseline gap-2">
-              <span
-                className={cn(
-                  "font-medium text-secondary-foreground",
-                  "text-base"
-                )}
-              >
+              <span className={cn("text-sm text-secondary-foreground")}>
                 ฿{typeof price === "number" ? price.toLocaleString() : price}
               </span>
               {compareAtPrice && (

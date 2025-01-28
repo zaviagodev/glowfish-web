@@ -54,7 +54,7 @@ const EventSection = ({
       </div>
 
       <div className="relative group">
-        <AnimatePresence>
+        {/* <AnimatePresence>
           {!isFullWidth && list.length > 2 && (
             <>
               <Button
@@ -75,12 +75,12 @@ const EventSection = ({
               </Button>
             </>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
 
         <div
           ref={scrollContainerRef}
           className={cn(
-            "flex gap-4 px-5",
+            "grid grid-cols-2 gap-4 px-5",
             isFullWidth
               ? "flex-col"
               : "overflow-x-auto scrollbar-hide scroll-smooth",
@@ -94,8 +94,8 @@ const EventSection = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className={cn(
-                "flex-shrink-0",
-                isFullWidth ? "w-full" : "w-[280px]"
+                "flex-shrink-0 w-full"
+                // isFullWidth ? "w-full" : "w-[280px]"
               )}
             >
               <EventCard

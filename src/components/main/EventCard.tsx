@@ -21,7 +21,7 @@ const EventCard = ({
     <div
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-lg cursor-pointer w-full",
+        "relative overflow-hidden rounded-lg cursor-pointer w-full h-full",
         "bg-card border border-border/10",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]",
         type === "event" && "flex"
@@ -30,11 +30,15 @@ const EventCard = ({
       <div
         className={cn(
           "relative overflow-hidden",
-          type === "small" ? "h-48 w-full" : "h-56 w-full",
+          type === "small" ? "h-40 w-full" : "h-32 w-full",
           type === "event" && "w-[125px] min-w-[125px]"
         )}
       >
-        <img src={image} alt={title} className="w-full h-full object-cover" />
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-full object-cover rounded-lg"
+        />
         {price && (
           <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">
             {price}
