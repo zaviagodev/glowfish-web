@@ -14,6 +14,7 @@ RETURNS TABLE (
     ticket_details JSON[],
     total_count BIGINT
 ) AS $$
+
 DECLARE
     total_events BIGINT;
 BEGIN
@@ -84,6 +85,3 @@ BEGIN
     OFFSET p_offset;
 END;
 $$ LANGUAGE plpgsql;
-
--- Down Migration
-DROP FUNCTION IF EXISTS get_customer_events(UUID, INT, INT); 
