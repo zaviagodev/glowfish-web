@@ -1,27 +1,33 @@
 // src/hooks/useEvents.ts
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { EventService, type Event } from '@/services/eventService';
+import { EventService, type Event, type PaginatedEvents } from '@/services/eventService';
 import { useStore } from '@/hooks/useStore';
 
 // Cache key for localStorage
 const EVENTS_CACHE_KEY = 'cached_events';
 const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-export const useEvents = () => {
+interface UseEventsOptions {
+  page?: number;
+  pageSize?: number;
+}
+
+export const useEvents = (options: UseEventsOptions = {}) => {
+  const { page = 1, pageSize = 10 } = options;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { storeName } = useStore();
 
   // Use React Query for data fetching and caching
   const { 
-    data: events = [], 
+    data: paginatedEvents, 
     isLoading: eventsLoading, 
     isError: eventsError,
     refetch: refetchData
   } = useQuery({
-    queryKey: ['events', storeName],
-    queryFn: () => EventService.getEvents(storeName),
+    queryKey: ['events', storeName, page, pageSize],
+    queryFn: () => EventService.getEvents(storeName, page, pageSize),
     staleTime: CACHE_EXPIRY_TIME,
     cacheTime: CACHE_EXPIRY_TIME * 2,
     retry: 2,
@@ -35,7 +41,6 @@ export const useEvents = () => {
   useEffect(() => {
     setLoading(eventsLoading);
   }, [eventsLoading]);
-
 
   // Update error state based on React Query
   useEffect(() => {
@@ -60,7 +65,10 @@ export const useEvents = () => {
   };
 
   return { 
-    events, 
+    events: paginatedEvents?.data || [], 
+    total: paginatedEvents?.total || 0,
+    page: paginatedEvents?.page || page,
+    pageSize: paginatedEvents?.pageSize || pageSize,
     loading, 
     error, 
     refreshEvents,
@@ -69,4 +77,4 @@ export const useEvents = () => {
   };
 };
 
-export type { Event };
+export type { Event, PaginatedEvents };

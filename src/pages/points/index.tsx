@@ -62,7 +62,7 @@ export default function MyPointsPage() {
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="bg-white rounded-2xl border border-[#E5E5EA] p-6 shadow-sm">
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center">
                   <Coins className="w-6 h-6 text-primary" />
                 </div>
@@ -87,62 +87,14 @@ export default function MyPointsPage() {
                 {t("My QR")}
               </Button>
 
-              {/* Progress to Next Tier */}
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {t("Next Tier")}
-                  </span>
-                  <span className="font-medium">
-                    {nextTierPoints.toLocaleString()} {t("points")}
-                  </span>
-                </div>
-                <div className="h-2 bg-[#F2F2F7] rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-primary rounded-full"
-                    initial={{ width: "0%" }}
-                    animate={{ width: `${(availablePoints / nextTierPoints) * 100}%` }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {t("{{points}} points until next tier", { 
-                    points: (nextTierPoints - availablePoints).toLocaleString() 
-                  })}
-                </p>
-              </div>
             </div>
           </motion.div>
         </div>
 
+
+
         {/* Quick Actions */}
         <div className="px-6 space-y-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <Button
-              variant="outline"
-              className="w-full h-auto p-4 justify-between hover:bg-transparent border-[#E5E5EA] group"
-              onClick={() => navigate('/settings/member-level')}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#007AFF]/10 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-[#007AFF]" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium text-[#1A1A1A]">
-                    {t("View Benefits")}
-                  </div>
-                  <div className="text-xs text-[#8E8E93]">
-                    {t("See your tier benefits and rewards")}
-                  </div>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-[#8E8E93] group-hover:text-[#1A1A1A] transition-colors" />
-            </Button>
-          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}

@@ -26,13 +26,28 @@ export interface Order {
 }
 
 export const OrderService = {
-  async getOrders(storeName: string): Promise<Order[]> {
+  async getOrders(
+    storeName: string, 
+    page: number = 1, 
+    limit: number = 10
+  ): Promise<{ orders: Order[]; total: number }> {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         throw new Error('User not authenticated');
       }
 
+      // Calculate offset based on page and limit
+      const offset = (page - 1) * limit;
+
+      // First get total count
+      const { count: total } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true })
+        .eq('customer_id', user.id)
+        .eq('store_name', storeName);
+
+      // Then get paginated data
       const { data, error } = await supabase
         .from('orders')
         .select(`
@@ -65,7 +80,8 @@ export const OrderService = {
         `)
         .eq('customer_id', user.id)
         .eq('store_name', storeName)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
 
       if (error) {
         console.error('Supabase query error:', error);
@@ -74,7 +90,7 @@ export const OrderService = {
 
       if (!data) {
         console.warn('No data returned from Supabase');
-        return [];
+        return { orders: [], total: 0 };
       }
 
       // Transform the data to match the Order interface
@@ -103,7 +119,10 @@ export const OrderService = {
         }))
       }));
 
-      return transformedOrders;
+      return { 
+        orders: transformedOrders, 
+        total: total || 0 
+      };
     } catch (error) {
       console.error('Failed to fetch orders:', error);
       throw error;

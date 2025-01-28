@@ -6,17 +6,42 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ticket as TicketIcon } from "lucide-react";
 import { Ticket as TicketCard } from "./Ticket";
 import { useEvents } from "@/hooks/useEvents";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const ITEMS_PER_PAGE = 10;
 
 export default function TicketsPage() {
   const t = useTranslate();
   const [activeTab, setActiveTab] = useState<"upcoming" | "passed">("upcoming");
-  const { events, loading, error } = useEvents();
+  const [currentPage, setCurrentPage] = useState(1);
+  const { events, total, loading, error } = useEvents({
+    page: currentPage,
+    pageSize: ITEMS_PER_PAGE
+  });
 
-  const filteredTickets = events.filter(event => {
-    const eventDate = new Date(event.event.start_datetime);
+  // Sort events by closest start date
+  const sortedEvents = [...events].sort((a, b) => {
+    const dateA = new Date(a.start_datetime);
+    const dateB = new Date(b.start_datetime);
+    const now = new Date();
+    return Math.abs(dateA.getTime() - now.getTime()) - Math.abs(dateB.getTime() - now.getTime());
+  });
+
+  const filteredTickets = sortedEvents.filter(event => {
+    const eventDate = new Date(event.start_datetime);
     const isUpcoming = eventDate > new Date();
     return activeTab === "upcoming" ? isUpcoming : !isUpcoming;
   });
+
+  // Calculate total pages from the server's total count
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (loading) {
     return (
@@ -45,7 +70,13 @@ export default function TicketsPage() {
       <PageHeader title={t("My Tickets")} />
 
       <div className="pt-14 pb-4">
-        <Tabs defaultValue="upcoming" onValueChange={(value) => setActiveTab(value as "upcoming" | "passed")}>
+        <Tabs 
+          defaultValue="upcoming" 
+          onValueChange={(value) => {
+            setActiveTab(value as "upcoming" | "passed");
+            setCurrentPage(1); // Reset to first page when changing tabs
+          }}
+        >
           <div className="px-4">
             <TabsList className="w-full h-auto p-1 bg-[rgba(245,245,245,0.5)] grid grid-cols-2 gap-1">
               <TabsTrigger 
@@ -78,31 +109,71 @@ export default function TicketsPage() {
                 </p>
               </motion.div>
             ) : (
-              <div className="px-4 space-y-4">
-                {filteredTickets.map((event, index) => (
-                  <motion.div
-                    key={event.order_item_id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <TicketCard 
-                      ticket={{
-                        id: event.id,
-                        eventName: event.event.name,
-                        location: event.event.venue_name || "TBD",
-                        date: event.event.start_datetime,
-                        image: event.event.images || "",
-                        status: activeTab,
-                        used: activeTab === "passed",
-                        ticketNumber: `T-${event.order_item_id}`,
-                        seat: event.tickets[0]?.metadata?.attendeeName || "General Admission",
-                        groupSize: event.tickets.length || 1
-                      }} 
-                    />
-                  </motion.div>
-                ))}
-              </div>
+              <>
+                <div className="px-4 space-y-4">
+                  {filteredTickets.map((event, index) => (
+                    <motion.div
+                      key={event.event_id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <TicketCard 
+                        ticket={{
+                          id: event.event_id,
+                          eventName: event.event_name,
+                          location: event.venue_name || "TBD",
+                          date: event.start_datetime,
+                          image: event.image_url || "",
+                          status: activeTab,
+                          used: activeTab === "passed",
+                          ticketNumber: event.ticket_details[0]?.code || "",
+                          seat: event.ticket_details[0]?.metadata?.attendeeName || "General Admission",
+                          groupSize: event.ticket_details.length || 1
+                        }} 
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {total > ITEMS_PER_PAGE && (
+                  <div className="flex justify-center items-center gap-2 mt-8 px-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    <div className="flex items-center gap-2">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <Button
+                          key={page}
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handlePageChange(page)}
+                          className={cn(
+                            "w-8 h-8",
+                            currentPage === page && "bg-primary text-primary-foreground"
+                          )}
+                        >
+                          {page}
+                        </Button>
+                      ))}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </Tabs>

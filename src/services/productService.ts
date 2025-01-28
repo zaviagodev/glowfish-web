@@ -36,24 +36,30 @@ export interface Category {
 
 
 // Transform product data
-const transformProduct = (event: any): Product => ({
-  id: event.id,
-  pro_id: event?.product.id,
-  name: event?.product?.name,
-  description: event?.product?.description,
-  price: event?.product?.price,
-  category_id: event?.product?.category_id,
-  variant_options: event?.product?.variant_options || [],
-  track_quantity: event?.product?.track_quantity || false,
-  product_variants: event?.product?.product_variants || [],
-  image: event?.product?.product_images?.[0]?.url || '/placeholder-image.jpg',
-  location: event.venue_name, // Default location,
-  venue_address: event.venue_address, 
-  organizer_contact: event.organizer_contact, 
-  organizer_name: event.organizer_name, 
-  start_datetime: event.start_datetime, // Current date as default
-  end_datetime: event.end_datetime,
-});
+const transformProduct = (event: any): Product => {
+  // Get the first valid image URL or use a data URI for a light gray placeholder
+  const imageUrl = event?.product?.product_images?.[0]?.url || 
+    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
+
+  return {
+    id: event.id,
+    pro_id: event?.product.id,
+    name: event?.product?.name,
+    description: event?.product?.description,
+    price: event?.product?.price,
+    category_id: event?.product?.category_id,
+    variant_options: event?.product?.variant_options || [],
+    track_quantity: event?.product?.track_quantity || false,
+    product_variants: event?.product?.product_variants || [],
+    image: imageUrl,
+    location: event.venue_name, // Default location,
+    venue_address: event.venue_address, 
+    organizer_contact: event.organizer_contact, 
+    organizer_name: event.organizer_name, 
+    start_datetime: event.start_datetime, // Current date as default
+    end_datetime: event.end_datetime,
+  };
+};
 
 
 
