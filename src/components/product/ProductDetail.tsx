@@ -16,12 +16,14 @@ interface ProductVariantOption {
 
 interface ProductVariant {
   id: string;
+  name: string;
+  sku: string;
   price: number;
+  compare_at_price: number | null;
   quantity: number;
-  options: ProductVariantOption[];
-  name: Record<string, string>;
-  track_quantity: boolean;
-  compare_at_price?: number;
+  options: Record<string, any>;
+  status: string;
+  position: number;
 }
 
 interface ProductDetailProps {
@@ -93,7 +95,7 @@ export function ProductDetail({
     if (!selectedVariant) {
       return t("Select Options");
     }
-    return Object.values(selectedVariant.name);
+    return selectedVariant.name;
   };
 
   const handleVariantSelect = (variantId: string) => {
@@ -127,10 +129,7 @@ export function ProductDetail({
       image,
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
-      variant: selectedVariant?.options?.reduce((acc, opt: ProductVariantOption) => ({
-        ...acc,
-        [opt.name]: opt.value
-      }), {} as Record<string, string>)
+      variant: selectedVariant?.options
     });
 
     addToast(t("Added to cart"), "success");
@@ -308,7 +307,7 @@ export function ProductDetail({
               )}
 
               {/* Stock Status */}
-              {(selectedVariant?.track_quantity ?? track_quantity) && (
+              {track_quantity && (
                 <div className="text-sm">
                   <span className="text-muted-foreground">{t("Stock")}:</span>{" "}
                   {selectedVariant ? (
