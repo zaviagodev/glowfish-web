@@ -1,5 +1,4 @@
 import Header from "@/components/main/Header";
-import { myRewardsList } from "@/data/data";
 import { useTranslate } from "@refinedev/core";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -25,6 +24,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Barcode from "react-barcode";
+import { useProducts } from "@/hooks/useProducts";
 
 const RewardDetail = () => {
   const t = useTranslate();
@@ -34,28 +34,31 @@ const RewardDetail = () => {
     "w-full rounded-none flex py-4 gap-2 items-center text-[#979797] text-xs font-semibold box-border border-b border-[#282828] !bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-white data-[state=active]:text-white";
   const [codeType, setCodeType] = useState("barcode");
 
+  const {
+    products,
+    loading: productsLoading,
+    error: productsError,
+  } = useProducts();
   return (
     <>
       <Header className="bg-transparent border-0" />
-      {myRewardsList
+      {products
         .filter((data) => data.id == id)
         .map((data) => (
           <>
-            <img
-              src={data.image}
-              className="w-full z-100 h-[316px] object-cover"
-            />
-            <section className="p-5 bg-background relative -top-10 backdrop-blur-sm rounded-[14px] flex flex-col gap-7 mb-[120px]">
+            <img src={data.image} className="w-full h-full object-cover" />
+            <section className="p-5 bg-background relative -top-10 backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
               <div className="flex flex-col gap-4">
                 <p className="text-xs text-fadewhite">{data.category}</p>
-                <h2 className="page-title">{data.title}</h2>
+                <h2 className="page-title">{data.name}</h2>
               </div>
 
               <div className="grid grid-cols-2">
                 <div className="flex flex-col gap-1 pr-7 border-r border-r-[#FFFFFF1A]">
                   <p className="text-xs text-fadewhite">{t("Used points")}</p>
-                  <h2 className="text-mainorange text-2xl font-semibold">
-                    {data.points} {data.points === 1 ? t("point") : t("points")}
+                  <h2 className="text-mainorange text-xl font-semibold">
+                    {(data.price * 10).toLocaleString()}{" "}
+                    {data.price === 1 ? t("point") : t("points")}
                   </h2>
                 </div>
                 <div className="flex flex-col gap-2 pl-7">
@@ -66,7 +69,7 @@ const RewardDetail = () => {
 
               <div className="flex flex-col gap-4">
                 <h2 className="font-medium text-sm">{t("Description")}</h2>
-                <p className="text-xs">{data.desc}</p>
+                <p className="text-xs">{data.description}</p>
               </div>
 
               <div className="flex flex-col gap-4">
@@ -100,7 +103,7 @@ const RewardDetail = () => {
                 </Accordion>
               </div>
             </section>
-            <footer className="btn-footer flex flex-col gap-7">
+            <footer className="btn-footer flex flex-col gap-7 z-[51]">
               <Sheet open={isUsingCoupon} onOpenChange={setIsUsingCoupon}>
                 <SheetOverlay className="backdrop-blur-sm bg-transparent" />
                 <SheetTrigger className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center">

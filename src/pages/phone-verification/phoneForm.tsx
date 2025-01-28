@@ -83,7 +83,7 @@ const PhoneForm = ({
                   {t("Fill the phone number")}
                 </FormLabel>
                 <div className="flex gap-3">
-                  <div className="main-input w-fit flex items-center gap-2">
+                  <div className="main-input bg-darkgray w-fit flex items-center gap-2">
                     <Languages />
                     <span>+66</span>
                   </div>

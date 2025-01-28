@@ -67,10 +67,8 @@ export function WalletSection() {
               <div style={{ color: item.color }}>{item.icon}</div>
             </div>
             <div className="flex-1 text-left">
-              <div className="text-sm font-medium text-muted-foreground">
-                {item.label}
-              </div>
-              <div className="text-xs text-secondary-foreground">
+              <div className="text-sm font-medium">{item.label}</div>
+              <div className="text-xs text-muted-foreground">
                 {item.description}
               </div>
             </div>
@@ -96,16 +94,14 @@ export function WalletSection() {
             <Ticket className="w-5 h-5 text-[#03A9F4]" />
           </div>
           <div className="flex-1 text-left">
-            <div className="text-sm font-medium text-muted-foreground">
-              {t("My Tickets")}
-            </div>
-            <div className="text-xs text-secondary-foreground">
+            <div className="text-sm font-medium">{t("My Tickets")}</div>
+            <div className="text-xs text-muted-foreground">
               {t("View all your event tickets")}
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="rounded-full text-[#03A9F4] text-xs font-medium">{/* additional bg: bg-[rgba(3, 169, 244, 0.1)] */}
-              2
+            <div className="rounded-full text-[#03A9F4] text-xs font-medium">
+              {/* additional bg: bg-[rgba(3, 169, 244, 0.1)] */}2
             </div>
           </div>
         </div>

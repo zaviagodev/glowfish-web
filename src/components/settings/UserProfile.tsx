@@ -32,9 +32,9 @@ export function UserProfile({
           </div>
         </div>
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
-          className="main-btn"
+          // className="main-btn !h-10"
           onClick={handleEditClick}
         >
           {t("Edit")}

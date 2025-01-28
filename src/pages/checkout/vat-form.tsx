@@ -60,10 +60,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-4 pb-20"
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="companyName"
@@ -76,7 +73,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter company name")}
-                  className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -96,7 +93,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter tax ID")}
-                  className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -116,7 +113,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter branch number")}
-                  className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -136,7 +133,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter company address")}
-                  className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -165,7 +162,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
 
         <Button
           type="submit"
-          className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 mt-4 fixed bottom-4 left-4 right-4 max-w-[calc(600px-32px)] mx-auto"
+          className="w-[calc(100%_-_32px)] main-btn mt-4 fixed bottom-4 left-4 right-4 max-w-[calc(600px_-_32px)] mx-auto"
         >
           {t("Save Company")}
         </Button>

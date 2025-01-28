@@ -32,18 +32,18 @@ export function SettingsSection({
       <h2 className="text-sm font-medium text-muted-foreground mb-2">
         {title}
       </h2>
-      <div className="rounded-lg bg-darkgray overflow-hidden">
+      <div className="overflow-hidden space-y-3">
         {items.map((item, itemIndex) => (
           <div
             key={item.label}
             className={cn(
-              "flex items-center justify-between p-4"
+              "flex items-center justify-between p-4 rounded-lg bg-darkgray"
               // itemIndex > 0 && "border-t border-[#F5F5F5]"
             )}
             onClick={() => item.path && navigate(item.path)}
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#F5F5F5] flex items-center justify-center text-lg">
+              <div className="w-12 h-12 rounded-lg bg-[#F5F5F5] flex items-center justify-center text-lg">
                 {item.icon}
               </div>
               <span className="text-sm font-medium">{item.label}</span>

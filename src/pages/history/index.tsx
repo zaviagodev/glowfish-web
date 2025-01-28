@@ -11,7 +11,7 @@ const HistoryPage = () => {
   const t = useTranslate();
   const { customer, loading, error, refreshCustomer } = useCustomer(); // Add refreshCustomer
   const tabClassNames =
-    "font-semibold w-full rounded-xl bg-transparent text-[#6D6D6D] data-[state=active]:bg-white data-[state=active]:text-[#0D0D0D]";
+    "font-semibold w-full rounded-lg h-7 bg-transparent text-[#6D6D6D] data-[state=active]:bg-white data-[state=active]:text-[#0D0D0D]";
 
   // Add refresh handler
   const handleRefresh = async () => {
@@ -112,7 +112,7 @@ const HistoryPage = () => {
   return (
     <>
       <Header title={t("History")} />
-      <div className="mb-6 px-5">
+      <div className="mb-4 px-5">
         <h2 className="text-lg font-semibold">{t("Total Points")}</h2>
         <p className="text-2xl font-bold text-mainorange">
           {customer?.loyalty_points || 0}
@@ -120,7 +120,7 @@ const HistoryPage = () => {
       </div>
       <section className="px-6">
         <Tabs defaultValue="All">
-          <TabsList className="w-full bg-darkgray border border-input rounded-xl">
+          <TabsList className="w-full bg-darkgray border border-input rounded-xl h-9">
             <TabsTrigger value="All" className={tabClassNames}>
               {t("All")}
             </TabsTrigger>

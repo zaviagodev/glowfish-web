@@ -46,7 +46,7 @@ interface OTPInputProps {
 export const OTPInput: React.FC<OTPInputProps> = ({ value, onChange }) => {
   return (
     <BaseOTPInput
-      type="number"
+      // type="number"
       maxLength={6}
       value={value}
       onChange={onChange}

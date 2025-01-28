@@ -88,9 +88,6 @@ export default {
   			fadewhite: '#FFFFFF61',
   			orangefocus: '#EE5736'
   		},
-  		letterSpacing: {
-  			DEFAULT: '-0.43px'
-  		},
   		fontFamily: {
   			'sfpro-rounded': 'SF Pro Rounded',
   			'inter': 'Inter'

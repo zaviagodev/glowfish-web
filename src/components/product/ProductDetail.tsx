@@ -247,7 +247,7 @@ export function ProductDetail({
               )}
               <motion.h2
                 layoutId={`title-${id}`}
-                className="text-2xl tracking-tight text-muted-foreground"
+                className="text-2xl tracking-tight"
                 transition={{
                   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
                 }}

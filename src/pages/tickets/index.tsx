@@ -20,7 +20,7 @@ export default function TicketsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="bg-background pt-14">
         <PageHeader title={t("My Tickets")} />
         <div className="flex items-center justify-center py-12">
           <p>{t("Loading...")}</p>
@@ -31,7 +31,7 @@ export default function TicketsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="bg-background pt-14">
         <PageHeader title={t("My Tickets")} />
         <div className="flex items-center justify-center py-12">
           <p className="text-destructive">{t("Failed to load tickets")}</p>
@@ -41,7 +41,7 @@ export default function TicketsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       <PageHeader title={t("My Tickets")} />
 
       <div className="pt-14 pb-4">

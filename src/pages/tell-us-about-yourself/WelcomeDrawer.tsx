@@ -11,7 +11,11 @@ const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
   const navigate = useNavigate();
 
   return (
-    <RegisterDrawer isOpen={isOpen} setIsOpen={setIsOpen}>
+    <RegisterDrawer
+      className="overflow-auto pb-[170px]"
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+    >
       <h2 className="main-heading px-5 pt-[30px]">
         {t("Welcome, this is where get people")}{" "}
         <span className="text-[#9B6CDE]">{t("connected.")}</span>

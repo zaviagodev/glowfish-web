@@ -139,7 +139,7 @@ export default function CartPage() {
                         <Minus className="h-4 w-4" />
                       </Button>
                       <span className="w-8 text-center text-xs">
-                        Qty: {item.quantity}
+                        {item.quantity}
                       </span>
                       <Button
                         variant="ghost"

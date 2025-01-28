@@ -159,7 +159,7 @@ export const HomeShow = () => {
     <>
       <Header className="bg-transparent border-0" />
       <img src={product.image} className="w-full z-100" />
-      <section className="p-5 bg-background/80 relative -top-10 backdrop-blur-sm rounded-[14px] flex flex-col gap-7 mb-[120px]">
+      <section className="p-5 bg-background/80 relative -top-10 backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
         <div className="flex flex-col gap-1.5">
           <h2 className="page-title">{product.name}</h2>
           <div className="flex items-center gap-2 text-xs">
@@ -212,7 +212,7 @@ export const HomeShow = () => {
           <p className="text-xs">{product.venue_address}</p>
         </div>
       </section>
-      <footer className="btn-footer flex flex-col gap-7">
+      <footer className="btn-footer flex flex-col gap-7 z-[51]">
         <div className="space-y-1">
           <p className="text-xs">{t("Start from")}</p>
           <h2 className="font-sfpro-rounded font-semibold">

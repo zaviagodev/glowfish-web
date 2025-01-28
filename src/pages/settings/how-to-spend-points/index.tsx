@@ -20,7 +20,7 @@ const HowToSpendPoints = () => {
     {
       title: t("Discount Vouchers"),
       description: t("Convert points into store discounts"),
-      value: "500 points = ฿50",
+      value: "500P = ฿50" /* 500 points = ฿50 */,
       icon: Tag,
       color: "#007AFF",
       bgColor: "rgba(0, 122, 255, 0.1)",
@@ -28,7 +28,7 @@ const HowToSpendPoints = () => {
     {
       title: t("Free Shipping"),
       description: t("Redeem points for free delivery"),
-      value: "300 points",
+      value: "300P" /* 300 points */,
       icon: Truck,
       color: "#FF9500",
       bgColor: "rgba(255, 149, 0, 0.1)",
@@ -36,7 +36,7 @@ const HowToSpendPoints = () => {
     {
       title: t("Event Tickets"),
       description: t("Get exclusive access to premium events"),
-      value: "1000 points",
+      value: "1000P" /* 1000 points */,
       icon: Ticket,
       color: "#AF52DE",
       bgColor: "rgba(175, 82, 222, 0.1)",
