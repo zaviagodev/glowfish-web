@@ -21,6 +21,7 @@ interface ProductVariant {
   options: ProductVariantOption[];
   name: Record<string, string>;
   track_quantity: boolean;
+  compare_at_price?: number;
 }
 
 interface ProductDetailProps {

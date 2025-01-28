@@ -23,6 +23,26 @@ export const ProductSection = memo(function ProductSection({
 }: ProductSectionProps) {
   const t = useTranslate();
 
+  const getPriceDisplay = (product: Product) => {
+    if (!product.product_variants || product.product_variants.length === 0) {
+      return product.price === 0 ? t("free") : `฿${product.price.toLocaleString()}`;
+    }
+
+    if (product.product_variants.length === 1) {
+      return `฿${product.product_variants[0].price.toLocaleString()}`;
+    }
+
+    const prices = product.product_variants.map(v => v.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+
+    if (minPrice === maxPrice) {
+      return `฿${minPrice.toLocaleString()}`;
+    }
+
+    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -60,9 +80,7 @@ export const ProductSection = memo(function ProductSection({
                 id={product.id}
                 image={product.image}
                 title={product.name}
-                price={product.price}
-                compareAtPrice={product.compare_at_price}
-                description={product.description}
+                price={getPriceDisplay(product)}
               />
             </div>
           ))}

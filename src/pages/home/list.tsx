@@ -20,6 +20,7 @@ import { Header } from "@/components/home/Header";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { SearchDialog } from "@/components/home/SearchDialog";
 import { ProductSection } from "@/components/home/ProductSection";
+import { Product } from "@/services/productService";
 
 interface UserProfile {
   id: string;
@@ -110,11 +111,11 @@ export const HomeList = () => {
 
   const getPriceDisplay = (product: Product) => {
     if (!product.product_variants || product.product_variants.length === 0) {
-      return product.price === 0 ? t("free") : `${product.price.toLocaleString()}`;
+      return product.price === 0 ? t("free") : `฿${product.price.toLocaleString()}`;
     }
 
     if (product.product_variants.length === 1) {
-      return `${product.product_variants[0].price.toLocaleString()}`;
+      return `฿${product.product_variants[0].price.toLocaleString()}`;
     }
 
     const prices = product.product_variants.map(v => v.price);
@@ -122,10 +123,10 @@ export const HomeList = () => {
     const maxPrice = Math.max(...prices);
 
     if (minPrice === maxPrice) {
-      return `${minPrice.toLocaleString()}`;
+      return `฿${minPrice.toLocaleString()}`;
     }
 
-    return `${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
   };
 
   useEffect(() => {
@@ -196,8 +197,7 @@ export const HomeList = () => {
                     id={product.id}
                     image={product.image}
                     title={product.name}
-                    price={product.price}
-                    comparePrice={product.regular_price}
+                    price={getPriceDisplay(product)}
                     type="small"
                   />
                 </div>
