@@ -3,7 +3,6 @@ import { useTranslate } from "@refinedev/core";
 import { Filter, Notification, Search } from "@/components/icons/MainIcons";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
-import Header from "@/components/main/Header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,17 @@ import { cn } from "@/lib/utils";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { ProductDetail } from "@/components/product/ProductDetail"; 
 
+import { Header } from "@/components/home/Header";
+import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { SearchDialog } from "@/components/home/SearchDialog";
+import { ProductSection } from "@/components/home/ProductSection";
+
+interface UserProfile {
+  id: string;
+  full_name: string;
+  avatar_url: string | null;
+}
+
 interface Category {
   id: string;
   name: string;
@@ -24,31 +34,45 @@ interface Category {
   description?: string;
 }
 
+interface ProductVariant {
+  id: string;
+  price: number;
+  quantity: number;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  image: string;
+  category_id: string;
+  track_quantity: boolean;
+  quantity?: number;
+  product_variants?: ProductVariant[];
+  regular_price?: number;
+}
+
 export const HomeList = () => {
   const t = useTranslate();
   const { products, categories, loading, error } = useProducts();
-  const [userProfile, setUserProfile] = useState<{
-    id: string;
-    full_name: string;
-    avatar_url: string;
-  } | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const productSliderRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = selectedCategory
     ? products.filter(product => product.category_id === selectedCategory)
     : products;
 
-  
   const searchResults = filteredProducts.filter(product => 
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleProductSelect = (product: any) => {
+  const handleProductSelect = (product: Product) => {
     // If product has no variants, just set the product
     if (!product.product_variants || product.product_variants.length === 0) {
       setSelectedProduct({
@@ -84,7 +108,7 @@ export const HomeList = () => {
     setIsSearchOpen(false);
   };
 
-  const getPriceDisplay = (product: any) => {
+  const getPriceDisplay = (product: Product) => {
     if (!product.product_variants || product.product_variants.length === 0) {
       return product.price === 0 ? t("free") : `${product.price.toLocaleString()}`;
     }
@@ -93,7 +117,7 @@ export const HomeList = () => {
       return `${product.product_variants[0].price.toLocaleString()}`;
     }
 
-    const prices = product.product_variants.map((v: any) => v.price);
+    const prices = product.product_variants.map(v => v.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
@@ -108,189 +132,87 @@ export const HomeList = () => {
     const loadProfile = async () => {
       const profile = await getUserProfile();
       if (profile) {
-        setUserProfile(profile);
+        setUserProfile({
+          id: profile.id,
+          full_name: profile.full_name,
+          avatar_url: profile.avatar_url || null
+        });
       }
     };
     loadProfile();
   }, []);
 
   return (
-    <div className="min-h-full relative">
-      {/* Hero Section */}
-      <div className="relative">
-        <section className={cn(
-          "relative w-full overflow-hidden",
-          "bg-gradient-to-br from-primary/5 via-primary/10 to-transparent",
-          "pb-[25px]"
-        )}>
-          {/* Background Pattern */}
-          <div className={cn(
-            "absolute inset-0 opacity-[0.15]",
-            "bg-[radial-gradient(circle_at_1px_1px,var(--primary)_1px,transparent_0)]",
-            "bg-[size:24px_24px]",
-            "[mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_70%)]"
-          )} />
+    <div className="relative">
+      <Header onSearchClick={() => setIsSearchOpen(true)} />
 
-          {/* Content Container */}
-          <div className="relative py-6">
+      <div className="pt-[87px]">
+        <CategoryGrid
+          categories={categories}
+          isLoading={loading}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
+
+        <SearchDialog
+          isOpen={isSearchOpen}
+          onOpenChange={setIsSearchOpen}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchResults={searchResults}
+          onProductSelect={handleProductSelect}
+        />
+
+        <section className="px-4 py-6 space-y-6">
+          <ProductSection
+            title={t("Featured Products")}
+            linkTo="/products"
+            products={products}
+            onProductSelect={handleProductSelect}
+            sliderRef={productSliderRef}
+          />
+
+          {/* Flash Deals Section */}
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="px-5">
-                <GlowfishIcon />
-              </div>
-              <Link to="/rewards">
-                <div className="px-5">
-                  <Avatar className="h-[50px] w-[50px] border-2 border-border">
-                    <AvatarImage src={userProfile?.avatar_url || "https://github.com/shadcn.png"}/>
-                    <AvatarFallback>
-                      {userProfile?.full_name?.charAt(0)?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold">{t("Flash Deals")}</h2>
+                <div className="px-2 py-1 bg-destructive text-white text-xs font-medium rounded-full">
+                  24:00:00
                 </div>
+              </div>
+              <Link to="/flash-deals" className="text-sm text-muted-foreground hover:text-foreground">
+                {t("See all")}
               </Link>
             </div>
 
-            <div className="relative flex items-center text-sm mt-6 px-5">
-              <div className="relative w-full shadow-lg">
-                <Input 
-                  className="h-10 pl-10 bg-background text-foreground border border-input rounded-full" 
-                  placeholder={t("Search event..")}
-                  onClick={() => setIsSearchOpen(true)}
-                  readOnly
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"/>
-              </div>
+            <div className="grid grid-cols-2 gap-4">
+              {products.slice(0, 4).map((product) => (
+                <div
+                  key={product.id}
+                  onClick={() => handleProductSelect(product)}
+                >
+                  <AnimatedCard
+                    id={product.id}
+                    image={product.image}
+                    title={product.name}
+                    price={product.price}
+                    comparePrice={product.regular_price}
+                    type="small"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </section>
-      </div>
 
-      {/* Search Dialog */}
-      <CommandDialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-        <Command>
-          <div className="sr-only">{t("Search Products")}</div>
-          <CommandInput 
-            placeholder={t("Search events...")}
-            value={searchQuery}
-            onValueChange={setSearchQuery}
+        {selectedProduct && (
+          <ProductDetail
+            {...selectedProduct}
+            onClose={() => setSelectedProduct(null)}
           />
-          <CommandList>
-            <CommandEmpty>{t("No results found.")}</CommandEmpty>
-            <CommandGroup>
-              {searchResults.map((product) => (
-                <CommandItem
-                  key={product.id}
-                  onSelect={() => handleProductSelect(product)}
-                >
-                  <div className="flex items-center gap-2">
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
-                      className="w-8 h-8 rounded object-cover"
-                    />
-                    <div>
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {getPriceDisplay(product)}
-                      </p>
-                    </div>
-                  </div>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </CommandDialog>
-
-      {/* Category Bar */}
-      <div className="sticky top-0 z-50 bg-background border-y">
-        <div className="flex items-center gap-4 px-5 overflow-auto py-6 scrollbar-hide">
-          <Button 
-            onClick={() => setSelectedCategory(null)}
-            variant={selectedCategory === null ? "default" : "secondary"}
-            className="rounded-full text-sm font-medium"
-          >
-            {t("All")}
-          </Button>
-          {categories.map(category => (
-            <Button 
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              variant={selectedCategory === category.id ? "default" : "secondary"}
-              className="rounded-full text-sm font-medium whitespace-nowrap"
-            >
-              {category.name}
-            </Button>
-          ))}
-        </div>
+        )}
       </div>
-
-      {/* Product Section */}
-      <section className="px-5 py-8 space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold tracking-tight">{t("Products")}</h2>
-          <Link to="/products" className="text-sm text-muted-foreground hover:text-foreground">
-            {t("See all")}
-          </Link>
-        </div>
-
-        <div className="relative group -mx-5 px-5">
-          <Button
-            variant="outline"
-            size="icon"
-            className="absolute -left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
-            onClick={() => {
-              if (productSliderRef.current) {
-                productSliderRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-              }
-            }}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-
-          <div 
-            ref={productSliderRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-6"
-          >
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="flex-shrink-0 w-[300px]"
-                onClick={() => handleProductSelect(product)}
-              >
-                <AnimatedCard
-                  id={product.id}
-                  image={product.image}
-                  title={product.name}
-                  price={getPriceDisplay(product)}
-                  compareAtPrice={product.compare_at_price}
-                  description={product.description}
-                />
-              </div>
-            ))}
-          </div>
-
-          <Button
-            variant="outline"
-            size="icon"
-            className="absolute -right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
-            onClick={() => {
-              if (productSliderRef.current) {
-                productSliderRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-              }
-            }}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </section>
-
-      {/* Product Detail */}
-      {selectedProduct && (
-        <ProductDetail
-          {...selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-        />
-      )}
     </div>
   );
 };

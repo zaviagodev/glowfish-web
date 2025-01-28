@@ -7,20 +7,20 @@ import { useStore } from '@/hooks/useStore';
 const ORDERS_CACHE_KEY = 'cached_orders';
 const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-export const useOrders = () => {
+export const useOrders = (page: number = 1, limit: number = 10) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { storeName } = useStore();
 
   // Use React Query for data fetching and caching
   const { 
-    data: orders = [], 
+    data, 
     isLoading: ordersLoading, 
     isError: ordersError,
     refetch: refetchData
   } = useQuery({
-    queryKey: ['orders', storeName],
-    queryFn: () => OrderService.getOrders(storeName),
+    queryKey: ['orders', storeName, page, limit],
+    queryFn: () => OrderService.getOrders(storeName, page, limit),
     staleTime: CACHE_EXPIRY_TIME,
     cacheTime: CACHE_EXPIRY_TIME * 2,
     retry: 2,
@@ -57,13 +57,24 @@ export const useOrders = () => {
     }
   };
 
+  // Calculate pagination details
+  const totalPages = Math.ceil((data?.total || 0) / limit);
+  const hasNextPage = page < totalPages;
+  const hasPreviousPage = page > 1;
+
   return { 
-    orders, 
+    orders: data?.orders || [], 
     loading, 
-    error, 
+    error,
     refreshOrders,
     isLoading: ordersLoading,
-    isError: ordersError
+    isError: ordersError,
+    // Pagination data
+    currentPage: page,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
+    totalItems: data?.total || 0
   };
 };
 
