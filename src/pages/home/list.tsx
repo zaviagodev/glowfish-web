@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import { motion } from "framer-motion";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 interface Category {
   id: string;
@@ -163,7 +164,7 @@ export const HomeList = () => {
             <div className="flex items-center justify-between">
               <div className="px-5">
                 {/* TODO: add GlowfishIcon */}
-                GlowfishIcon
+                <GlowfishIcon />
               </div>
               <Link to="/rewards">
                 <div className="px-5">
@@ -237,7 +238,7 @@ export const HomeList = () => {
 
       {/* Category Bar */}
       <div className="sticky top-0 z-50 bg-background border-y">
-        <div className="flex items-center gap-4 px-5 overflow-auto py-6 scrollbar-hide">
+        <div className="flex items-center gap-3 px-5 overflow-auto py-6 scrollbar-hide">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -246,7 +247,7 @@ export const HomeList = () => {
             <Button
               onClick={() => setSelectedCategory(null)}
               variant={selectedCategory === null ? "default" : "secondary"}
-              className="rounded-full text-sm font-medium"
+              className={selectedCategory === null ? "main-btn" : "rounded-full"}
             >
               {t("All")}
             </Button>
@@ -260,10 +261,8 @@ export const HomeList = () => {
               <Button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                variant={
-                  selectedCategory === category.id ? "default" : "secondary"
-                }
-                className="rounded-full text-sm font-medium whitespace-nowrap"
+                variant={selectedCategory === category.id ? "default" : "secondary"}
+                className={`${selectedCategory === category.id ? "main-btn" : "rounded-full"} whitespace-nowrap`}
               >
                 {category.name}
               </Button>
@@ -287,7 +286,7 @@ export const HomeList = () => {
         </div>
 
         <div className="relative group">
-          <Button
+          {/* <Button
             variant="outline"
             size="icon"
             className="absolute -left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
@@ -301,16 +300,17 @@ export const HomeList = () => {
             }}
           >
             <ChevronLeft className="h-4 w-4" />
-          </Button>
+          </Button> */}
 
           <div
             ref={productSliderRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-6 px-5"
+            // className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-6 px-5"
+            className="overflow-x-auto gap-4 grid grid-cols-2 scroll-smooth pb-6 px-5"
           >
             {products.map((product) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 w-[300px]"
+                className="flex-shrink-0"
                 onClick={() => handleProductSelect(product)}
               >
                 <AnimatedCard
@@ -325,7 +325,7 @@ export const HomeList = () => {
             ))}
           </div>
 
-          <Button
+          {/* <Button
             variant="outline"
             size="icon"
             className="absolute -right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
@@ -339,7 +339,7 @@ export const HomeList = () => {
             }}
           >
             <ChevronRight className="h-4 w-4" />
-          </Button>
+          </Button> */}
         </div>
       </section>
 

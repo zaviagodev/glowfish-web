@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/button";
 import { loginWithLine } from "../../authProvider";
 import { supabase } from "../../lib/supabase";
 import { createTestSession } from "../../authProvider";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 export const Login = () => {
   const t = useTranslate();
@@ -22,8 +23,8 @@ export const Login = () => {
     <section className="p-5 flex flex-col gap-20">
       <div className="flex flex-col gap-10">
         {/* TODO: add GlowfishIcon */}
-        GlowfishIcon
-        <h1 className="text-3xl m-0">
+        <GlowfishIcon className="w-[102px] h-[58px]" />
+        <h1 className="text-4xl m-0">
           {t("Sign in to see all the event happening.")}
         </h1>
       </div>
