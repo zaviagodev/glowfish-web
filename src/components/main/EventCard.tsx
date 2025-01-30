@@ -21,19 +21,13 @@ const EventCard = ({
     <div
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-lg cursor-pointer w-full h-full",
-        "bg-card border border-border/10",
+        "relative overflow-hidden rounded-lg cursor-pointer w-full h-fit",
+        "border border-border/10",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]",
         type === "event" && "flex"
       )}
     >
-      <div
-        className={cn(
-          "relative overflow-hidden",
-          type === "small" ? "h-40 w-full" : "h-32 w-full",
-          type === "event" && "w-[125px] min-w-[125px]"
-        )}
-      >
+      <div className={cn("relative overflow-hidden h-[220px] w-full")}>
         <img
           src={image}
           alt={title}
@@ -47,40 +41,38 @@ const EventCard = ({
       </div>
 
       <div
-        className={cn("p-4 space-y-4", type === "event" ? "flex-1" : "bg-card")}
-      >
-        <div className="space-y-2">
-          <h3 className="font-semibold text-card-foreground line-clamp-2">
-            {title}
-          </h3>
-
-          <div className="space-y-2">
-            {location && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <MapPin className="w-3.5 h-3.5" />
-                <span className="line-clamp-1">{location}</span>
-              </div>
-            )}
-            {date && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>{date}</span>
-              </div>
-            )}
-            {points && (
-              <div className="flex items-center gap-2 text-xs text-primary font-medium">
-                <Tag className="w-3.5 h-3.5" />
-                <span>{t("point", { count: points })}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {validDate && (
-          <p className="text-xs text-muted-foreground">
-            {t("Valid to")} {validDate}
-          </p>
+        className={cn(
+          "p-2 space-y-4 flex-1 text-white absolute bottom-0 w-full"
         )}
+      >
+        <div className="space-y-2 backdrop-blur-sm rounded-lg bg-background/50 p-4">
+          <h3 className="font-semibold line-clamp-2 text-sm">{title}</h3>
+
+          {location && (
+            <div className="flex items-center gap-2 text-xs">
+              <MapPin className="w-3.5 h-3.5" />
+              <span className="line-clamp-1">{location}</span>
+            </div>
+          )}
+          {date && (
+            <div className="flex items-center gap-2 text-xs">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>{date}</span>
+            </div>
+          )}
+          {points && (
+            <div className="flex items-center gap-2 text-xs">
+              <Tag className="w-3.5 h-3.5" />
+              <span>{t("point", { count: points })}</span>
+            </div>
+          )}
+
+          {/* {validDate && (
+            <p className="text-xs">
+              {t("Valid to")} {validDate}
+            </p>
+          )} */}
+        </div>
       </div>
     </div>
   );

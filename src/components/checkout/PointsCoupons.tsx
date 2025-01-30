@@ -26,8 +26,8 @@ export function PointsCoupons({
   const pointsDiscount = getDiscountAmount();
 
   return (
-    <div className={cn("bg-darkgray rounded-lg]", className)}>
-      <div className="p-4 space-y-2">
+    <div className={cn("bg-darkgray rounded-lg", className)}>
+      <div className="space-y-2">
         <button
           onClick={() => navigate("/checkout/coupons")}
           className="w-full flex items-center justify-between bg-[rgba(23,23,23,0.05)] rounded-lg p-3 text-left"

@@ -126,7 +126,7 @@ export default function AddressSelection() {
           {addresses.map((address) => (
             <div
               key={address.id}
-              className={`bg-tertiary p-3 rounded-lg border transition-all ${
+              className={`bg-darkgray p-3 rounded-lg transition-all ${
                 selectedAddress === address.id
                   ? "border-primary ring-2 ring-primary/10"
                   : "border-[#E5E5E5]"
@@ -217,7 +217,7 @@ export default function AddressSelection() {
       >
         <SheetContent
           side="bottom"
-          className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-w-[600px] mx-auto flex flex-col"
+          className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-w-[600px] mx-auto flex flex-col gap-0"
         >
           <SheetHeader className="px-4 py-3 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-between">
             <SheetTitle className="text-title2 font-semibold tracking-tight">

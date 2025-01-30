@@ -44,10 +44,10 @@ export function OrderCard({ order, index }: OrderCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="rounded-lg bg-darkgray overflow-hidden hover:bg-background transition-colors duration-200 cursor-pointer"
+      className="rounded-lg !bg-darkgray overflow-hidden hover:bg-background transition-colors duration-200 cursor-pointer"
     >
       {/* Order Header */}
-      <div className="p-4 border-b border-[#E5E5E5] flex items-center justify-between">
+      <div className="p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div>
             <div className="text-sm font-medium">
@@ -88,7 +88,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
       ))}
 
       {/* Order Footer */}
-      <div className="px-4 py-4 border-t border-[#E5E5E5]">
+      <div className="p-4">
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
             {order.items.length} {t("items")}

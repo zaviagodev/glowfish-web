@@ -58,6 +58,12 @@ import PaymentPage from "./pages/checkout/payment";
 import CartPage from "./pages/cart";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider, useTheme } from "./hooks/useTheme";
+import ProductsPage from "./pages/products";
+import PromotionsPage from "./pages/promotions";
+import AddressSelection from "./pages/checkout/address-selection";
+import ThankYouPage from "./pages/checkout/thank-you";
+import MyEventsPage from "./pages/my-events";
+import MyEventDetail from "./pages/my-events/detail";
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -164,12 +170,14 @@ function App() {
                   <Route index element={<HomeList />} />
                   <Route path="/history" element={<HistoryPage />} />
                   <Route path="/checkout" element={<CheckoutPage />} />
+                  <Route path="/promotions" element={<PromotionsPage />} />
                   <Route path="/cart" element={<CartPage />} />
                   <Route path="/my-rewards" element={<MyRewards />} />
                   <Route path="/rewards">
                     <Route index element={<Rewards />} />
                     <Route path="detail/:id" element={<RewardDetail />} />
                   </Route>
+                  <Route path="/products" element={<ProductsPage />} />
                   <Route path="/settings">
                     <Route index element={<SettingsPage />} />
                     <Route path="profile" element={<ProfileSettings />} />
@@ -193,9 +201,21 @@ function App() {
                     <Route index element={<MyItemsPage />} />
                     <Route path=":id" element={<VoucherDetail />} />
                   </Route>
+                  <Route path="/my-events">
+                    <Route index element={<MyEventsPage />} />
+                    <Route path="detail/:id" element={<MyEventDetail />} />
+                  </Route>
                   <Route path="/checkout/coupons" element={<CouponsPage />} />
                   <Route path="/checkout/points" element={<PointsPage />} />
+                  <Route
+                    path="/checkout/address"
+                    element={<AddressSelection />}
+                  />
                   <Route path="/checkout/payment" element={<PaymentPage />} />
+                  <Route
+                    path="/checkout/thank-you"
+                    element={<ThankYouPage />}
+                  />
                   <Route
                     path="/checkout/vat-invoice"
                     element={<VatInvoicePage />}

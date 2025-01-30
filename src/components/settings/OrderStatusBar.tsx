@@ -71,7 +71,7 @@ export function OrderStatusBar({
         </h2>
         <button
           onClick={handleSeeAll}
-          className="text-sm text-primary hover:text-primary/90 transition-colors"
+          className="text-sm text-primary hover:text-primary/90 transition-colors no-underline"
         >
           {t("See all")}
         </button>

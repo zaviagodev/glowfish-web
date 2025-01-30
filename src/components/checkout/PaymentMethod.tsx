@@ -68,7 +68,7 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
           <h2 className="text-sm font-medium mb-3">{t("Payment Method")}</h2>
 
           <div
-            className="bg-[rgba(23,23,23,0.05)] rounded-lg p-3 cursor-pointer"
+            className="bg-[rgba(23,23,23,0.05)] rounded-lg flex items-center justify-between cursor-pointer"
             onClick={() => setShowOptions(true)}
           >
             <div className="flex items-center gap-3">
@@ -88,15 +88,16 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
                 </div>
               </div>
             </div>
+            <ChevronRight className="w-5 h-5" />
           </div>
 
-          <button
+          {/* <button
             onClick={() => setShowOptions(true)}
             className="flex items-center justify-center w-full mt-6 text-xs text-secondary-foreground hover:text-secondary-foreground transition-colors"
           >
             <span className="mr-1">{t("See More")}</span>
             <ChevronRight className="w-3 h-3" />
-          </button>
+          </button> */}
         </div>
       </div>
 

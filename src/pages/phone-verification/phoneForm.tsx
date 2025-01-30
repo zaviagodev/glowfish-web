@@ -15,7 +15,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { phoneSchema } from "./phoneSchema";
 import { useTranslate } from "@refinedev/core";
 import { supabase } from "@/lib/supabase";
-import { Languages } from "lucide-react";
 
 type PhoneFormProps = {
   initialValues?: {
@@ -84,7 +83,14 @@ const PhoneForm = ({
                 </FormLabel>
                 <div className="flex gap-3">
                   <div className="main-input bg-darkgray w-fit flex items-center gap-2">
-                    <Languages />
+                    {/* Thai Flag */}
+                    <div className="overflow-hidden h-6 w-6 rounded-full">
+                      <span className="block h-1 w-10 bg-[#BB1C37]"></span>
+                      <span className="block h-1 w-10 bg-[#FFFFFF]"></span>
+                      <span className="block h-2 w-10 bg-[#2D2A4A]"></span>
+                      <span className="block h-1 w-10 bg-[#FFFFFF]"></span>
+                      <span className="block h-1 w-10 bg-[#BB1C37]"></span>
+                    </div>
                     <span>+66</span>
                   </div>
                   <FormControl>

@@ -24,6 +24,9 @@ import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import { motion } from "framer-motion";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { SearchDialog } from "@/components/home/SearchDialog";
+import { ProductSection } from "@/components/home/ProductSection";
 
 interface Category {
   id: string;
@@ -34,7 +37,9 @@ interface Category {
 
 export const HomeList = () => {
   const t = useTranslate();
+  const navigate = useNavigate();
   const { products, loading, error } = useProducts();
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const [userProfile, setUserProfile] = useState<{
     id: string;
     full_name: string;
@@ -126,6 +131,7 @@ export const HomeList = () => {
 
     // Fetch categories
     const fetchCategories = async () => {
+      setLoadingCategories(true);
       const { data, error } = await supabase
         .from("product_categories")
         .select("*")
@@ -134,9 +140,15 @@ export const HomeList = () => {
       if (data) {
         setCategories(data);
       }
+      setLoadingCategories(false);
     };
     fetchCategories();
   }, []);
+
+  const handleCategoryClick = (categoryId: string | null) => {
+    setSelectedCategory(categoryId);
+    navigate("/products", { state: { selectedCategory: categoryId } });
+  };
 
   return (
     <div className="min-h-full relative">
@@ -144,9 +156,9 @@ export const HomeList = () => {
       <div className="relative">
         <section
           className={cn(
-            "relative w-full overflow-hidden",
-            "bg-gradient-to-br from-primary/5 via-primary/10 to-transparent",
-            "pb-[25px]"
+            "relative w-full overflow-hidden"
+            // "bg-gradient-to-br from-primary/5 via-primary/10 to-transparent",
+            // "pb-[25px]"
           )}
         >
           {/* Background Pattern */}
@@ -160,7 +172,7 @@ export const HomeList = () => {
           />
 
           {/* Content Container */}
-          <div className="relative py-6">
+          <div className="relative pt-6">
             <div className="flex items-center justify-between">
               <div className="px-5">
                 {/* TODO: add GlowfishIcon */}
@@ -186,7 +198,7 @@ export const HomeList = () => {
             <div className="relative flex items-center text-sm mt-6 px-5">
               <div className="relative w-full shadow-lg">
                 <Input
-                  className="h-10 pl-10 bg-background text-foreground border border-input rounded-full"
+                  className="h-10 pl-10 bg-darkgray text-foreground border border-input rounded-full"
                   placeholder={t("Search events...")}
                   onClick={() => setIsSearchOpen(true)}
                   readOnly
@@ -199,147 +211,69 @@ export const HomeList = () => {
       </div>
 
       {/* Search Dialog */}
-      <CommandDialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-        <Command>
-          <div className="sr-only">{t("Search Products")}</div>
-          <CommandInput
-            placeholder={t("Search events...")}
-            value={searchQuery}
-            onValueChange={setSearchQuery}
-            className="pl-0 pr-7"
-          />
-          <CommandList>
-            <CommandEmpty>{t("No results found.")}</CommandEmpty>
-            <CommandGroup>
-              {searchResults.map((product) => (
-                <CommandItem
-                  key={product.id}
-                  onSelect={() => handleProductSelect(product)}
-                >
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-8 h-8 rounded object-cover"
-                    />
-                    <div>
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {getPriceDisplay(product)}
-                      </p>
-                    </div>
-                  </div>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </CommandDialog>
+      <SearchDialog
+        isOpen={isSearchOpen}
+        onOpenChange={setIsSearchOpen}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchResults={searchResults}
+        onProductSelect={handleProductSelect}
+      />
 
       {/* Category Bar */}
       <div className="sticky top-0 z-50 bg-background border-y">
-        <div className="flex items-center gap-3 px-5 overflow-auto py-6 scrollbar-hide">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Button
-              onClick={() => setSelectedCategory(null)}
-              variant={selectedCategory === null ? "default" : "secondary"}
-              className={selectedCategory === null ? "main-btn" : "rounded-full"}
-            >
-              {t("All")}
-            </Button>
-          </motion.div>
-          {categories.map((category, index) => (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2 + index * 0.1 }}
-            >
-              <Button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                variant={selectedCategory === category.id ? "default" : "secondary"}
-                className={`${selectedCategory === category.id ? "main-btn" : "rounded-full"} whitespace-nowrap`}
-              >
-                {category.name}
-              </Button>
-            </motion.div>
-          ))}
-        </div>
+        <CategoryGrid
+          categories={categories}
+          isLoading={loadingCategories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
       </div>
 
-      {/* Product Section */}
-      <section className="py-8 space-y-6">
-        <div className="flex items-center justify-between px-5">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            {t("Products")}
-          </h2>
-          <Link
-            to="/products"
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            {t("See all")}
-          </Link>
-        </div>
+      <section className="py-6 space-y-6">
+        <ProductSection
+          title={t("Featured Products")}
+          linkTo="/products"
+          products={products}
+          onProductSelect={handleProductSelect}
+          sliderRef={productSliderRef}
+        />
 
-        <div className="relative group">
-          {/* <Button
-            variant="outline"
-            size="icon"
-            className="absolute -left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
-            onClick={() => {
-              if (productSliderRef.current) {
-                productSliderRef.current.scrollBy({
-                  left: -300,
-                  behavior: "smooth",
-                });
-              }
-            }}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button> */}
+        {/* Flash Deals Section */}
+        <div className="space-y-4 px-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-semibold">{t("Flash Deals")}</h2>
+              <div className="px-2 py-1 bg-destructive text-white text-xs font-medium rounded-full">
+                24:00:00
+              </div>
+            </div>
+            <Link
+              to="/flash-deals"
+              className="text-sm text-muted-foreground hover:text-foreground no-underline"
+            >
+              {t("See all")}
+            </Link>
+          </div>
 
-          <div
-            ref={productSliderRef}
-            // className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-6 px-5"
-            className="overflow-x-auto gap-4 grid grid-cols-2 scroll-smooth pb-6 px-5"
-          >
-            {products.map((product) => (
+          <div className="grid grid-cols-2 gap-4">
+            {products.slice(0, 4).map((product) => (
               <div
                 key={product.id}
-                className="flex-shrink-0"
                 onClick={() => handleProductSelect(product)}
               >
                 <AnimatedCard
                   id={product.id}
                   image={product.image}
                   title={product.name}
-                  price={getPriceDisplay(product)}
+                  price={product.price}
                   compareAtPrice={product.compare_at_price}
                   description={product.description}
+                  type="small"
                 />
               </div>
             ))}
           </div>
-
-          {/* <Button
-            variant="outline"
-            size="icon"
-            className="absolute -right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
-            onClick={() => {
-              if (productSliderRef.current) {
-                productSliderRef.current.scrollBy({
-                  left: 300,
-                  behavior: "smooth",
-                });
-              }
-            }}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button> */}
         </div>
       </section>
 

@@ -59,11 +59,7 @@ export default function CartPage() {
       <PageHeader title={`${t("Cart")} (${getTotalItems()})`} />
 
       {/* Cart Items */}
-      <div className="mt-14 mb-[180px]">
-        <div className="px-4 py-3 border-b">
-          <PromotionCard />
-        </div>
-
+      <div className="mt-14 overflow-auto h-[calc(100%_-_260px)]">
         <div className="divide-y">
           <AnimatePresence>
             {items.map((item) => (
@@ -81,7 +77,7 @@ export default function CartPage() {
                     handleSelectItem(item.variantId, checked as boolean)
                   }
                 />
-                <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0">
+                <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -166,6 +162,9 @@ export default function CartPage() {
 
       {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
+        <div className="mx-4 mt-3">
+          <PromotionCard />
+        </div>
         <CouponCard subtotal={subtotal} className="mx-4 mt-3" />
         <div className="p-3">
           <div className="flex items-center justify-between">

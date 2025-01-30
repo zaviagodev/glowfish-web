@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductVariant {
   id: string;
@@ -38,6 +39,7 @@ interface VariantDrawerProps {
   open: boolean;
   onClose: () => void;
   onSelect: (variantId: string) => void;
+  onSubmit: () => void;
   variants: ProductVariant[];
   variantOptions: VariantOption[];
   selectedVariantId?: string;
@@ -47,11 +49,13 @@ export function VariantDrawer({
   open,
   onClose,
   onSelect,
+  onSubmit,
   variants,
   variantOptions,
   selectedVariantId,
 }: VariantDrawerProps) {
   const t = useTranslate();
+  const navigate = useNavigate();
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
   >({});
@@ -156,7 +160,7 @@ export function VariantDrawer({
           </div>
         </SheetHeader>
 
-        <div className="p-4 space-y-6 pb-20">
+        <div className="p-4 space-y-6 pb-[144px]">
           {/* Variant Options */}
           {variantOptions
             .sort((a, b) => a.position - b.position)
@@ -191,10 +195,13 @@ export function VariantDrawer({
                 </div>
               </div>
             ))}
+        </div>
 
+        {/* Add to Cart Button */}
+        <div className="p-4 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0 space-y-3">
           {/* Price Display */}
           {currentVariant && (
-            <div className="pt-4 border-t">
+            <div>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-bold">
                   ฿{currentVariant.price.toLocaleString()}
@@ -227,23 +234,21 @@ export function VariantDrawer({
               )}
             </div>
           )}
-        </div>
-
-        {/* Add to Cart Button */}
-        <div className="p-4 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0">
           <Button
             className="w-full main-btn"
             disabled={!currentVariant || currentVariant.quantity === 0}
             onClick={() => {
               if (currentVariant) {
                 onSelect(currentVariant.id);
-                onClose();
+                onSubmit();
               }
             }}
           >
-            {currentVariant?.quantity === 0
-              ? t("Out of Stock")
-              : t("Select Options")}
+            {
+              currentVariant?.quantity === 0
+                ? t("Out of Stock")
+                : t("Confirm booking") // Original: t("Select Options")}
+            }
           </Button>
         </div>
       </SheetContent>

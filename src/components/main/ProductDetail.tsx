@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Tag, X, MapPin, Calendar } from "lucide-react";
+import { Tag, X, MapPin, Calendar, ChevronLeft } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { createPortal } from "react-dom";
@@ -66,7 +66,7 @@ export function ProductDetail({
           className="fixed right-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white focus:ring-0"
           onClick={onClose}
         >
-          <X className="h-6 w-6" />
+          <ChevronLeft className="h-6 w-6" />
         </Button>
 
         <motion.div

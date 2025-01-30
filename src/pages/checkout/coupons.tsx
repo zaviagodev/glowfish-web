@@ -172,39 +172,35 @@ export default function CouponsPage() {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <Tag className="w-4 h-4 text-[#EE4D2D]" />
-                    <span className="text-lg font-bold text-[#EE4D2D] tracking-tight">
+                    <Tag className="w-5 h-5 text-[#EE4D2D]" />
+                    <span className="text-base font-bold text-[#EE4D2D]">
                       {formatValue(coupon)}
                     </span>
                   </div>
-                  <h3 className="font-medium mb-1 tracking-tight">
-                    {coupon.code}
-                  </h3>
+                  <h3 className="font-medium mb-1">{coupon.code}</h3>
                   <p className="text-sm text-muted-foreground mb-2">
                     {coupon.description}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock className="w-3.5 h-3.5" />
                     <span>
-                      {t("Valid until")} {coupon.validUntil}
+                      {/* {t("Valid until")}  */}
+                      {coupon.validUntil}
                     </span>
                   </div>
                 </div>
-                {coupon.isApplicable && (
-                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                )}
               </div>
-              {coupon.minPurchase && (
-                <div className="mt-2 pt-2 border-t border-[#E5E5E5] text-xs text-muted-foreground">
+              {/* {coupon.minPurchase && (
+                <div className="mt-2 pt-2 text-xs text-muted-foreground">
                   {t("Min. spend")}: ฿{coupon.minPurchase.toLocaleString()}
                   {coupon.maxDiscount &&
                     ` • ${t(
                       "Max discount"
                     )}: ฿${coupon.maxDiscount.toLocaleString()}`}
                 </div>
-              )}
+              )} */}
               {!coupon.isApplicable && (
-                <div className="mt-2 pt-2 border-t border-[#E5E5E5] text-xs text-destructive">
+                <div className="mt-2 pt-2 text-xs text-red-500">
                   {new Date(coupon.validUntil) < new Date()
                     ? t("Coupon has expired")
                     : t("Not applicable to current order")}

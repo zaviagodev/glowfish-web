@@ -187,9 +187,8 @@ export default function PointsPage() {
                     variant="outline"
                     size="sm"
                     className={cn(
-                      "rounded-full border-[#E5E5E5] hover:bg-primary hover:text-white",
-                      parseInt(inputValue) === points &&
-                        "bg-primary text-white border-primary"
+                      "rounded-full hover:bg-mainbutton hover:text-black",
+                      parseInt(inputValue) === points && "main-btn text-black"
                     )}
                     disabled={points > availablePoints}
                     onClick={() => handleInputChange(points.toString())}

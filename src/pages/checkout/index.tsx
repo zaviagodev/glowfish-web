@@ -129,21 +129,14 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-background">
       <PageHeader title={t("Checkout")} />
 
-      <div className="pt-14 pb-10">
+      <div className="pt-14 pb-60">
         <div className="p-4 space-y-6">
+          <ProductList items={items} />
           <AddressCard
             title={t("Delivery Address")}
             name="John Doe"
             phone="(+66) 123-456-789"
             address="123 Sample Street, Bangkok, 10110"
-          />
-
-          <ProductList
-            items={items}
-            storeMessage={storeMessage}
-            vatInvoiceData={vatInvoiceData}
-            onMessageClick={() => setShowMessageDialog(true)}
-            onVatClick={() => navigate("/checkout/vat-invoice")}
           />
 
           <PointsCoupons subtotal={subtotal} />
@@ -165,6 +158,10 @@ export default function CheckoutPage() {
         total={total}
         isProcessing={isProcessing}
         onPlaceOrder={handleCreateOrder}
+        storeMessage={storeMessage}
+        vatInvoiceData={vatInvoiceData}
+        onMessageClick={() => setShowMessageDialog(true)}
+        onVatClick={() => navigate("/checkout/vat-invoice")}
       />
 
       <SuccessDialog open={showSuccess} onOpenChange={setShowSuccess} />

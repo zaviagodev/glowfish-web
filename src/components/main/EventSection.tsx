@@ -7,6 +7,13 @@ import { useTranslate } from "@refinedev/core";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface EventSectionProps {
   list: EventDataProps[];
@@ -46,49 +53,17 @@ const EventSection = ({
         {seeAllLink && (
           <Link
             to={seeAllLink}
-            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+            className="text-muted-foreground hover:text-foreground text-xs transition-colors no-underline"
           >
             {t("See all")}
           </Link>
         )}
       </div>
 
-      <div className="relative group">
-        {/* <AnimatePresence>
-          {!isFullWidth && list.length > 2 && (
-            <>
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
-                onClick={() => scroll("left")}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
-                onClick={() => scroll("right")}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </>
-          )}
-        </AnimatePresence> */}
-
-        <div
-          ref={scrollContainerRef}
-          className={cn(
-            "grid grid-cols-2 gap-4 px-5",
-            isFullWidth
-              ? "flex-col"
-              : "overflow-x-auto scrollbar-hide scroll-smooth",
-            !isFullWidth && "pb-4"
-          )}
-        >
+      <Carousel>
+        <CarouselContent className="px-5">
           {list.map((item, index) => (
-            <motion.div
+            <CarouselItem
               key={item.id}
               initial={false}
               animate={{ opacity: 1 }}
@@ -106,10 +81,12 @@ const EventSection = ({
                   navigate(`${eventCardLink || "/home/show/"}${item.id}`)
                 }
               />
-            </motion.div>
+            </CarouselItem>
           ))}
-        </div>
-      </div>
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </section>
   );
 };

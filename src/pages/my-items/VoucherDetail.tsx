@@ -102,7 +102,7 @@ export default function VoucherDetail() {
             <div className="px-6 mt-4 flex items-center gap-1.5 text-sm text-[#8E8E93]">
               <Clock className="w-4 h-4" />
               <span>
-                {t("Valid until")}{" "}
+                {/* {t("Valid until")}{" "} */}
                 {new Date(voucher.expiryDate).toLocaleDateString()}
               </span>
             </div>

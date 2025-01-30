@@ -24,7 +24,7 @@ export const Login = () => {
       <div className="flex flex-col gap-10">
         {/* TODO: add GlowfishIcon */}
         <GlowfishIcon className="w-[102px] h-[58px]" />
-        <h1 className="text-4xl m-0">
+        <h1 className="text-[31px] tracking-[0.43px] m-0">
           {t("Sign in to see all the event happening.")}
         </h1>
       </div>

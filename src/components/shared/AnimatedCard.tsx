@@ -47,8 +47,8 @@ export function AnimatedCard({
       onClick={onClick}
       className={cn(
         "relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full",
-        "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]",
-        type === "event" && "flex"
+        "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
+        type === "event" && "flex h-fit"
       )}
       transition={springConfig}
     >
@@ -56,7 +56,7 @@ export function AnimatedCard({
         layoutId={`image-container-${id}`}
         className={cn(
           "relative overflow-hidden",
-          type === "small" ? "h-32 w-full" : "h-40 w-full",
+          type === "small" ? "h-[40vw] w-full" : "h-[50vw] w-full",
           type === "event" && "w-[125px] min-w-[125px]"
         )}
         transition={springConfig}
@@ -71,12 +71,15 @@ export function AnimatedCard({
       </motion.div>
 
       <div
-        className={cn("p-3 space-y-2", type === "event" ? "flex-1" : "bg-card")}
+        className={cn(
+          "p-3 space-y-2",
+          type === "event" ? "flex-1 absolute bottom-0" : "bg-card"
+        )}
       >
         <div className="space-y-2">
           <motion.h3
             layoutId={`title-${id}`}
-            className="font-semibold text-card-foreground line-clamp-2"
+            className="font-semibold text-card-foreground line-clamp-2 text-sm"
             transition={springConfig}
           >
             {title}
@@ -116,14 +119,14 @@ export function AnimatedCard({
           </div>
         </div>
 
-        {price && (
+        {price ? (
           <motion.p
             layoutId={`price-${id}`}
             className="space-y-0.5"
             transition={springConfig}
           >
-            <span className="flex items-baseline gap-2">
-              <span className={cn("text-sm text-secondary-foreground")}>
+            <span className="flex items-baseline gap-2 text-sm">
+              <span className={cn("text-secondary-foreground")}>
                 ฿{typeof price === "number" ? price.toLocaleString() : price}
               </span>
               {compareAtPrice && (
@@ -142,6 +145,8 @@ export function AnimatedCard({
               </span>
             )}
           </motion.p>
+        ) : (
+          "Free"
         )}
 
         {validDate && (

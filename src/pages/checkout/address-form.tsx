@@ -86,7 +86,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter your full name")}
-                  className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -106,7 +106,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter your phone number")}
-                  className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -126,7 +126,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter street address")}
-                  className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -146,7 +146,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter building/unit number")}
-                  className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -167,7 +167,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                   <Input
                     {...field}
                     placeholder={t("Enter city")}
-                    className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                    className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                   />
                 </FormControl>
                 <FormMessage />
@@ -187,7 +187,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                   <Input
                     {...field}
                     placeholder={t("Enter state")}
-                    className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                    className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                   />
                 </FormControl>
                 <FormMessage />
@@ -208,7 +208,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter postal code")}
-                  className="h-12 bg-tertiary border-[#E5E5E5] focus:border-primary focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -276,12 +276,11 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
           )}
         />
 
-        <Button
-          type="submit"
-          className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 mt-4 fixed bottom-4 left-4 right-4 max-w-[calc(600px-32px)] mx-auto"
-        >
-          {t("Save Address")}
-        </Button>
+        <div className="fixed p-6 bottom-0 left-0 w-full bg-background">
+          <Button type="submit" className="main-btn w-full">
+            {t("Save Address")}
+          </Button>
+        </div>
       </form>
     </Form>
   );
