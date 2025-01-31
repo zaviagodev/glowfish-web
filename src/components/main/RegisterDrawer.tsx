@@ -14,6 +14,7 @@ const RegisterDrawer = ({
       <SheetContent
         className="h-full p-0 border-0 outline-none main-container"
         side="bottom"
+        hideCloseButton={true}
       >
         <div
           className={cn(

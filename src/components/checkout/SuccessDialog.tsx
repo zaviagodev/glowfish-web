@@ -9,6 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { CheckCircle } from "lucide-react";
 
 interface SuccessDialogProps {
   open: boolean;
@@ -23,7 +24,8 @@ export function SuccessDialog({ open, onOpenChange }: SuccessDialogProps) {
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="bg-background/80 backdrop-blur-xl border-0 rounded-lg max-w-[90%] w-[400px]">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-2xl font-semibold tracking-tight">
+          <AlertDialogTitle className="flex items-center flex-col gap-4 text-2xl font-semibold tracking-tight">
+            <CheckCircle className="h-12 w-12 text-green-500" />
             {t("Order Placed Successfully!")}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-sm text-muted-foreground mt-2">
@@ -38,7 +40,7 @@ export function SuccessDialog({ open, onOpenChange }: SuccessDialogProps) {
               onOpenChange(false);
               navigate("/home");
             }}
-            className="!bg-mainbutton rounded-full w-full"
+            className="main-btn w-full"
           >
             {t("Continue Shopping")}
           </AlertDialogAction>

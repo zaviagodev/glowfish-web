@@ -105,7 +105,7 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("PromptPay QR")} />
 
       <div className="pt-14 pb-10">

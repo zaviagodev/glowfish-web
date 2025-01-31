@@ -90,7 +90,7 @@ export function WalletSection() {
         className="bg-darkgray rounded-lg w-full flex items-center gap-3 p-4 transition-colors"
       >
         <div className="flex items-center gap-3 w-full">
-          <div className="w-12 h-12 rounded-lg bg-[#E1F5FE] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-lg bg-[#E1F5FE1A] flex items-center justify-center">
             <Ticket className="w-5 h-5 text-[#03A9F4]" />
           </div>
           <div className="flex-1 text-left">
@@ -100,7 +100,7 @@ export function WalletSection() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="rounded-full text-[#03A9F4] text-xs font-medium">
+            <div className="rounded-full text-[#03A9F4] text-sm font-semibold">
               {/* additional bg: bg-[rgba(3, 169, 244, 0.1)] */}2
             </div>
           </div>

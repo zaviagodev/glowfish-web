@@ -10,6 +10,8 @@ export interface SettingsItem {
   path?: string;
   component?: React.ReactNode;
   showArrow?: boolean;
+  color?: string;
+  bgColor?: string;
 }
 
 interface SettingsSectionProps {
@@ -43,7 +45,10 @@ export function SettingsSection({
             onClick={() => item.path && navigate(item.path)}
           >
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-[#F5F5F5] flex items-center justify-center text-lg">
+              <div
+                className="w-12 h-12 rounded-lg flex items-center justify-center text-lg"
+                style={{ background: item.bgColor, color: item.color }}
+              >
                 {item.icon}
               </div>
               <span className="text-sm font-medium">{item.label}</span>

@@ -33,7 +33,7 @@ export default function ThankYouPage() {
   });
 
   return (
-    <div className="min-h-screen bg-background relative isolate">
+    <div className="min-h-dvh bg-background relative isolate">
       {/* Glowing Edge Indicator */}
       <GlowingEdges />
 
@@ -114,7 +114,7 @@ export default function ThankYouPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Order Details")}
           </h2>
           <div className="bg-tertiary rounded-lg border border-[#E5E5E5] divide-y">
@@ -154,7 +154,7 @@ export default function ThankYouPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("What's Next?")}
           </h2>
           <div className="space-y-3">

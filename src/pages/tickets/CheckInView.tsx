@@ -1,7 +1,7 @@
 import { useTranslate } from "@refinedev/core";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { QrCode, Barcode, Hash, Calendar, MapPin } from "lucide-react";
+import { QrCode, Barcode, Hash, Calendar, MapPin, X } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { QRCodeCanvas } from "qrcode.react";
@@ -43,21 +43,30 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative px-4 py-6 text-center border-b">
+        <div className="relative px-4 py-3 text-left border-b">
           <div className="absolute left-1/2 -top-3 w-12 h-1 bg-[#E5E5EA] rounded-full transform -translate-x-1/2" />
           <h2 className="text-lg font-semibold">{t("Check In")}</h2>
           <p className="text-sm text-muted-foreground mt-1">
             {t("Show this code to check in")}
           </p>
-          <button
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-primary"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowTestView(true);
-            }}
-          >
-            {t("Test")}
-          </button>
+
+          <div>
+            <button
+              className="bg-white/[12%] p-1 absolute right-4 top-3 rounded-full opacity-70"
+              onClick={onClose}
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <button
+              className="absolute right-4 top-[60%] text-sm text-primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowTestView(true);
+              }}
+            >
+              {t("Test")}
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -196,8 +205,12 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
       <AnimatePresence>
         {showTestView && (
           <TestCheckInView
-            onClose={() => setShowTestView(false)}
-            onComplete={() => {
+            onClose={(e: any) => {
+              e.stopPropagation();
+              setShowTestView(false);
+            }}
+            onComplete={(e) => {
+              e.stopPropagation();
               setShowTestView(false);
               onClose();
             }}

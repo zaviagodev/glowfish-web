@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
-import { ChevronLeft, Search, Tag, Clock, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  Search,
+  Tag,
+  Clock,
+  ChevronRight,
+  Ticket,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCoupons, Coupon } from "@/lib/coupon";
+import { cn } from "@/lib/utils";
 
 // Sample coupons data
 const sampleCoupons: Coupon[] = [
@@ -126,7 +134,7 @@ export default function CouponsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-14 px-4 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b">
         <Button
@@ -163,17 +171,23 @@ export default function CouponsPage() {
               className={`bg-darkgray p-4 rounded-lg ${
                 coupon.isApplicable
                   ? selectedCoupons.some((c) => c.id === coupon.id)
-                    ? "border-primary ring-2 ring-primary/10 cursor-pointer"
-                    : "border-[#E5E5E5] cursor-pointer hover:border-primary/50"
-                  : "border-[#E5E5E5] opacity-50"
-              } transition-all duration-200`}
+                    ? "ring-2 ring-orangefocus cursor-pointer"
+                    : "cursor-pointer hover:border-primary/50"
+                  : "opacity-50"
+              } transition-all duration-200 border-input`}
               onClick={() => handleCouponSelect(coupon)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Tag className="w-5 h-5 text-[#EE4D2D]" />
-                    <span className="text-base font-bold text-[#EE4D2D]">
+                  <div
+                    className={`flex items-center gap-2 mb-2 w-fit px-3 py-1.5 rounded-full ${
+                      selectedCoupons.some((c) => c.id === coupon.id)
+                        ? "bg-orangefocus text-white"
+                        : "bg-mainbutton text-background"
+                    }`}
+                  >
+                    <Ticket className="w-4 h-4" />
+                    <span className="text-xs font-medium">
                       {formatValue(coupon)}
                     </span>
                   </div>

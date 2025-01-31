@@ -24,13 +24,13 @@ export function CouponCard({ subtotal, className }: CouponCardProps) {
         className="w-full flex items-center justify-between p-3 text-left"
       >
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex items-center justify-center">
-            <Ticket className="w-4 h-4 text-muted-foreground" />
+          <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
+            <Ticket className="w-4 h-4 text-icon-blue-foreground" />
           </div>
           <div>
             <div className="text-sm font-medium text-muted-foreground">
               {selectedCoupons.length > 0
-                ? t("{{count}} Coupons Applied", {
+                ? t("coupons applied", {
                     count: selectedCoupons.length,
                   })
                 : t("Select Coupon")}

@@ -52,9 +52,9 @@ export function CheckoutFooter({
           className="w-full flex items-center justify-between text-sm font-normal h-auto rounded-xl px-0"
           onClick={onMessageClick}
         >
-          <div className="flex items-center gap-3">
-            <MessageCircle className="w-5 h-5 text-muted-foreground" />
-            <div className="text-left">
+          <div className="flex items-center gap-3 w-full justify-center">
+            {/* <MessageCircle className="w-5 h-5 text-muted-foreground" /> */}
+            <div className="text-center">
               <div className="font-medium text-muted-foreground">
                 {t("Message to Store")}
               </div>
@@ -63,10 +63,10 @@ export function CheckoutFooter({
               </div>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-secondary-foreground" />
+          {/* <ChevronRight className="w-4 h-4 text-secondary-foreground" /> */}
         </Button>
 
-        <Button
+        {/* <Button
           variant="ghost"
           className="w-full flex items-center justify-between text-sm font-normal h-auto rounded-xl px-0"
           onClick={onVatClick}
@@ -85,7 +85,7 @@ export function CheckoutFooter({
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-secondary-foreground" />
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

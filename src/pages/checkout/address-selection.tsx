@@ -134,11 +134,11 @@ export default function AddressSelection() {
               onClick={() => handleAddressSelect(address.id)}
             >
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex-shrink-0 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-icon-blue-background text-icon-blue-foreground flex-shrink-0 flex items-center justify-center">
                   {address.type === "home" ? (
-                    <Home className="w-4 h-4 text-foreground" />
+                    <Home className="w-4 h-4" />
                   ) : (
-                    <Building2 className="w-4 h-4 text-foreground" />
+                    <Building2 className="w-4 h-4" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -198,9 +198,9 @@ export default function AddressSelection() {
             setEditingAddress(null);
             setShowAddForm(true);
           }}
-          className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 h-12 font-medium"
+          className="w-full main-btn flex items-center gap-2 mt-3"
         >
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="w-4 h-4" />
           {t("Add New Address")}
         </Button>
       </div>
@@ -219,11 +219,11 @@ export default function AddressSelection() {
           side="bottom"
           className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-w-[600px] mx-auto flex flex-col gap-0"
         >
-          <SheetHeader className="px-4 py-3 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-between">
+          <SheetHeader className="px-4 py-3 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-title2 font-semibold tracking-tight">
               {editingAddress ? t("Edit Address") : t("Add New Address")}
             </SheetTitle>
-            <Button
+            {/* <Button
               variant="ghost"
               size="sm"
               className="text-primary font-medium hover:bg-transparent"
@@ -233,7 +233,7 @@ export default function AddressSelection() {
               }}
             >
               {t("Cancel")}
-            </Button>
+            </Button> */}
           </SheetHeader>
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">

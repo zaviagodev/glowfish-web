@@ -12,7 +12,7 @@ export const event_data: EventDataProps[] = [
     location: "Glowfish, Sathon",
     date: "November 15, 2024",
     desc: "Join us for the delightful duet performances by Khun Waan & Khun Pop at ‘Jameson Live Music’ every Wednesday throughout March 2024! Meet Khun Wan @aloevocal , the sensational singer renowned for her stunning performances on The Voice Season 3 and Golden Song Thailand Season 3.",
-    price: "free",
+    price: 0,
     validDate: "22 Dec 2024"
   },
   {
@@ -21,7 +21,7 @@ export const event_data: EventDataProps[] = [
     title: "Jameson Live Music | by Jameson Connects test",
     location: "Glowfish, Sathon",
     date: "November 15, 2024",
-    price: "free",
+    price: 0,
     validDate: "22 Dec 2024"
   },
 ]

@@ -27,8 +27,8 @@ export function AddressCard({
     >
       <div className="flex items-center justify-between p-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex items-center justify-center">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
+          <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
+            <MapPin className="w-4 h-4 text-icon-blue-foreground" />
           </div>
           <h2 className="text-sm font-medium">{title}</h2>
         </div>

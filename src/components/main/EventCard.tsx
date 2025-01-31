@@ -31,13 +31,11 @@ const EventCard = ({
         <img
           src={image}
           alt={title}
-          className="w-full h-full object-cover rounded-lg"
+          className="w-full h-full object-cover rounded-lg object-top"
         />
-        {price && (
-          <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">
-            {price}
-          </div>
-        )}
+        <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-orangefocus text-white text-xs font-medium">
+          {price && price !== 0 ? `฿${price}` : t("Free")}
+        </div>
       </div>
 
       <div
@@ -47,7 +45,6 @@ const EventCard = ({
       >
         <div className="space-y-2 backdrop-blur-sm rounded-lg bg-background/50 p-4">
           <h3 className="font-semibold line-clamp-2 text-sm">{title}</h3>
-
           {location && (
             <div className="flex items-center gap-2 text-xs">
               <MapPin className="w-3.5 h-3.5" />
@@ -60,13 +57,17 @@ const EventCard = ({
               <span>{date}</span>
             </div>
           )}
-          {points && (
+          {points ? (
             <div className="flex items-center gap-2 text-xs">
               <Tag className="w-3.5 h-3.5" />
               <span>{t("point", { count: points })}</span>
             </div>
+          ) : (
+            <div className="flex items-center gap-2 text-xs">
+              <Tag className="w-3.5 h-3.5" />
+              <span>{t("Free")}</span>
+            </div>
           )}
-
           {/* {validDate && (
             <p className="text-xs">
               {t("Valid to")} {validDate}

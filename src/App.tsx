@@ -70,7 +70,7 @@ function App() {
   const { config } = useConfig();
 
   useEffect(() => {
-    i18n.changeLanguage("en");
+    i18n.changeLanguage(config.default_language);
   }, [config]);
 
   const i18nProvider = {

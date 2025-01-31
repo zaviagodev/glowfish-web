@@ -10,6 +10,37 @@ import { MapPin, Calendar, Users, QrCode, Ticket, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEvents } from "@/hooks/useEvents";
 
+// Mock data - replace with actual data fetching
+const mockTickets = [
+  {
+    id: "4",
+    eventName: "Upcoming Test Event",
+    location: "Glowfish, Sathon",
+    date: "2025-02-01T19:00:00",
+    image: "https://picsum.photos/400/203",
+    status: "upcoming",
+    used: false,
+    ticketNumber: "GA-2024-0201",
+    seat: "General Admission",
+    groupSize: 1,
+    tickets: 10,
+    description:
+      "Join us for an amazing evening of entertainment and networking.",
+    venue: {
+      name: "Glowfish Sathon",
+      address:
+        "Sathorn Square Office Tower, 98 N Sathon Rd, Silom, Bang Rak, Bangkok 10500",
+      googleMapsUrl: "https://maps.google.com",
+    },
+    event: {
+      start_datetime: "2025-02-01T19:00:00",
+      images: "https://picsum.photos/400/203",
+      name: "Upcoming Event",
+      location: "Glowfish",
+    },
+  },
+];
+
 export default function TicketDetails() {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -17,10 +48,14 @@ export default function TicketDetails() {
   const [showCheckIn, setShowCheckIn] = useState(false);
   const { id } = useParams();
   const { events, loading, error } = useEvents();
-  const event = events.find((e) => e.id === id);
+
+  // TODO: Will replace with actual events
+  // const event = events.find((e) => e.id === id);
+
+  const event = mockTickets.find((e) => e.id === id);
   if (!event) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-dvh bg-background">
         <PageHeader title={t("Event Details")} />
         <div className="flex items-center justify-center h-[60vh]">
           <p className="text-muted-foreground">{t("Ticket not found")}</p>
@@ -41,7 +76,7 @@ export default function TicketDetails() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-dvh bg-background">
         <PageHeader title={t("Event Details")} />
         <div className="flex items-center justify-center h-[60vh]">
           <p>{t("Loading...")}</p>
@@ -52,7 +87,7 @@ export default function TicketDetails() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-dvh bg-background">
         <PageHeader title={t("Event Details")} />
         <div className="flex items-center justify-center h-[60vh]">
           <p className="text-destructive">
@@ -67,10 +102,10 @@ export default function TicketDetails() {
   const isUpcoming = eventDate > new Date();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("Event Details")} />
 
-      <div className="pt-14 pb-10">
+      <div className="pt-14 pb-20">
         {/* Hero Section */}
         <div className="relative">
           <motion.div
@@ -100,7 +135,7 @@ export default function TicketDetails() {
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Event Info */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             {/* Countdown */}
             {isUpcoming && (
               <motion.div
@@ -131,7 +166,7 @@ export default function TicketDetails() {
             )}
 
             <motion.h1
-              className="text-2xl font-bold"
+              className="text-base"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -140,33 +175,71 @@ export default function TicketDetails() {
             </motion.h1>
 
             <motion.div
-              className="space-y-3"
+              className="space-y-2 text-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm font-light">
                 <MapPin className="w-4 h-4 flex-shrink-0" />
                 <span>{event.event.location || t("Location TBD")}</span>
               </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm font-light">
                 <Calendar className="w-4 h-4 flex-shrink-0" />
                 <span>{format(eventDate, "PPp")}</span>
               </div>
-              {event.tickets.length > 1 && (
+              {/* {event.tickets.length > 1 && (
                 <div className="flex items-center gap-2 text-primary">
                   <Users className="w-4 h-4 flex-shrink-0" />
                   <span>
-                    {t("{{count}} Ticket", { count: event.tickets.length })}
+                    {t("ticket", { count: event.tickets.length })}
                   </span>
                 </div>
-              )}
+              )} */}
+              <div className="flex items-center gap-2 text-sm font-light">
+                <Users className="w-4 h-4 flex-shrink-0" />
+                <span>{t("ticket", { count: 10 })}</span>
+              </div>
             </motion.div>
           </div>
 
           {/* Ticket Details */}
+          <motion.div
+            className="bg-darkgray rounded-lg p-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#F8F8F81A] flex items-center justify-center">
+                <Ticket className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-medium">{t("Ticket Details")}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {t("Your ticket information")}
+                </p>
+              </div>
+            </div>
 
-          {event.tickets.map((ticket, index) => (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-sm text-muted-foreground mb-1">
+                  {t("Ticket No.")}
+                </div>
+                <div className="text-sm font-medium">{event.ticketNumber}</div>
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground mb-1">
+                  {t("Seat")}
+                </div>
+                <div className="text-sm font-medium">{event.seat}</div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Not sure this one is still being used or not, so I commented it */}
+          {/* {event.tickets.map((ticket, index) => (
             <motion.div
               className="bg-darkgray rounded-lg p-4 space-y-6"
               initial={{ opacity: 0, y: 20 }}
@@ -225,7 +298,7 @@ export default function TicketDetails() {
                 </div>
               </div>
             </motion.div>
-          ))}
+          ))} */}
 
           {/* Description */}
           <motion.div
@@ -235,8 +308,9 @@ export default function TicketDetails() {
             transition={{ delay: 0.6 }}
           >
             <h3 className="font-medium">{t("Description")}</h3>
-            <p className="text-sm text-muted-foreground">
-              {event.event.description}
+            <p className="text-[13px] text-secondary-foreground">
+              {/* {event.event.description} */}
+              THIS IS A DESCRIPTION
             </p>
           </motion.div>
 
@@ -274,11 +348,11 @@ export default function TicketDetails() {
       {isUpcoming && (
         <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t p-4">
           <Button
-            className="w-full bg-black text-white hover:bg-black/90 h-12"
+            className="w-full main-btn flex items-center gap-2"
             onClick={() => setShowCheckIn(true)}
           >
-            <QrCode className="w-4 h-4 mr-2" />
-            {t("Check In All")}
+            <QrCode className="w-4 h-4" />
+            {t("Check In")}
           </Button>
         </div>
       )}
@@ -287,21 +361,22 @@ export default function TicketDetails() {
       <AnimatePresence>
         {showCheckIn && (
           <CheckInView
-            ticket={{
-              id: selectedTicket.id,
-              eventName: event.event.name,
-              location: event.event.location || t("Location TBD"),
-              date: event.event.start_datetime,
-              image: event.event.images || "",
-              status: isUpcoming ? "upcoming" : "passed",
-              used: !isUpcoming,
-              ticketNumber: selectedTicket.code,
-              seat: selectedTicket
-                ? event.tickets.find((t) => t.id === selectedTicket)?.metadata
-                    ?.attendeeName || t("General Admission")
-                : event.tickets[0]?.metadata?.attendeeName ||
-                  t("General Admission"),
-            }}
+            ticket={event}
+            // ticket={{
+            //   id: selectedTicket.id,
+            //   eventName: event.event.name,
+            //   location: event.event.location || t("Location TBD"),
+            //   date: event.event.start_datetime,
+            //   image: event.event.images || "",
+            //   status: isUpcoming ? "upcoming" : "passed",
+            //   used: !isUpcoming,
+            //   ticketNumber: selectedTicket.code,
+            //   seat: selectedTicket
+            //     ? event.tickets.find((t) => t.id === selectedTicket)?.metadata
+            //         ?.attendeeName || t("General Admission")
+            //     : event.tickets[0]?.metadata?.attendeeName ||
+            //       t("General Admission"),
+            // }}
             onClose={handleCloseCheckIn}
           />
         )}

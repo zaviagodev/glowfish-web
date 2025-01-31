@@ -104,10 +104,10 @@ export default function ProductsPage() {
     });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Search Bar */}
       <div className="sticky top-0 z-50 bg-background border-b">
-        <div className="p-4">
+        <div className="px-5 py-4">
           <div className="relative">
             <Input
               className="pl-10 h-12 bg-darkgray border border-input"
@@ -128,7 +128,7 @@ export default function ProductsPage() {
         />
 
         {/* Filter & Sort Bar */}
-        <div className="flex items-center justify-between px-4 py-3 border-t">
+        <div className="flex items-center justify-between px-5 py-3 border-t">
           <Button
             variant="ghost"
             size="sm"
@@ -151,7 +151,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Product Grid */}
-      <div className="p-4">
+      <div className="p-5">
         <div className="grid grid-cols-2 gap-4">
           {filteredProducts.map((product) => (
             <motion.div
@@ -165,6 +165,7 @@ export default function ProductsPage() {
                 title={product.name}
                 price={product.price}
                 compareAtPrice={product.compare_at_price}
+                type="small"
                 onClick={() => {
                   // Get the default variant if product has variants
                   const defaultVariant = product.product_variants?.[0];
@@ -187,18 +188,10 @@ export default function ProductsPage() {
       {/* Filter Drawer */}
       <Sheet open={showFilterDrawer} onOpenChange={setShowFilterDrawer}>
         <SheetContent side="bottom" className="h-[70%] p-0">
-          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-between">
+          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Filter Products")}
             </SheetTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary font-medium hover:bg-transparent"
-              onClick={() => setShowFilterDrawer(false)}
-            >
-              {t("Close")}
-            </Button>
           </SheetHeader>
           <div className="p-4 space-y-6 overflow-auto">
             <div className="space-y-4">
@@ -278,9 +271,9 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          <div className="p-4 border-t bg-background/80 backdrop-blur-xl">
+          <div className="p-4 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0">
             <Button
-              className="w-full bg-primary text-primary-foreground"
+              className="w-full main-btn"
               onClick={() => setShowFilterDrawer(false)}
             >
               {t("Apply Filters")}
@@ -292,18 +285,10 @@ export default function ProductsPage() {
       {/* Sort Drawer */}
       <Sheet open={showSortDrawer} onOpenChange={setShowSortDrawer}>
         <SheetContent side="bottom" className="h-[40%] p-0">
-          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-between">
+          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Sort By")}
             </SheetTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary font-medium hover:bg-transparent"
-              onClick={() => setShowSortDrawer(false)}
-            >
-              {t("Close")}
-            </Button>
           </SheetHeader>
           <div className="p-4">
             <Select

@@ -83,7 +83,7 @@ export function ProductDetail({
             layoutId={`image-${id}`}
             src={image}
             alt={title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top"
             transition={{
               type: "spring",
               stiffness: 350,

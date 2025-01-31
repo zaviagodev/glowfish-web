@@ -66,7 +66,7 @@ const MemberLevel = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("Member Level")} />
 
       <div className="pt-14 pb-10">
@@ -131,7 +131,7 @@ const MemberLevel = () => {
 
         {/* All Levels */}
         <div className="px-6">
-          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+          <h3 className="text-sm font-medium text-muted-foreground tracking-wide mb-4">
             {t("All Levels")}
           </h3>
           <div className="space-y-4">
@@ -142,8 +142,8 @@ const MemberLevel = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className={cn(
-                  "bg-darkgray rounded-lg border overflow-hidden transition-all",
-                  level.current ? "border-primary ring-2 ring-primary/10" : ""
+                  "rounded-lg overflow-hidden transition-all border border-input",
+                  level.current ? "bg-darkgray" : ""
                 )}
               >
                 <div className="p-4">

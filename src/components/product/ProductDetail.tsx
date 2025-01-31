@@ -204,7 +204,7 @@ export function ProductDetail({
             layoutId={`image-${id}`}
             src={image}
             alt={name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top"
             transition={{
               layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
             }}
@@ -271,7 +271,7 @@ export function ProductDetail({
 
                   {isClamped ? (
                     <p
-                      className="text-[#EC441E] text-sm w-fit"
+                      className="text-orangefocus text-sm w-fit"
                       onClick={() => setExpanded(!expanded)}
                     >
                       {expanded ? "Read less..." : "Read more..."}

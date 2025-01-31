@@ -27,7 +27,7 @@ const Rewards = () => {
     title: product.name,
     location: product.location,
     date: product.date,
-    price: product.price === 0 ? t("free") : `฿${product.price}`,
+    price: product.price,
     points: product.price * 10, // Example points calculation
     desc: product.description,
   }));

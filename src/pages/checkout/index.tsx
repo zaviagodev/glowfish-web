@@ -126,10 +126,10 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("Checkout")} />
 
-      <div className="pt-14 pb-60">
+      <div className="pt-14 pb-48">
         <div className="p-4 space-y-6">
           <ProductList items={items} />
           <AddressCard

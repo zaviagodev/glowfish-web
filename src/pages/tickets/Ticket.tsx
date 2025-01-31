@@ -28,43 +28,29 @@ export function Ticket({ ticket }: TicketProps) {
     <motion.div
       onClick={() => navigate(`/tickets/${ticket.id}`)}
       className={cn(
-        "relative overflow-hidden rounded-xl border transition-all",
+        "relative overflow-hidden rounded-xl transition-all bg-darkgray",
         "shadow-[0_2px_8px_rgba(0,0,0,0.04),0_4px_24px_rgba(0,0,0,0.02)]",
         ticket.status === "passed" && "opacity-60"
       )}
       whileHover={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
     >
-      {/* Glass effect overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10" />
-
       {/* Content */}
-      <div className="relative">
+      <div className="relative flex">
         {/* Image Section */}
-        <div className="relative aspect-[2/1] overflow-hidden">
+        <div className="relative w-[120px] object-cover">
           <img
             src={ticket.image}
             alt={ticket.eventName}
             className="w-full h-full object-cover"
           />
-          {/* Status Badge */}
-          <div
-            className={cn(
-              "absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium",
-              ticket.used
-                ? "bg-[#8E8E93]/10 text-[#8E8E93]"
-                : "bg-[#34C759]/10 text-[#34C759]"
-            )}
-          >
-            {ticket.used ? t("Used") : t("Valid")}
-          </div>
         </div>
 
         {/* Event Details */}
         <div className="p-4">
           {/* Countdown Badge */}
           {ticket.status === "upcoming" && (
-            <div className="mb-3">
+            <div className="mb-2">
               <div
                 className={cn(
                   "inline-flex px-2 py-1 rounded-full text-xs font-medium",
@@ -86,8 +72,20 @@ export function Ticket({ ticket }: TicketProps) {
             </div>
           )}
 
-          <h3 className="text-lg font-semibold mb-2">{ticket.eventName}</h3>
-          <div className="space-y-2 mb-4">
+          {/* Status Badge */}
+          <div
+            className={cn(
+              "absolute top-4 right-3 px-2 py-1 rounded-full text-xs font-medium",
+              ticket.used
+                ? "bg-[#8E8E93]/10 text-[#8E8E93]"
+                : "bg-[#34C759]/10 text-[#34C759]"
+            )}
+          >
+            {ticket.used ? t("Used") : t("Valid")}
+          </div>
+
+          <h3 className="font-medium mb-1">{ticket.eventName}</h3>
+          <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="w-4 h-4 flex-shrink-0" />
               <span className="line-clamp-1">{ticket.location}</span>
@@ -99,18 +97,12 @@ export function Ticket({ ticket }: TicketProps) {
             {ticket.groupSize && ticket.groupSize > 1 && (
               <div className="flex items-center gap-2 text-sm text-primary">
                 <Users className="w-4 h-4 flex-shrink-0" />
-                <span>
-                  {t("{{count}} ticket", { count: ticket.groupSize })}
-                </span>
+                <span>{t("ticket", { count: ticket.groupSize })}</span>
               </div>
             )}
           </div>
         </div>
       </div>
-
-      {/* Decorative notches */}
-      <div className="absolute -left-2 top-1/2 w-4 h-4 bg-background rounded-full" />
-      <div className="absolute -right-2 top-1/2 w-4 h-4 bg-background rounded-full" />
     </motion.div>
   );
 }

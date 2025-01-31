@@ -166,7 +166,7 @@ export default function CartPage() {
           <PromotionCard />
         </div>
         <CouponCard subtotal={subtotal} className="mx-4 mt-3" />
-        <div className="p-3">
+        <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Select All */}
             <div className="flex items-center gap-3">

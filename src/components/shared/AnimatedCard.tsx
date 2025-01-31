@@ -46,7 +46,7 @@ export function AnimatedCard({
       layoutId={`card-${id}`}
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full",
+        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full border border-input",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
         type === "event" && "flex h-fit"
       )}
@@ -55,8 +55,8 @@ export function AnimatedCard({
       <motion.div
         layoutId={`image-container-${id}`}
         className={cn(
-          "relative overflow-hidden",
-          type === "small" ? "h-[40vw] w-full" : "h-[50vw] w-full",
+          "relative overflow-hidden p-2",
+          type === "small" ? "h-[32vw] w-full" : "h-[50vw] w-full",
           type === "event" && "w-[125px] min-w-[125px]"
         )}
         transition={springConfig}
@@ -65,14 +65,14 @@ export function AnimatedCard({
           layoutId={`image-${id}`}
           src={image}
           alt={title}
-          className="w-full h-full object-cover bg-[#fafafa] rounded-lg"
+          className="w-full h-full object-cover rounded-lg"
           transition={springConfig}
         />
       </motion.div>
 
       <div
         className={cn(
-          "p-3 space-y-2",
+          "p-2 pt-0 space-y-2",
           type === "event" ? "flex-1 absolute bottom-0" : "bg-card"
         )}
       >

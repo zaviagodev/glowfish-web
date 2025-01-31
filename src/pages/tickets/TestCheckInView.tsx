@@ -1,13 +1,13 @@
 import { useTranslate } from "@refinedev/core";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { Users, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
+import { Users, CheckCircle2, Clock, AlertTriangle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface TestCheckInViewProps {
-  onClose: () => void;
-  onComplete: () => void;
+  onClose: (e?: any) => void;
+  onComplete: (e?: any) => void;
 }
 
 interface TestCase {
@@ -131,12 +131,19 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative px-4 py-6 text-center border-b">
+        <div className="relative px-4 py-3 text-left border-b">
           <div className="absolute left-1/2 -top-3 w-12 h-1 bg-[#E5E5EA] rounded-full transform -translate-x-1/2" />
           <h2 className="text-lg font-semibold">{t("Test Check-in")}</h2>
           <p className="text-sm text-muted-foreground mt-1">
             {t("Select a test scenario")}
           </p>
+
+          <button
+            className="bg-white/[12%] p-1 absolute right-4 top-3 rounded-full opacity-70"
+            onClick={onClose}
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
         <AnimatePresence mode="wait">

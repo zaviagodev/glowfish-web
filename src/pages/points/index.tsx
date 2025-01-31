@@ -47,25 +47,22 @@ export default function MyPointsPage() {
     ],
   };
 
-  console.log(points.nextTier.toLocaleString());
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("My Points")} />
 
       <div className="pt-14 pb-10">
         {/* Points Overview Card */}
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
           <motion.div
             className="relative px-6 py-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-background rounded-2xl p-6 shadow-sm">
+            <div className="bg-darkgray rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center">
-                  <Coins className="w-6 h-6 text-primary" />
+                <div className="w-12 h-12 rounded-full bg-yellow-400/10 flex items-center justify-center">
+                  <Coins className="w-6 h-6 text-yellow-400" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold">
@@ -129,7 +126,7 @@ export default function MyPointsPage() {
           >
             <Button
               variant="outline"
-              className="w-full h-auto p-4 justify-between bg-darkgray group"
+              className="w-full h-auto p-4 justify-between bg-darkgray group rounded-lg"
               onClick={() => navigate("/settings/member-level")}
             >
               <div className="flex items-center gap-3">
@@ -156,7 +153,7 @@ export default function MyPointsPage() {
           >
             <Button
               variant="outline"
-              className="w-full h-auto p-4 justify-between bg-darkgray group"
+              className="w-full h-auto p-4 justify-between bg-darkgray group rounded-lg"
               onClick={() => navigate("/settings/how-to-get-points")}
             >
               <div className="flex items-center gap-3">
@@ -180,7 +177,7 @@ export default function MyPointsPage() {
         {/* Points History */}
         <div className="mt-8">
           <div className="px-6 mb-4">
-            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <h3 className="text-sm font-medium text-muted-foreground tracking-wide">
               {t("Points History")}
             </h3>
           </div>
@@ -267,12 +264,10 @@ export default function MyPointsPage() {
           side="bottom"
           className="h-[70%] p-0 bg-background rounded-t-[14px]"
         >
-          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
-            <SheetTitle className="text-lg font-semibold">
-              {t("My Profile QR")}
-            </SheetTitle>
+          <SheetHeader className="px-4 py-3 sticky top-0">
+            <SheetTitle className="text-xs">{t("My Profile QR")}</SheetTitle>
           </SheetHeader>
-          <div className="p-6 flex flex-col items-center justify-center h-full">
+          <div className="p-6 flex flex-col items-center h-full">
             <div className="w-64 h-64 bg-background rounded-2xl flex items-center justify-center mb-6">
               <QrCode className="w-40 h-40 text-secondary-foreground" />
             </div>

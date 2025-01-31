@@ -61,39 +61,44 @@ export function VoucherCard({ voucher }: VoucherCardProps) {
       whileHover={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className={cn(
-        "relative overflow-hidden rounded-2xl",
+        "overflow-hidden rounded-lg bg-darkgray flex",
         "shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
         "backdrop-blur-xl",
         voucher.status === "used" && "opacity-60"
       )}
     >
-      {/* Glass effect overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10" />
-
-      {/* Content */}
-      <div className="relative">
+      <img
+        src={voucher.image}
+        alt={voucher.title}
+        className="w-[120px] object-cover"
+      />
+      <div className="flex flex-col w-full p-4 justify-between">
         {/* Top Section */}
-        <div className="p-4 flex items-start gap-4">
-          {/* Image */}
-          <div className="w-[100px] h-[100px] rounded-xl overflow-hidden flex-shrink-0">
-            <img
-              src={voucher.image}
-              alt={voucher.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
+        <div className="flex items-start gap-4 mb-2">
           <div className="flex-1 min-w-0">
-            {/* Type Badge */}
-            <div
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mb-2"
-              style={{
-                color: config.color,
-                backgroundColor: config.bgColor,
-              }}
-            >
-              <TypeIcon className="w-3.5 h-3.5" />
-              <span>{t(voucher.type === "gift" ? "Gift" : "Coupon")}</span>
+            <div className="flex items-center justify-between mb-2">
+              {/* Type Badge */}
+              <div
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                style={{
+                  color: config.color,
+                  backgroundColor: config.bgColor,
+                }}
+              >
+                <TypeIcon className="w-3.5 h-3.5" />
+                <span>{t(voucher.type === "gift" ? "Gift" : "Coupon")}</span>
+              </div>
+
+              {/* Status Badge */}
+              <div
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                style={{
+                  color: status.color,
+                  backgroundColor: status.bgColor,
+                }}
+              >
+                {status.label}
+              </div>
             </div>
 
             {/* Title and Description */}
@@ -107,19 +112,8 @@ export function VoucherCard({ voucher }: VoucherCardProps) {
         </div>
 
         {/* Bottom Section */}
-        <div className="p-4 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* Status Badge */}
-            <div
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
-              style={{
-                color: status.color,
-                backgroundColor: status.bgColor,
-              }}
-            >
-              {status.label}
-            </div>
-
             {/* Expiry */}
             <div className="flex items-center gap-1.5 text-xs text-[#8E8E93]">
               <Clock className="w-3.5 h-3.5" />

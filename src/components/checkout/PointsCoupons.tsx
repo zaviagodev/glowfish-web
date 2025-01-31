@@ -33,20 +33,20 @@ export function PointsCoupons({
           className="w-full flex items-center justify-between bg-[rgba(23,23,23,0.05)] rounded-lg p-3 text-left"
         >
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex items-center justify-center">
-              <Ticket className="w-4 h-4 text-muted-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-icon-orange-background flex items-center justify-center">
+              <Ticket className="w-4 h-4 text-icon-orange-foreground" />
             </div>
             <div>
               <div className="text-sm font-medium text-muted-foreground">
                 {selectedCoupons.length > 0
-                  ? t("{{count}} Coupons Applied", {
+                  ? t("coupons applied", {
                       count: selectedCoupons.length,
                     })
                   : t("My Coupons")}
               </div>
               <div className="text-xs text-secondary-foreground">
                 {selectedCoupons.length > 0 ? (
-                  <span className="text-primary">
+                  <span className="text-[#EE4D2D]">
                     -฿{totalDiscount.toLocaleString()}
                   </span>
                 ) : (
@@ -70,8 +70,8 @@ export function PointsCoupons({
           className="w-full flex items-center justify-between bg-[rgba(23,23,23,0.05)] rounded-lg p-3 text-left"
         >
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex items-center justify-center">
-              <Gift className="w-4 h-4 text-muted-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-icon-pink-background flex items-center justify-center">
+              <Gift className="w-4 h-4 text-icon-pink-foreground" />
             </div>
             <div>
               <div className="text-sm font-medium text-muted-foreground">
@@ -80,8 +80,8 @@ export function PointsCoupons({
               </div>
               <div className="text-xs text-secondary-foreground">
                 {selectedPoints > 0 ? (
-                  <span className="text-primary">
-                    -฿${pointsDiscount.toLocaleString()}
+                  <span className="text-[#EE4D2D]">
+                    -฿{pointsDiscount.toLocaleString()}
                   </span>
                 ) : (
                   t("Use your points to get discount")

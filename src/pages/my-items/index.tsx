@@ -53,7 +53,7 @@ export default function MyItemsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("My Items")} />
 
       <div className="pt-14 pb-4">
@@ -94,7 +94,7 @@ export default function MyItemsPage() {
             </TabsList>
           </div>
 
-          <div className="mt-4 px-4 space-y-4">
+          <div className="p-4 space-y-4">
             {filteredVouchers.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

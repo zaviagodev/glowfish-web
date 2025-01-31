@@ -77,7 +77,7 @@ export default function PromotionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Header */}
       <PageHeader title={t("All Promotions")} />
 
@@ -100,9 +100,11 @@ export default function PromotionsPage() {
                 className="w-[120px] object-cover"
               />
               <div className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Tag className="w-5 h-5 text-[#EE4D2D]" />
-                  <span className="text-base font-semibold text-[#EE4D2D]">
+                <div
+                  className={`flex items-center gap-2 mb-2 w-fit px-3 py-1.5 rounded-full bg-mainbutton text-background`}
+                >
+                  <Tag className="w-4 h-4" />
+                  <span className="text-xs font-medium">
                     {formatDiscount(promo.discount)}
                   </span>
                 </div>

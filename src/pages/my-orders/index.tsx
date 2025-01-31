@@ -136,7 +136,7 @@ export default function MyOrdersPage() {
   //   })) || [];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("My Orders")} />
 
       <div className="pt-14 pb-4">

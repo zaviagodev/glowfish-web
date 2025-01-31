@@ -55,17 +55,8 @@ export default function VoucherDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("Voucher Details")} />
-      <div className="fixed inset-0 pointer-events-none">
-        <div
-          className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20"
-          style={{
-            background:
-              "radial-gradient(circle at top, rgba(255,255,255,0.8) 0%, transparent 70%)",
-          }}
-        />
-      </div>
 
       <div className="pb-10">
         {/* Hero Section */}
@@ -91,10 +82,10 @@ export default function VoucherDetail() {
             </div>
 
             {/* Title and Description */}
-            <h1 className="px-6 text-2xl font-bold tracking-tight mb-2">
+            <h1 className="px-6 text-base font-bold tracking-tight mb-2">
               {voucher.title}
             </h1>
-            <p className="px-6 text-base text-[#8E8E93] leading-relaxed">
+            <p className="px-6 text-[13px] leading-relaxed">
               {voucher.description}
             </p>
 

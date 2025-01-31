@@ -24,7 +24,7 @@ export function ProductList({ items }: ProductListProps) {
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top"
               />
             </div>
             <div className="flex-1 min-w-0">

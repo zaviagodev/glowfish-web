@@ -73,7 +73,7 @@ export const ProductPage = ({
               layoutId={`image-${id}`}
               src={image}
               alt={title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
               transition={springConfig}
             />
           </motion.div>

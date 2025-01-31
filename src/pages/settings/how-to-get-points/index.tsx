@@ -62,7 +62,7 @@ const HowToGetPoints = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("How to Get Points")} />
 
       <div className="pt-14 pb-10">
@@ -108,7 +108,7 @@ const HowToGetPoints = () => {
         {/* Ways to Earn */}
         <div className="px-6">
           <motion.h2
-            className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4"
+            className="text-sm font-medium text-muted-foreground tracking-wide mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -160,7 +160,7 @@ const HowToGetPoints = () => {
         {/* Terms & Conditions */}
         <div className="px-6 mt-8">
           <motion.h2
-            className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4"
+            className="text-sm font-medium text-muted-foreground tracking-wide mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
@@ -171,7 +171,7 @@ const HowToGetPoints = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="bg-darkgray rounded-lg p-4 space-y-3"
+            className="rounded-lg p-4 space-y-3"
           >
             {[
               t("Points are valid for 12 months from the date of issue"),

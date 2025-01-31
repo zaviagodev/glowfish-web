@@ -228,10 +228,10 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                 <Button
                   type="button"
                   variant={field.value === "home" ? "default" : "outline"}
-                  className={`h-12 ${
+                  className={`${
                     field.value === "home"
-                      ? "bg-primary text-primary-foreground"
-                      : "border-[#E5E5E5]"
+                      ? "main-btn"
+                      : "bg-darkgray rounded-full"
                   }`}
                   onClick={() => form.setValue("type", "home")}
                 >
@@ -241,10 +241,10 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                 <Button
                   type="button"
                   variant={field.value === "office" ? "default" : "outline"}
-                  className={`h-12 ${
+                  className={`${
                     field.value === "office"
-                      ? "bg-primary text-primary-foreground"
-                      : "border-[#E5E5E5]"
+                      ? "main-btn"
+                      : "bg-darkgray rounded-full"
                   }`}
                   onClick={() => form.setValue("type", "office")}
                 >

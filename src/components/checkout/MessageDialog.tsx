@@ -28,9 +28,9 @@ export function MessageDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-background max-w-[90%] w-[400px] rounded-lg p-0 border-0">
+      <DialogContent className="bg-background max-w-[90%] w-[400px] rounded-lg p-0 border-0 gap-0">
         {/* Header */}
-        <DialogHeader className="p-4 border-b">
+        <DialogHeader className="px-4 py-3 border-b">
           <div className="flex items-center gap-2">
             <MessageCircle className="w-5 h-5 text-primary" />
             <DialogTitle className="text-lg font-semibold">
@@ -43,7 +43,7 @@ export function MessageDialog({
         <div className="p-4 space-y-4">
           <Textarea
             placeholder={t("Enter your message to the store...")}
-            className="min-h-[120px] bg-background border-[#E5E5E5] focus:border-primary focus:ring-0 resize-none"
+            className="min-h-[120px] bg-darkgray border border-input focus:border-[#EE5736] resize-none focus:!ring-0 !ring-offset-0"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
@@ -52,13 +52,13 @@ export function MessageDialog({
           <div className="flex gap-3">
             <Button
               variant="outline"
-              className="flex-1 h-12 border-[#E5E5E5]"
+              className="main-btn !bg-darkgray w-full !text-white"
               onClick={() => onOpenChange(false)}
             >
               {t("Cancel")}
             </Button>
             <Button
-              className="flex-1 h-12 bg-primary text-primary-foreground hover:bg-primary/90"
+              className="main-btn w-full"
               onClick={() => {
                 onSave(message);
                 onOpenChange(false);
