@@ -15,7 +15,7 @@ const mockVouchers = [
     expiryDate: "2024-02-28",
     status: "ready",
     image: "https://picsum.photos/200/300",
-    code: "COFFEE50"
+    code: "COFFEE50",
   },
   {
     id: "2",
@@ -25,7 +25,7 @@ const mockVouchers = [
     expiryDate: "2024-03-15",
     status: "used",
     image: "https://picsum.photos/201/300",
-    code: "FREEDEL"
+    code: "FREEDEL",
   },
   {
     id: "3",
@@ -35,15 +35,15 @@ const mockVouchers = [
     expiryDate: "2024-12-31",
     status: "ready",
     image: "https://picsum.photos/202/300",
-    code: "BDAY2024"
-  }
+    code: "BDAY2024",
+  },
 ];
 
 export default function MyItemsPage() {
   const t = useTranslate();
   const [activeTab, setActiveTab] = useState("all");
-  
-  const filteredVouchers = mockVouchers.filter(voucher => {
+
+  const filteredVouchers = mockVouchers.filter((voucher) => {
     if (activeTab === "all") return true;
     if (activeTab === "gifts") return voucher.type === "gift";
     if (activeTab === "coupons") return voucher.type === "coupon";
@@ -53,57 +53,55 @@ export default function MyItemsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("My Items")} />
 
       <div className="pt-14 pb-4">
         {/* Tabs */}
         <Tabs defaultValue="all" onValueChange={setActiveTab}>
           <div className="px-4">
-            <TabsList className="w-full h-auto p-1 bg-[rgba(245,245,245,0.5)] grid grid-cols-5 gap-1">
-              <TabsTrigger 
-                value="all" 
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+            <TabsList className="w-full h-auto p-1 bg-tertiary grid grid-cols-5 gap-1">
+              <TabsTrigger
+                value="all"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("All")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="gifts"
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("Gifts")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="coupons"
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("Coupons")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="ready"
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("Ready")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="used"
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("Used")}
               </TabsTrigger>
             </TabsList>
           </div>
 
-          <div className="mt-4 px-4 space-y-4">
+          <div className="p-4 space-y-4">
             {filteredVouchers.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center py-12"
               >
-                <p className="text-muted-foreground">
-                  {t("No items found")}
-                </p>
+                <p className="text-muted-foreground">{t("No items found")}</p>
               </motion.div>
             ) : (
               filteredVouchers.map((voucher, index) => (

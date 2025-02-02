@@ -29,25 +29,25 @@ export function OrderCard({ order, index }: OrderCardProps) {
   const navigate = useNavigate();
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   return (
-    <motion.div 
+    <motion.div
       onClick={() => navigate(`/my-orders/${order.id}`)}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="bg-[#FAFAFA] rounded-lg border border-[#E5E5E5] overflow-hidden hover:bg-white transition-colors duration-200 cursor-pointer"
+      className="rounded-lg !bg-darkgray overflow-hidden hover:bg-background transition-colors duration-200 cursor-pointer"
     >
       {/* Order Header */}
-      <div className="p-4 border-b border-[#E5E5E5] flex items-center justify-between">
+      <div className="p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div>
             <div className="text-sm font-medium">
@@ -65,16 +65,14 @@ export function OrderCard({ order, index }: OrderCardProps) {
       {order.items.map((item) => (
         <div key={item.id} className="p-4 flex gap-4">
           <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-            <img 
-              src={item.image} 
+            <img
+              src={item.image}
               alt={item.name}
               className="w-full h-full object-cover"
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium line-clamp-2">
-              {item.name}
-            </h3>
+            <h3 className="text-sm font-medium line-clamp-2">{item.name}</h3>
             <div className="mt-2 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-muted-foreground">
@@ -90,7 +88,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
       ))}
 
       {/* Order Footer */}
-      <div className="px-4 py-4 border-t border-[#E5E5E5]">
+      <div className="p-4">
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
             {order.items.length} {t("items")}

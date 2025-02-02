@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslate } from "@refinedev/core";
-import { Filter, Notification, Search } from "@/components/icons/MainIcons";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { ChevronLeft, ChevronRight, SearchIcon } from "lucide-react";
+import Header from "@/components/main/Header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,23 +9,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { getUserProfile } from "@/lib/auth";
 import { useProducts } from "@/hooks/useProducts";
 import { supabase } from "@/lib/supabase";
-import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
-import { ProductDetail } from "@/components/product/ProductDetail"; 
-
-import { Header } from "@/components/home/Header";
+import { ProductDetail } from "@/components/product/ProductDetail";
+import { motion } from "framer-motion";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { SearchDialog } from "@/components/home/SearchDialog";
 import { ProductSection } from "@/components/home/ProductSection";
-import { Product } from "@/services/productService";
-
-interface UserProfile {
-  id: string;
-  full_name: string;
-  avatar_url: string | null;
-}
 
 interface Category {
   id: string;
@@ -35,52 +35,41 @@ interface Category {
   description?: string;
 }
 
-interface ProductVariant {
-  id: string;
-  price: number;
-  quantity: number;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  image: string;
-  category_id: string;
-  track_quantity: boolean;
-  quantity?: number;
-  product_variants?: ProductVariant[];
-  regular_price?: number;
-}
-
 export const HomeList = () => {
   const t = useTranslate();
-  const { products, categories, loading, error } = useProducts();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const navigate = useNavigate();
+  const { products, loading, error } = useProducts();
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [userProfile, setUserProfile] = useState<{
+    id: string;
+    full_name: string;
+    avatar_url: string;
+  } | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const productSliderRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = selectedCategory
-    ? products.filter(product => product.category_id === selectedCategory)
+    ? products.filter((product) => product.category_id === selectedCategory)
     : products;
 
-  const searchResults = filteredProducts.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  const searchResults = filteredProducts.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleProductSelect = (product: Product) => {
+  const handleProductSelect = (product: any) => {
     // If product has no variants, just set the product
     if (!product.product_variants || product.product_variants.length === 0) {
       setSelectedProduct({
         ...product,
         track_quantity: product.track_quantity,
         variant_id: undefined,
-        quantity: product.quantity
+        quantity: product.quantity,
       });
       setIsSearchOpen(false);
       return;
@@ -93,7 +82,7 @@ export const HomeList = () => {
         ...product,
         track_quantity: product.track_quantity,
         variant_id: variant.id,
-        quantity: variant.quantity
+        quantity: variant.quantity,
       });
       setIsSearchOpen(false);
       return;
@@ -104,115 +93,197 @@ export const HomeList = () => {
       ...product,
       track_quantity: product.track_quantity,
       variant_id: undefined,
-      quantity: product.quantity
+      quantity: product.quantity,
     });
     setIsSearchOpen(false);
   };
 
-  const getPriceDisplay = (product: Product) => {
+  const getPriceDisplay = (product: any) => {
     if (!product.product_variants || product.product_variants.length === 0) {
-      return product.price === 0 ? t("free") : `฿${product.price.toLocaleString()}`;
+      return product.price === 0
+        ? t("free")
+        : `${product.price.toLocaleString()}`;
     }
 
     if (product.product_variants.length === 1) {
-      return `฿${product.product_variants[0].price.toLocaleString()}`;
+      return `${product.product_variants[0].price.toLocaleString()}`;
     }
 
-    const prices = product.product_variants.map(v => v.price);
+    const prices = product.product_variants.map((v: any) => v.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
     if (minPrice === maxPrice) {
-      return `฿${minPrice.toLocaleString()}`;
+      return `${minPrice.toLocaleString()}`;
     }
 
-    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+    return `${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
   };
 
   useEffect(() => {
     const loadProfile = async () => {
       const profile = await getUserProfile();
       if (profile) {
-        setUserProfile({
-          id: profile.id,
-          full_name: profile.full_name,
-          avatar_url: profile.avatar_url || null
-        });
+        setUserProfile(profile);
       }
     };
     loadProfile();
+
+    // Fetch categories
+    const fetchCategories = async () => {
+      setLoadingCategories(true);
+      const { data, error } = await supabase
+        .from("product_categories")
+        .select("*")
+        .order("name");
+
+      if (data) {
+        setCategories(data);
+      }
+      setLoadingCategories(false);
+    };
+    fetchCategories();
   }, []);
 
+  const handleCategoryClick = (categoryId: string | null) => {
+    setSelectedCategory(categoryId);
+    navigate("/products", { state: { selectedCategory: categoryId } });
+  };
+
   return (
-    <div className="relative">
-      <Header onSearchClick={() => setIsSearchOpen(true)} />
-
-      <div className="pt-[87px]">
-        <CategoryGrid
-          categories={categories}
-          isLoading={loading}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
-
-        <SearchDialog
-          isOpen={isSearchOpen}
-          onOpenChange={setIsSearchOpen}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          searchResults={searchResults}
-          onProductSelect={handleProductSelect}
-        />
-
-        <section className="px-4 py-6 space-y-6">
-          <ProductSection
-            title={t("Featured Products")}
-            linkTo="/products"
-            products={products}
-            onProductSelect={handleProductSelect}
-            sliderRef={productSliderRef}
+    <div className="min-h-full relative">
+      {/* Hero Section */}
+      <div className="relative">
+        <section
+          className={cn(
+            "relative w-full overflow-hidden"
+            // "bg-gradient-to-br from-primary/5 via-primary/10 to-transparent",
+            // "pb-[25px]"
+          )}
+        >
+          {/* Background Pattern */}
+          <div
+            className={cn(
+              "absolute inset-0 opacity-[0.15]",
+              "bg-[radial-gradient(circle_at_1px_1px,var(--primary)_1px,transparent_0)]",
+              "bg-[size:24px_24px]",
+              "[mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_70%)]"
+            )}
           />
 
-          {/* Flash Deals Section */}
-          <div className="space-y-4">
+          {/* Content Container */}
+          <div className="relative pt-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-semibold">{t("Flash Deals")}</h2>
-                <div className="px-2 py-1 bg-destructive text-white text-xs font-medium rounded-full">
-                  24:00:00
-                </div>
+              <div className="px-5">
+                {/* TODO: add GlowfishIcon */}
+                <GlowfishIcon />
               </div>
-              <Link to="/flash-deals" className="text-sm text-muted-foreground hover:text-foreground">
-                {t("See all")}
+              <Link to="/rewards">
+                <div className="px-5">
+                  <Avatar className="h-[50px] w-[50px] border-2 border-border">
+                    <AvatarImage
+                      src={
+                        userProfile?.avatar_url ||
+                        "https://github.com/shadcn.png"
+                      }
+                    />
+                    <AvatarFallback>
+                      {userProfile?.full_name?.charAt(0)?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {products.slice(0, 4).map((product) => (
-                <div
-                  key={product.id}
-                  onClick={() => handleProductSelect(product)}
-                >
-                  <AnimatedCard
-                    id={product.id}
-                    image={product.image}
-                    title={product.name}
-                    price={getPriceDisplay(product)}
-                    type="small"
-                  />
-                </div>
-              ))}
+            <div className="relative flex items-center text-sm mt-6 px-5">
+              <div className="relative w-full shadow-lg">
+                <Input
+                  className="h-10 pl-10 bg-darkgray text-foreground border border-input rounded-full"
+                  placeholder={t("Search events...")}
+                  onClick={() => setIsSearchOpen(true)}
+                  readOnly
+                />
+                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              </div>
             </div>
           </div>
         </section>
-
-        {selectedProduct && (
-          <ProductDetail
-            {...selectedProduct}
-            onClose={() => setSelectedProduct(null)}
-          />
-        )}
       </div>
+
+      {/* Search Dialog */}
+      <SearchDialog
+        isOpen={isSearchOpen}
+        onOpenChange={setIsSearchOpen}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchResults={searchResults}
+        onProductSelect={handleProductSelect}
+      />
+
+      {/* Category Bar */}
+      <div className="sticky top-0 z-50 bg-background border-y">
+        <CategoryGrid
+          categories={categories}
+          isLoading={loadingCategories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
+      </div>
+
+      <section className="py-6 space-y-6">
+        <ProductSection
+          title={t("Featured Products")}
+          linkTo="/products"
+          products={products}
+          onProductSelect={handleProductSelect}
+          sliderRef={productSliderRef}
+        />
+
+        {/* Flash Deals Section */}
+        <div className="space-y-4 px-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-semibold">{t("Flash Deals")}</h2>
+              <div className="px-2 py-1 bg-destructive text-white text-xs font-medium rounded-full">
+                24:00:00
+              </div>
+            </div>
+            <Link
+              to="/flash-deals"
+              className="text-sm text-muted-foreground hover:text-foreground no-underline"
+            >
+              {t("See all")}
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {products.slice(0, 4).map((product) => (
+              <div
+                key={product.id}
+                onClick={() => handleProductSelect(product)}
+              >
+                <AnimatedCard
+                  id={product.id}
+                  image={product.image}
+                  title={product.name}
+                  price={product.price}
+                  compareAtPrice={product.compare_at_price}
+                  description={product.description}
+                  type="small"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Product Detail */}
+      {selectedProduct && (
+        <ProductDetail
+          {...selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 };

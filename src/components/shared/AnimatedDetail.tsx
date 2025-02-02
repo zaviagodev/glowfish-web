@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import { CalendarIcon, Location, PriceTag } from "@/components/icons/MainIcons";
+import { Calendar, X, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { createPortal } from "react-dom";
@@ -20,7 +19,7 @@ const springConfig = {
   type: "spring",
   stiffness: 350,
   damping: 25,
-  mass: 0.5
+  mass: 0.5,
 };
 
 export function AnimatedDetail({
@@ -31,7 +30,7 @@ export function AnimatedDetail({
   date,
   price,
   points,
-  onClose
+  onClose,
 }: AnimatedDetailProps) {
   const t = useTranslate();
 
@@ -99,7 +98,7 @@ export function AnimatedDetail({
                   className="flex items-center gap-2 text-sm"
                   transition={springConfig}
                 >
-                  <Location className="w-4 h-4" />
+                  <MapPin className="w-4 h-4" />
                   <span>{location}</span>
                 </motion.div>
               )}
@@ -109,7 +108,7 @@ export function AnimatedDetail({
                   className="flex items-center gap-2 text-sm"
                   transition={springConfig}
                 >
-                  <CalendarIcon className="w-4 h-4" />
+                  <Calendar className="w-4 h-4" />
                   <span>{date}</span>
                 </motion.div>
               )}
@@ -119,8 +118,8 @@ export function AnimatedDetail({
                   className="flex items-center gap-2 text-sm text-primary font-medium"
                   transition={springConfig}
                 >
-                  <PriceTag className="w-4 h-4" />
-                  <span>{t("point", {count: points})}</span>
+                  <Tag className="w-4 h-4" />
+                  <span>{t("point", { count: points })}</span>
                 </motion.div>
               )}
             </div>
@@ -134,7 +133,8 @@ export function AnimatedDetail({
               <div className="space-y-2">
                 <h2 className="font-semibold">{t("Description")}</h2>
                 <p className="text-sm text-muted-foreground">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </p>
               </div>
 

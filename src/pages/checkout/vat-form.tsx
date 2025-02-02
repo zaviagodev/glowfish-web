@@ -30,48 +30,50 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
   const t = useTranslate();
   const form = useForm<VatFormData>({
     defaultValues: initialData || {
-      companyName: '',
-      taxId: '',
-      branch: '',
-      address: '',
+      companyName: "",
+      taxId: "",
+      branch: "",
+      address: "",
       is_default: false,
     },
   });
 
   const handleSubmit = async (data: VatFormData) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase
-        .from('vat_profiles')
-        .upsert({
-          ...data,
-          customer_id: user.id,
-          ...(initialData?.id ? { id: initialData.id } : {}),
-        });
+      const { error } = await supabase.from("vat_profiles").upsert({
+        ...data,
+        customer_id: user.id,
+        ...(initialData?.id ? { id: initialData.id } : {}),
+      });
 
       if (error) throw error;
       onSubmit(data);
     } catch (error) {
-      console.error('Error saving VAT profile:', error);
+      console.error("Error saving VAT profile:", error);
     }
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 pb-20">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="companyName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-foreground">{t("Company Name")}</FormLabel>
+              <FormLabel className="text-sm font-medium text-foreground">
+                {t("Company Name")}
+              </FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
-                  placeholder={t("Enter company name")} 
-                  className="h-12 bg-[rgba(245,245,245,0.5)] border-[#E5E5E5] focus:border-primary focus:ring-0" 
+                <Input
+                  {...field}
+                  placeholder={t("Enter company name")}
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -84,12 +86,14 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
           name="taxId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-foreground">{t("Tax ID")}</FormLabel>
+              <FormLabel className="text-sm font-medium text-foreground">
+                {t("Tax ID")}
+              </FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
-                  placeholder={t("Enter tax ID")} 
-                  className="h-12 bg-[rgba(245,245,245,0.5)] border-[#E5E5E5] focus:border-primary focus:ring-0" 
+                <Input
+                  {...field}
+                  placeholder={t("Enter tax ID")}
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -106,10 +110,10 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
                 {t("Branch No.")} ({t("Optional")})
               </FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
-                  placeholder={t("Enter branch number")} 
-                  className="h-12 bg-[rgba(245,245,245,0.5)] border-[#E5E5E5] focus:border-primary focus:ring-0" 
+                <Input
+                  {...field}
+                  placeholder={t("Enter branch number")}
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -122,12 +126,14 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-foreground">{t("Company Address")}</FormLabel>
+              <FormLabel className="text-sm font-medium text-foreground">
+                {t("Company Address")}
+              </FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
-                  placeholder={t("Enter company address")} 
-                  className="h-12 bg-[rgba(245,245,245,0.5)] border-[#E5E5E5] focus:border-primary focus:ring-0" 
+                <Input
+                  {...field}
+                  placeholder={t("Enter company address")}
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -156,7 +162,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
 
         <Button
           type="submit"
-          className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 mt-4 fixed bottom-4 left-4 right-4 max-w-[calc(600px-32px)] mx-auto"
+          className="w-[calc(100%_-_32px)] main-btn mt-4 fixed bottom-4 left-4 right-4 max-w-[calc(600px_-_32px)] mx-auto"
         >
           {t("Save Company")}
         </Button>

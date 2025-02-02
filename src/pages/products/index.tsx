@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ProductDetail } from "@/components/product/ProductDetail";
+import { useLocation } from "react-router-dom";
+import { CategoryGrid } from "@/components/home/CategoryGrid";
 
 interface Category {
   id: string;
@@ -32,27 +34,57 @@ interface Category {
 
 export default function ProductsPage() {
   const t = useTranslate();
-  const { products, categories, loading } = useProducts();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const location = useLocation();
+  const { products, loading } = useProducts();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    location.state?.selectedCategory || null
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [showSortDrawer, setShowSortDrawer] = useState(false);
   const [sortBy, setSortBy] = useState("newest");
-  const [priceRange, setPriceRange] = useState<{min: number, max: number | null}>({ min: 0, max: null });
+  const [priceRange, setPriceRange] = useState<{
+    min: number;
+    max: number | null;
+  }>({ min: 0, max: null });
   const [inStock, setInStock] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoadingCategories(true);
+      const { data } = await supabase
+        .from("product_categories")
+        .select("*")
+        .order("name");
+
+      if (data) {
+        setCategories(data);
+      }
+      setLoadingCategories(false);
+    };
+    fetchCategories();
+  }, []);
+
   // Filter and sort products
   const filteredProducts = products
-    .filter(product => 
-      (selectedCategory ? product.category_id === selectedCategory : true) &&
-      (searchQuery ? 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description?.toLowerCase().includes(searchQuery.toLowerCase())
-        : true) &&
-      (inStock ? (product.product_variants?.some(v => v.quantity > 0) ?? false) : true) &&
-      (priceRange.min !== null ? product.price >= priceRange.min : true) &&
-      (priceRange.max !== null ? product.price <= priceRange.max : true)
+    .filter(
+      (product) =>
+        (selectedCategory ? product.category_id === selectedCategory : true) &&
+        (searchQuery
+          ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.description
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase())
+          : true) &&
+        (inStock
+          ? product.product_variants?.some((v) => v.quantity > 0) ?? false
+          : true) &&
+        (priceRange.min !== null ? product.price >= priceRange.min : true) &&
+        (priceRange.max !== null ? product.price <= priceRange.max : true)
     )
     .sort((a, b) => {
       switch (sortBy) {
@@ -61,74 +93,42 @@ export default function ProductsPage() {
         case "price-high":
           return b.price - a.price;
         case "oldest":
-          return (a.created_at ? new Date(a.created_at).getTime() : 0) - 
-                 (b.created_at ? new Date(b.created_at).getTime() : 0);
+          return (
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          );
         default: // newest
-          return (b.created_at ? new Date(b.created_at).getTime() : 0) - 
-                 (a.created_at ? new Date(a.created_at).getTime() : 0);
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
       }
     });
 
-  // Get price display for a product
-  const getPriceDisplay = (product: any) => {
-    if (!product.product_variants || product.product_variants.length === 0) {
-      return product.price === 0 ? t("free") : `฿${product.price.toLocaleString()}`;
-    }
-
-    if (product.product_variants.length === 1) {
-      return `฿${product.product_variants[0].price.toLocaleString()}`;
-    }
-
-    const prices = product.product_variants.map((v: any) => v.price);
-    const minPrice = Math.min(...prices);
-    const maxPrice = Math.max(...prices);
-
-    if (minPrice === maxPrice) {
-      return `฿${minPrice.toLocaleString()}`;
-    }
-
-    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
-  };
-
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-dvh bg-background">
       {/* Search Bar */}
       <div className="sticky top-0 z-50 bg-background border-b">
-        <div className="p-4">
+        <div className="px-5 py-4">
           <div className="relative">
             <Input
-              className="pl-10 h-12 bg-[rgba(245,245,245,0.5)] border-[#E5E5E5] text-black"
+              className="pl-10 h-12 bg-darkgray border border-input"
               placeholder={t("Search products...")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground"/>
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           </div>
         </div>
 
         {/* Category Pills */}
-        <div className="flex items-center gap-4 px-4 overflow-auto py-2 scrollbar-hide">
-          <Button 
-            onClick={() => setSelectedCategory(null)}
-            variant={selectedCategory === null ? "default" : "secondary"}
-            className="rounded-full text-sm font-medium"
-          >
-            {t("All")}
-          </Button>
-          {categories.map(category => (
-            <Button 
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              variant={selectedCategory === category.id ? "default" : "secondary"}
-              className="rounded-full text-sm font-medium whitespace-nowrap"
-            >
-              {category.name}
-            </Button>
-          ))}
-        </div>
+        <CategoryGrid
+          categories={categories}
+          isLoading={loadingCategories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
 
         {/* Filter & Sort Bar */}
-        <div className="flex items-center justify-between px-4 py-3 border-t">
+        <div className="flex items-center justify-between px-5 py-3 border-t">
           <Button
             variant="ghost"
             size="sm"
@@ -151,7 +151,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Product Grid */}
-      <div className="p-4">
+      <div className="p-5">
         <div className="grid grid-cols-2 gap-4">
           {filteredProducts.map((product) => (
             <motion.div
@@ -163,8 +163,9 @@ export default function ProductsPage() {
                 id={product.id}
                 image={product.image}
                 title={product.name}
-                price={getPriceDisplay(product)}
+                price={product.price}
                 compareAtPrice={product.compare_at_price}
+                type="small"
                 onClick={() => {
                   // Get the default variant if product has variants
                   const defaultVariant = product.product_variants?.[0];
@@ -172,7 +173,7 @@ export default function ProductsPage() {
                     setSelectedProduct({
                       ...product,
                       variant_id: defaultVariant.id,
-                      quantity: defaultVariant.quantity
+                      quantity: defaultVariant.quantity,
                     });
                   } else {
                     setSelectedProduct(product);
@@ -187,18 +188,10 @@ export default function ProductsPage() {
       {/* Filter Drawer */}
       <Sheet open={showFilterDrawer} onOpenChange={setShowFilterDrawer}>
         <SheetContent side="bottom" className="h-[70%] p-0">
-          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-between">
+          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Filter Products")}
             </SheetTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary font-medium hover:bg-transparent"
-              onClick={() => setShowFilterDrawer(false)}
-            >
-              {t("Close")}
-            </Button>
           </SheetHeader>
           <div className="p-4 space-y-6 overflow-auto">
             <div className="space-y-4">
@@ -208,7 +201,12 @@ export default function ProductsPage() {
                   type="number"
                   placeholder={t("Min")}
                   value={priceRange.min || ""}
-                  onChange={(e) => setPriceRange(prev => ({ ...prev, min: Number(e.target.value) || 0 }))}
+                  onChange={(e) =>
+                    setPriceRange((prev) => ({
+                      ...prev,
+                      min: Number(e.target.value) || 0,
+                    }))
+                  }
                   className="h-10"
                 />
                 <span>-</span>
@@ -216,7 +214,12 @@ export default function ProductsPage() {
                   type="number"
                   placeholder={t("Max")}
                   value={priceRange.max || ""}
-                  onChange={(e) => setPriceRange(prev => ({ ...prev, max: Number(e.target.value) || null }))}
+                  onChange={(e) =>
+                    setPriceRange((prev) => ({
+                      ...prev,
+                      max: Number(e.target.value) || null,
+                    }))
+                  }
                   className="h-10"
                 />
               </div>
@@ -225,14 +228,19 @@ export default function ProductsPage() {
             <div className="space-y-4">
               <h3 className="text-sm font-medium">{t("Categories")}</h3>
               <div className="space-y-2">
-                {categories.map(category => (
-                  <div key={category.id} className="flex items-center space-x-2">
+                {categories.map((category) => (
+                  <div
+                    key={category.id}
+                    className="flex items-center space-x-2"
+                  >
                     <Checkbox
                       id={category.id}
                       checked={selectedCategory === category.id}
-                      onCheckedChange={() => setSelectedCategory(
-                        selectedCategory === category.id ? null : category.id
-                      )}
+                      onCheckedChange={() =>
+                        setSelectedCategory(
+                          selectedCategory === category.id ? null : category.id
+                        )
+                      }
                     />
                     <label
                       htmlFor={category.id}
@@ -263,9 +271,9 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          <div className="p-4 border-t bg-background/80 backdrop-blur-xl">
-            <Button 
-              className="w-full bg-primary text-primary-foreground"
+          <div className="p-4 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0">
+            <Button
+              className="w-full main-btn"
               onClick={() => setShowFilterDrawer(false)}
             >
               {t("Apply Filters")}
@@ -277,32 +285,31 @@ export default function ProductsPage() {
       {/* Sort Drawer */}
       <Sheet open={showSortDrawer} onOpenChange={setShowSortDrawer}>
         <SheetContent side="bottom" className="h-[40%] p-0">
-          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-between">
+          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Sort By")}
             </SheetTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary font-medium hover:bg-transparent"
-              onClick={() => setShowSortDrawer(false)}
-            >
-              {t("Close")}
-            </Button>
           </SheetHeader>
           <div className="p-4">
-            <Select value={sortBy} onValueChange={(value) => {
-              setSortBy(value);
-              setShowSortDrawer(false);
-            }}>
+            <Select
+              value={sortBy}
+              onValueChange={(value) => {
+                setSortBy(value);
+                setShowSortDrawer(false);
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={t("Select sort order")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="newest">{t("Newest First")}</SelectItem>
                 <SelectItem value="oldest">{t("Oldest First")}</SelectItem>
-                <SelectItem value="price-low">{t("Price: Low to High")}</SelectItem>
-                <SelectItem value="price-high">{t("Price: High to Low")}</SelectItem>
+                <SelectItem value="price-low">
+                  {t("Price: Low to High")}
+                </SelectItem>
+                <SelectItem value="price-high">
+                  {t("Price: High to Low")}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -1,7 +1,14 @@
 import { useTranslate } from "@refinedev/core";
-import { Wallet, ChevronRight } from "lucide-react";
+import {
+  Wallet,
+  ChevronRight,
+  ScanQrCode,
+  CreditCard,
+  Banknote,
+  Landmark,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -13,7 +20,7 @@ interface PaymentOption {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  icon: ReactNode;
 }
 
 const paymentOptions: PaymentOption[] = [
@@ -21,32 +28,32 @@ const paymentOptions: PaymentOption[] = [
     id: "promptpay",
     name: "PromptPay",
     description: "Pay via PromptPay QR Code",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/8/81/PromptPay-logo.png"
+    icon: <ScanQrCode className="h-4 w-4" />,
   },
   {
     id: "truemoney",
     name: "TrueMoney Wallet",
     description: "Pay with TrueMoney Wallet",
-    icon: "https://www.truemoney.com/wp-content/uploads/2022/01/truemoney-wallet-logo.png"
+    icon: <Wallet className="h-4 w-4" />,
   },
   {
     id: "bank_transfer",
     name: "Bank Transfer",
     description: "Transfer to our bank account",
-    icon: "https://cdn-icons-png.flaticon.com/512/2830/2830289.png"
+    icon: <Landmark className="h-4 w-4" />,
   },
   {
     id: "credit_card",
     name: "Credit/Debit Card",
     description: "Pay with Visa, Mastercard, etc.",
-    icon: "https://cdn-icons-png.flaticon.com/512/179/179457.png"
+    icon: <CreditCard className="h-4 w-4" />,
   },
   {
     id: "cash",
     name: "Cash on Delivery",
     description: "Pay when you receive",
-    icon: "https://cdn-icons-png.flaticon.com/512/2489/2489756.png"
-  }
+    icon: <Banknote className="h-4 w-4" />,
+  },
 ];
 
 interface PaymentMethodProps {
@@ -57,54 +64,53 @@ interface PaymentMethodProps {
 export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
   const t = useTranslate();
   const [showOptions, setShowOptions] = useState(false);
-  
-  const selectedOption = paymentOptions.find(option => option.id === value) || paymentOptions[0];
+
+  const selectedOption =
+    paymentOptions.find((option) => option.id === value) || paymentOptions[0];
 
   return (
     <>
-      <div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5]">
-        <div className="p-4">
-          <h2 className="text-sm font-medium mb-3">
-            {t("Payment Method")}
-          </h2>
+      <div className="bg-darkgray rounded-lg">
+        <div className="px-3 py-4">
+          <h2 className="text-sm font-medium mb-3">{t("Payment Method")}</h2>
 
-          <div 
-            className="bg-[rgba(23,23,23,0.05)] rounded-lg p-3 cursor-pointer"
+          <div
+            className="bg-[rgba(23,23,23,0.05)] rounded-lg flex items-center justify-between cursor-pointer"
             onClick={() => setShowOptions(true)}
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex items-center justify-center overflow-hidden">
-                <img 
-                  src={selectedOption.icon} 
-                  alt={selectedOption.name}
-                  className="w-5 h-5 object-contain"
-                />
+              <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
+                {selectedOption.icon}
               </div>
               <div>
-                <div className="text-sm font-medium text-[#1A1A1A]">
+                <div className="text-sm font-medium text-muted-foreground">
                   {selectedOption.name}
                 </div>
-                <div className="text-xs text-[#666666]">
+                <div className="text-xs text-secondary-foreground">
                   {selectedOption.description}
                 </div>
               </div>
             </div>
+            <ChevronRight className="w-5 h-5" />
           </div>
 
-          <button
+          {/* <button
             onClick={() => setShowOptions(true)}
-            className="flex items-center justify-center w-full mt-6 text-xs text-[#666666] hover:text-black transition-colors"
+            className="flex items-center justify-center w-full mt-6 text-xs text-secondary-foreground hover:text-secondary-foreground transition-colors"
           >
             <span className="mr-1">{t("See More")}</span>
             <ChevronRight className="w-3 h-3" />
-          </button>
+          </button> */}
         </div>
       </div>
 
       <Sheet open={showOptions} onOpenChange={setShowOptions}>
-        <SheetContent side="bottom" className="h-[70%] bg-white rounded-t-xl p-4">
+        <SheetContent
+          side="bottom"
+          className="h-[70%] bg-background rounded-t-xl px-4 py-3"
+        >
           <SheetHeader className="mb-4">
-            <SheetTitle className="text-lg font-semibold">
+            <SheetTitle className="text-lg font-semibold text-left">
               {t("Choose Payment Method")}
             </SheetTitle>
           </SheetHeader>
@@ -113,10 +119,8 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
               <button
                 key={option.id}
                 className={cn(
-                  "w-full text-left p-3 rounded-lg transition-all",
-                  option.id === value ? 
-                    "bg-[rgba(23,23,23,0.05)] border border-[#E0E0E0]" : 
-                    "bg-[rgba(245,245,245,0.5)] hover:bg-[#F2F2F2]"
+                  "w-full text-left p-3 rounded-lg transition-all bg-darkgray",
+                  option.id === value ? "border border-orangefocus" : ""
                 )}
                 onClick={() => {
                   onChange(option.id);
@@ -124,18 +128,14 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
                 }}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#EBEBEB] flex items-center justify-center overflow-hidden">
-                    <img 
-                      src={option.icon} 
-                      alt={option.name}
-                      className="w-5 h-5 object-contain"
-                    />
+                  <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
+                    {option.icon}
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-[#1A1A1A]">
+                    <div className="text-sm font-medium text-muted-foreground">
                       {option.name}
                     </div>
-                    <div className="text-xs text-[#666666]">
+                    <div className="text-xs text-secondary-foreground">
                       {option.description}
                     </div>
                   </div>

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CalendarIcon, Location, PriceTag } from "@/components/icons/MainIcons";
+import { Calendar, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +22,7 @@ const springConfig = {
   stiffness: 350,
   damping: 30,
   mass: 0.8,
-  restDelta: 0.001
+  restDelta: 0.001,
 };
 
 export function ProductCard({
@@ -36,7 +36,7 @@ export function ProductCard({
   type,
   validDate,
   onClick,
-  isSelected
+  isSelected,
 }: ProductCardProps) {
   const t = useTranslate();
 
@@ -82,10 +82,9 @@ export function ProductCard({
         />
       </motion.div>
 
-      <div className={cn(
-        "p-4 space-y-4",
-        type === "event" ? "flex-1" : "bg-card"
-      )}>
+      <div
+        className={cn("p-4 space-y-4", type === "event" ? "flex-1" : "bg-card")}
+      >
         <div className="space-y-2">
           <motion.h3
             layoutId={`title-${id}`}
@@ -94,7 +93,7 @@ export function ProductCard({
           >
             {title}
           </motion.h3>
-          
+
           {price && (
             <motion.p
               layoutId={`price-${id}`}
@@ -118,7 +117,7 @@ export function ProductCard({
                 )}
                 transition={springConfig}
               >
-                <Location className={isSelected ? "w-4 h-4" : "w-3.5 h-3.5"} />
+                <MapPin className={isSelected ? "w-4 h-4" : "w-3.5 h-3.5"} />
                 <span className="line-clamp-1">{location}</span>
               </motion.div>
             )}
@@ -131,7 +130,7 @@ export function ProductCard({
                 )}
                 transition={springConfig}
               >
-                <CalendarIcon className={isSelected ? "w-4 h-4" : "w-3.5 h-3.5"} />
+                <Calendar className={isSelected ? "w-4 h-4" : "w-3.5 h-3.5"} />
                 <span>{date}</span>
               </motion.div>
             )}
@@ -144,8 +143,8 @@ export function ProductCard({
                 )}
                 transition={springConfig}
               >
-                <PriceTag className={isSelected ? "w-4 h-4" : "w-3.5 h-3.5"} />
-                <span>{t("point", {count: points})}</span>
+                <Tag className={isSelected ? "w-4 h-4" : "w-3.5 h-3.5"} />
+                <span>{t("point", { count: points })}</span>
               </motion.div>
             )}
           </div>
@@ -161,17 +160,18 @@ export function ProductCard({
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ 
+            transition={{
               delay: 0.2,
               duration: 0.3,
-              ease: [0.32, 0.72, 0, 1]
+              ease: [0.32, 0.72, 0, 1],
             }}
             className="space-y-4"
           >
             <div className="space-y-2">
               <h2 className="font-semibold">{t("Description")}</h2>
               <p className="text-sm text-muted-foreground">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
               </p>
             </div>
           </motion.div>

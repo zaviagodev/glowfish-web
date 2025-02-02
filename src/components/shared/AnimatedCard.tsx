@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CalendarIcon, Location, PriceTag } from "@/components/icons/MainIcons";
+import { Calendar, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +22,7 @@ const springConfig = {
   type: "spring",
   stiffness: 350,
   damping: 30,
-  mass: 0.8
+  mass: 0.8,
 };
 
 export function AnimatedCard({
@@ -37,7 +37,7 @@ export function AnimatedCard({
   type,
   validDate,
   isSelected = false,
-  onClick
+  onClick,
 }: AnimatedCardProps) {
   const t = useTranslate();
 
@@ -46,18 +46,17 @@ export function AnimatedCard({
       layoutId={`card-${id}`}
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-white",
-        "border border-[#E5E5E5] hover:shadow-sm",
-        "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]",
-        type === "event" && "flex"
+        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full border border-input",
+        "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
+        type === "event" && "flex h-fit"
       )}
       transition={springConfig}
     >
       <motion.div
         layoutId={`image-container-${id}`}
         className={cn(
-          "relative overflow-hidden",
-          type === "small" ? "h-48 w-full" : "h-56 w-full",
+          "relative overflow-hidden p-2",
+          type === "small" ? "h-[32vw] w-full" : "h-[50vw] w-full",
           type === "event" && "w-[125px] min-w-[125px]"
         )}
         transition={springConfig}
@@ -66,24 +65,26 @@ export function AnimatedCard({
           layoutId={`image-${id}`}
           src={image}
           alt={title}
-          className="w-full h-full object-cover bg-[#fafafa]"
+          className="w-full h-full object-cover rounded-lg"
           transition={springConfig}
         />
       </motion.div>
 
-      <div className={cn(
-        "p-3 space-y-2",
-        type === "event" ? "flex-1" : "bg-[rgba(245,245,245,0.5)]"
-      )}>
+      <div
+        className={cn(
+          "p-2 pt-0 space-y-2",
+          type === "event" ? "flex-1 absolute bottom-0" : "bg-card"
+        )}
+      >
         <div className="space-y-2">
           <motion.h3
             layoutId={`title-${id}`}
-            className="text-sm font-normal text-[#222222] line-clamp-2 min-h-[32px]"
+            className="font-semibold text-card-foreground line-clamp-2 text-sm"
             transition={springConfig}
           >
             {title}
           </motion.h3>
-          
+
           <div className="space-y-2">
             {location && (
               <motion.div
@@ -91,7 +92,7 @@ export function AnimatedCard({
                 className="flex items-center gap-2 text-xs text-muted-foreground"
                 transition={springConfig}
               >
-                <Location className="w-3.5 h-3.5" />
+                <MapPin className="w-3.5 h-3.5" />
                 <span className="line-clamp-1">{location}</span>
               </motion.div>
             )}
@@ -101,7 +102,7 @@ export function AnimatedCard({
                 className="flex items-center gap-2 text-xs text-muted-foreground"
                 transition={springConfig}
               >
-                <CalendarIcon className="w-3.5 h-3.5" />
+                <Calendar className="w-3.5 h-3.5" />
                 <span>{date}</span>
               </motion.div>
             )}
@@ -111,38 +112,41 @@ export function AnimatedCard({
                 className="flex items-center gap-2 text-xs text-primary font-medium"
                 transition={springConfig}
               >
-                <PriceTag className="w-3.5 h-3.5" />
-                <span>{t("point", {count: points})}</span>
+                <Tag className="w-3.5 h-3.5" />
+                <span>{t("point", { count: points })}</span>
               </motion.div>
             )}
           </div>
         </div>
 
-        {price && (
+        {price ? (
           <motion.p
             layoutId={`price-${id}`}
             className="space-y-0.5"
             transition={springConfig}
           >
-            <span className="flex items-baseline gap-2">
-              <span className={cn(
-                "font-medium text-black",
-                "text-base"
-              )}>
-                {typeof price === 'number' ? price.toLocaleString() : price}
+            <span className="flex items-baseline gap-2 text-sm">
+              <span className={cn("text-secondary-foreground")}>
+                ฿{typeof price === "number" ? price.toLocaleString() : price}
               </span>
               {compareAtPrice && (
                 <span className="text-xs line-through text-[#999999]">
-                  {typeof compareAtPrice === 'number' ? compareAtPrice.toLocaleString() : compareAtPrice}
+                  ฿
+                  {typeof compareAtPrice === "number"
+                    ? compareAtPrice.toLocaleString()
+                    : compareAtPrice}
                 </span>
               )}
             </span>
             {compareAtPrice && (
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-[#EE4D2D]/10 text-[#EE4D2D]">
-                {Math.round((1 - (Number(price) / Number(compareAtPrice))) * 100)}% OFF
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-mainbutton/10">
+                {Math.round((1 - Number(price) / Number(compareAtPrice)) * 100)}
+                % OFF
               </span>
             )}
           </motion.p>
+        ) : (
+          "Free"
         )}
 
         {validDate && (

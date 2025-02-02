@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
-import { ChevronLeft, Search, Tag, Clock, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  Search,
+  Tag,
+  Clock,
+  ChevronRight,
+  Ticket,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCoupons, Coupon } from "@/lib/coupon";
+import { cn } from "@/lib/utils";
 
 // Sample coupons data
 const sampleCoupons: Coupon[] = [
@@ -12,74 +20,74 @@ const sampleCoupons: Coupon[] = [
     id: "1",
     code: "WELCOME20",
     description: "20% off your first order",
-    type: 'percentage',
+    type: "percentage",
     value: 20,
     minPurchase: 500,
     maxDiscount: 100,
     validUntil: "2024-12-31",
-    isApplicable: true
+    isApplicable: true,
   },
   {
     id: "2",
     code: "FREESHIP",
     description: "Free shipping on orders over ฿1,000",
-    type: 'shipping',
+    type: "shipping",
     value: 0,
     minPurchase: 1000,
     validUntil: "2024-12-31",
-    isApplicable: false
+    isApplicable: false,
   },
   {
     id: "3",
     code: "SAVE100",
     description: "฿100 off on orders over ฿1,500",
-    type: 'fixed',
+    type: "fixed",
     value: 100,
     minPurchase: 1500,
     validUntil: "2024-12-31",
-    isApplicable: true
+    isApplicable: true,
   },
   {
     id: "4",
     code: "FLASH50",
     description: "Flash Sale: 50% off selected items",
-    type: 'percentage',
+    type: "percentage",
     value: 50,
     minPurchase: 2000,
     maxDiscount: 500,
     validUntil: "2024-01-31",
-    isApplicable: true
+    isApplicable: true,
   },
   {
     id: "5",
     code: "EXPIRED25",
     description: "25% off all items",
-    type: 'percentage',
+    type: "percentage",
     value: 25,
     validUntil: "2023-12-31",
-    isApplicable: false
+    isApplicable: false,
   },
   {
     id: "6",
     code: "NEWUSER",
     description: "Special offer for new customers: ฿200 off",
-    type: 'fixed',
+    type: "fixed",
     value: 200,
     minPurchase: 1000,
     validUntil: "2024-12-31",
-    isApplicable: true
+    isApplicable: true,
   },
   {
     id: "7",
     code: "SEASONAL",
     description: "Seasonal discount: 30% off",
-    type: 'percentage',
+    type: "percentage",
     value: 30,
     minPurchase: 1500,
     maxDiscount: 300,
     validUntil: "2024-03-31",
-    isApplicable: false
-  }
+    isApplicable: false,
+  },
 ];
 
 export default function CouponsPage() {
@@ -89,54 +97,57 @@ export default function CouponsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { selectedCoupons, addCoupon, removeCoupon } = useCoupons();
   const [coupons, setCoupons] = useState<Coupon[]>(sampleCoupons);
-  
-  // Determine if we came from cart or checkout
-  const fromCart = location.state?.from === 'cart';
 
-  const filteredCoupons = coupons.filter(coupon => 
-    coupon.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    coupon.description.toLowerCase().includes(searchQuery.toLowerCase())
+  // Determine if we came from cart or checkout
+  const fromCart = location.state?.from === "cart";
+
+  const filteredCoupons = coupons.filter(
+    (coupon) =>
+      coupon.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      coupon.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleCouponSelect = (coupon: Coupon) => {
     if (coupon.isApplicable) {
-      const isSelected = selectedCoupons.some(c => c.id === coupon.id);
+      const isSelected = selectedCoupons.some((c) => c.id === coupon.id);
       if (isSelected) {
         removeCoupon(coupon.id);
       } else {
         addCoupon(coupon);
       }
       // Navigate back to the appropriate page
-      navigate(fromCart ? '/cart' : '/checkout');
+      navigate(fromCart ? "/cart" : "/checkout");
     }
   };
 
   const formatValue = (coupon: Coupon) => {
     switch (coupon.type) {
-      case 'percentage':
+      case "percentage":
         return `${coupon.value}% OFF`;
-      case 'fixed':
+      case "fixed":
         return `฿${coupon.value} OFF`;
-      case 'shipping':
-        return 'FREE SHIPPING';
+      case "shipping":
+        return "FREE SHIPPING";
       default:
-        return '';
+        return "";
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-14 px-4 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b">
         <Button
           variant="ghost"
           size="icon"
-          className="hover:bg-transparent"
+          className="hover:bg-transparent -ml-2"
           onClick={() => navigate(-1)}
         >
           <ChevronLeft className="h-6 w-6" />
         </Button>
-        <h1 className="text-title2 font-semibold tracking-tight">{t("My Coupons")}</h1>
+        <h1 className="text-title2 font-semibold tracking-tight">
+          {t("My Coupons")}
+        </h1>
         <div className="w-10" />
       </header>
 
@@ -144,7 +155,7 @@ export default function CouponsPage() {
         {/* Search Bar */}
         <div className="relative mb-4">
           <Input
-            className="pl-10 h-12 bg-[rgba(245,245,245,0.5)] border-[#E5E5E5]"
+            className="pl-10 h-12 bg-darkgray border border-input"
             placeholder={t("Search coupons...")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -157,45 +168,55 @@ export default function CouponsPage() {
           {filteredCoupons.map((coupon) => (
             <div
               key={coupon.id}
-              className={`bg-[rgba(245,245,245,0.5)] p-4 rounded-lg border ${
-                coupon.isApplicable 
-                  ? selectedCoupons.some(c => c.id === coupon.id)
-                    ? 'border-primary ring-2 ring-primary/10 cursor-pointer'
-                    : 'border-[#E5E5E5] cursor-pointer hover:border-primary/50'
-                  : 'border-[#E5E5E5] opacity-50'
-              } transition-all duration-200`}
+              className={`bg-darkgray p-4 rounded-lg ${
+                coupon.isApplicable
+                  ? selectedCoupons.some((c) => c.id === coupon.id)
+                    ? "ring-2 ring-orangefocus cursor-pointer"
+                    : "cursor-pointer hover:border-primary/50"
+                  : "opacity-50"
+              } transition-all duration-200 border-input`}
               onClick={() => handleCouponSelect(coupon)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Tag className="w-4 h-4 text-[#EE4D2D]" />
-                    <span className="text-lg font-bold text-[#EE4D2D] tracking-tight">
+                  <div
+                    className={`flex items-center gap-2 mb-2 w-fit px-3 py-1.5 rounded-full ${
+                      selectedCoupons.some((c) => c.id === coupon.id)
+                        ? "bg-orangefocus text-white"
+                        : "bg-mainbutton text-background"
+                    }`}
+                  >
+                    <Ticket className="w-4 h-4" />
+                    <span className="text-xs font-medium">
                       {formatValue(coupon)}
                     </span>
                   </div>
-                  <h3 className="font-medium mb-1 tracking-tight">{coupon.code}</h3>
+                  <h3 className="font-medium mb-1">{coupon.code}</h3>
                   <p className="text-sm text-muted-foreground mb-2">
                     {coupon.description}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock className="w-3.5 h-3.5" />
-                    <span>{t("Valid until")} {coupon.validUntil}</span>
+                    <span>
+                      {/* {t("Valid until")}  */}
+                      {coupon.validUntil}
+                    </span>
                   </div>
                 </div>
-                {coupon.isApplicable && (
-                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                )}
               </div>
-              {coupon.minPurchase && (
-                <div className="mt-2 pt-2 border-t border-[#E5E5E5] text-xs text-muted-foreground">
-                  {t("Min. spend")}: ฿{coupon.minPurchase.toLocaleString()}{coupon.maxDiscount && ` • ${t("Max discount")}: ฿${coupon.maxDiscount.toLocaleString()}`}
+              {/* {coupon.minPurchase && (
+                <div className="mt-2 pt-2 text-xs text-muted-foreground">
+                  {t("Min. spend")}: ฿{coupon.minPurchase.toLocaleString()}
+                  {coupon.maxDiscount &&
+                    ` • ${t(
+                      "Max discount"
+                    )}: ฿${coupon.maxDiscount.toLocaleString()}`}
                 </div>
-              )}
+              )} */}
               {!coupon.isApplicable && (
-                <div className="mt-2 pt-2 border-t border-[#E5E5E5] text-xs text-destructive">
-                  {new Date(coupon.validUntil) < new Date() 
-                    ? t("Coupon has expired") 
+                <div className="mt-2 pt-2 text-xs text-red-500">
+                  {new Date(coupon.validUntil) < new Date()
+                    ? t("Coupon has expired")
                     : t("Not applicable to current order")}
                 </div>
               )}

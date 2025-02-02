@@ -66,8 +66,13 @@ export default {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
   			},
-  			darkgray: '#303030',
-  			mainorange: '#EC441E',
+			tertiary: {
+				DEFAULT: 'hsl(var(--tertiary))',
+			},
+			mainbutton: {
+				DEFAULT: 'hsl(var(--mainbutton))'
+			},
+  			darkgray: 'hsl(var(--darkgray))',
   			border: 'hsl(var(--border))',
   			header: '#181818',
   			input: 'hsl(var(--input))',
@@ -81,10 +86,33 @@ export default {
   			},
   			line: '#04DD00',
   			fadewhite: '#FFFFFF61',
-  			orangefocus: '#EE5736'
-  		},
-  		letterSpacing: {
-  			DEFAULT: '-0.43px'
+  			orangefocus: '#EC441E',
+			icon: {
+				blue: {
+					foreground: 'rgb(33,150,243)',
+					background: 'rgba(33,150,243,0.1)'
+				},
+				red: {
+					foreground: 'rgb(244,67,54)',
+					background: 'rgba(244,67,54,0.1)'
+				},
+				yellow: {
+					foreground: 'rgb(252,200,0)',
+					background: 'rgba(252,200,0,0.1)'
+				},
+				orange: {
+					foreground: 'rgb(255,152,0)',
+					background: 'rgba(255,152,0,0.1)'
+				},
+				green: {
+					foreground: 'rgb(76,175,80)',
+					background: 'rgba(76,175,80,0.1)'
+				},
+				pink: {
+					foreground: 'rgb(175,82,222)',
+					background: 'rgba(175,82,222,0.1)'
+				}
+			}
   		},
   		fontFamily: {
   			'sfpro-rounded': 'SF Pro Rounded',

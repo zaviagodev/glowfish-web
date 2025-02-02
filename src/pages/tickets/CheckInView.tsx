@@ -1,10 +1,10 @@
 import { useTranslate } from "@refinedev/core";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { QrCode, Barcode, Hash, Calendar, MapPin } from "lucide-react";
+import { QrCode, Barcode, Hash, Calendar, MapPin, X } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 import Barcode1D from "react-barcode";
 import { TestCheckInView } from "./TestCheckInView";
 import { format } from "date-fns";
@@ -40,26 +40,33 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         className="absolute bottom-0 left-0 right-0 bg-background rounded-t-[20px] overflow-hidden"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative px-4 py-6 text-center border-b">
+        <div className="relative px-4 py-3 text-left border-b">
           <div className="absolute left-1/2 -top-3 w-12 h-1 bg-[#E5E5EA] rounded-full transform -translate-x-1/2" />
-          <h2 className="text-lg font-semibold">
-            {t("Check In")}
-          </h2>
+          <h2 className="text-lg font-semibold">{t("Check In")}</h2>
           <p className="text-sm text-muted-foreground mt-1">
             {t("Show this code to check in")}
           </p>
-          <button
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-primary"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowTestView(true);
-            }}
-          >
-            {t("Test")}
-          </button>
+
+          <div>
+            <button
+              className="bg-white/[12%] p-1 absolute right-4 top-3 rounded-full opacity-70"
+              onClick={onClose}
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <button
+              className="absolute right-4 top-[60%] text-sm text-primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowTestView(true);
+              }}
+            >
+              {t("Test")}
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -113,8 +120,8 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="w-64 h-64 bg-white rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
-                    <QRCodeSVG 
+                  <div className="w-64 h-64 bg-background rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
+                    <QRCodeCanvas
                       value={ticket.ticketNumber}
                       size={224}
                       level="H"
@@ -135,7 +142,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="w-full h-32 bg-white rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
+                  <div className="w-full h-32 bg-background rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
                     <Barcode1D
                       value={ticket.ticketNumber}
                       width={2}
@@ -157,7 +164,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="w-full bg-white rounded-2xl p-6 shadow-sm mb-4">
+                  <div className="w-full bg-background rounded-2xl p-6 shadow-sm mb-4">
                     <div className="text-center">
                       <div className="text-sm text-muted-foreground mb-2">
                         {t("Ticket Number")}
@@ -178,7 +185,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
 
         {/* Event Details */}
         <div className="px-6 pb-6">
-          <div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-4">
+          <div className="bg-darkgray rounded-lg p-4">
             <h3 className="font-medium mb-3">{ticket.eventName}</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -198,8 +205,12 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
       <AnimatePresence>
         {showTestView && (
           <TestCheckInView
-            onClose={() => setShowTestView(false)}
-            onComplete={() => {
+            onClose={(e: any) => {
+              e.stopPropagation();
+              setShowTestView(false);
+            }}
+            onComplete={(e) => {
+              e.stopPropagation();
               setShowTestView(false);
               onClose();
             }}

@@ -29,26 +29,26 @@ export function VoucherCard({ voucher }: VoucherCardProps) {
     ready: {
       color: "#34C759",
       bgColor: "rgba(52, 199, 89, 0.1)",
-      label: t("Ready to Use")
+      label: t("Ready to Use"),
     },
     used: {
       color: "#8E8E93",
       bgColor: "rgba(142, 142, 147, 0.1)",
-      label: t("Used")
-    }
+      label: t("Used"),
+    },
   };
 
   const typeConfig = {
     gift: {
       icon: Gift,
       color: "#FF9500",
-      bgColor: "rgba(255, 149, 0, 0.1)"
+      bgColor: "rgba(255, 149, 0, 0.1)",
     },
     coupon: {
       icon: Ticket,
       color: "#007AFF",
-      bgColor: "rgba(0, 122, 255, 0.1)"
-    }
+      bgColor: "rgba(0, 122, 255, 0.1)",
+    },
   };
 
   const config = typeConfig[voucher.type];
@@ -61,41 +61,44 @@ export function VoucherCard({ voucher }: VoucherCardProps) {
       whileHover={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className={cn(
-        "relative overflow-hidden rounded-2xl",
-        "bg-gradient-to-br from-white to-[#F8F8F8]",
+        "overflow-hidden rounded-lg bg-darkgray flex",
         "shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
-        "border border-[#E5E5EA]",
         "backdrop-blur-xl",
         voucher.status === "used" && "opacity-60"
       )}
     >
-      {/* Glass effect overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10" />
-
-      {/* Content */}
-      <div className="relative">
+      <img
+        src={voucher.image}
+        alt={voucher.title}
+        className="w-[120px] object-cover"
+      />
+      <div className="flex flex-col w-full p-4 justify-between">
         {/* Top Section */}
-        <div className="p-4 flex items-start gap-4">
-          {/* Image */}
-          <div className="w-[100px] h-[100px] rounded-xl overflow-hidden flex-shrink-0 border border-[#E5E5EA]">
-            <img 
-              src={voucher.image} 
-              alt={voucher.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
+        <div className="flex items-start gap-4 mb-2">
           <div className="flex-1 min-w-0">
-            {/* Type Badge */}
-            <div 
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mb-2"
-              style={{
-                color: config.color,
-                backgroundColor: config.bgColor
-              }}
-            >
-              <TypeIcon className="w-3.5 h-3.5" />
-              <span>{t(voucher.type === "gift" ? "Gift" : "Coupon")}</span>
+            <div className="flex items-center justify-between mb-2">
+              {/* Type Badge */}
+              <div
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                style={{
+                  color: config.color,
+                  backgroundColor: config.bgColor,
+                }}
+              >
+                <TypeIcon className="w-3.5 h-3.5" />
+                <span>{t(voucher.type === "gift" ? "Gift" : "Coupon")}</span>
+              </div>
+
+              {/* Status Badge */}
+              <div
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                style={{
+                  color: status.color,
+                  backgroundColor: status.bgColor,
+                }}
+              >
+                {status.label}
+              </div>
             </div>
 
             {/* Title and Description */}
@@ -108,41 +111,25 @@ export function VoucherCard({ voucher }: VoucherCardProps) {
           </div>
         </div>
 
-        {/* Divider with Notches */}
-        <div className="relative h-[1px] bg-[#E5E5EA] mx-4 before:absolute before:inset-0 before:bg-[linear-gradient(90deg,transparent,rgba(0,0,0,0.03),transparent)]">
-          <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-background rounded-full" />
-          <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-background rounded-full" />
-        </div>
-
         {/* Bottom Section */}
-        <div className="p-4 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* Status Badge */}
-            <div 
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
-              style={{
-                color: status.color,
-                backgroundColor: status.bgColor
-              }}
-            >
-              {status.label}
-            </div>
-
             {/* Expiry */}
             <div className="flex items-center gap-1.5 text-xs text-[#8E8E93]">
               <Clock className="w-3.5 h-3.5" />
               <span>
-                {t("Expires")} {new Date(voucher.expiryDate).toLocaleDateString()}
+                {t("Expires")}{" "}
+                {new Date(voucher.expiryDate).toLocaleDateString()}
               </span>
             </div>
           </div>
 
           {/* QR Code Button */}
-          <button 
+          <button
             className={cn(
               "w-8 h-8 rounded-full flex items-center justify-center",
               "transition-colors duration-200",
-              voucher.status === "ready" 
+              voucher.status === "ready"
                 ? "bg-black text-white hover:bg-black/90"
                 : "bg-[#8E8E93]/10 text-[#8E8E93]"
             )}

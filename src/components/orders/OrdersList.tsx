@@ -74,7 +74,7 @@ export function OrdersList({ orders, searchQuery, isLoading }: OrdersListProps) 
       >
         <Package2 className="w-16 h-16 text-muted-foreground/50 mb-4" />
         <p className="text-muted-foreground text-center">
-          {searchQuery 
+          {searchQuery
             ? t("No orders found matching your search")
             : t("No orders found")}
         </p>

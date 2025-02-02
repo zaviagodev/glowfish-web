@@ -1,18 +1,22 @@
 import { useTranslate } from "@refinedev/core";
-import { OTPInput as BaseOTPInput, SlotProps } from 'input-otp';
+import { OTPInput as BaseOTPInput, SlotProps } from "input-otp";
 import { cn } from "@/lib/utils";
 
 function Slot(props: SlotProps) {
   return (
     <div
       className={cn(
-        'relative w-12 h-16 text-[2rem]',
-        'flex items-center justify-center',
-        'border-input border-y border-r first:border-l first:rounded-l-md last:rounded-r-md',
-        { 'outline outline-1 outline-orangefocus': props.isActive },
+        "relative w-12 h-16 text-[2rem]",
+        "flex items-center justify-center",
+        "border-input border-y border-r first:border-l first:rounded-l-md last:rounded-r-md",
+        "group-hover:border-accent-foreground/20 group-focus-within:border-accent-foreground/20",
+        "outline outline-0 outline-accent-foreground/20",
+        { "outline-1 outline-orangefocus": props.isActive }
       )}
     >
-      {props.char !== null && <div className="font-sfpro-rounded">{props.char}</div>}
+      {props.char !== null && (
+        <div className="font-sfpro-rounded">{props.char}</div>
+      )}
       {props.hasFakeCaret && <FakeCaret />}
     </div>
   );
@@ -42,7 +46,7 @@ interface OTPInputProps {
 export const OTPInput: React.FC<OTPInputProps> = ({ value, onChange }) => {
   return (
     <BaseOTPInput
-      type="number"
+      // type="number"
       maxLength={6}
       value={value}
       onChange={onChange}

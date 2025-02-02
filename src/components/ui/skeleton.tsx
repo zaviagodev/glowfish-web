@@ -1,30 +1,15 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  shimmerDelay?: number;
-}
-
-export function Skeleton({
+function Skeleton({
   className,
-  shimmerDelay = 0,
   ...props
-}: SkeletonProps) {
+}: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn(
-        "relative overflow-hidden rounded-md bg-muted/40",
-        "after:absolute after:inset-0",
-        "after:translate-x-[-100%]",
-        "after:animate-[shimmer_2s_infinite]",
-        "after:bg-gradient-to-r",
-        "after:from-transparent after:via-white/10 after:to-transparent",
-        "transition-opacity duration-500 ease-in-out",
-        className
-      )}
-      style={{
-        animationDelay: `${shimmerDelay}ms`
-      }}
+      className={cn("animate-pulse rounded-md bg-muted", className)}
       {...props}
     />
-  )
+  );
 }
+
+export { Skeleton };

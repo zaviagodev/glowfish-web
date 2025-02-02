@@ -1,6 +1,5 @@
 import { motion, useMotionTemplate, useMotionValue, useTransform, animate } from "framer-motion";
-import { X } from "lucide-react";
-import { CalendarIcon, Location, PriceTag } from "@/components/icons/MainIcons";
+import { Tag, X, MapPin, Calendar } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
@@ -112,7 +111,7 @@ const ProductPage = ({
                   className="flex items-center gap-2 text-sm"
                   transition={SPRING_CONFIG}
                 >
-                  <Location className="w-4 h-4" />
+                  <MapPin className="w-4 h-4" />
                   <span>{location}</span>
                 </motion.div>
               )}
@@ -122,7 +121,7 @@ const ProductPage = ({
                   className="flex items-center gap-2 text-sm"
                   transition={SPRING_CONFIG}
                 >
-                  <CalendarIcon className="w-4 h-4" />
+                  <Calendar className="w-4 h-4" />
                   <span>{date}</span>
                 </motion.div>
               )}
@@ -132,7 +131,7 @@ const ProductPage = ({
                   className="flex items-center gap-2 text-sm text-primary font-medium"
                   transition={SPRING_CONFIG}
                 >
-                  <PriceTag className="w-4 h-4" />
+                  <Tag className="w-4 h-4" />
                   <span>{t("point", {count: points})}</span>
                 </motion.div>
               )}

@@ -7,24 +7,31 @@ import { useTranslate } from "@refinedev/core";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface EventSectionProps {
-  list: EventDataProps[],
-  title?: string
-  cardType?: string
-  seeAllLink?: string
-  eventCardLink?: string
-  isFullWidth?: boolean
+  list: EventDataProps[];
+  title?: string;
+  cardType?: string;
+  seeAllLink?: string;
+  eventCardLink?: string;
+  isFullWidth?: boolean;
 }
 
-const EventSection = ({ 
+const EventSection = ({
   list,
   title,
   cardType,
   seeAllLink,
   eventCardLink,
-  isFullWidth
-} : EventSectionProps) => {
+  isFullWidth,
+}: EventSectionProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -34,75 +41,52 @@ const EventSection = ({
       const scrollAmount = direction === "left" ? -400 : 400;
       scrollContainerRef.current.scrollBy({
         left: scrollAmount,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
 
   return (
     <section className="flex flex-col gap-4 mt-[30px]">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-5">
         <h3 className="page-title">{title}</h3>
         {seeAllLink && (
-          <Link to={seeAllLink} className="text-muted-foreground hover:text-foreground text-xs transition-colors">
+          <Link
+            to={seeAllLink}
+            className="text-muted-foreground hover:text-foreground text-xs transition-colors no-underline"
+          >
             {t("See all")}
           </Link>
         )}
       </div>
 
-      <div className="relative group">
-        <AnimatePresence>
-          {!isFullWidth && list.length > 2 && (
-            <>
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
-                onClick={() => scroll("left")}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background border-border"
-                onClick={() => scroll("right")}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </>
-          )}
-        </AnimatePresence>
-
-        <div 
-          ref={scrollContainerRef}
-          className={cn(
-            "flex gap-4",
-            isFullWidth ? "flex-col" : "overflow-x-auto scrollbar-hide scroll-smooth",
-            !isFullWidth && "pb-4"
-          )}
-        >
+      <Carousel>
+        <CarouselContent className="px-5">
           {list.map((item, index) => (
-            <motion.div
+            <CarouselItem
               key={item.id}
               initial={false}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className={cn(
-                "flex-shrink-0",
-                isFullWidth ? "w-full" : "w-[280px]"
+                "flex-shrink-0 w-full"
+                // isFullWidth ? "w-full" : "w-[280px]"
               )}
             >
-              <EventCard 
+              <EventCard
                 id={item.id}
                 {...item}
                 type={cardType}
-                onClick={() => navigate(`${eventCardLink || '/home/show/'}${item.id}`)}
+                onClick={() =>
+                  navigate(`${eventCardLink || "/home/show/"}${item.id}`)
+                }
               />
-            </motion.div>
+            </CarouselItem>
           ))}
-        </div>
-      </div>
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </section>
   );
 };

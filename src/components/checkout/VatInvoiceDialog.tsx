@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label"; 
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Plus, Building } from "lucide-react";
 
@@ -32,19 +32,19 @@ interface VatInvoiceDialogProps {
 // Sample saved VAT profiles - replace with actual data from your backend
 const savedVatProfiles = [
   {
-    id: '1',
-    companyName: 'Example Company Co., Ltd.',
-    taxId: '0123456789012',
-    branch: '00000',
-    address: '123 Business Road, Bangkok 10110'
+    id: "1",
+    companyName: "Example Company Co., Ltd.",
+    taxId: "0123456789012",
+    branch: "00000",
+    address: "123 Business Road, Bangkok 10110",
   },
   {
-    id: '2',
-    companyName: 'Another Business Corp.',
-    taxId: '9876543210987',
-    branch: '00001',
-    address: '456 Corporate Street, Bangkok 10120'
-  }
+    id: "2",
+    companyName: "Another Business Corp.",
+    taxId: "9876543210987",
+    branch: "00001",
+    address: "456 Corporate Street, Bangkok 10120",
+  },
 ];
 
 export function VatInvoiceDialog({
@@ -55,9 +55,9 @@ export function VatInvoiceDialog({
     companyName: "",
     taxId: "",
     branch: "",
-    address: ""
+    address: "",
   },
-  onSave
+  onSave,
 }: VatInvoiceDialogProps) {
   const t = useTranslate();
   const [data, setData] = useState<VatInvoiceData>(initialData);
@@ -65,11 +65,11 @@ export function VatInvoiceDialog({
   const [showNewForm, setShowNewForm] = useState(false);
 
   const handleProfileSelect = (profileId: string) => {
-    const profile = savedVatProfiles.find(p => p.id === profileId);
+    const profile = savedVatProfiles.find((p) => p.id === profileId);
     if (profile) {
       setData({
         enabled: true,
-        ...profile
+        ...profile,
       });
       setSelectedProfile(profileId);
       setShowNewForm(false);
@@ -83,7 +83,7 @@ export function VatInvoiceDialog({
         companyName: "",
         taxId: "",
         branch: "",
-        address: ""
+        address: "",
       });
     } else {
       onSave(data);
@@ -93,7 +93,7 @@ export function VatInvoiceDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-white max-w-[90%] w-[400px] rounded-lg p-0 border-0">
+      <DialogContent className="bg-background max-w-[90%] w-[400px] rounded-lg p-0 border-0">
         {/* Header */}
         <DialogHeader className="p-4 border-b">
           <div className="flex items-center gap-2">
@@ -114,16 +114,18 @@ export function VatInvoiceDialog({
             <Switch
               id="vat-invoice"
               checked={data.enabled}
-              onCheckedChange={(checked) => setData(prev => ({ ...prev, enabled: checked }))}
+              onCheckedChange={(checked) =>
+                setData((prev) => ({ ...prev, enabled: checked }))
+              }
             />
           </div>
 
           {data.enabled && (
             <>
               <RadioGroup
-                value={selectedProfile || ''}
+                value={selectedProfile || ""}
                 onValueChange={(value) => {
-                  if (value === 'new') {
+                  if (value === "new") {
                     setShowNewForm(true);
                     setSelectedProfile(null);
                   } else {
@@ -137,8 +139,8 @@ export function VatInvoiceDialog({
                     key={profile.id}
                     className={`flex items-start p-3 rounded-lg border ${
                       selectedProfile === profile.id
-                        ? 'border-primary bg-primary/5'
-                        : 'border-[#E5E5E5] bg-[#F8F8F8]'
+                        ? "border-primary bg-primary/5"
+                        : "border-[#E5E5E5] bg-background"
                     }`}
                   >
                     <RadioGroupItem
@@ -155,7 +157,8 @@ export function VatInvoiceDialog({
                       </Label>
                       <p className="text-sm text-muted-foreground mt-1">
                         {t("Tax ID")}: {profile.taxId}
-                        {profile.branch && ` • ${t("Branch")}: ${profile.branch}`}
+                        {profile.branch &&
+                          ` • ${t("Branch")}: ${profile.branch}`}
                       </p>
                       <p className="text-sm text-muted-foreground mt-0.5">
                         {profile.address}
@@ -168,8 +171,8 @@ export function VatInvoiceDialog({
                 <div
                   className={`flex items-start p-3 rounded-lg border ${
                     showNewForm
-                      ? 'border-primary bg-primary/5'
-                      : 'border-[#E5E5E5] bg-[#F8F8F8]'
+                      ? "border-primary bg-primary/5"
+                      : "border-[#E5E5E5] bg-background"
                   }`}
                 >
                   <RadioGroupItem value="new" id="new" className="mt-1" />
@@ -192,9 +195,14 @@ export function VatInvoiceDialog({
                     <Input
                       id="company-name"
                       value={data.companyName}
-                      onChange={(e) => setData(prev => ({ ...prev, companyName: e.target.value }))}
+                      onChange={(e) =>
+                        setData((prev) => ({
+                          ...prev,
+                          companyName: e.target.value,
+                        }))
+                      }
                       placeholder={t("Enter company name")}
-                      className="h-12 bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0"
+                      className="h-12 bg-background border-[#E5E5E5] focus:border-primary focus:ring-0"
                     />
                   </div>
 
@@ -203,20 +211,26 @@ export function VatInvoiceDialog({
                     <Input
                       id="tax-id"
                       value={data.taxId}
-                      onChange={(e) => setData(prev => ({ ...prev, taxId: e.target.value }))}
+                      onChange={(e) =>
+                        setData((prev) => ({ ...prev, taxId: e.target.value }))
+                      }
                       placeholder={t("Enter tax ID")}
-                      className="h-12 bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0"
+                      className="h-12 bg-background border-[#E5E5E5] focus:border-primary focus:ring-0"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="branch">{t("Branch No.")} ({t("Optional")})</Label>
+                    <Label htmlFor="branch">
+                      {t("Branch No.")} ({t("Optional")})
+                    </Label>
                     <Input
                       id="branch"
                       value={data.branch}
-                      onChange={(e) => setData(prev => ({ ...prev, branch: e.target.value }))}
+                      onChange={(e) =>
+                        setData((prev) => ({ ...prev, branch: e.target.value }))
+                      }
                       placeholder={t("Enter branch number")}
-                      className="h-12 bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0"
+                      className="h-12 bg-background border-[#E5E5E5] focus:border-primary focus:ring-0"
                     />
                   </div>
 
@@ -225,21 +239,26 @@ export function VatInvoiceDialog({
                     <Input
                       id="address"
                       value={data.address}
-                      onChange={(e) => setData(prev => ({ ...prev, address: e.target.value }))}
+                      onChange={(e) =>
+                        setData((prev) => ({
+                          ...prev,
+                          address: e.target.value,
+                        }))
+                      }
                       placeholder={t("Enter company address")}
-                      className="h-12 bg-[#F8F8F8] border-[#E5E5E5] focus:border-primary focus:ring-0"
+                      className="h-12 bg-background border-[#E5E5E5] focus:border-primary focus:ring-0"
                     />
                   </div>
                 </div>
               )}
             </>
           )}
-          
+
           {/* Footer */}
           <div className="flex gap-3 pt-2">
             <Button
               variant="outline"
-              className="flex-1 h-12 border-[#E5E5E5] hover:bg-[#F8F8F8]"
+              className="flex-1 h-12 border-[#E5E5E5]"
               onClick={() => onOpenChange(false)}
             >
               {t("Cancel")}

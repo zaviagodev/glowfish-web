@@ -1,11 +1,7 @@
-import {
-  Authenticated,
-  ErrorComponent,
-  Refine
-} from "@refinedev/core";
+import { Authenticated, ErrorComponent, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "react-i18next";
 import routerBindings, {
   CatchAllNavigate,
   DocumentTitleHandler,
@@ -13,16 +9,17 @@ import routerBindings, {
   UnsavedChangesNotifier,
 } from "@refinedev/react-router-v6";
 import dataProvider from "@refinedev/simple-rest";
-import { BrowserRouter, Outlet, Route, Routes, useSearchParams } from "react-router-dom";
+import {
+  BrowserRouter,
+  Outlet,
+  Route,
+  Routes,
+  useSearchParams,
+} from "react-router-dom";
 import "./App.css";
 import { authProvider } from "./authProvider";
 import { Layout } from "./components/layout";
-import {
-  HomeCreate,
-  HomeEdit,
-  HomeList,
-  HomeShow,
-} from "./pages/home";
+import { HomeCreate, HomeEdit, HomeList, HomeShow } from "./pages/home";
 import {
   CategoryCreate,
   CategoryEdit,
@@ -60,14 +57,20 @@ import VatInvoicePage from "./pages/checkout/vat-invoice";
 import PaymentPage from "./pages/checkout/payment";
 import CartPage from "./pages/cart";
 import { ToastProvider } from "@/components/ui/toast";
+import { ThemeProvider, useTheme } from "./hooks/useTheme";
 import ProductsPage from "./pages/products";
+import PromotionsPage from "./pages/promotions";
+import AddressSelection from "./pages/checkout/address-selection";
+import ThankYouPage from "./pages/checkout/thank-you";
+import MyEventsPage from "./pages/my-events";
+import MyEventDetail from "./pages/my-events/detail";
 
 function App() {
   const { t, i18n } = useTranslation();
   const { config } = useConfig();
 
   useEffect(() => {
-    i18n.changeLanguage("en");
+    i18n.changeLanguage(config.default_language);
   }, [config]);
 
   const i18nProvider = {
@@ -81,14 +84,14 @@ function App() {
 
   const StoreHandler = () => {
     const [searchParams] = useSearchParams();
-    
+
     useEffect(() => {
-      const store = searchParams.get('store');
+      const store = searchParams.get("store");
       if (store) {
-        localStorage.setItem('store', store);
+        localStorage.setItem("store", store);
       }
     }, [searchParams]);
-  
+
     return null;
   };
 
@@ -144,8 +147,14 @@ function App() {
                 <Route path="/line-callback" element={<LineCallback />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/phone-verification" element={<PhoneVerification />} />
-                <Route path="/tell-us-about-yourself" element={<TellUsAboutYourself />} />
+                <Route
+                  path="/phone-verification"
+                  element={<PhoneVerification />}
+                />
+                <Route
+                  path="/tell-us-about-yourself"
+                  element={<TellUsAboutYourself />}
+                />
 
                 {/* Protected Routes */}
                 <Route
@@ -159,19 +168,27 @@ function App() {
                   }
                 >
                   <Route index element={<HomeList />} />
-                  <Route path="/history" element={<HistoryPage />}/>
-                  <Route path="/checkout" element={<CheckoutPage />}/>
-                  <Route path="/cart" element={<CartPage />}/>
-                  <Route path="/my-rewards" element={<MyRewards />}/>
+                  <Route path="/history" element={<HistoryPage />} />
+                  <Route path="/checkout" element={<CheckoutPage />} />
+                  <Route path="/promotions" element={<PromotionsPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/my-rewards" element={<MyRewards />} />
                   <Route path="/rewards">
                     <Route index element={<Rewards />} />
-                    <Route path="detail/:id" element={<RewardDetail />}/>
+                    <Route path="detail/:id" element={<RewardDetail />} />
                   </Route>
+                  <Route path="/products" element={<ProductsPage />} />
                   <Route path="/settings">
                     <Route index element={<SettingsPage />} />
                     <Route path="profile" element={<ProfileSettings />} />
-                    <Route path="how-to-get-points" element={<HowToGetPoints />} />
-                    <Route path="how-to-spend-points" element={<HowToSpendPoints />} />
+                    <Route
+                      path="how-to-get-points"
+                      element={<HowToGetPoints />}
+                    />
+                    <Route
+                      path="how-to-spend-points"
+                      element={<HowToSpendPoints />}
+                    />
                     <Route path="member-level" element={<MemberLevel />} />
                     <Route path="points" element={<MyPointsPage />} />
                   </Route>
@@ -184,14 +201,28 @@ function App() {
                     <Route index element={<MyItemsPage />} />
                     <Route path=":id" element={<VoucherDetail />} />
                   </Route>
+                  <Route path="/my-events">
+                    <Route index element={<MyEventsPage />} />
+                    <Route path="detail/:id" element={<MyEventDetail />} />
+                  </Route>
                   <Route path="/checkout/coupons" element={<CouponsPage />} />
-                 <Route path="/checkout/points" element={<PointsPage />} />
-                 <Route path="/checkout/payment" element={<PaymentPage />} />
-                 <Route path="/checkout/vat-invoice" element={<VatInvoicePage />} />
-                 <Route path="/tickets" element={<TicketsPage />} />
-                 <Route path="/tickets/:id" element={<TicketDetails />} />
+                  <Route path="/checkout/points" element={<PointsPage />} />
+                  <Route
+                    path="/checkout/address"
+                    element={<AddressSelection />}
+                  />
+                  <Route path="/checkout/payment" element={<PaymentPage />} />
+                  <Route
+                    path="/checkout/thank-you"
+                    element={<ThankYouPage />}
+                  />
+                  <Route
+                    path="/checkout/vat-invoice"
+                    element={<VatInvoicePage />}
+                  />
+                  <Route path="/tickets" element={<TicketsPage />} />
+                  <Route path="/tickets/:id" element={<TicketDetails />} />
 
-                 <Route path="/products" element={<ProductsPage />} />
                   <Route path="/home">
                     <Route index element={<HomeList />} />
                     <Route path="create" element={<HomeCreate />} />
@@ -225,7 +256,9 @@ function AppWrapper() {
   return (
     <ConfigProvider>
       <ToastProvider>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </ToastProvider>
     </ConfigProvider>
   );
