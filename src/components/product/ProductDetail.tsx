@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, Calendar, Tag, ChevronLeft } from "lucide-react";
+import { MapPin, Calendar, Tag, ChevronLeft,ChevronRight } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
