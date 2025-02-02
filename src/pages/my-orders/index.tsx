@@ -56,7 +56,7 @@ export default function MyOrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-dvh bg-background">
         <PageHeader title={t("My Orders")} />
         <div className="flex items-center justify-center h-[calc(100vh-200px)]">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -67,7 +67,7 @@ export default function MyOrdersPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-dvh bg-background">
         <PageHeader title={t("My Orders")} />
         <div className="p-4 text-center text-red-500">{error}</div>
       </div>
@@ -75,48 +75,48 @@ export default function MyOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("My Orders")} />
 
       <div className="pt-14 pb-4">
         <OrdersSearch value={searchQuery} onChange={setSearchQuery} />
 
         <Tabs defaultValue="all" onValueChange={setActiveTab}>
-          <div className="px-4">
-            <TabsList className="w-full h-auto p-1 bg-[rgba(245,245,245,0.5)] grid grid-cols-6 gap-1">
-              <TabsTrigger 
-                value="all" 
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+          <div className="px-4 overflow-auto">
+            <TabsList className="w-full h-auto p-1 bg-tertiary min-w-fit gap-1">
+              <TabsTrigger
+                value="all"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("All")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="processing"
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("Processing")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="confirmed"
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("Confirmed")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="shipped"
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("Shipped")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="delivered"
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("Delivered")}
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="cancelled"
-                className="text-xs py-2.5 data-[state=active]:bg-white"
+                className="text-xs py-2.5 data-[state=active]:bg-background"
               >
                 {t("Cancelled")}
               </TabsTrigger>

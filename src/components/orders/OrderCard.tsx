@@ -51,7 +51,10 @@ export function OrderCard({ order, index }: OrderCardProps) {
         <div className="flex items-center gap-3">
           <div>
             <div className="text-sm font-medium">
-              {t("Order")} #{order.id}
+              {order.id && order.id.includes('-') 
+                ? `${t("Order")} #${order.id.split('-')[0]}`
+                : `${t("Order")} #${order.id?.substring(0, 8) || ''}`
+              }
             </div>
             <div className="text-xs text-muted-foreground">
               {formatDate(order.date)}
