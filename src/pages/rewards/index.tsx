@@ -1,51 +1,53 @@
 import Header from "@/components/main/Header";
-import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import cardReward from "@/img/my-card.svg";
 import EventSection from "@/components/main/EventSection";
 import { useTranslate } from "@refinedev/core";
-import { getUserProfile } from "@/lib/auth";
-import { useProducts } from "@/hooks/useProducts";
 import { useCustomer } from "@/hooks/useCustomer";
+import { useRewards } from "@/hooks/useRewards";
+import type { Customer } from "@/services/customerService";
 
 const Rewards = () => {
   const t = useTranslate();
   const {
-    products,
-    loading: productsLoading,
-    error: productsError,
-  } = useProducts();
+    rewards,
+    loading: rewardsLoading,
+    error: rewardsError,
+  } = useRewards();
   const {
     customer,
     loading: customerLoading,
     error: customerError,
   } = useCustomer();
-  // Convert products to event format for EventSection
-  const productEvents = products.map((product) => ({
-    id: product.id,
-    image: product.image,
-    title: product.name,
-    location: product.location,
-    date: product.date,
-    price: product.price,
-    points: product.price * 10, // Example points calculation
-    desc: product.description,
+
+  // Convert rewards to event format for EventSection
+  const rewardEvents = rewards.map((reward) => ({
+    id: parseInt(reward.id), // Convert string ID to number for EventDataProps
+    image: reward.image,
+    title: reward.name,
+    location: reward.location,
+    date: reward.date,
+    price: reward.price,
+    points: reward.price * 10, // Example points calculation
+    desc: reward.description,
   }));
 
-  if (customerLoading || productsLoading) {
+  if (customerLoading || rewardsLoading) {
     return <div className="text-center mt-8">Loading...</div>;
   }
 
-  if (customerError || productsError) {
+  if (customerError || rewardsError) {
     return (
       <div className="text-center text-red-500 mt-8">
-        {customerError || productsError}
+        {customerError || rewardsError}
       </div>
     );
   }
 
-  const fullName = customer
-    ? `${customer.first_name} ${customer.last_name}`.trim()
+  // Since customer is a single object from the API, we can use it directly
+  const customerData = customer as unknown as Customer; // Type assertion since we know it's a single customer
+  const fullName = customerData
+    ? `${customerData.first_name} ${customerData.last_name}`.trim()
     : "User";
 
   return (
@@ -58,28 +60,28 @@ const Rewards = () => {
           </h1>
           <Avatar className="h-[50px] w-[50px]">
             <AvatarImage
-              src={customer?.avatar_url || "https://github.com/shadcn.png"}
+              src={customerData?.meta?.avatar_url || "https://github.com/shadcn.png"}
             />
             <AvatarFallback>
               {fullName?.charAt(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
         </div>
-        <div className="member-card">
+        <div className="member-card h-[60px]">
           <img
             src={cardReward}
             className="absolute z-0 w-full h-full object-cover"
           />
           <div className="flex justify-between items-center p-5 z-5 font-semibold text-xl relative">
             <h3>{t("Glowfish reward.")}</h3>
-            <h3>{t("point", { count: customer?.loyalty_points || 0 })}</h3>
+            <h3>{t("point", { count: customerData?.loyalty_points || 0 })}</h3>
           </div>
         </div>
         <EventSection
           eventCardLink="/rewards/detail/"
-          list={productEvents}
+          list={rewardEvents}
           cardType="small"
-          title={t("Available Products")}
+          title={t("Available Rewards")}
         />
       </section>
     </>

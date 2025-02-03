@@ -78,6 +78,7 @@ export const EventService = {
 
   async getEventsByCustomerId(
     customerId: string,
+    storeName: string,
     page: number = 1,
     pageSize: number = 10
   ): Promise<PaginatedEvents> {
@@ -87,6 +88,7 @@ export const EventService = {
       const { data: eventsWithTickets, error: eventsError } = await supabase
         .rpc('get_customer_events', {
           p_customer_id: customerId,
+          p_store_name: storeName,
           p_limit: pageSize,
           p_offset: offset
         });

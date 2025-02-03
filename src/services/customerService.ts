@@ -15,7 +15,7 @@ export interface Customer {
 }
 
 export const CustomerService = {
-  async getCustomers(): Promise<Customer[]> {
+  async getCustomers(storeName: string): Promise<Customer[]> {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -36,6 +36,7 @@ export const CustomerService = {
           )
         `)
         .eq('auth_id', user.id)
+        .eq('store_name', storeName)
         .single();
 
       if (error) {
@@ -55,11 +56,12 @@ export const CustomerService = {
     }
   },
 
-  async getCustomerTiers(): Promise<any[]> {
+  async getCustomerTiers(storeName: string): Promise<any[]> {
     try {
       const { data, error } = await supabase
         .from('customer_tiers')
         .select('*')
+        .eq('store_name', storeName)
         .order('rewards_multiplier', { ascending: false });
 
       if (error) throw error;

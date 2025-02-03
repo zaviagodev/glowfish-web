@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ProductService, type Product, type Category } from '@/services/productService';
+import { useStore } from '@/hooks/useStore';
 
 // Cache key for localStorage
 const PRODUCTS_CACHE_KEY = 'cached_products';
@@ -10,6 +11,7 @@ const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 export const useProducts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { storeName } = useStore();
 
   // Use React Query for products data fetching and caching
   const { 
@@ -18,8 +20,8 @@ export const useProducts = () => {
     isError: productsError,
     refetch: refetchProducts 
   } = useQuery({
-    queryKey: ['products'],
-    queryFn: ProductService.getProducts,
+    queryKey: ['products', storeName],
+    queryFn: () => ProductService.getProducts(storeName),
     staleTime: CACHE_EXPIRY_TIME,
     cacheTime: CACHE_EXPIRY_TIME * 2,
     retry: 2,
@@ -36,8 +38,8 @@ export const useProducts = () => {
     isError: categoriesError,
     refetch: refetchCategories
   } = useQuery({
-    queryKey: ['categories'],
-    queryFn: ProductService.getCategories,
+    queryKey: ['categories', storeName],
+    queryFn: () => ProductService.getCategories(storeName),
     staleTime: CACHE_EXPIRY_TIME,
     cacheTime: CACHE_EXPIRY_TIME * 2,
     retry: 2,

@@ -64,7 +64,7 @@ const transformProduct = (event: any): Product => {
 
 
 export const ProductService = {
-  async getProducts(): Promise<Product[]> {
+  async getProducts(storeName: string): Promise<Product[]> {
     try {
       const { data, error } = await supabase
         .from('events')
@@ -95,6 +95,7 @@ export const ProductService = {
           )
         `
         )
+        .eq('store_name', storeName)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -116,11 +117,12 @@ export const ProductService = {
     }
   },
 
-  async getCategories(): Promise<Category[]> {
+  async getCategories(storeName: string): Promise<Category[]> {
     try {
       const { data, error } = await supabase
         .from('product_categories')
         .select('*')
+        .eq('store_name', storeName)
         .order('name');
 
       if (error) {
@@ -136,6 +138,57 @@ export const ProductService = {
       return data;
     } catch (error) {
       console.error('Failed to fetch categories:', error);
+      throw error;
+    }
+  },
+
+  async getRewards(storeName: string): Promise<Product[]> {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select(
+          `
+          *,
+            product_images (*),
+            product_variants (
+              id,
+              name,
+              sku,
+              price,
+              compare_at_price,
+              quantity,
+              options,
+              status,
+              position
+            ),
+            product_categories (
+              id,
+              name,
+              slug,
+              description
+            ),
+            product_tags (*)
+        `
+        )
+        .eq('store_name', storeName)
+        .eq('is_reward', true)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase query error:', error);
+        throw error;
+      }
+
+      if (!data) {
+        console.warn('No rewards returned from Supabase');
+        return [];
+      }
+
+      const formattedProducts = data.map(transformProduct);
+
+      return formattedProducts;
+    } catch (error) {
+      console.error('Failed to fetch rewards:', error);
       throw error;
     }
   },
