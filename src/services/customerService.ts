@@ -1,5 +1,24 @@
 import { supabase } from '@/lib/supabase';
 
+export interface Address {
+  id: string;
+  customer_id: string;
+  store_name: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  type: 'shipping' | 'billing';
+  is_default: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface Customer {
   id: string;
   first_name: string;
@@ -12,6 +31,7 @@ export interface Customer {
   meta: Record<string, any>;
   created_at: string;
   updated_at: string;
+  addresses?: Address[];
 }
 
 export const CustomerService = {
@@ -33,7 +53,8 @@ export const CustomerService = {
             description,
             rewards_multiplier,
             discount_percentage
-          )
+          ),
+          customer_addresses(*)
         `)
         .eq('auth_id', user.id)
         .eq('store_name', storeName)
@@ -48,8 +69,15 @@ export const CustomerService = {
         console.warn('No data returned from Supabase');
         return [];
       }
+      
 
-      return data; // Wrap single result in array since interface expects Customer[]
+      // Transform the data to match our interface
+      const customer = {
+        ...data,
+        addresses: data.customer_addresses || []
+      };
+
+      return [customer]; // Wrap single result in array since interface expects Customer[]
     } catch (error) {
       console.error('Failed to fetch customers:', error);
       throw error;

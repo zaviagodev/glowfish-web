@@ -162,10 +162,10 @@ export default function CartPage() {
 
       {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
-        <div className="mx-4 mt-3">
+        {/* <div className="mx-4 mt-3">
           <PromotionCard />
         </div>
-        <CouponCard subtotal={subtotal} className="mx-4 mt-3" />
+        <CouponCard subtotal={subtotal} className="mx-4 mt-3" /> */}
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Select All */}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import {
   Upload,
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 
 // Mock QR code image URL - replace with actual QR code generation
 const mockQRCode =
@@ -22,14 +23,60 @@ const mockQRCode =
 
 const shimmer = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;
 
+interface Order {
+  id: string;
+  total: number;
+  created_at: string;
+  status: string;
+}
+
 export default function PaymentPage() {
   const t = useTranslate();
   const navigate = useNavigate();
+  const { orderId } = useParams();
+  const [order, setOrder] = useState<Order | null>(null);
+  const [paymentOptions, setPaymentOptions] = useState<any>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [slipImage, setSlipImage] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [countdown, setCountdown] = useState(900); // 15 minutes in seconds
   const [isConfirming, setIsConfirming] = useState(false);
+
+  useEffect(() => {
+    const fetchOrderAndPaymentOptions = async () => {
+      try {
+        const store_name = localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
+        
+        // Fetch order
+        const { data: orderData, error: orderError } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('id', orderId)
+          .single();
+
+        if (orderError) throw orderError;
+        if (!orderData) {
+          navigate('/cart', { replace: true });
+          return;
+        }
+
+        setOrder(orderData);
+
+        // Fetch payment options
+        const { data: paymentData, error: paymentError } = await supabase
+          .rpc('get_payment_options', { store: store_name });
+
+        if (paymentError) throw paymentError;
+        setPaymentOptions(paymentData);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        navigate('/cart', { replace: true });
+      }
+    };
+
+    fetchOrderAndPaymentOptions();
+  }, [orderId, navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -45,33 +92,46 @@ export default function PaymentPage() {
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const handleConfirmPayment = () => {
-    if (isConfirming) return;
+  const handleConfirmPayment = async () => {
+    if (isConfirming || !order) return;
 
     setIsConfirming(true);
-    setShowCelebration(true);
+    try {
+      // Update order status to paid
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: 'paid' })
+        .eq('id', order.id);
 
-    // Wait for celebration animation then redirect
-    setTimeout(() => {
-      navigate("/checkout/thank-you", {
-        state: {
-          orderNumber:
-            "ORD" + Math.random().toString(36).substr(2, 9).toUpperCase(),
-          amount: 2500,
-          date: new Date().toISOString(),
-        },
-        replace: true,
-      });
-    }, 1500);
+      if (error) throw error;
+
+      setShowCelebration(true);
+
+      // Wait for celebration animation then redirect
+      setTimeout(() => {
+        navigate("/checkout/thank-you", {
+          state: {
+            orderNumber: order.id,
+            amount: order.total,
+            date: order.created_at,
+          },
+          replace: true,
+        });
+      }, 1500);
+    } catch (error) {
+      console.error('Error confirming payment:', error);
+      alert(t('Failed to confirm payment. Please try again.'));
+      setIsConfirming(false);
+    }
   };
 
   const handlePayLater = () => {
+    if (!order) return;
     navigate("/checkout/thank-you", {
       state: {
-        orderNumber:
-          "ORD" + Math.random().toString(36).substr(2, 9).toUpperCase(),
-        amount: 2500,
-        date: new Date().toISOString(),
+        orderNumber: order.id,
+        amount: order.total,
+        date: order.created_at,
       },
       replace: true,
     });
@@ -84,25 +144,60 @@ export default function PaymentPage() {
       const file = event.target.files?.[0];
       if (!file) return;
       setIsUploading(true);
-      // Simulate upload delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setSlipImage(URL.createObjectURL(file));
-    } catch (error) {
+
+      const store_name =
+        localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
+
+      // Create form data
+      const formData = new FormData();
+      formData.append("orderId", orderId!);
+      formData.append("storeName", store_name);
+      formData.append("paymentType", "promptpay");
+      formData.append("slipFile", file);
+
+      // Call the Edge Function
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/upload-payment-slip`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to upload payment slip");
+      }
+
+      setSlipImage(result.data.slip_url);
+    } catch (error: any) {
       console.error("Error uploading slip:", error);
-      alert(t("Failed to upload payment slip"));
+      alert(t(error.message || "Failed to upload payment slip"));
     } finally {
       setIsUploading(false);
     }
   };
 
   const handleDownloadQR = () => {
+    if (!paymentOptions?.promptpay?.qr_code) {
+      alert(t("QR code not available"));
+      return;
+    }
     const link = document.createElement("a");
-    link.href = mockQRCode;
+    link.href = paymentOptions.promptpay.qr_code;
     link.download = "promptpay-qr.png";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
+
+  if (!order || !paymentOptions) {
+    return <div className="min-h-dvh bg-background pt-14">Loading...</div>;
+  }
 
   return (
     <div className="min-h-dvh bg-background">
@@ -190,7 +285,7 @@ export default function PaymentPage() {
                 fontFeatureSettings: "'tnum' on, 'lnum' on",
               }}
             >
-              2,500
+              {order.total.toLocaleString()}
             </motion.span>
             <motion.span
               className="text-[25px] font-normal mt-2"
@@ -222,49 +317,57 @@ export default function PaymentPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          <motion.div
-            className={cn(
-              "w-64 h-64 bg-background rounded-2xl shadow-lg p-4 mb-4",
-              shimmer
-            )}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{
-              delay: 0.8,
-              type: "spring",
-              stiffness: 200,
-              damping: 15,
-            }}
-          >
-            <img
-              src={mockQRCode}
-              alt="PromptPay QR Code"
-              className="w-full h-full object-contain"
-            />
-          </motion.div>
-          <motion.p
-            className="text-sm text-center text-muted-foreground mb-4"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 }}
-          >
-            {t("Scan with any mobile banking app")}
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2 }}
-          >
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 px-4 rounded-full border-[#E5E5E5] hover:bg-[#F5F5F5]"
-              onClick={handleDownloadQR}
-            >
-              <Download className="w-4 h-4 mr-2" />
-              {t("Save QR Code")}
-            </Button>
-          </motion.div>
+          {paymentOptions?.promptpay ? (
+            <>
+              <motion.div
+                className={cn(
+                  "w-64 h-64 bg-background rounded-2xl shadow-lg p-4 mb-4",
+                  shimmer
+                )}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{
+                  delay: 0.8,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15,
+                }}
+              >
+                <img
+                  src={paymentOptions.promptpay.qr_code}
+                  alt="PromptPay QR Code"
+                  className="w-full h-full object-contain"
+                />
+              </motion.div>
+              <motion.p
+                className="text-sm text-center text-muted-foreground mb-4"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+              >
+                {t("Scan with any mobile banking app")}
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.2 }}
+              >
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-9 px-4 rounded-full border-[#E5E5E5] hover:bg-[#F5F5F5]"
+                  onClick={handleDownloadQR}
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t("Save QR Code")}
+                </Button>
+              </motion.div>
+            </>
+          ) : (
+            <div className="text-center text-muted-foreground">
+              {t("PromptPay QR code not available")}
+            </div>
+          )}
         </motion.div>
 
         {/* Upload Section */}

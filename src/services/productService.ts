@@ -149,26 +149,27 @@ export const ProductService = {
         .select(
           `
           *,
-            product_images (*),
-            product_variants (
-              id,
-              name,
-              sku,
-              price,
-              compare_at_price,
-              quantity,
-              options,
-              status,
-              position
-            ),
-            product_categories (
-              id,
-              name,
-              slug,
-              description
-            ),
-            product_tags (*)
-        `
+          product_images (*),
+          product_variants (
+            id,
+            name,
+            sku,
+            price,
+            compare_at_price,
+            quantity,
+            options,
+            status,
+            position,
+            points_based_price
+          ),
+          product_categories (
+            id,
+            name,
+            slug,
+            description
+          ),
+          product_tags (*)
+        `,
         )
         .eq('store_name', storeName)
         .eq('is_reward', true)
@@ -184,9 +185,7 @@ export const ProductService = {
         return [];
       }
 
-      const formattedProducts = data.map(transformProduct);
-
-      return formattedProducts;
+      return data;
     } catch (error) {
       console.error('Failed to fetch rewards:', error);
       throw error;

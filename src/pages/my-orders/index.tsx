@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslate } from "@refinedev/core";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { OrdersList } from "@/components/orders/OrdersList";
 import { OrdersSearch } from "@/components/orders/OrdersSearch";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -10,9 +11,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function MyOrdersPage() {
   const t = useTranslate();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const currentPage = parseInt(searchParams.get("page") || "1");
   const ITEMS_PER_PAGE = 10;
 
   const { 
@@ -23,6 +26,11 @@ export default function MyOrdersPage() {
     hasNextPage,
     hasPreviousPage 
   } = useOrders(currentPage, ITEMS_PER_PAGE);
+
+  const handlePageChange = (newPage: number) => {
+    setSearchParams({ page: newPage.toString() });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const filteredOrders = orders?.filter(order => 
     activeTab === "all" || (order.status === activeTab || (activeTab === "completed" && order.status === "shipped"))
@@ -139,7 +147,7 @@ export default function MyOrdersPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              onClick={() => handlePageChange(currentPage - 1)}
               disabled={!hasPreviousPage}
             >
               <ChevronLeft className="w-4 h-4 mr-1" />
@@ -151,7 +159,7 @@ export default function MyOrdersPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage(prev => prev + 1)}
+              onClick={() => handlePageChange(currentPage + 1)}
               disabled={!hasNextPage}
             >
               {t("Next")}
