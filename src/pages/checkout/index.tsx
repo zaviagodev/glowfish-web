@@ -4,7 +4,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
 import { usePoints } from "@/lib/points";
+import { useCustomer } from "@/hooks/useCustomer";
 import { supabase } from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
 import { AddressCard } from "@/components/shared/AddressCard";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { ProductList } from "@/components/checkout/ProductList";
@@ -15,6 +17,13 @@ import { MessageDialog } from "@/components/checkout/MessageDialog";
 import { CheckoutFooter } from "@/components/checkout/CheckoutFooter";
 import { ShippingMethod } from "@/components/checkout/ShippingMethod";
 import { SuccessDialog } from "@/components/checkout/SuccessDialog";
+import type { Address } from "@/services/customerService";
+
+interface CartItem {
+  variantId: string;
+  quantity: number;
+  price: number;
+}
 
 export default function CheckoutPage() {
   const t = useTranslate();
@@ -23,6 +32,7 @@ export default function CheckoutPage() {
   const { items: allItems } = useCart();
   const { getTotalDiscount } = useCoupons();
   const { getDiscountAmount } = usePoints();
+  const { customer, loading: customerLoading } = useCustomer();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cash");
@@ -39,6 +49,10 @@ export default function CheckoutPage() {
   // Get selected items from location state, fallback to all items if accessed directly
   const items = location.state?.selectedItems || allItems;
 
+  // Get customer addresses and default address
+  const addresses = customer?.addresses || [];
+  const defaultAddress = addresses.find(addr => addr.is_default) || addresses[0];
+
   // Redirect to cart if accessed directly without selected items
   if (!location.state?.selectedItems) {
     navigate("/cart", { replace: true });
@@ -52,8 +66,7 @@ export default function CheckoutPage() {
   );
   const discount = getTotalDiscount(subtotal);
   const pointsDiscount = getDiscountAmount();
-  const tax = subtotal * 0.07; // 7% tax
-  const total = subtotal - discount - pointsDiscount + tax;
+  const total = subtotal - discount - pointsDiscount;
 
   const handleCreateOrder = async () => {
     setIsProcessing(true);
@@ -63,11 +76,6 @@ export default function CheckoutPage() {
         throw new Error("Cart is empty");
       }
 
-      if (paymentMethod === "promptpay") {
-        navigate("/checkout/payment");
-        return;
-      }
-
       // Get current user
       const {
         data: { user },
@@ -75,7 +83,7 @@ export default function CheckoutPage() {
       if (!user) throw new Error("User not authenticated");
 
       // Prepare order items with variant IDs
-      const orderItems = items.map((item) => ({
+      const orderItems = items.map((item: CartItem) => ({
         variant_id: item.variantId,
         quantity: item.quantity,
         price: item.price,
@@ -90,12 +98,12 @@ export default function CheckoutPage() {
         p_subtotal: subtotal,
         p_discount: discount + pointsDiscount,
         p_shipping: 0,
-        p_tax: tax,
+        p_tax: 0,
         p_total: total,
         p_notes: JSON.stringify({
           message: storeMessage,
           vatInvoice: vatInvoiceData.enabled ? vatInvoiceData : null,
-          paymentMethod: paymentMethod,
+          paymentMethod: "promptpay",
         }),
         p_tags: ["web"],
         p_items: orderItems,
@@ -110,7 +118,12 @@ export default function CheckoutPage() {
         throw new Error("No order data returned");
       }
 
-      setShowSuccess(true);
+      // Clear the cart
+      localStorage.removeItem("cart");
+
+      
+      // Navigate to payment page with order ID
+      navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
     } catch (error) {
       console.error("Error creating order:", error);
       alert(
@@ -125,6 +138,10 @@ export default function CheckoutPage() {
     }
   };
 
+  if (customerLoading) {
+    return <div className="min-h-dvh bg-background pt-14">Loading...</div>;
+  }
+
   return (
     <div className="min-h-dvh bg-background">
       <PageHeader title={t("Checkout")} />
@@ -132,14 +149,25 @@ export default function CheckoutPage() {
       <div className="pt-14 pb-48">
         <div className="p-4 space-y-6">
           <ProductList items={items} />
-          <AddressCard
-            title={t("Delivery Address")}
-            name="John Doe"
-            phone="(+66) 123-456-789"
-            address="123 Sample Street, Bangkok, 10110"
-          />
+          {defaultAddress ? (
+            <div onClick={() => navigate("/checkout/address")}>
+              <AddressCard
+                title={t("Delivery Address")}
+                name={`${defaultAddress.first_name} ${defaultAddress.last_name}`}
+                phone={defaultAddress.phone}
+                address={`${defaultAddress.address1}${defaultAddress.address2 ? `, ${defaultAddress.address2}` : ''}, ${defaultAddress.city}, ${defaultAddress.state} ${defaultAddress.postal_code}`}
+              />
+            </div>
+          ) : (
+            <Button
+              onClick={() => navigate("/checkout/address")}
+              className="w-full"
+            >
+              {t("Add Delivery Address")}
+            </Button>
+          )}
 
-          <PointsCoupons subtotal={subtotal} />
+          {/* <PointsCoupons subtotal={subtotal} /> */}
 
           <PaymentMethod value={paymentMethod} onChange={setPaymentMethod} />
 
@@ -148,7 +176,6 @@ export default function CheckoutPage() {
             discount={discount}
             pointsDiscount={pointsDiscount}
             shipping={0}
-            tax={tax}
             total={total}
           />
         </div>

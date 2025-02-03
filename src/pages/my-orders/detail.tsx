@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslate } from "@refinedev/core";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -18,10 +18,16 @@ const formatDate = (date: Date | string | null) => {
 export default function OrderDetailPage() {
   const t = useTranslate();
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
-  const { orders, loading, error } = useOrders();
+  const { orders, loading, error } = useOrders(1, 1000);
   
   const order = orders?.find(order => order.id === id);
+  const page = location.state?.page || "1";
+
+  const handleBack = () => {
+    navigate(`/my-orders?page=${page}`);
+  };
 
   if (loading) {
     return (
@@ -61,8 +67,8 @@ export default function OrderDetailPage() {
       date: formatDate(order.created_at),
       description: "Your order has been confirmed",
       icon: Package2,
-      isActive: order.status === "pending",
-      isPending: 0
+      isActive: order.status === "pending" || order.status === "unpaid",
+      isPending: false
     },
     {
       status: "Processing",
@@ -70,21 +76,24 @@ export default function OrderDetailPage() {
       description: "Your order is processed and Payment Completed",
       icon: Package2,
       isActive: order.status === "processing",
-      isPending: !["processing", "shipped"].includes(order.status)
+      isPending: !["processing", "shipped", "delivered", "completed"].includes(order.status)
     },
     {
       status: "Completed and Shipped",
       date: order.status === "shipped" ? formatDate(new Date()) : "",
       description: "Your order has been Completed and Shipped",
       icon: Truck,
-      isActive: order.status === "shipped",
-      isPending: !["shipped"].includes(order.status)
+      isActive: order.status === "shipped" || order.status === "delivered" || order.status === "completed",
+      isPending: !["shipped", "delivered", "completed"].includes(order.status)
     }
   ] as const;
 
   return (
     <div className="min-h-dvh bg-background">
-      <PageHeader title={t("Order Details")} />
+      <PageHeader 
+        title={t("Order Details")} 
+        onBack={handleBack}
+      />
 
       <div className="pt-14 pb-32">
         {/* Order Status Header */}
@@ -253,11 +262,6 @@ export default function OrderDetailPage() {
             {t("Order Summary")}
           </h2>
 
-
-
-            {console.log(order)}
-
-
           <div className="bg-muted/30 rounded-lg p-5">
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
@@ -276,11 +280,23 @@ export default function OrderDetailPage() {
                   <span className="text-card-foreground">฿{(order.shipping || 0).toLocaleString()}</span>
                 </div>
               )}
-              {((order.discount ?? 0) > 0 || (order.points_discount ?? 0) > 0) && (
+              {(order.discount ?? 0) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("Discount")}</span>
-                  <span className="text-green-600">-฿{((order.discount || 0) + (order.points_discount || 0)).toLocaleString()}</span>
+                  <span className="text-green-600">-฿{(order.discount || 0).toLocaleString()}</span>
                 </div>
+              )}
+              {(order.points_discount ?? 0) > 0 && (
+                <>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{t("Points Discount")}</span>
+                    <span className="text-green-600">-฿{(order.points_discount || 0).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{t("Loyalty Points Used")}</span>
+                    <span className="text-muted-foreground">{(order.loyalty_points_used || 0).toLocaleString()} {t("points")}</span>
+                  </div>
+                </>
               )}
               <div className="pt-3 border-t border-border">
                 <div className="flex justify-between">
@@ -300,17 +316,29 @@ export default function OrderDetailPage() {
         </div>
       </div>
 
-      {/* Need Help Button */}
+      {/* Footer Actions */}
       <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border px-6 py-5">
-        <Button
-          variant="default"
-          size="lg"
-          className="w-full"
-          onClick={() => {/* Add help functionality */}}
-        >
-          <MessageCircle className="w-4 h-4 mr-2" />
-          {t("Need Help?")}
-        </Button>
+        <div className="space-y-3">
+          {order.status === "pending" && order.total_amount > 0 && (
+            <Button
+              variant="default"
+              size="lg"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+              onClick={() => navigate(`/checkout/payment/${order.id}`)}
+            >
+              {t("Pay Now")}
+            </Button>
+          )}
+          <Button
+            variant={order.status === "pending" && order.total_amount > 0 ? "outline" : "default"}
+            size="lg"
+            className="w-full"
+            onClick={() => {/* Add help functionality */}}
+          >
+            <MessageCircle className="w-4 h-4 mr-2" />
+            {t("Need Help?")}
+          </Button>
+        </div>
       </div>
     </div>
   );

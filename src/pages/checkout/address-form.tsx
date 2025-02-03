@@ -13,16 +13,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/lib/supabase";
+import { useStore } from "@/hooks/useStore";
 
 interface AddressFormData {
-  full_name: string;
+  id?: string;
+  first_name: string;
+  last_name: string;
   phone: string;
   address1: string;
   address2?: string;
   city: string;
   state: string;
   postal_code: string;
-  type: "home" | "office";
+  country: string;
+  type: "shipping" | "billing";
   is_default: boolean;
 }
 
@@ -33,16 +37,19 @@ interface AddressFormProps {
 
 export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
   const t = useTranslate();
+  const { storeName } = useStore();
   const form = useForm<AddressFormData>({
     defaultValues: initialData || {
-      full_name: "",
+      first_name: "",
+      last_name: "",
       phone: "",
       address1: "",
       address2: "",
       city: "",
       state: "",
       postal_code: "",
-      type: "home",
+      country: "Thailand",
+      type: "shipping",
       is_default: false,
     },
   });
@@ -57,6 +64,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
       const { error } = await supabase.from("customer_addresses").upsert({
         ...data,
         customer_id: user.id,
+        store_name: storeName,
         ...(initialData?.id ? { id: initialData.id } : {}),
       });
 
@@ -64,6 +72,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
       onSubmit(data);
     } catch (error) {
       console.error("Error saving address:", error);
+      alert(t("Failed to save address. Please try again."));
     }
   };
 
@@ -73,19 +82,19 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-4 pb-20"
       >
-        {/* Form Fields */}
+        {/* First Name */}
         <FormField
           control={form.control}
-          name="full_name"
+          name="first_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium text-foreground">
-                {t("Full Name")}
+                {t("First Name")}
               </FormLabel>
               <FormControl>
                 <Input
                   {...field}
-                  placeholder={t("Enter your full name")}
+                  placeholder={t("Enter your first name")}
                   className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
                 />
               </FormControl>
@@ -94,6 +103,28 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
           )}
         />
 
+        {/* Last Name */}
+        <FormField
+          control={form.control}
+          name="last_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium text-foreground">
+                {t("Last Name")}
+              </FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder={t("Enter your last name")}
+                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Phone */}
         <FormField
           control={form.control}
           name="phone"
@@ -114,6 +145,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
           )}
         />
 
+        {/* Address Line 1 */}
         <FormField
           control={form.control}
           name="address1"
@@ -134,6 +166,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
           )}
         />
 
+        {/* Address Line 2 */}
         <FormField
           control={form.control}
           name="address2"
@@ -154,6 +187,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
           )}
         />
 
+        {/* City and State */}
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -196,6 +230,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
           />
         </div>
 
+        {/* Postal Code */}
         <FormField
           control={form.control}
           name="postal_code"
@@ -216,6 +251,10 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
           )}
         />
 
+        {/* Hidden Country Field - Always Thailand */}
+        <input type="hidden" {...form.register("country")} value="Thailand" />
+
+        {/* Address Type */}
         <FormField
           control={form.control}
           name="type"
@@ -227,60 +266,60 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
               <div className="flex gap-4">
                 <Button
                   type="button"
-                  variant={field.value === "home" ? "default" : "outline"}
+                  variant={field.value === "shipping" ? "default" : "outline"}
                   className={`${
-                    field.value === "home"
+                    field.value === "shipping"
                       ? "main-btn"
                       : "bg-darkgray rounded-full"
                   }`}
-                  onClick={() => form.setValue("type", "home")}
+                  onClick={() => form.setValue("type", "shipping")}
                 >
                   <Home className="w-4 h-4 mr-2" />
-                  {t("Home")}
+                  {t("Shipping")}
                 </Button>
                 <Button
                   type="button"
-                  variant={field.value === "office" ? "default" : "outline"}
+                  variant={field.value === "billing" ? "default" : "outline"}
                   className={`${
-                    field.value === "office"
+                    field.value === "billing"
                       ? "main-btn"
                       : "bg-darkgray rounded-full"
                   }`}
-                  onClick={() => form.setValue("type", "office")}
+                  onClick={() => form.setValue("type", "billing")}
                 >
                   <Building2 className="w-4 h-4 mr-2" />
-                  {t("Office")}
+                  {t("Billing")}
                 </Button>
               </div>
-              <FormMessage />
             </FormItem>
           )}
         />
 
+        {/* Is Default */}
         <FormField
           control={form.control}
           name="is_default"
           render={({ field }) => (
-            <FormItem className="flex items-center space-x-2">
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
-              <FormLabel className="!mt-0">
-                {t("Set as default address")}
-              </FormLabel>
-              <FormMessage />
+              <div className="space-y-1 leading-none">
+                <FormLabel>
+                  {t("Set as default address")}
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
 
-        <div className="fixed p-6 bottom-0 left-0 w-full bg-background">
-          <Button type="submit" className="main-btn w-full">
-            {t("Save Address")}
-          </Button>
-        </div>
+        {/* Submit Button */}
+        <Button type="submit" className="w-full main-btn">
+          {t("Save Address")}
+        </Button>
       </form>
     </Form>
   );

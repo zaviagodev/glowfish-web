@@ -6,7 +6,6 @@ interface OrderSummaryProps {
   discount: number;
   pointsDiscount: number;
   shipping: number;
-  tax: number;
   total: number;
 }
 
@@ -15,7 +14,6 @@ export function OrderSummary({
   discount,
   pointsDiscount,
   shipping,
-  tax,
   total,
 }: OrderSummaryProps) {
   const t = useTranslate();
@@ -61,12 +59,6 @@ export function OrderSummary({
               {t("Shipping cost")}
             </span>
             <span className="text-body">฿{shipping.toLocaleString()}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-body text-muted-foreground">
-              {t("Tax")} (7%)
-            </span>
-            <span className="text-body">฿{tax.toFixed(2)}</span>
           </div>
           <div className="pt-3 mt-1 border-t flex justify-between">
             <span className="font-semibold">{t("Total")}</span>

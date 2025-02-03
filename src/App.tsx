@@ -60,7 +60,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider, useTheme } from "./hooks/useTheme";
 import ProductsPage from "./pages/products";
 import PromotionsPage from "./pages/promotions";
-import AddressSelection from "./pages/checkout/address-selection";
+import AddressSelection from "./pages/checkout/address";
 import ThankYouPage from "./pages/checkout/thank-you";
 import MyEventsPage from "./pages/my-events";
 import MyEventDetail from "./pages/my-events/detail";
@@ -211,7 +211,7 @@ function App() {
                     path="/checkout/address"
                     element={<AddressSelection />}
                   />
-                  <Route path="/checkout/payment" element={<PaymentPage />} />
+                  <Route path="/checkout/payment/:orderId" element={<PaymentPage />} />
                   <Route
                     path="/checkout/thank-you"
                     element={<ThankYouPage />}

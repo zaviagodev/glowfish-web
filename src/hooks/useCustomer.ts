@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { CustomerService, type Customer } from '@/services/customerService';
+import { useStore } from '@/hooks/useStore';
 
 // Cache key for localStorage
 const CUSTOMERS_CACHE_KEY = 'cached_customers';
@@ -10,6 +11,7 @@ const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 export const useCustomer = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { storeName } = useStore();
 
   // Use React Query for data fetching and caching
   const { 
@@ -18,11 +20,11 @@ export const useCustomer = () => {
     isError: customersError,
     refetch: refetchData
   } = useQuery({
-    queryKey: ['customers'],
+    queryKey: ['customers', storeName],
     queryFn: async () => {
       const [customersData, tiersData] = await Promise.all([
-        CustomerService.getCustomers(),
-        CustomerService.getCustomerTiers()
+        CustomerService.getCustomers(storeName),
+        CustomerService.getCustomerTiers(storeName)
       ]);
       return {
         customers: customersData,
@@ -64,8 +66,9 @@ export const useCustomer = () => {
       setLoading(false);
     }
   };
+
   return { 
-    customer: result.customers, 
+    customer: result.customers[0], // Return the first customer directly instead of the array
     tiers: result.tiers,
     loading, 
     error, 

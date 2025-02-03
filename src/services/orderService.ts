@@ -1,5 +1,50 @@
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/hooks/useStore';
+import { PostgrestResponse } from '@supabase/supabase-js';
+
+interface OrderItem {
+  id: string;
+  quantity: number;
+  price: number;
+  total: number;
+  variant_id: string;
+  product_variants: {
+    name: string;
+    options: {
+      name: string;
+      value: string;
+    }[];
+    product: {
+      id: string;
+      name: string;
+      description: string;
+      product_images: {
+        url: string;
+      }[];
+    };
+  };
+}
+
+interface DbOrder {
+  id: string;
+  status: string;
+  total: number;
+  subtotal: number;
+  tax: number;
+  shipping: number;
+  discount: number;
+  points_discount: number;
+  loyalty_points_used: number;
+  created_at: string;
+  customer_id: string;
+  customer: {
+    id: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+  };
+  order_items: OrderItem[];
+}
 
 export interface Order {
   id: string;
@@ -10,6 +55,7 @@ export interface Order {
   shipping: number;
   discount: number;
   points_discount: number;
+  loyalty_points_used: number;
   created_at: string;
   customer_id: string;
   customer: {
@@ -108,7 +154,7 @@ export const OrderService = {
       }
 
       // Transform the data to match the Order interface
-      const transformedOrders = data.map((order): Order => ({
+      const transformedOrders = (data as unknown as DbOrder[]).map((order): Order => ({
         id: order.id,
         status: order.status,
         total_amount: order.total || 0,
@@ -117,6 +163,7 @@ export const OrderService = {
         shipping: order.shipping || 0,
         discount: order.discount || 0,
         points_discount: order.points_discount || 0,
+        loyalty_points_used: order.loyalty_points_used || 0,
         created_at: order.created_at,
         customer_id: order.customer_id,
         customer: {

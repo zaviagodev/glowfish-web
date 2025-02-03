@@ -1,5 +1,5 @@
 import { useTranslate } from "@refinedev/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -39,11 +39,13 @@ interface OrderCardProps {
 export function OrderCard({ order, index }: OrderCardProps) {
   const t = useTranslate();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const currentPage = searchParams.get("page") || "1";
 
   const handleClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     navigate(`/my-orders/${order.id}`, {
-      state: { from: 'orders-list' }
+      state: { from: 'orders-list', page: currentPage }
     });
   };
 
