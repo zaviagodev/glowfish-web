@@ -66,8 +66,9 @@ export const useCustomer = () => {
       setLoading(false);
     }
   };
+
   return { 
-    customer: result.customers, 
+    customer: result.customers[0], // Return the first customer directly instead of the array
     tiers: result.tiers,
     loading, 
     error, 

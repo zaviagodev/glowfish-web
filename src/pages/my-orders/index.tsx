@@ -13,9 +13,9 @@ export default function MyOrdersPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
   const currentPage = parseInt(searchParams.get("page") || "1");
+  const currentStatus = searchParams.get("status") || "all";
+  const [searchQuery, setSearchQuery] = useState("");
   const ITEMS_PER_PAGE = 10;
 
   const { 
@@ -28,12 +28,21 @@ export default function MyOrdersPage() {
   } = useOrders(currentPage, ITEMS_PER_PAGE);
 
   const handlePageChange = (newPage: number) => {
-    setSearchParams({ page: newPage.toString() });
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("page", newPage.toString());
+    setSearchParams(newParams);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleStatusChange = (status: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("status", status);
+    newParams.set("page", "1"); // Reset to first page when changing status
+    setSearchParams(newParams);
+  };
+
   const filteredOrders = orders?.filter(order => 
-    activeTab === "all" || (order.status === activeTab || (activeTab === "completed" && order.status === "shipped"))
+    currentStatus === "all" || order.status === currentStatus
   ).filter(order =>
     order.order_items.some(item => 
       item.product_variants.product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -90,7 +99,7 @@ export default function MyOrdersPage() {
       <div className="pt-14 pb-4">
         <OrdersSearch value={searchQuery} onChange={setSearchQuery} />
 
-        <Tabs defaultValue="all" onValueChange={setActiveTab}>
+        <Tabs value={currentStatus} onValueChange={handleStatusChange}>
           <div className="px-4 overflow-auto">
             <TabsList className="w-full h-auto p-1 bg-tertiary min-w-fit gap-1">
               <TabsTrigger
@@ -100,16 +109,16 @@ export default function MyOrdersPage() {
                 {t("All")}
               </TabsTrigger>
               <TabsTrigger
-                value="processing"
+                value="unpaid"
                 className="text-xs py-2.5 data-[state=active]:bg-background"
               >
-                {t("Processing")}
+                {t("Unpaid")}
               </TabsTrigger>
               <TabsTrigger
-                value="confirmed"
+                value="pending"
                 className="text-xs py-2.5 data-[state=active]:bg-background"
               >
-                {t("Confirmed")}
+                {t("Pending")}
               </TabsTrigger>
               <TabsTrigger
                 value="shipped"

@@ -36,8 +36,6 @@ const Rewards = () => {
     };
   });
 
-  console.log(rewardEvents);
-
 
   if (customerLoading || rewardsLoading) {
     return <div className="text-center mt-8">Loading...</div>;
@@ -55,6 +53,7 @@ const Rewards = () => {
   const fullName = customerData
     ? `${customerData.first_name} ${customerData.last_name}`.trim()
     : "User";
+    
 
   return (
     <>

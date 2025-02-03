@@ -50,7 +50,7 @@ export default function CheckoutPage() {
   const items = location.state?.selectedItems || allItems;
 
   // Get customer addresses and default address
-  const addresses = customer[0]?.addresses || [];
+  const addresses = customer?.addresses || [];
   const defaultAddress = addresses.find(addr => addr.is_default) || addresses[0];
 
   // Redirect to cart if accessed directly without selected items

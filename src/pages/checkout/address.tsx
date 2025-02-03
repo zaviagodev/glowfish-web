@@ -35,7 +35,7 @@ export default function AddressSelection() {
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null);
 
   // Get addresses from customer data
-  const addresses = customer[0]?.addresses || [];
+  const addresses = customer?.addresses || [];
 
   const handleAddressSelect = (addressId: string) => {
     setSelectedAddress(addressId);
@@ -93,7 +93,7 @@ export default function AddressSelection() {
             >
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-icon-blue-background text-icon-blue-foreground flex-shrink-0 flex items-center justify-center">
-                  {address.type === "home" ? (
+                  {address.type === "shipping" ? (
                     <Home className="w-4 h-4" />
                   ) : (
                     <Building2 className="w-4 h-4" />
@@ -103,7 +103,7 @@ export default function AddressSelection() {
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="font-medium truncate">
-                        {address.full_name}
+                        {`${address.first_name} ${address.last_name}`.trim()}
                       </span>
                       {address.is_default && (
                         <span className="text-[10px] bg-primary/10 text-primary font-medium px-1.5 py-0.5 rounded-full flex-shrink-0">
