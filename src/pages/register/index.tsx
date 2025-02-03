@@ -8,7 +8,7 @@ export const Register = () => {
   return (
     <>
       <Header />
-      <section className="flex flex-col gap-6 main-container p-6">
+      <section className="flex flex-col gap-6 main-container p-5">
         <div className="flex flex-col gap-6">
           {/* TODO: add ProfileIcon */}
           ProfileIcon

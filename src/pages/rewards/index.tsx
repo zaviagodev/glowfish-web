@@ -29,7 +29,7 @@ const Rewards = () => {
     date: product.date,
     price: product.price,
     points: product.price * 10, // Example points calculation
-    desc: product.description,
+    description: product.description,
   }));
 
   if (customerLoading || productsLoading) {

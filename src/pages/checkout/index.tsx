@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslate } from "@refinedev/core";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useCart } from "@/lib/cart";
+import { CartItem, useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
 import { usePoints } from "@/lib/points";
 import { supabase } from "@/lib/supabase";
@@ -130,7 +130,7 @@ export default function CheckoutPage() {
       <PageHeader title={t("Checkout")} />
 
       <div className="pt-14 pb-48">
-        <div className="p-4 space-y-6">
+        <div className="p-5 space-y-6">
           <ProductList items={items} />
           <AddressCard
             title={t("Delivery Address")}

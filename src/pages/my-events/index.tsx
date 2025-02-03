@@ -42,8 +42,8 @@ const MyEventsPage = () => {
           </div>
         ) : (
           <section className="flex flex-col gap-y-5">
-            {events.map(event => (
-              <EventCard 
+            {events.map((event) => (
+              <EventCard
                 key={event.id}
                 type="event"
                 title={`${event.product_name} - ${event.variant_name}`}

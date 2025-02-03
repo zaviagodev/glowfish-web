@@ -78,8 +78,8 @@ export default function PointsPage() {
       {/* Header */}
       <PageHeader title={t("Use Points")} />
 
-      <div className="pt-14 pb-16">
-        <div className="p-4 space-y-6">
+      <div className="pt-14 pb-20">
+        <div className="p-5 space-y-6">
           {/* Points Balance Card */}
           <motion.div className="bg-darkgray rounded-lg">
             <div className="flex items-center gap-3 p-3">
@@ -230,7 +230,7 @@ export default function PointsPage() {
       </div>
 
       {/* Footer */}
-      <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t p-3 z-50">
+      <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t p-5 z-50">
         <Button
           className="w-full main-btn"
           disabled={

@@ -11,7 +11,7 @@ const TellUsAboutYourself = () => {
   return (
     <>
       <Header />
-      <section className="flex flex-col gap-y-9 mb-20 mt-14 p-6">
+      <section className="flex flex-col gap-y-9 mb-20 mt-14 p-5">
         <h2 className="main-heading">
           {t("Rate what you are")}{" "}
           <span className="text-[#FF2F00]">{t("into")}</span>

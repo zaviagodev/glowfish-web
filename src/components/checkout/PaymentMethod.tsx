@@ -107,7 +107,7 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
       <Sheet open={showOptions} onOpenChange={setShowOptions}>
         <SheetContent
           side="bottom"
-          className="h-[70%] bg-background rounded-t-xl px-4 py-3"
+          className="h-[70%] bg-background rounded-t-xl px-5 py-3"
         >
           <SheetHeader className="mb-4">
             <SheetTitle className="text-lg font-semibold text-left">

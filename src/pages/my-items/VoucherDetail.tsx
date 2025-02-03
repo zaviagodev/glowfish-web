@@ -76,21 +76,21 @@ export default function VoucherDetail() {
             </div>
 
             {/* Type Badge */}
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FF9500]/10 text-[#FF9500] text-xs font-medium mb-3 mx-6">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FF9500]/10 text-[#FF9500] text-xs font-medium mb-3 mx-5">
               <Gift className="w-3.5 h-3.5" />
               <span>{t(voucher.type === "gift" ? "Gift" : "Coupon")}</span>
             </div>
 
             {/* Title and Description */}
-            <h1 className="px-6 text-base font-bold tracking-tight mb-2">
+            <h1 className="px-5 text-base font-bold tracking-tight mb-2">
               {voucher.title}
             </h1>
-            <p className="px-6 text-[13px] leading-relaxed">
+            <p className="px-5 text-[13px] leading-relaxed">
               {voucher.description}
             </p>
 
             {/* Expiry */}
-            <div className="px-6 mt-4 flex items-center gap-1.5 text-sm text-[#8E8E93]">
+            <div className="px-5 mt-4 flex items-center gap-1.5 text-sm text-[#8E8E93]">
               <Clock className="w-4 h-4" />
               <span>
                 {/* {t("Valid until")}{" "} */}
@@ -101,7 +101,7 @@ export default function VoucherDetail() {
         </div>
 
         {/* Code Section */}
-        <div className="p-6">
+        <div className="p-5">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -202,19 +202,19 @@ export default function VoucherDetail() {
 
         {/* Terms & Conditions */}
         <motion.div
-          className="px-6 mt-6"
+          className="px-5 mt-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
           <div className="bg-background rounded-2xl overflow-hidden">
-            <div className="p-4 border-b flex items-center gap-2">
+            <div className="py-5 flex items-center gap-2">
               <Info className="w-4 h-4 text-[#8E8E93]" />
               <h2 className="text-base font-medium">
                 {t("Terms & Conditions")}
               </h2>
             </div>
-            <div className="p-4">
+            <div className="py-5">
               <div className="space-y-3">
                 {voucher.terms.map((term, index) => (
                   <motion.div

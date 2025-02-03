@@ -59,7 +59,7 @@ export default function CartPage() {
       <PageHeader title={`${t("Cart")} (${getTotalItems()})`} />
 
       {/* Cart Items */}
-      <div className="mt-14 overflow-auto h-[calc(100%_-_260px)]">
+      <div className="mt-14 overflow-auto h-[calc(100%_-_64px)]">
         <div className="divide-y">
           <AnimatePresence>
             {items.map((item) => (
@@ -69,7 +69,7 @@ export default function CartPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="p-3 flex gap-2.5 items-center"
+                className="py-3 px-5 flex gap-2.5 items-center"
               >
                 <Checkbox
                   checked={selectedItems.includes(item.variantId)}
@@ -162,11 +162,11 @@ export default function CartPage() {
 
       {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
-        <div className="mx-4 mt-3">
+        {/* <div className="mx-5 mt-4">
           <PromotionCard />
         </div>
-        <CouponCard subtotal={subtotal} className="mx-4 mt-3" />
-        <div className="px-4 py-3">
+        <CouponCard subtotal={subtotal} className="mx-5 mt-3" /> */}
+        <div className="px-5 py-3">
           <div className="flex items-center justify-between">
             {/* Select All */}
             <div className="flex items-center gap-3">

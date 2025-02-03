@@ -13,13 +13,6 @@ export interface OrderStatus {
 
 const defaultOrderStatuses: OrderStatus[] = [
   {
-    icon: <Package2 className="w-4 h-4" />,
-    label: "Unpaid",
-    count: 2,
-    color: "#F44336",
-    bgColor: "rgba(244, 67, 54, 0.1)",
-  },
-  {
     icon: <Clock className="w-4 h-4" />,
     label: "Pending",
     count: 1,
@@ -27,11 +20,18 @@ const defaultOrderStatuses: OrderStatus[] = [
     bgColor: "rgba(255, 152, 0, 0.1)",
   },
   {
+    icon: <Package2 className="w-4 h-4" />,
+    label: "Processing",
+    count: 2,
+    color: "#2196F3",
+    bgColor: "rgba(33, 150, 243, 0.1)",
+  },
+  {
     icon: <Truck className="w-4 h-4" />,
     label: "Shipped",
     count: 15,
-    color: "#2196F3",
-    bgColor: "rgba(33, 150, 243, 0.1)",
+    color: "#af52de",
+    bgColor: "rgba(175, 82, 222, 0.1)",
   },
   {
     icon: <CheckCircle2 className="w-4 h-4" />,
@@ -44,8 +44,8 @@ const defaultOrderStatuses: OrderStatus[] = [
     icon: <XCircle className="w-4 h-4" />,
     label: "Cancelled",
     count: 3,
-    color: "#9E9E9E",
-    bgColor: "rgba(158, 158, 158, 0.1)",
+    color: "#F44336",
+    bgColor: "rgba(244, 67, 54, 0.1)",
   },
 ];
 
@@ -64,7 +64,7 @@ export function OrderStatusBar({
   };
 
   return (
-    <div className="px-4 py-6">
+    <div className="px-5 py-6">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-sm font-medium text-muted-foreground">
           {t("My Orders")}

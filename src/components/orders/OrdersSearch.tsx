@@ -11,7 +11,7 @@ export function OrdersSearch({ value, onChange }: OrdersSearchProps) {
   const t = useTranslate();
 
   return (
-    <div className="p-4">
+    <div className="px-5 py-4">
       <div className="relative">
         <Input
           className="pl-10 h-12 bg-darkgray border-input"

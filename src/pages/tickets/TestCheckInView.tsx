@@ -131,7 +131,7 @@ export function TestCheckInView({ onClose, onComplete }: TestCheckInViewProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative px-4 py-3 text-left border-b">
+        <div className="relative px-5 py-3 text-left border-b">
           <div className="absolute left-1/2 -top-3 w-12 h-1 bg-[#E5E5EA] rounded-full transform -translate-x-1/2" />
           <h2 className="text-lg font-semibold">{t("Test Check-in")}</h2>
           <p className="text-sm text-muted-foreground mt-1">

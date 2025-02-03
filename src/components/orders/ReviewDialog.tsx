@@ -100,7 +100,7 @@ export function ReviewDialog({
         side="bottom"
         className="h-[85%] p-0 border-0 bg-background rounded-t-[14px]"
       >
-        <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl z-10">
+        <SheetHeader className="px-5 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,7 +113,7 @@ export function ReviewDialog({
         </SheetHeader>
 
         <div className="overflow-y-auto h-full">
-          <div className="p-4 space-y-6">
+          <div className="p-5 space-y-6">
             {/* Product Info */}
             <motion.div
               className="flex gap-3"

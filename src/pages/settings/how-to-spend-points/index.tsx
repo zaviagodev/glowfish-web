@@ -111,7 +111,7 @@ const HowToSpendPoints = () => {
         </div>
 
         {/* Redemption Methods */}
-        <div className="px-6">
+        <div className="px-5">
           <motion.h2
             className="text-sm font-medium text-muted-foreground tracking-wide mb-4"
             initial={{ opacity: 0, y: 20 }}
@@ -163,7 +163,7 @@ const HowToSpendPoints = () => {
         </div>
 
         {/* Terms & Conditions */}
-        <div className="px-6 mt-8">
+        <div className="px-5 mt-8">
           <motion.h2
             className="text-sm font-medium text-muted-foreground tracking-wide mb-4"
             initial={{ opacity: 0, y: 20 }}
@@ -176,7 +176,7 @@ const HowToSpendPoints = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="rounded-lg p-4 space-y-3"
+            className="rounded-lg space-y-3 pl-2"
           >
             {terms.map((term, index) => (
               <motion.div

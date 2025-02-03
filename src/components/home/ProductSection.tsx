@@ -11,6 +11,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import EventCard from "../main/EventCard";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface ProductSectionProps {
   title: string;
@@ -30,8 +32,8 @@ export const ProductSection = memo(function ProductSection({
   const t = useTranslate();
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between px-5">
+    <div className="space-y-4 px-5">
+      <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold">{title}</h2>
         <Link
           to={linkTo}
@@ -41,37 +43,25 @@ export const ProductSection = memo(function ProductSection({
         </Link>
       </div>
 
-      <Carousel>
-        <CarouselContent className="px-5">
-          {products.map((product) => (
-            <CarouselItem
-              key={product.id}
-              className="flex-shrink-0 w-[300px]"
-              onClick={() => onProductSelect(product)}
-            >
-              {/* <AnimatedCard
-                id={product.id}
-                image={product.image}
-                title={product.name}
-                price={product.price}
-                compareAtPrice={product.compare_at_price}
-                description={product.description}
-              /> */}
-              <EventCard
-                // id={product.id}
-                image={product.image}
-                title={product.name}
-                price={product.price}
-                compareAtPrice={product.compare_at_price}
-                description={product.description}
-                location={product.location}
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+      <div
+        ref={sliderRef}
+        className={cn(
+          "flex gap-3 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
+          "scroll-smooth"
+        )}
+      >
+        {products.slice(0, 4).map((product) => (
+          <motion.div
+            key={product.id}
+            className="flex-shrink-0 w-[280px]"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <EventCard {...product} />
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 });

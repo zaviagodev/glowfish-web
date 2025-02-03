@@ -107,7 +107,7 @@ export default function ThankYouPage() {
       </motion.div>
 
       {/* Order Details */}
-      <div className="px-6 py-8 space-y-6 relative z-20">
+      <div className="px-5 py-8 space-y-6 relative z-20">
         <motion.div
           className="space-y-4"
           initial={{ opacity: 0, y: 20 }}

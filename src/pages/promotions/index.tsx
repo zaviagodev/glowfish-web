@@ -83,7 +83,7 @@ export default function PromotionsPage() {
 
       <div className="pt-14 pb-4">
         {/* Promotions List */}
-        <div className="p-4 space-y-4">
+        <div className="p-5 space-y-4">
           {promotions.map((promo) => (
             <div
               key={promo.id}

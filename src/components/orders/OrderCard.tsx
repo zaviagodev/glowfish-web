@@ -41,9 +41,9 @@ export function OrderCard({ order, index }: OrderCardProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     navigate(`/my-orders/${order.id}`, {
-      state: { from: 'orders-list' }
+      state: { from: "orders-list" },
     });
   };
 
@@ -70,10 +70,9 @@ export function OrderCard({ order, index }: OrderCardProps) {
         <div className="flex items-center gap-3">
           <div>
             <div className="text-sm font-medium">
-              {order.id && order.id.includes('-') 
-                ? `${t("Order")} #${order.id.split('-')[0]}`
-                : `${t("Order")} #${order.id?.substring(0, 8) || ''}`
-              }
+              {order.id && order.id.includes("-")
+                ? `${t("Order")} #${order.id.split("-")[0]}`
+                : `${t("Order")} #${order.id?.substring(0, 8) || ""}`}
             </div>
             <div className="text-xs text-muted-foreground">
               {formatDate(order.created_at)}
@@ -94,7 +93,9 @@ export function OrderCard({ order, index }: OrderCardProps) {
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium line-clamp-2">{item.product_variants.product.name}</h3>
+            <h3 className="text-sm font-medium line-clamp-2">
+              {item.product_variants.product.name}
+            </h3>
             <div className="mt-2 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-muted-foreground">
@@ -113,7 +114,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
       <div className="p-4">
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            {order.order_items.length} {t("items")}
+            {t("items", { count: order.order_items.length })}
           </div>
           <div className="flex items-center gap-4">
             <div>

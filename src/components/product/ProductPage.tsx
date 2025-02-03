@@ -78,7 +78,7 @@ export const ProductPage = ({
             />
           </motion.div>
 
-          <div className="p-4 space-y-6">
+          <div className="p-5 space-y-6">
             <div className="space-y-2">
               <motion.h1
                 layoutId={`title-${id}`}

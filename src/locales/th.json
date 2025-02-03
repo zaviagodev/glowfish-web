@@ -39,6 +39,9 @@
   "ticket_other": "ตั๋ว {{count}} ใบ",
   "coupons applied_one": "ใช้คูปอง {{count}} ใบ",
   "coupons applied_other": "ใช้คูปอง {{count}} ใบ",
+  "items_one": "{{count}} ชิ้น",
+  "items_other": "{{count}} ชิ้น",
+
 
   "Didn't receive the OTP": "ไม่ได้รับรหัส",
   "Language": "ภาษา",

@@ -71,13 +71,13 @@ const MemberLevel = () => {
 
       <div className="pt-14 pb-10">
         {/* Current Level Card */}
-        <div className="p-6">
+        <div className="p-5">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-darkgray rounded-lg overflow-hidden"
           >
-            <div className="p-4 space-y-4">
+            <div className="p-5 space-y-4">
               <div className="flex items-center gap-3">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -130,7 +130,7 @@ const MemberLevel = () => {
         </div>
 
         {/* All Levels */}
-        <div className="px-6">
+        <div className="px-5">
           <h3 className="text-sm font-medium text-muted-foreground tracking-wide mb-4">
             {t("All Levels")}
           </h3>

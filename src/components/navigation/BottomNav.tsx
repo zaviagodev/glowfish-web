@@ -19,11 +19,11 @@ const BottomNav = () => {
     { icon: Calendar, label: "Products", path: "/products" },
     { icon: Gift, label: "Rewards", path: "/settings/points" },
     // { icon: History, label: "History", path: "/history" },
-    { icon: User, label: "Settings", path: "/settings" },
+    { icon: User, label: "Me", path: "/settings" },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-[50%] translate-x-[-50%] w-full max-w-[600px] z-50 bg-background/80 backdrop-blur-xl border-t">
+    <nav className="fixed bottom-0 left-[50%] translate-x-[-50%] w-full max-w-[600px] z-[49] bg-background/80 backdrop-blur-xl border-t">
       <div className="flex justify-around items-center h-[49px]">
         {navItems.map(({ icon: Icon, label, path }) => {
           const active = isActive(path);

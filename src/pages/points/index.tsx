@@ -4,7 +4,14 @@ import { motion } from "framer-motion";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Coins, ChevronRight, TrendingUp, Gift, Info, QrCode } from "lucide-react";
+import {
+  Coins,
+  ChevronRight,
+  TrendingUp,
+  Gift,
+  Info,
+  QrCode,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -23,7 +30,7 @@ export default function MyPointsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-dvh bg-background">
         <PageHeader title={t("My Points")} />
         <div className="text-center mt-8">Loading...</div>
       </div>
@@ -32,7 +39,7 @@ export default function MyPointsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-dvh bg-background">
         <PageHeader title={t("My Points")} />
         <div className="text-center text-red-500 mt-8">{error}</div>
       </div>
@@ -44,27 +51,27 @@ export default function MyPointsPage() {
   const nextTierPoints = 2000; // This should come from tiers data when available
 
   // Sort transactions by date in descending order
-  const sortedTransactions = [...pointsTransactions].sort((a, b) => 
-    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  const sortedTransactions = [...pointsTransactions].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHeader title={t("My Points")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-16">
         {/* Points Overview Card */}
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
-          <motion.div 
-            className="relative px-6 py-8"
+          <motion.div
+            className="relative px-5 py-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-white rounded-2xl border border-[#E5E5EA] p-6 shadow-sm">
+            <div className="bg-darkgray rounded-lg p-4 shadow-sm">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center">
-                  <Coins className="w-6 h-6 text-primary" />
+                <div className="w-12 h-12 rounded-full bg-yellow-400/10 flex items-center justify-center">
+                  <Coins className="w-6 h-6 text-yellow-400" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold">
@@ -77,25 +84,21 @@ export default function MyPointsPage() {
               </div>
 
               {/* QR Code Button */}
-              <Button
+              {/* <Button
                 variant="outline"
                 size="sm"
-                className="absolute top-4 right-4 h-8 px-3 text-xs border-[#E5E5EA] hover:bg-[#F8F8F8]"
+                className="absolute top-4 right-4 h-8 px-3 text-xs border-[#E5E5EA]"
                 onClick={() => setShowQR(true)}
               >
                 <QrCode className="w-3.5 h-3.5 mr-1.5" />
                 {t("My QR")}
-              </Button>
-
+              </Button> */}
             </div>
           </motion.div>
         </div>
 
-
-
         {/* Quick Actions */}
-        <div className="px-6 space-y-4">
-
+        <div className="px-5 space-y-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -103,18 +106,16 @@ export default function MyPointsPage() {
           >
             <Button
               variant="outline"
-              className="w-full h-auto p-4 justify-between hover:bg-transparent border-[#E5E5EA] group"
-              onClick={() => navigate('/settings/how-to-get-points')}
+              className="w-full h-auto p-4 justify-between bg-darkgray rounded-lg"
+              onClick={() => navigate("/settings/how-to-get-points")}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#34C759]/10 flex items-center justify-center">
+                <div className="min-w-10 h-10 rounded-lg bg-[#34C759]/10 flex items-center justify-center">
                   <Gift className="w-5 h-5 text-[#34C759]" />
                 </div>
                 <div className="text-left">
-                  <div className="font-medium text-[#1A1A1A]">
-                    {t("How to Earn Points")}
-                  </div>
-                  <div className="text-xs text-[#8E8E93]">
+                  <div className="font-medium">{t("How to Earn Points")}</div>
+                  <div className="text-xs text-muted-foreground">
                     {t("Learn ways to earn more points")}
                   </div>
                 </div>
@@ -126,8 +127,8 @@ export default function MyPointsPage() {
 
         {/* Points History */}
         <div className="mt-8">
-          <div className="px-6 mb-4">
-            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+          <div className="px-5 mb-4">
+            <h3 className="text-sm font-medium text-muted-foreground tracking-wide">
               {t("Points History")}
             </h3>
           </div>
@@ -138,49 +139,59 @@ export default function MyPointsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + index * 0.1 }}
-                className="bg-white px-6 py-4"
+                className="px-5 py-4"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div 
+                    <div
                       className={cn(
-                        "w-10 h-10 rounded-lg flex items-center justify-center",
-                        transaction.type === "earn" 
-                          ? "bg-[#34C759]/10" 
+                        "min-w-10 h-10 rounded-lg flex items-center justify-center",
+                        transaction.type === "earn"
+                          ? "bg-[#34C759]/10"
                           : "bg-[#FF3B30]/10"
                       )}
                     >
-                      <Coins className={cn(
-                        "w-5 h-5",
-                        transaction.type === "earn" 
-                          ? "text-[#34C759]" 
-                          : "text-[#FF3B30]"
-                      )} />
+                      <Coins
+                        className={cn(
+                          "w-5 h-5",
+                          transaction.type === "earn"
+                            ? "text-[#34C759]"
+                            : "text-[#FF3B30]"
+                        )}
+                      />
                     </div>
                     <div>
                       <p className="text-sm font-medium">
-                        {transaction.description || t(transaction.type === "earn" ? "Points Earned" : "Points Redeemed")}
+                        {transaction.description ||
+                          t(
+                            transaction.type === "earn"
+                              ? "Points Earned"
+                              : "Points Redeemed"
+                          )}
                       </p>
                       <p className="text-xs text-[#8E8E93]">
                         {format(new Date(transaction.created_at), "MMM dd")}
                       </p>
                     </div>
                   </div>
-                  <div className={cn(
-                    "text-sm font-semibold",
-                    transaction.type === "earn" 
-                      ? "text-[#34C759]" 
-                      : "text-[#FF3B30]"
-                  )}>
-                    {transaction.type === "earn" ? "+" : "-"}{transaction.points}
+                  <div
+                    className={cn(
+                      "text-sm font-semibold",
+                      transaction.type === "earn"
+                        ? "text-[#34C759]"
+                        : "text-[#FF3B30]"
+                    )}
+                  >
+                    {transaction.type === "earn" ? "+" : "-"}
+                    {transaction.points}
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
           {pointsTransactions.length > 10 && (
-            <motion.div 
-              className="px-6 mt-4"
+            <motion.div
+              className="px-5 mt-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
@@ -188,7 +199,7 @@ export default function MyPointsPage() {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={() => navigate('/history')}
+                onClick={() => navigate("/history")}
               >
                 {t("View All History")}
               </Button>
@@ -198,19 +209,21 @@ export default function MyPointsPage() {
 
         {/* Info Box */}
         <motion.div
-          className="px-6 mt-6"
+          className="px-5 mt-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <div className="bg-[#F2F2F7] rounded-lg p-4 flex items-start gap-3">
-            <Info className="w-5 h-5 text-[#8E8E93] flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3">
+            <Info className="w-5 h-5 flex-shrink-0 mt-0.5 text-[#8E8E93]" />
             <div className="space-y-1">
-              <p className="text-sm font-medium text-[#1A1A1A]">
+              <p className="text-sm font-medium text-muted-foreground">
                 {t("About Points")}
               </p>
               <p className="text-xs text-[#8E8E93] leading-relaxed">
-                {t("Points are earned through purchases and special promotions. They can be redeemed for discounts and exclusive rewards.")}
+                {t(
+                  "Points are earned through purchases and special promotions. They can be redeemed for discounts and exclusive rewards."
+                )}
               </p>
             </div>
           </div>
@@ -219,15 +232,16 @@ export default function MyPointsPage() {
 
       {/* QR Code Sheet */}
       <Sheet open={showQR} onOpenChange={setShowQR}>
-        <SheetContent side="bottom" className="h-[70%] p-0 bg-background rounded-t-[14px]">
-          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
-            <SheetTitle className="text-lg font-semibold">
-              {t("My Profile QR")}
-            </SheetTitle>
+        <SheetContent
+          side="bottom"
+          className="h-[70%] p-0 bg-background rounded-t-[14px]"
+        >
+          <SheetHeader className="px-5 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl justify-center h-[50px]">
+            <SheetTitle className="text-xs">{t("My Profile QR")}</SheetTitle>
           </SheetHeader>
-          <div className="p-6 flex flex-col items-center justify-center h-full">
-            <div className="w-64 h-64 bg-[#F8F8F8] rounded-2xl flex items-center justify-center mb-6">
-              <QrCode className="w-40 h-40 text-black" />
+          <div className="p-6 flex flex-col items-center justify-start h-full">
+            <div className="w-64 h-64 rounded-2xl flex items-center justify-center mb-6">
+              <QrCode className="w-40 h-40" />
             </div>
             <p className="text-sm text-[#8E8E93] text-center">
               {t("Scan this QR code to view your profile")}
