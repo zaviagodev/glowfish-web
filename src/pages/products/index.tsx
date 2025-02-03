@@ -165,6 +165,7 @@ export default function ProductsPage() {
                 title={product.name}
                 price={product.price}
                 compareAtPrice={product.compare_at_price}
+                description={product.description}
                 type="small"
                 onClick={() => {
                   // Get the default variant if product has variants

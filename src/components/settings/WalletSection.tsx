@@ -27,32 +27,33 @@ export function WalletSection() {
     const eventDate = new Date(eventData.event.start_datetime);
     // Only count tickets for upcoming events
     if (eventDate > new Date()) {
-      const unusedTickets = eventData.tickets.filter(ticket => ticket.status === 'unused').length;
+      const unusedTickets = eventData.tickets.filter(
+        (ticket) => ticket.status === "unused"
+      ).length;
       return total + unusedTickets;
     }
     return total;
   }, 0);
 
-
   const walletItems: WalletItem[] = [
-    {
-      icon: <Wallet className="w-5 h-5" />,
-      label: t("My Items"),
-      path: "/my-items",
-      count: 2500,
-      description: t("Active items"),
-      color: "#4CAF50", // Green
-      bgColor: "rgba(76, 175, 80, 0.1)"
-    },
-    {
-      icon: <Gift className="w-5 h-5" />,
-      label: t("My Coupons"),
-      path: "/checkout/coupons",
-      count: 3,
-      description: t("Active coupons"),
-      color: "#FF9800", // Orange
-      bgColor: "rgba(255, 152, 0, 0.1)"
-    },
+    // {
+    //   icon: <Wallet className="w-5 h-5" />,
+    //   label: t("My Items"),
+    //   path: "/my-items",
+    //   count: 2500,
+    //   description: t("Active items"),
+    //   color: "#4CAF50", // Green
+    //   bgColor: "rgba(76, 175, 80, 0.1)"
+    // },
+    // {
+    //   icon: <Gift className="w-5 h-5" />,
+    //   label: t("My Coupons"),
+    //   path: "/checkout/coupons",
+    //   count: 3,
+    //   description: t("Active coupons"),
+    //   color: "#FF9800", // Orange
+    //   bgColor: "rgba(255, 152, 0, 0.1)"
+    // },
     {
       icon: <Coins className="w-5 h-5" />,
       label: t("My Points"),
@@ -60,8 +61,8 @@ export function WalletSection() {
       count: customer?.loyalty_points || 0,
       description: t("Available points"),
       color: "#2196F3", // Blue
-      bgColor: "rgba(33, 150, 243, 0.1)"
-    }
+      bgColor: "rgba(33, 150, 243, 0.1)",
+    },
   ];
 
   return (
@@ -70,7 +71,7 @@ export function WalletSection() {
       <h2 className="text-sm font-medium text-muted-foreground mb-2">
         {t("My Items")}
       </h2>
-      <div className="bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] overflow-hidden">
+      <div className="bg-darkgray rounded-lg overflow-hidden">
         <div className="divide-y">
           {walletItems.map((item) => (
             <button
@@ -78,24 +79,23 @@ export function WalletSection() {
               onClick={() => navigate(item.path)}
               className="w-full flex items-center gap-3 p-4 hover:bg-[#F8F8F8] transition-colors"
             >
-              <div 
+              <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: item.bgColor }}
               >
-                <div style={{ color: item.color }}>
-                  {item.icon}
-                </div>
+                <div style={{ color: item.color }}>{item.icon}</div>
               </div>
               <div className="flex-1 text-left">
                 <div className="text-sm font-medium text-[#1A1A1A]">
                   {item.label}
                 </div>
-                <div className="text-xs text-[#666666]">
-                  {item.description}
-                </div>
+                <div className="text-xs text-[#666666]">{item.description}</div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-semibold" style={{ color: item.color }}>
+                <div
+                  className="text-sm font-semibold"
+                  style={{ color: item.color }}
+                >
                   {item.count?.toLocaleString()}
                 </div>
               </div>
@@ -106,7 +106,7 @@ export function WalletSection() {
 
       {/* Standalone Tickets Button */}
       <button
-        onClick={() => navigate('/tickets')}
+        onClick={() => navigate("/tickets")}
         className="w-full bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-3 hover:bg-[#F8F8F8] transition-colors"
       >
         <div className="flex items-center gap-3">

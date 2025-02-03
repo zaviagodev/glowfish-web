@@ -45,33 +45,35 @@ export default function PaymentPage() {
   useEffect(() => {
     const fetchOrderAndPaymentOptions = async () => {
       try {
-        const store_name = localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
-        
+        const store_name =
+          localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
+
         // Fetch order
         const { data: orderData, error: orderError } = await supabase
-          .from('orders')
-          .select('*')
-          .eq('id', orderId)
+          .from("orders")
+          .select("*")
+          .eq("id", orderId)
           .single();
 
         if (orderError) throw orderError;
         if (!orderData) {
-          navigate('/cart', { replace: true });
+          navigate("/cart", { replace: true });
           return;
         }
 
         setOrder(orderData);
 
         // Fetch payment options
-        const { data: paymentData, error: paymentError } = await supabase
-          .rpc('get_payment_options', { store: store_name });
+        const { data: paymentData, error: paymentError } = await supabase.rpc(
+          "get_payment_options",
+          { store: store_name }
+        );
 
         if (paymentError) throw paymentError;
         setPaymentOptions(paymentData);
-
       } catch (error) {
-        console.error('Error fetching data:', error);
-        navigate('/cart', { replace: true });
+        console.error("Error fetching data:", error);
+        navigate("/cart", { replace: true });
       }
     };
 
@@ -99,9 +101,9 @@ export default function PaymentPage() {
     try {
       // Update order status to paid
       const { error } = await supabase
-        .from('orders')
-        .update({ status: 'paid' })
-        .eq('id', order.id);
+        .from("orders")
+        .update({ status: "paid" })
+        .eq("id", order.id);
 
       if (error) throw error;
 
@@ -119,8 +121,8 @@ export default function PaymentPage() {
         });
       }, 1500);
     } catch (error) {
-      console.error('Error confirming payment:', error);
-      alert(t('Failed to confirm payment. Please try again.'));
+      console.error("Error confirming payment:", error);
+      alert(t("Failed to confirm payment. Please try again."));
       setIsConfirming(false);
     }
   };
@@ -203,7 +205,7 @@ export default function PaymentPage() {
     <div className="min-h-dvh bg-background">
       <PageHeader title={t("PromptPay QR")} />
 
-      <div className="pt-14 pb-10">
+      <div className="pt-14 pb-32">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -497,7 +499,7 @@ export default function PaymentPage() {
 
       {/* Footer */}
       <motion.div
-        className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t"
+        className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t z-[99]"
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ delay: 1.6, type: "spring", stiffness: 200, damping: 20 }}

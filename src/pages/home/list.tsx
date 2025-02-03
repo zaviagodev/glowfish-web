@@ -176,7 +176,7 @@ export const HomeList = () => {
             <div className="flex items-center justify-between">
               <div className="px-5">
                 {/* TODO: add GlowfishIcon */}
-                <GlowfishIcon />
+                <GlowfishIcon className="w-[80px] h-[40px]" />
               </div>
               <Link to="/rewards">
                 <div className="px-5">
@@ -195,7 +195,7 @@ export const HomeList = () => {
               </Link>
             </div>
 
-            <div className="relative flex items-center text-sm mt-6 px-5">
+            {/* <div className="relative flex items-center text-sm mt-6 px-5">
               <div className="relative w-full shadow-lg">
                 <Input
                   className="h-10 pl-10 bg-darkgray text-foreground border border-input rounded-full"
@@ -205,7 +205,7 @@ export const HomeList = () => {
                 />
                 <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               </div>
-            </div>
+            </div> */}
           </div>
         </section>
       </div>
@@ -221,7 +221,7 @@ export const HomeList = () => {
       />
 
       {/* Category Bar */}
-      <div className="sticky top-0 z-50 bg-background border-y">
+      <div className="sticky top-0 z-50 bg-background border-b">
         <CategoryGrid
           categories={categories}
           isLoading={loadingCategories}
@@ -242,24 +242,30 @@ export const HomeList = () => {
         {/* Flash Deals Section */}
         <div className="space-y-4 px-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h2 className="text-base font-semibold">{t("Flash Deals")}</h2>
-              <div className="px-2 py-1 bg-destructive text-white text-xs font-medium rounded-full">
-                24:00:00
-              </div>
-            </div>
+            <h2 className="text-base font-semibold">
+              {t("Events you might enjoy")}
+            </h2>
             <Link
-              to="/flash-deals"
+              to="/products"
               className="text-sm text-muted-foreground hover:text-foreground no-underline"
             >
               {t("See all")}
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div
+            className={cn(
+              "flex gap-3 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
+              "scroll-smooth"
+            )}
+          >
             {products.slice(0, 4).map((product) => (
-              <div
-                key={product.id}
+              <motion.div
+                key={product.name}
+                className="flex-shrink-0 w-[280px]"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
                 onClick={() => handleProductSelect(product)}
               >
                 <AnimatedCard
@@ -269,9 +275,8 @@ export const HomeList = () => {
                   price={product.price}
                   compareAtPrice={product.compare_at_price}
                   description={product.description}
-                  type="small"
                 />
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

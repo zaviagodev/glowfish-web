@@ -19,7 +19,7 @@ const BottomNav = () => {
     { icon: Calendar, label: "Products", path: "/products" },
     { icon: Gift, label: "Rewards", path: "/rewards" },
     // { icon: History, label: "History", path: "/history" },
-    { icon: User, label: "Settings", path: "/settings" },
+    { icon: User, label: "Me", path: "/settings" },
   ];
 
   return (
