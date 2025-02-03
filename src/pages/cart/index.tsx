@@ -50,8 +50,7 @@ export default function CartPage() {
     .reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const discount = getTotalDiscount(subtotal);
-  const tax = subtotal * 0.07; // 7% tax
-  const total = subtotal - discount + tax;
+  const total = subtotal - discount;
 
   return (
     <div className="fixed inset-0 bg-background z-50">
@@ -199,13 +198,8 @@ export default function CartPage() {
                           -฿{discount.toLocaleString()}
                         </span>
                       </span>
-                      <span>•</span>
                     </>
                   )}
-                  <span>
-                    {t("Tax")}:{" "}
-                    <span className="text-[#EE4D2D]">฿{tax.toFixed(2)}</span>
-                  </span>
                 </div>
               </div>
               <Button

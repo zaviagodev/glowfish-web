@@ -66,8 +66,7 @@ export default function CheckoutPage() {
   );
   const discount = getTotalDiscount(subtotal);
   const pointsDiscount = getDiscountAmount();
-  const tax = subtotal * 0.07; // 7% tax
-  const total = subtotal - discount - pointsDiscount + tax;
+  const total = subtotal - discount - pointsDiscount;
 
   const handleCreateOrder = async () => {
     setIsProcessing(true);
@@ -99,7 +98,7 @@ export default function CheckoutPage() {
         p_subtotal: subtotal,
         p_discount: discount + pointsDiscount,
         p_shipping: 0,
-        p_tax: tax,
+        p_tax: 0,
         p_total: total,
         p_notes: JSON.stringify({
           message: storeMessage,
@@ -177,7 +176,6 @@ export default function CheckoutPage() {
             discount={discount}
             pointsDiscount={pointsDiscount}
             shipping={0}
-            tax={tax}
             total={total}
           />
         </div>
