@@ -27,31 +27,32 @@ export default function MyOrdersPage() {
   const filteredOrders = orders?.filter(order => 
     activeTab === "all" || (order.status === activeTab || (activeTab === "completed" && order.status === "shipped"))
   ).filter(order =>
-    order.order_items.some(item => item.product.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    order.order_items.some(item => 
+      item.product_variants.product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
   );
 
   const formattedOrders = filteredOrders?.map(order => ({
     id: order.id,
     status: order.status === "shipped" ? "completed" : order.status,
-    date: order.created_at,
-    customer: {
-      name: `${order.customer.first_name} ${order.customer.last_name}`,
-      email: order.customer.email,
-      avatar: order.customer.avatar_url
-    },
-    items: order.order_items.map(item => ({
+    created_at: order.created_at,
+    order_items: order.order_items.map(item => ({
       id: item.id,
-      name: item.product.name,
-      image: item.product.image || '/placeholder-image.jpg',
-      price: item.unit_price,
       quantity: item.quantity,
-      variant: item.name
+      unit_price: item.unit_price,
+      variant_id: item.variant_id,
+      product_variants: {
+        name: item.product_variants.name,
+        options: item.product_variants.options,
+        product: {
+          id: item.product_variants.product.id,
+          name: item.product_variants.product.name,
+          description: item.product_variants.product.description,
+          image: item.product_variants.product.image
+        }
+      }
     })),
-    total: order.total_amount,
-    subtotal: order.subtotal,
-    shipping: order.shipping,
-    tax: order.tax,
-    discount: order.discount
+    total_amount: order.total_amount
   })) || [];
 
   if (loading) {

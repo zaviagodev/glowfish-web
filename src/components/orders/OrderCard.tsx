@@ -7,19 +7,31 @@ import { OrderStatusBadge } from "./OrderStatusBadge";
 
 interface OrderItem {
   id: string;
-  name: string;
-  image: string;
-  price: number;
   quantity: number;
+  unit_price: number;
+  variant_id: string;
+  product_variants: {
+    name: string;
+    options: {
+      name: string;
+      value: string;
+    }[];
+    product: {
+      id: string;
+      name: string;
+      description: string;
+      image: string;
+    };
+  };
 }
 
 interface OrderCardProps {
   order: {
     id: string;
     status: string;
-    date: string;
-    items: OrderItem[];
-    total: number;
+    created_at: string;
+    order_items: OrderItem[];
+    total_amount: number;
   };
   index: number;
 }
@@ -27,6 +39,13 @@ interface OrderCardProps {
 export function OrderCard({ order, index }: OrderCardProps) {
   const t = useTranslate();
   const navigate = useNavigate();
+
+  const handleClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate(`/my-orders/${order.id}`, {
+      state: { from: 'orders-list' }
+    });
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -40,7 +59,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
 
   return (
     <motion.div
-      onClick={() => navigate(`/my-orders/${order.id}`)}
+      onClick={handleClick}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
@@ -57,7 +76,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
               }
             </div>
             <div className="text-xs text-muted-foreground">
-              {formatDate(order.date)}
+              {formatDate(order.created_at)}
             </div>
           </div>
         </div>
@@ -65,24 +84,24 @@ export function OrderCard({ order, index }: OrderCardProps) {
       </div>
 
       {/* Order Items */}
-      {order.items.map((item) => (
+      {order.order_items.map((item) => (
         <div key={item.id} className="p-4 flex gap-4">
           <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
             <img
-              src={item.image}
-              alt={item.name}
+              src={item.product_variants.product.image}
+              alt={item.product_variants.product.name}
               className="w-full h-full object-cover"
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium line-clamp-2">{item.name}</h3>
+            <h3 className="text-sm font-medium line-clamp-2">{item.product_variants.product.name}</h3>
             <div className="mt-2 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-muted-foreground">
                   x{item.quantity}
                 </div>
                 <div className="text-sm font-medium">
-                  ฿{item.price.toLocaleString()}
+                  ฿{item.unit_price.toLocaleString()}
                 </div>
               </div>
             </div>
@@ -94,7 +113,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
       <div className="p-4">
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            {order.items.length} {t("items")}
+            {order.order_items.length} {t("items")}
           </div>
           <div className="flex items-center gap-4">
             <div>
@@ -102,7 +121,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 {t("Total")}
               </div>
               <div className="text-sm font-medium">
-                ฿{order.total.toLocaleString()}
+                ฿{order.total_amount.toLocaleString()}
               </div>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />

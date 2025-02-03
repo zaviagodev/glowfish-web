@@ -5,22 +5,36 @@ export interface Order {
   id: string;
   status: string;
   total_amount: number;
+  subtotal: number;
+  tax: number;
+  shipping: number;
+  discount: number;
+  points_discount: number;
   created_at: string;
   customer_id: string;
   customer: {
     id: string;
     email: string;
-    full_name: string;
+    first_name: string;
+    last_name: string;
   };
   order_items: {
     id: string;
     quantity: number;
     unit_price: number;
-    product: {
-      id: string;
+    variant_id: string;
+    product_variants: {
       name: string;
-      description: string;
-      image: string;
+      options: {
+        name: string;
+        value: string;
+      }[];
+      product: {
+        id: string;
+        name: string;
+        description: string;
+        image: string;
+      };
     };
   }[];
 }
@@ -97,7 +111,12 @@ export const OrderService = {
       const transformedOrders = data.map((order): Order => ({
         id: order.id,
         status: order.status,
-        total_amount: order.total,
+        total_amount: order.total || 0,
+        subtotal: order.subtotal || 0,
+        tax: order.tax || 0,
+        shipping: order.shipping || 0,
+        discount: order.discount || 0,
+        points_discount: order.points_discount || 0,
         created_at: order.created_at,
         customer_id: order.customer_id,
         customer: {
@@ -110,11 +129,16 @@ export const OrderService = {
           id: item.id,
           quantity: item.quantity,
           unit_price: item.total,
-          product: {
-            id: item.product_variants.product.id,
-            name: item.product_variants.product.name,
-            description: item.product_variants.product.description,
-            image: item.product_variants.product.product_images?.[0]?.url || '/placeholder-image.jpg'
+          variant_id: item.variant_id,
+          product_variants: {
+            name: item.product_variants.name,
+            options: item.product_variants.options,
+            product: {
+              id: item.product_variants.product.id,
+              name: item.product_variants.product.name,
+              description: item.product_variants.product.description,
+              image: item.product_variants.product.product_images?.[0]?.url || '/placeholder-image.jpg'
+            }
           }
         }))
       }));

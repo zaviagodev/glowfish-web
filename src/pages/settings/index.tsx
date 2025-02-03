@@ -1,13 +1,12 @@
-import { useTranslate, useLogout } from "@refinedev/core";
+import { useTranslate, useLogout } from "@refinedev/core"; 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"; 
 import { getUserProfile } from "@/lib/auth";
 import { UserProfile } from "@/components/settings/UserProfile";
 import { OrderStatusBar } from "@/components/settings/OrderStatusBar";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { WalletSection } from "@/components/settings/WalletSection";
 import LanguageSwitcher from "@/components/language-switcher";
-import { Crown, Gift, Star, User } from "lucide-react";
 
 const SettingsPage = () => {
   const t = useTranslate();
@@ -32,67 +31,48 @@ const SettingsPage = () => {
       title: t("Account"),
       items: [
         {
-          icon: <User className="h-5 w-5" />,
+          icon: "👤",
           label: t("Profile"),
           path: "/settings/profile",
-          showArrow: true,
-          color: "#4CAF50", // Green
-          bgColor: "rgba(76, 175, 80, 0.1)",
-        },
-      ],
+          showArrow: true
+        }
+      ]
     },
     {
       title: t("Points & Rewards"),
       items: [
         {
-          icon: <Star className="h-5 w-5" />,
+          icon: "⭐️",
           label: t("How to Get Points"),
           path: "/settings/how-to-get-points",
-          showArrow: true,
-          color: "#fcc800", // Yellow
-          bgColor: "rgba(252, 200, 0, 0.1)",
+          showArrow: true
         },
         {
-          icon: <Gift className="h-5 w-5" />,
+          icon: "🎁",
           label: t("How to Spend Points"),
           path: "/settings/how-to-spend-points",
-          showArrow: true,
-          color: "#F44336", // Red
-          bgColor: "rgba(244, 67, 54, 0.1)",
+          showArrow: true
         },
         {
-          icon: <Crown className="h-5 w-5" />,
+          icon: "👑",
           label: t("Member Level"),
           path: "/settings/member-level",
-          showArrow: true,
-          color: "#FF9800", // Orange
-          bgColor: "rgba(255, 152, 0, 0.1)",
-        },
-      ],
+          showArrow: true
+        }
+      ]
     },
-    // TODO: Add language switcher
-    // {
-    //   title: t("Preferences"),
-    //   items: [
-    //     {
-    //       icon: "🌐",
-    //       label: t("Language"),
-    //       component: <LanguageSwitcher />,
-    //       showArrow: false,
-    //     },
-    //   ],
-    // },
   ];
 
+
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="min-h-screen bg-background">
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
         <UserProfile fullName={userProfile?.full_name} />
       </div>
 
       {/* Main Content */}
-      <div className="pt-[100px] pb-10">
+      <div className="pt-[100px] pb-32">
         <OrderStatusBar />
         <WalletSection />
         {sections.map((section, index) => (
@@ -106,7 +86,11 @@ const SettingsPage = () => {
 
         {/* Logout Button */}
         <div className="px-4">
-          <Button className="w-full main-btn" onClick={() => logout()}>
+          <Button
+            variant="destructive"
+            className="w-full h-12"
+            onClick={() => logout()}
+          >
             {t("Logout")}
           </Button>
         </div>
