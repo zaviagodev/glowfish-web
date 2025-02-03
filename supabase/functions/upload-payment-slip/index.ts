@@ -118,6 +118,7 @@ serve(async (req) => {
         payment_details: {
           type: paymentType,
           bank_name: bankName,
+          qr_code: paymentType === "promptpay" ? publicUrl : null,
           slip_image: publicUrl,
           uploaded_at: new Date().toISOString(),
           transfer_reference: transferReference,
