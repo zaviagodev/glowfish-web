@@ -99,14 +99,17 @@ export default function CheckoutPage() {
         p_customer_id: user.id,
         p_status: "pending",
         p_subtotal: subtotal,
-        p_discount: discount + pointsDiscount,
         p_shipping: 0,
         p_tax: 0,
         p_total: total,
+        p_shipping_address_id: defaultAddress?.id,
+        p_billing_address_id: defaultAddress?.id, // Using same address for billing
+        p_applied_coupons: [], // Add actual coupon codes if available
+        p_loyalty_points_used: 0, // Add actual points used if available
         p_notes: JSON.stringify({
           message: storeMessage,
           vatInvoice: vatInvoiceData.enabled ? vatInvoiceData : null,
-          paymentMethod: "promptpay",
+          paymentMethod,
         }),
         p_tags: ["web"],
         p_items: orderItems,
