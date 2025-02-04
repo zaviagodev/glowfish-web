@@ -69,15 +69,17 @@ export const CustomerService = {
         console.warn('No data returned from Supabase');
         return [];
       }
-      
 
       // Transform the data to match our interface
       const customer = {
         ...data,
-        addresses: data.customer_addresses || []
+        addresses: data.customer_addresses?.map((address: Address) => ({
+          ...address,
+          store_name: storeName // Ensure store_name is set for each address
+        })) || []
       };
 
-      return [customer]; // Wrap single result in array since interface expects Customer[]
+      return [customer];
     } catch (error) {
       console.error('Failed to fetch customers:', error);
       throw error;
@@ -96,6 +98,55 @@ export const CustomerService = {
       return data || [];
     } catch (error) {
       console.error('Failed to fetch customer tiers:', error);
+      throw error;
+    }
+  },
+
+  async addAddress(address: Omit<Address, 'id'>, storeName: string): Promise<Address> {
+    try {
+      const { data, error } = await supabase
+        .from('customer_addresses')
+        .insert([{ ...address, store_name: storeName }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Failed to add address:', error);
+      throw error;
+    }
+  },
+
+  async updateAddress(id: string, address: Partial<Address>, storeName: string): Promise<Address> {
+    try {
+      const { data, error } = await supabase
+        .from('customer_addresses')
+        .update({ ...address, store_name: storeName })
+        .eq('id', id)
+        .eq('store_name', storeName)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Failed to update address:', error);
+      throw error;
+    }
+  },
+
+  async deleteAddress(id: string, storeName: string): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('customer_addresses')
+        .delete()
+        .eq('id', id)
+        .eq('store_name', storeName);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Failed to delete address:', error);
       throw error;
     }
   }

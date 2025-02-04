@@ -38,14 +38,12 @@ interface Category {
 export const HomeList = () => {
   const t = useTranslate();
   const navigate = useNavigate();
-  const { products, loading, error } = useProducts();
-  const [loadingCategories, setLoadingCategories] = useState(true);
+  const { products, loading, error, categories } = useProducts();
   const [userProfile, setUserProfile] = useState<{
     id: string;
     full_name: string;
     avatar_url: string;
   } | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -124,25 +122,14 @@ export const HomeList = () => {
     const loadProfile = async () => {
       const profile = await getUserProfile();
       if (profile) {
-        setUserProfile(profile);
+        setUserProfile({
+          id: profile.id,
+          full_name: profile.full_name || '',
+          avatar_url: profile.avatar_url || '',
+        });
       }
     };
     loadProfile();
-
-    // Fetch categories
-    const fetchCategories = async () => {
-      setLoadingCategories(true);
-      const { data, error } = await supabase
-        .from("product_categories")
-        .select("*")
-        .order("name");
-
-      if (data) {
-        setCategories(data);
-      }
-      setLoadingCategories(false);
-    };
-    fetchCategories();
   }, []);
 
   const handleCategoryClick = (categoryId: string | null) => {
@@ -224,7 +211,7 @@ export const HomeList = () => {
       <div className="sticky top-0 z-50 bg-background border-b">
         <CategoryGrid
           categories={categories}
-          isLoading={loadingCategories}
+          isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
         />
@@ -273,7 +260,7 @@ export const HomeList = () => {
                   image={product.image}
                   title={product.name}
                   price={product.price}
-                  compareAtPrice={product.compare_at_price}
+                  compareAtPrice={product.product_variants?.[0]?.compare_at_price || undefined}
                   description={product.description}
                 />
               </motion.div>

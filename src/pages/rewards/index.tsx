@@ -53,7 +53,9 @@ const Rewards = () => {
   const fullName = customerData
     ? `${customerData.first_name} ${customerData.last_name}`.trim()
     : "User";
-    
+
+  const hasPoints = customerData?.loyalty_points && customerData.loyalty_points > 0;
+  const hasRewards = rewardEvents && rewardEvents.length > 0;
 
   return (
     <>
@@ -79,56 +81,68 @@ const Rewards = () => {
           />
           <div className="flex justify-between items-center p-5 z-5 font-semibold text-xl relative">
             <h3>{t("Glowfish reward.")}</h3>
-            <h3>{t("point", { count: customerData?.loyalty_points || 0 })}</h3>
+            <h3>
+              {hasPoints ? (
+                t("point", { count: customerData.loyalty_points })
+              ) : (
+                <span className="text-sm font-normal">{t("No points yet")}</span>
+              )}
+            </h3>
           </div>
         </div>
 
         <div className="px-5 mt-[30px]">
           <h3 className="page-title mb-4">{t("Available Rewards")}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {rewardEvents.map((reward) => (
-              <div
-                key={reward.id}
-                onClick={() => navigate(`/rewards/detail/${reward.id}`)}
-                className="relative overflow-hidden rounded-lg cursor-pointer w-full border border-border/10 transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]"
-              >
-                <div className="relative overflow-hidden h-[220px] w-full">
-                  <img
-                    src={reward.image}
-                    alt={reward.title}
-                    className="w-full h-full object-cover rounded-lg object-top"
-                  />
-                  <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-orangefocus text-white text-xs font-medium">
-                    {reward.price && reward.price !== 0 ? `฿${reward.price}` : ''}
+          {hasRewards ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {rewardEvents.map((reward) => (
+                <div
+                  key={reward.id}
+                  onClick={() => navigate(`/rewards/detail/${reward.id}`)}
+                  className="relative overflow-hidden rounded-lg cursor-pointer w-full border border-border/10 transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]"
+                >
+                  <div className="relative overflow-hidden h-[220px] w-full">
+                    <img
+                      src={reward.image}
+                      alt={reward.title}
+                      className="w-full h-full object-cover rounded-lg object-top"
+                    />
+                    <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-orangefocus text-white text-xs font-medium">
+                      {reward.price && reward.price !== 0 ? `฿${reward.price}` : ''}
+                    </div>
                   </div>
-                </div>
 
-                <div className="p-2 space-y-4 flex-1 text-white absolute bottom-0 w-full">
-                  <div className="space-y-2 backdrop-blur-sm rounded-lg bg-background/50 p-4">
-                    <h3 className="font-semibold line-clamp-2 text-sm">{reward.title}</h3>
-                    {reward.location && (
+                  <div className="p-2 space-y-4 flex-1 text-white absolute bottom-0 w-full">
+                    <div className="space-y-2 backdrop-blur-sm rounded-lg bg-background/50 p-4">
+                      <h3 className="font-semibold line-clamp-2 text-sm">{reward.title}</h3>
+                      {reward.location && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <MapPin className="w-3.5 h-3.5" />
+                          <span className="line-clamp-1">{reward.location}</span>
+                        </div>
+                      )}
+                      {reward.date && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>{reward.date}</span>
+                        </div>
+                      )}
                       <div className="flex items-center gap-2 text-xs">
-                        <MapPin className="w-3.5 h-3.5" />
-                        <span className="line-clamp-1">{reward.location}</span>
+                        <Tag className="w-3.5 h-3.5" />
+                        <span>
+                          {reward.points ? t("point", { count: reward.points }) : t("Free")}
+                        </span>
                       </div>
-                    )}
-                    {reward.date && (
-                      <div className="flex items-center gap-2 text-xs">
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>{reward.date}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2 text-xs">
-                      <Tag className="w-3.5 h-3.5" />
-                      <span>
-                        {reward.points ? t("point", { count: reward.points }) : t("Free")}
-                      </span>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 bg-gray-50 rounded-lg">
+              <p className="text-gray-500">{t("No rewards available at the moment")}</p>
+            </div>
+          )}
         </div>
       </section>
     </>

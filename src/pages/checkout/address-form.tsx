@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useTranslate } from "@refinedev/core";
-import { Home, Building2 } from "lucide-react";
+import { Home, Building2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,8 +12,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { supabase } from "@/lib/supabase";
 import { useStore } from "@/hooks/useStore";
+import { useCustomer } from "@/hooks/useCustomer";
+import { CustomerService } from "@/services/customerService";
 
 interface AddressFormData {
   id?: string;
@@ -31,13 +32,15 @@ interface AddressFormData {
 }
 
 interface AddressFormProps {
-  initialData?: AddressFormData | null;
-  onSubmit: (data: AddressFormData) => Promise<void>;
+  initialData?: AddressFormData;
+  onSubmit: (data: AddressFormData) => void;
+  onDelete?: (id: string) => void;
 }
 
-export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
+export function AddressForm({ initialData, onSubmit, onDelete }: AddressFormProps) {
   const t = useTranslate();
   const { storeName } = useStore();
+  const { customer, refreshCustomer } = useCustomer();
   const form = useForm<AddressFormData>({
     defaultValues: initialData || {
       first_name: "",
@@ -56,23 +59,41 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
 
   const handleSubmit = async (data: AddressFormData) => {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!customer) throw new Error("Customer not found");
+      if (!storeName) throw new Error("Store not found");
 
-      const { error } = await supabase.from("customer_addresses").upsert({
+      const addressData = {
         ...data,
-        customer_id: user.id,
+        customer_id: customer.id,
         store_name: storeName,
-        ...(initialData?.id ? { id: initialData.id } : {}),
-      });
+      };
 
-      if (error) throw error;
+      if (initialData?.id) {
+        // Update existing address
+        await CustomerService.updateAddress(initialData.id, addressData, storeName);
+      } else {
+        // Add new address
+        await CustomerService.addAddress(addressData, storeName);
+      }
+
+      await refreshCustomer();
       onSubmit(data);
     } catch (error) {
       console.error("Error saving address:", error);
       alert(t("Failed to save address. Please try again."));
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (!initialData?.id || !storeName) return;
+
+      await CustomerService.deleteAddress(initialData.id, storeName);
+      await refreshCustomer();
+      onDelete?.(initialData.id);
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      alert(t("Failed to delete address. Please try again."));
     }
   };
 
@@ -320,6 +341,18 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
         <Button type="submit" className="w-full main-btn">
           {t("Save Address")}
         </Button>
+
+        {/* Delete Button */}
+        {initialData && (
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full mt-4 bg-red-500 text-white hover:bg-red-600"
+            onClick={handleDelete}
+          >
+            {t("Delete Address")}
+          </Button>
+        )}
       </form>
     </Form>
   );

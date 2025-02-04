@@ -1,18 +1,18 @@
 import { useTranslate } from "@refinedev/core";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useCustomer } from "@/hooks/useCustomer";
 
 interface UserProfileProps {
-  fullName: string | undefined;
   memberLevel?: string;
 }
 
 export function UserProfile({
-  fullName,
   memberLevel = "Gold Member",
 }: UserProfileProps) {
   const t = useTranslate();
   const navigate = useNavigate();
+  const { customer } = useCustomer();
 
   const handleEditClick = () => {
     navigate("/settings/profile");
@@ -23,12 +23,12 @@ export function UserProfile({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight mb-2">
-            {fullName || t("User")}
+            {customer?.first_name || customer?.last_name ? 
+              `${customer?.first_name || ''} ${customer?.last_name || ''}`.trim() 
+              : ''}
           </h2>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">
-              {t(memberLevel)}
-            </span>
+            {/* Member level content */}
           </div>
         </div>
         <Button
