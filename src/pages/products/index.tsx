@@ -35,9 +35,7 @@ interface Category {
 export default function ProductsPage() {
   const t = useTranslate();
   const location = useLocation();
-  const { products, loading } = useProducts();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
+  const { products, loading, error, categories } = useProducts();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     location.state?.selectedCategory || null
   );
@@ -51,23 +49,6 @@ export default function ProductsPage() {
   }>({ min: 0, max: null });
   const [inStock, setInStock] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-
-  // Fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      setLoadingCategories(true);
-      const { data } = await supabase
-        .from("product_categories")
-        .select("*")
-        .order("name");
-
-      if (data) {
-        setCategories(data);
-      }
-      setLoadingCategories(false);
-    };
-    fetchCategories();
-  }, []);
 
   // Filter and sort products
   const filteredProducts = products
@@ -103,6 +84,17 @@ export default function ProductsPage() {
       }
     });
 
+  // Sort products
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortBy === "newest") {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    }
+    if (sortBy === "oldest") {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    }
+    return 0;
+  });
+
   return (
     <div className="min-h-dvh bg-background">
       {/* Search Bar */}
@@ -122,7 +114,7 @@ export default function ProductsPage() {
         {/* Category Pills */}
         <CategoryGrid
           categories={categories}
-          isLoading={loadingCategories}
+          isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
         />
@@ -164,7 +156,7 @@ export default function ProductsPage() {
                 image={product.image}
                 title={product.name}
                 price={product.price}
-                compareAtPrice={product.compare_at_price}
+                compareAtPrice={product.product_variants?.[0]?.compare_at_price || undefined}
                 description={product.description}
                 type="small"
                 onClick={() => {
