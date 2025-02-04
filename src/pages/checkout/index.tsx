@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useTranslate } from "@refinedev/core";
 import { useNavigate, useLocation } from "react-router-dom";
-import { CartItem, useCart } from "@/lib/cart";
+import { CartItem as CartItemType, useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
 import { usePoints } from "@/lib/points";
 import { useCustomer } from "@/hooks/useCustomer";
+import { useOrders } from "@/hooks/useOrders";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { AddressCard } from "@/components/shared/AddressCard";
@@ -29,10 +30,11 @@ export default function CheckoutPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { items: allItems } = useCart();
+  const { items: allItems, clearCart } = useCart();
   const { getTotalDiscount } = useCoupons();
   const { getDiscountAmount } = usePoints();
   const { customer, loading: customerLoading } = useCustomer();
+  const { refreshOrders } = useOrders();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cash");
@@ -119,11 +121,18 @@ export default function CheckoutPage() {
       }
 
       // Clear the cart
-      localStorage.removeItem("cart");
-
+      clearCart();
       
-      // Navigate to payment page with order ID
-      navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
+      // Refresh orders using useOrders hook
+      await refreshOrders();
+
+      // Check if order total is 0
+      if (total === 0) {
+        setShowSuccess(true);
+      } else {
+        // Navigate to payment page with order ID
+        navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
+      }
     } catch (error) {
       console.error("Error creating order:", error);
       alert(
