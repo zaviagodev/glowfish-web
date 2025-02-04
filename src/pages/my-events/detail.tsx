@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useTranslate } from '@refinedev/core';
-import Header from '@/components/main/Header';
-import { useEvents } from '@/hooks/useEvents';
-import Barcode from 'react-barcode';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useTranslate } from "@refinedev/core";
+import Header from "@/components/main/Header";
+import { useEvents } from "@/hooks/useEvents";
+import Barcode from "react-barcode";
 
 const MyEventDetail = () => {
   const { id } = useParams();
@@ -15,9 +15,9 @@ const MyEventDetail = () => {
   if (loading) {
     return (
       <>
-        <Header title={t('Event Details')} />
-        <div className="flex items-center justify-center h-[60vh]">
-          <p>{t('Loading...')}</p>
+        <Header title={t("Event Details")} />
+        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       </>
     );
@@ -26,9 +26,9 @@ const MyEventDetail = () => {
   if (error || !event) {
     return (
       <>
-        <Header title={t('Event Details')} />
+        <Header title={t("Event Details")} />
         <div className="flex items-center justify-center h-[60vh]">
-          <p className="text-red-500">{error || t('Event not found')}</p>
+          <p className="text-red-500">{error || t("Event not found")}</p>
         </div>
       </>
     );
@@ -51,7 +51,7 @@ const MyEventDetail = () => {
     <>
       <Header
         backButtonClassName="bg-white text-black rounded-sm h-8 w-8 flex items-center justify-center"
-        title={t('My Event')}
+        title={t("My Event")}
       />
       <section className="bg-white rounded-xl p-5 relative">
         {!isQRCode && <img src={event.image} className="rounded-sm" />}
@@ -63,9 +63,9 @@ const MyEventDetail = () => {
         </div>
 
         <div className="grid grid-cols-2 pt-5 gap-6">
-          <BookedDataComp title={t('Order ID')} value={event.id} />
-          <BookedDataComp title={t('Status')} value={event.status} />
-          <BookedDataComp title={t('Date')} value={event.date} />
+          <BookedDataComp title={t("Order ID")} value={event.id} />
+          <BookedDataComp title={t("Status")} value={event.status} />
+          <BookedDataComp title={t("Date")} value={event.date} />
 
           {event.variant_options &&
             event.variant_options.length > 0 &&
@@ -88,12 +88,12 @@ const MyEventDetail = () => {
 
         <div className="flex flex-col items-center relative pt-16">
           {/* TODO: add ScanQRCode and replace with the text QR Code Prototype */}
-          {isQRCode ? 'QR Code Prototype' : <Barcode value={event.id} />}
+          {isQRCode ? "QR Code Prototype" : <Barcode value={event.id} />}
           <p
             className="text-black text-xs cursor-pointer"
             onClick={() => setIsQRCode(!isQRCode)}
           >
-            {isQRCode ? t('Switch to Barcode') : t('Switch to QR Code')}
+            {isQRCode ? t("Switch to Barcode") : t("Switch to QR Code")}
           </p>
         </div>
       </section>

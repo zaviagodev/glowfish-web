@@ -10,11 +10,11 @@ export interface OrderStatus {
   value: string;
 }
 
-const defaultOrderStatuses: OrderStatus[] = [
+export const defaultOrderStatuses: OrderStatus[] = [
   {
     icon: <Package2 className="w-4 h-4" />,
     label: "Unpaid",
-    value: "pending",
+    value: "unpaid",
     color: "#F44336",
     bgColor: "rgba(244, 67, 54, 0.1)",
   },
@@ -28,7 +28,7 @@ const defaultOrderStatuses: OrderStatus[] = [
   {
     icon: <Package2 className="w-4 h-4" />,
     label: "Processing",
-    count: 2,
+    value: "processing",
     color: "#2196F3",
     bgColor: "rgba(33, 150, 243, 0.1)",
   },
@@ -87,9 +87,7 @@ export function OrderStatusBar({
           {statuses.map((status) => (
             <button
               key={status.label}
-              onClick={() =>
-                navigate(`/my-orders?status=${status.value}`)
-              }
+              onClick={() => navigate(`/my-orders?status=${status.value}`)}
               className="flex-1 relative flex flex-col items-center gap-1.5 transition-colors rounded-lg p-2 min-w-0"
             >
               <div

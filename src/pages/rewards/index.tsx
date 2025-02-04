@@ -22,11 +22,12 @@ const Rewards = () => {
     error: customerError,
   } = useCustomer();
 
-  const imageUrl = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
+  const imageUrl =
+    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
   const rewardEvents = rewards.map((reward) => {
     return {
       id: reward.id,
-      image: reward?.product_images?.[0]?.url  || imageUrl,
+      image: reward?.product_images?.[0]?.url || imageUrl,
       title: reward.name,
       location: reward.location,
       date: reward.date,
@@ -36,9 +37,12 @@ const Rewards = () => {
     };
   });
 
-
   if (customerLoading || rewardsLoading) {
-    return <div className="text-center mt-8">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   if (customerError || rewardsError) {
@@ -53,7 +57,6 @@ const Rewards = () => {
   const fullName = customerData
     ? `${customerData.first_name} ${customerData.last_name}`.trim()
     : "User";
-    
 
   return (
     <>
@@ -65,7 +68,10 @@ const Rewards = () => {
           </h1>
           <Avatar className="h-[50px] w-[50px]">
             <AvatarImage
-              src={customerData?.meta?.avatar_url || "https://github.com/shadcn.png"}
+              src={
+                customerData?.meta?.avatar_url ||
+                "https://github.com/shadcn.png"
+              }
             />
             <AvatarFallback>
               {fullName?.charAt(0)?.toUpperCase() || "U"}
@@ -99,13 +105,17 @@ const Rewards = () => {
                     className="w-full h-full object-cover rounded-lg object-top"
                   />
                   <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-orangefocus text-white text-xs font-medium">
-                    {reward.price && reward.price !== 0 ? `฿${reward.price}` : ''}
+                    {reward.price && reward.price !== 0
+                      ? `฿${reward.price}`
+                      : ""}
                   </div>
                 </div>
 
                 <div className="p-2 space-y-4 flex-1 text-white absolute bottom-0 w-full">
                   <div className="space-y-2 backdrop-blur-sm rounded-lg bg-background/50 p-4">
-                    <h3 className="font-semibold line-clamp-2 text-sm">{reward.title}</h3>
+                    <h3 className="font-semibold line-clamp-2 text-sm">
+                      {reward.title}
+                    </h3>
                     {reward.location && (
                       <div className="flex items-center gap-2 text-xs">
                         <MapPin className="w-3.5 h-3.5" />
@@ -121,7 +131,9 @@ const Rewards = () => {
                     <div className="flex items-center gap-2 text-xs">
                       <Tag className="w-3.5 h-3.5" />
                       <span>
-                        {reward.points ? t("point", { count: reward.points }) : t("Free")}
+                        {reward.points
+                          ? t("point", { count: reward.points })
+                          : t("Free")}
                       </span>
                     </div>
                   </div>

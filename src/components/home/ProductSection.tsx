@@ -12,6 +12,7 @@ interface ProductSectionProps {
   products: Product[];
   onProductSelect: (product: Product) => void;
   sliderRef: React.RefObject<HTMLDivElement>;
+  isLoading?: boolean;
 }
 
 export const ProductSection = memo(function ProductSection({
@@ -20,6 +21,7 @@ export const ProductSection = memo(function ProductSection({
   products,
   onProductSelect,
   sliderRef,
+  isLoading,
 }: ProductSectionProps) {
   const t = useTranslate();
 
@@ -35,32 +37,38 @@ export const ProductSection = memo(function ProductSection({
         </Link>
       </div>
 
-      <div
-        className={cn(
-          "flex gap-3 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
-          "scroll-smooth"
-        )}
-      >
-        {products.map((product) => (
-          <motion.div
-            key={product.name}
-            className="flex-shrink-0 w-[280px]"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={() => onProductSelect(product)}
-          >
-            <AnimatedCard
-              id={product.id}
-              image={product.image}
-              title={product.name}
-              price={product.price}
-              compareAtPrice={product.compare_at_price}
-              description={product.description}
-            />
-          </motion.div>
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-40">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      ) : (
+        <div
+          className={cn(
+            "flex gap-3 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
+            "scroll-smooth"
+          )}
+        >
+          {products.map((product) => (
+            <motion.div
+              key={product.name}
+              className="flex-shrink-0 w-[280px]"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => onProductSelect(product)}
+            >
+              <AnimatedCard
+                id={product.id}
+                image={product.image}
+                title={product.name}
+                price={product.price}
+                compareAtPrice={product.compare_at_price}
+                description={product.description}
+              />
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
   );
 });

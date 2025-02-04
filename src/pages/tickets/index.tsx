@@ -50,8 +50,8 @@ export default function TicketsPage() {
     return (
       <div className="bg-background">
         <PageHeader title={t("My Tickets")} />
-        <div className="flex items-center justify-center py-12">
-          <p>{t("Loading...")}</p>
+        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       </div>
     );

@@ -80,7 +80,9 @@ const HistoryPage = () => {
             </Button>
           }
         />
-        <div className="text-center mt-8">Loading...</div>
+        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
       </>
     );
   }
@@ -112,7 +114,7 @@ const HistoryPage = () => {
   // Pagination logic
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const paginateTransactions = (transactions: PointTransaction[]) => {
@@ -134,7 +136,7 @@ const HistoryPage = () => {
 
     // Add ellipsis after first page if needed
     if (rangeStart > 2) {
-      pages.push('...');
+      pages.push("...");
     }
 
     // Add pages in range
@@ -144,7 +146,7 @@ const HistoryPage = () => {
 
     // Add ellipsis before last page if needed
     if (rangeEnd < totalPages - 1) {
-      pages.push('...');
+      pages.push("...");
     }
 
     // Always show last page if there is more than one page

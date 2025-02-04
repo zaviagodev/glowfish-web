@@ -323,7 +323,7 @@ export function ProductDetail({
               className="space-y-3"
             >
               {/* Show variant selection button if product has variants */}
-              {variant_options && variant_options.length > 0 && (
+              {/* {variant_options && variant_options.length > 0 && (
                 <Button
                   variant="ghost"
                   className="w-full h-12 flex items-center justify-between bg-darkgray"
@@ -339,7 +339,7 @@ export function ProductDetail({
                   </div>
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-              )}
+              )} */}
 
               {/* Stock Status */}
               {track_quantity && (
@@ -513,7 +513,7 @@ export function ProductDetail({
                 <div
                   // initial={{ opacity: 0, scale: 0.9 }}
                   // animate={{ opacity: 1, scale: 1 }}
-                  className="inline-flex items-center px-2 py-1 text-xs font-medium bg-mainbutton rounded"
+                  className="inline-flex items-center px-2 py-1 text-xs font-medium bg-mainbutton rounded text-primary-foreground"
                 >
                   {Math.round(
                     (1 -

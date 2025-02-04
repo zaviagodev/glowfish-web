@@ -211,7 +211,7 @@ export function VariantDrawer({
                     <span className="text-sm line-through text-muted-foreground">
                       ฿{currentVariant.compare_at_price.toLocaleString()}
                     </span>
-                    <span className="text-xs font-medium px-2 py-1 rounded-full !bg-mainbutton rounded-full/10">
+                    <span className="text-xs font-medium px-2 py-1 rounded-full bg-mainbutton rounded-full/10 text-primary-foreground">
                       {Math.round(
                         (1 -
                           currentVariant.price /

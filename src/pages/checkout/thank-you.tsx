@@ -109,7 +109,7 @@ export default function ThankYouPage() {
       {/* Order Details */}
       <div className="px-5 py-8 space-y-6 relative z-20">
         <motion.div
-          className="space-y-4"
+          className="space-y-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
@@ -117,32 +117,24 @@ export default function ThankYouPage() {
           <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Order Details")}
           </h2>
-          <div className="bg-tertiary rounded-lg border border-[#E5E5E5] divide-y">
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
-                  {t("Order Number")}
-                </span>
-                <span className="text-sm font-medium">{orderNumber}</span>
-              </div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">
+                {t("Order Number")}
+              </span>
+              <span className="text-sm font-medium">{orderNumber}</span>
             </div>
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
-                  {t("Amount Paid")}
-                </span>
-                <span className="text-sm font-medium">
-                  ฿{amount?.toLocaleString()}.00
-                </span>
-              </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">
+                {t("Amount Paid")}
+              </span>
+              <span className="text-sm font-medium">
+                ฿{amount?.toLocaleString()}.00
+              </span>
             </div>
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
-                  {t("Date")}
-                </span>
-                <span className="text-sm font-medium">{formattedDate}</span>
-              </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">{t("Date")}</span>
+              <span className="text-sm font-medium">{formattedDate}</span>
             </div>
           </div>
         </motion.div>
@@ -199,16 +191,13 @@ export default function ThankYouPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
         >
-          <Button
-            className="w-full bg-black text-white hover:bg-black/90 h-12"
-            onClick={() => navigate("/home")}
-          >
+          <Button className="w-full main-btn" onClick={() => navigate("/home")}>
             {t("Continue Shopping")}
           </Button>
 
           <Button
             variant="outline"
-            className="w-full h-12 border-[#E5E5E5] flex items-center justify-between"
+            className="w-full h-12 bg-darkgray flex items-center justify-between rounded-lg"
             onClick={() => navigate("/my-orders")}
           >
             <span>{t("Track Order")}</span>

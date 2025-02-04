@@ -361,7 +361,7 @@ export default function PaymentPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-9 px-4 rounded-full border-[#E5E5E5] hover:bg-[#F5F5F5]"
+                  className="h-9 px-4 rounded-full border-[#E5E5E5]"
                   onClick={handleDownloadQR}
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -510,7 +510,7 @@ export default function PaymentPage() {
       >
         <div className="p-4 space-y-3">
           <Button
-            className="w-full bg-black text-white hover:bg-black/90 h-12"
+            className="w-full main-btn"
             disabled={isConfirming}
             onClick={handleConfirmPayment}
           >
@@ -530,7 +530,7 @@ export default function PaymentPage() {
 
           <Button
             variant="ghost"
-            className="w-full h-12 text-muted-foreground hover:text-foreground"
+            className="w-full text-muted-foreground"
             onClick={handlePayLater}
             disabled={isConfirming}
           >

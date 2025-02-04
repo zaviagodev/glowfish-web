@@ -17,7 +17,7 @@ const BottomNav = () => {
   const navItems = [
     { icon: Home, label: "Home", path: "/home" },
     { icon: Calendar, label: "Products", path: "/products" },
-    { icon: Gift, label: "Rewards", path: "/rewards" },
+    { icon: Gift, label: "Points", path: "/settings/points" },
     // { icon: History, label: "History", path: "/history" },
     { icon: User, label: "Me", path: "/settings" },
   ];

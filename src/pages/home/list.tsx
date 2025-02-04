@@ -224,6 +224,7 @@ export const HomeList = () => {
           products={products}
           onProductSelect={handleProductSelect}
           sliderRef={productSliderRef}
+          isLoading={loading}
         />
 
         {/* Events you might enjoy Section */}
@@ -233,6 +234,7 @@ export const HomeList = () => {
           products={products.slice(0, 4)}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
+          isLoading={loading}
         />
       </section>
 
