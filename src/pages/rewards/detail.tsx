@@ -119,6 +119,8 @@ const RewardDetail = () => {
         p_shipping: 0,
         p_tax: 0,
         p_total: reward.product_variants[0].price,
+        p_shipping_address_id: customer?.addresses?.[0]?.id,
+        p_billing_address_id: customer?.addresses?.[0]?.id,
         p_notes: JSON.stringify({
           message: "Reward redemption",
           paymentMethod: "points",
