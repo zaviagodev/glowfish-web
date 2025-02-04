@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslate } from "@refinedev/core";
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { OrdersList } from "@/components/orders/OrdersList";
 import { OrdersSearch } from "@/components/orders/OrdersSearch";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOrders } from "@/hooks/useOrders";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { defaultOrderStatuses } from "@/components/settings/OrderStatusBar";
 
 export default function MyOrdersPage() {
   const t = useTranslate();
@@ -73,10 +74,10 @@ export default function MyOrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("My Orders")} />
         <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       </div>
     );
@@ -84,7 +85,7 @@ export default function MyOrdersPage() {
 
   if (error) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("My Orders")} />
         <div className="p-4 text-center text-red-500">{error}</div>
       </div>
@@ -92,7 +93,7 @@ export default function MyOrdersPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("My Orders")} onBack={() => navigate("/settings")} />
 
       <div className="pt-14 pb-4">
@@ -107,36 +108,15 @@ export default function MyOrdersPage() {
               >
                 {t("All")}
               </TabsTrigger>
-              <TabsTrigger
-                value="unpaid"
-                className="text-xs py-2.5 data-[state=active]:bg-background"
-              >
-                {t("Unpaid")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="pending"
-                className="text-xs py-2.5 data-[state=active]:bg-background"
-              >
-                {t("Pending")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="shipped"
-                className="text-xs py-2.5 data-[state=active]:bg-background"
-              >
-                {t("Shipped")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="delivered"
-                className="text-xs py-2.5 data-[state=active]:bg-background"
-              >
-                {t("Delivered")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="cancelled"
-                className="text-xs py-2.5 data-[state=active]:bg-background"
-              >
-                {t("Cancelled")}
-              </TabsTrigger>
+              {defaultOrderStatuses.map((status) => (
+                <TabsTrigger
+                  key={status.label}
+                  value={status.value}
+                  className="text-xs py-2.5 data-[state=active]:bg-background"
+                >
+                  {t(status.label)}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </div>
 

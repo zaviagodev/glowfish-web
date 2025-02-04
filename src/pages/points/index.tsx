@@ -30,16 +30,18 @@ export default function MyPointsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("My Points")} />
-        <div className="text-center mt-8">Loading...</div>
+        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("My Points")} />
         <div className="text-center text-red-500 mt-8">{error}</div>
       </div>
@@ -57,14 +59,14 @@ export default function MyPointsPage() {
   );
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("My Points")} />
 
       <div className="pt-14 pb-16">
         {/* Points Overview Card */}
         <div className="relative">
           <motion.div
-            className="relative px-5 py-8"
+            className="relative px-5 py-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >

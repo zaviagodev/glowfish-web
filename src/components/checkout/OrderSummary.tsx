@@ -54,12 +54,12 @@ export function OrderSummary({
               </span>
             </div>
           )}
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <span className="text-body text-muted-foreground">
               {t("Shipping cost")}
             </span>
             <span className="text-body">฿{shipping.toLocaleString()}</span>
-          </div>
+          </div> */}
           <div className="pt-3 mt-1 border-t flex justify-between">
             <span className="font-semibold">{t("Total")}</span>
             <span className="font-bold text-secondary-foreground">

@@ -55,7 +55,7 @@ export default function VoucherDetail() {
   };
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("Voucher Details")} />
 
       <div className="pb-10">

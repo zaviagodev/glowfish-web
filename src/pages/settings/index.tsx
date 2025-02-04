@@ -72,16 +72,16 @@ const SettingsPage = () => {
   ];
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
         <UserProfile fullName={userProfile?.full_name} />
       </div>
 
       {/* Main Content */}
-      <div className="pt-[100px] pb-4">
-        <OrderStatusBar />
+      <div className="pt-20 pb-4">
         <WalletSection />
+        <OrderStatusBar />
         {sections.map((section, index) => (
           <SettingsSection
             key={section.title}

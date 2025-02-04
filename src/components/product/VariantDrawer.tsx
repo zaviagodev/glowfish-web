@@ -12,21 +12,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface ProductVariant {
-  id: string;
-  name: string;
-  sku: string;
-  price: number;
-  compare_at_price: number | null;
-  quantity: number;
-  options: Array<{
-    name: string;
-    value: string;
-  }>;
-  status: string;
-  position: number;
-}
+import { ProductVariant } from "@/type/type";
+import GlowfishIcon from "../icons/GlowfishIcon";
 
 interface VariantOption {
   id: string;
@@ -142,12 +129,13 @@ export function VariantDrawer({
     <Sheet open={open} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-[85%] p-0 bg-background rounded-t-[14px]"
+        className="h-fit p-0 bg-background rounded-t-[14px]"
       >
-        <SheetHeader className="px-5 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
+        <SheetHeader className="px-5 py-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-lg font-semibold">
-              {t("Select Options")}
+              {/* {t("Select Options")} */}
+              <GlowfishIcon className="w-[100px]" />
             </SheetTitle>
             {/* <Button
               variant="ghost"
@@ -160,13 +148,13 @@ export function VariantDrawer({
           </div>
         </SheetHeader>
 
-        <div className="p-5 space-y-6 pb-[144px]">
+        <div className="p-5 space-y-6 pb-[220px] overflow-auto">
           {/* Variant Options */}
           {variantOptions
             .sort((a, b) => a.position - b.position)
             .map((option) => (
               <div key={option.id} className="space-y-3">
-                <h3 className="text-sm font-medium">{option.name}</h3>
+                <h3 className="text-base font-medium">{option.name}</h3>
                 <div className="flex flex-wrap gap-2">
                   {option.values.map((value) => {
                     const isAvailable = getAvailableValues(
@@ -179,10 +167,10 @@ export function VariantDrawer({
                         key={value}
                         // variant={isSelected ? "default" : "outline"}
                         className={cn(
-                          "h-9 px-4 rounded-full",
+                          "h-9 px-4 rounded-lg",
                           !isSelected
                             ? "bg-darkgray border-input text-primary"
-                            : "main-btn",
+                            : "main-btn !rounded-lg",
                           !isAvailable && "opacity-50 cursor-not-allowed"
                         )}
                         disabled={!isAvailable}
@@ -201,17 +189,17 @@ export function VariantDrawer({
         <div className="p-5 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0 space-y-3">
           {/* Price Display */}
           {currentVariant && (
-            <div>
+            <div className="flex flex-col items-center">
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-bold">
                   ฿{currentVariant.price.toLocaleString()}
                 </span>
-                {currentVariant.compare_at_price && (
+                {/* {currentVariant.compare_at_price && (
                   <>
                     <span className="text-sm line-through text-muted-foreground">
                       ฿{currentVariant.compare_at_price.toLocaleString()}
                     </span>
-                    <span className="text-xs font-medium px-2 py-1 rounded-full !bg-mainbutton rounded-full/10">
+                    <span className="text-xs font-medium px-2 py-1 rounded-full bg-mainbutton rounded-full/10 text-primary-foreground">
                       {Math.round(
                         (1 -
                           currentVariant.price /
@@ -221,7 +209,7 @@ export function VariantDrawer({
                       % OFF
                     </span>
                   </>
-                )}
+                )} */}
               </div>
               {currentVariant.quantity > 0 ? (
                 <p className="text-sm text-muted-foreground mt-1">

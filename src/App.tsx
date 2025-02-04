@@ -14,6 +14,7 @@ import {
   Outlet,
   Route,
   Routes,
+  useLocation,
   useSearchParams,
 } from "react-router-dom";
 import "./App.css";
@@ -73,6 +74,16 @@ function App() {
     i18n.changeLanguage(config.default_language);
   }, [config]);
 
+  const ScrollToTop = () => {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+  };
+
   const i18nProvider = {
     translate: (key: string, params: Record<string, string>) => t(key, params),
     changeLocale: (lang: string) => {
@@ -100,6 +111,7 @@ function App() {
       <RefineKbarProvider>
         <DevtoolsProvider>
           {/* Add StoreHandler at the top level */}
+          <ScrollToTop />
           <StoreHandler />
           <Refine
             dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
@@ -197,10 +209,10 @@ function App() {
                     <Route index element={<MyOrdersPage />} />
                     <Route path=":id" element={<OrderDetailPage />} />
                   </Route>
-                  <Route path="/my-items">
+                  {/* <Route path="/my-items">
                     <Route index element={<MyItemsPage />} />
                     <Route path=":id" element={<VoucherDetail />} />
-                  </Route>
+                  </Route> */}
                   <Route path="/my-events">
                     <Route index element={<MyEventsPage />} />
                     <Route path="detail/:id" element={<MyEventDetail />} />

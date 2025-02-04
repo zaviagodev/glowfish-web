@@ -148,17 +148,17 @@ export default function CheckoutPage() {
 
   if (customerLoading) {
     return (
-      <div className="min-h-dvh bg-background pt-14 text-center">
-        Loading...
+      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("Checkout")} />
 
-      <div className="pt-14 pb-48">
+      <div className="pt-14 pb-32">
         <div className="p-5 space-y-6">
           <ProductList items={items} />
           {defaultAddress ? (

@@ -1,18 +1,54 @@
 import { ReactNode } from "react"
 
+export interface ProductVariant {
+    id: string;
+    name: string;
+    sku: string;
+    price: number;
+    compare_at_price: number | null;
+    quantity: number;
+    options: Array<{
+      name: string;
+      value: string;
+    }>;
+    status: string;
+    position: number;
+}
+
+export interface ProductDetailProps {
+    id: string | number;
+    image: string;
+    name: string;
+    description?: string;
+    location?: string;
+    venue_address?: string;
+    date?: string;
+    price?: string | number;
+    points?: string | number;
+    variant_id?: string;
+    quantity?: number;
+    track_quantity?: boolean;
+    onClose: () => void;
+    variant_options?: any[];
+    product_variants?: ProductVariant[];
+  }
+
 type EventDataTypes = "small" | "event"
 
 export interface EventDataProps {
-    id?: number,
-    image: string
-    title: string
-    location?: string
-    date?: string
-    desc?: string
-    validDate?: string
-    price?: string | number
-    points?: string | number
-    type?: EventDataTypes | string
+    id?: string | number;
+    image: string;
+    title: string;
+    description: string;
+    location?: string;
+    date?: string;
+    start_datetime?: string;
+    end_datetime?: string;
+    desc?: string;
+    validDate?: string;
+    price?: string | number;
+    points?: string | number;
+    type?: EventDataTypes | string;
 }
 
 export interface EventCardProps extends EventDataProps {

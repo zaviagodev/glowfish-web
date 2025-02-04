@@ -71,8 +71,8 @@ export default function AddressSelection() {
 
   if (customerLoading) {
     return (
-      <div className="min-h-dvh bg-background pt-14 text-center">
-        Loading...
+      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -127,7 +127,7 @@ export default function AddressSelection() {
                       >
                         <Pencil className="w-3.5 h-3.5" />
                       </Button>
-                      <Button
+                      {/* <Button
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-foreground"
@@ -137,7 +137,7 @@ export default function AddressSelection() {
                         }}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                   <div className="text-xs text-muted-foreground mb-1">

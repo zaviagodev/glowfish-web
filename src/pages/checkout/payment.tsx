@@ -199,14 +199,14 @@ export default function PaymentPage() {
 
   if (!order || !paymentOptions) {
     return (
-      <div className="min-h-dvh bg-background pt-14 text-center">
-        Loading...
+      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("PromptPay QR")} />
 
       <div className="pt-14 pb-24">
@@ -361,7 +361,7 @@ export default function PaymentPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-9 px-4 rounded-full border-[#E5E5E5] hover:bg-[#F5F5F5]"
+                  className="h-9 px-4 rounded-full border-[#E5E5E5]"
                   onClick={handleDownloadQR}
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -504,13 +504,13 @@ export default function PaymentPage() {
       {/* Footer */}
       <motion.div
         className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t z-[99]"
-        initial={{ y: 100 }}
+        initial={{ y: 50 }}
         animate={{ y: 0 }}
         transition={{ delay: 1.6, type: "spring", stiffness: 200, damping: 20 }}
       >
         <div className="p-4 space-y-3">
           <Button
-            className="w-full bg-black text-white hover:bg-black/90 h-12"
+            className="w-full main-btn"
             disabled={isConfirming}
             onClick={handleConfirmPayment}
           >
@@ -530,7 +530,7 @@ export default function PaymentPage() {
 
           <Button
             variant="ghost"
-            className="w-full h-12 text-muted-foreground hover:text-foreground"
+            className="w-full text-muted-foreground"
             onClick={handlePayLater}
             disabled={isConfirming}
           >
@@ -574,7 +574,7 @@ export default function PaymentPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                {t("Payment Successful!")}
+                {t("Awaiting confirmation")}
               </motion.h2>
 
               <motion.p

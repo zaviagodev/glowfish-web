@@ -21,8 +21,8 @@ export function UserProfile({
   return (
     <div className="px-5 py-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold tracking-tight mb-2">
+        <div className="space-y-2">
+          <h2 className="text-2xl font-semibold tracking-tight">
             {customer?.first_name || customer?.last_name ? 
               `${customer?.first_name || ''} ${customer?.last_name || ''}`.trim() 
               : ''}

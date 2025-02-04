@@ -21,7 +21,7 @@ export default function TicketDetails() {
 
   if (!event) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("Event Details")} />
         <div className="flex items-center justify-center h-[60vh]">
           <p className="text-muted-foreground">{t("Ticket not found")}</p>
@@ -42,10 +42,10 @@ export default function TicketDetails() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("Event Details")} />
-        <div className="flex items-center justify-center h-[60vh]">
-          <p>{t("Loading...")}</p>
+        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       </div>
     );
@@ -53,7 +53,7 @@ export default function TicketDetails() {
 
   if (error) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("Event Details")} />
         <div className="flex items-center justify-center h-[60vh]">
           <p className="text-destructive">
@@ -68,7 +68,7 @@ export default function TicketDetails() {
   const isUpcoming = eventDate > new Date();
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("Event Details")} />
 
       <div className="pt-14 pb-20">
@@ -132,7 +132,7 @@ export default function TicketDetails() {
             )}
 
             <motion.h1
-              className="text-base"
+              className="text-2xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -266,9 +266,9 @@ export default function TicketDetails() {
             transition={{ delay: 0.8 }}
           >
             <h3 className="font-medium">{t("Organizer")}</h3>
-            <div className="bg-darkgray rounded-lg p-4">
-              <div className="text-sm font-medium mb-1">
-                {event.organizer_name}
+            <div className="bg-darkgray rounded-lg p-4 space-y-1">
+              <div className="text-sm font-medium">
+                {event.organizer_name || "Organizer TBD"}
               </div>
               {event.organizer_contact && (
                 <div className="text-sm text-muted-foreground">

@@ -1,4 +1,4 @@
-import { Home, Calendar, Gift, User, History } from "lucide-react";
+import { Home, Calendar, Gift, User, History, Ticket } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
@@ -17,8 +17,8 @@ const BottomNav = () => {
   const navItems = [
     { icon: Home, label: "Home", path: "/home" },
     { icon: Calendar, label: "Products", path: "/products" },
+    { icon: Ticket, label: "Tickets", path: "/tickets" },
     { icon: Gift, label: "Rewards", path: "/rewards" },
-    // { icon: History, label: "History", path: "/history" },
     { icon: User, label: "Me", path: "/settings" },
   ];
 

@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { Calendar, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { ProductVariant } from "@/type/type";
 
 interface AnimatedCardProps {
   id: string | number;
@@ -12,6 +14,8 @@ interface AnimatedCardProps {
   date?: string;
   price?: string | number;
   compareAtPrice?: string | number;
+  variant_id?: string;
+  product_variants?: ProductVariant[];
   points?: string | number;
   type?: "small" | "event";
   validDate?: string;
@@ -35,6 +39,8 @@ export function AnimatedCard({
   date,
   price,
   compareAtPrice,
+  variant_id,
+  product_variants,
   points,
   type,
   validDate,
@@ -42,6 +48,38 @@ export function AnimatedCard({
   onClick,
 }: AnimatedCardProps) {
   const t = useTranslate();
+
+  const [selectedVariantId, setSelectedVariantId] = useState<
+    string | undefined
+  >(variant_id);
+
+  // Find selected variant
+  const selectedVariant = product_variants?.find(
+    (v) => v.id === selectedVariantId
+  );
+
+  const getPriceDisplay = () => {
+    if (selectedVariant) {
+      return selectedVariant.price === 0
+        ? t("free")
+        : `฿${selectedVariant.price.toLocaleString()}`;
+    }
+
+    if (!product_variants || product_variants.length === 0) {
+      return price === 0 ? t("free") : `฿${Number(price).toLocaleString()}`;
+    }
+
+    const prices = product_variants.map((v) => v.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+
+    if (minPrice === maxPrice) {
+      // return `฿${minPrice.toLocaleString()}`;
+      return minPrice === 0 ? t("free") : `฿${minPrice.toLocaleString()}`;
+    }
+
+    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+  };
 
   return (
     <motion.div
@@ -67,7 +105,7 @@ export function AnimatedCard({
           layoutId={`image-${id}`}
           src={image}
           alt={title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-top"
           transition={springConfig}
         />
       </motion.div>
@@ -97,7 +135,7 @@ export function AnimatedCard({
             </motion.p>
           </div>
 
-          {price ? (
+          {/* {price ? (
             <motion.p
               layoutId={`price-${id}`}
               className="space-y-0.5"
@@ -127,27 +165,25 @@ export function AnimatedCard({
             </motion.p>
           ) : (
             <p className="text-lg font-semibold space-y-0.5">Free</p>
-          )}
+          )} */}
 
           <div className="space-y-2">
-            {location && (
-              <motion.div
-                layoutId={`location-${id}`}
-                className="flex items-center gap-2 text-xs text-muted-foreground"
-                transition={springConfig}
-              >
-                <MapPin className="w-3.5 h-3.5" />
-                <span className="line-clamp-1">{location}</span>
-              </motion.div>
-            )}
+            <motion.div
+              layoutId={`location-${id}`}
+              className="flex items-center gap-2 text-xs text-muted-foreground"
+              transition={springConfig}
+            >
+              <MapPin className="min-w-3.5 w-3.5 h-3.5" />
+              <span className="line-clamp-1">{location || "-"}</span>
+            </motion.div>
             {date && (
               <motion.div
                 layoutId={`date-${id}`}
                 className="flex items-center gap-2 text-xs text-muted-foreground"
                 transition={springConfig}
               >
-                <Calendar className="w-3.5 h-3.5" />
-                <span>{date}</span>
+                <Calendar className="min-w-3.5 w-3.5 h-3.5" />
+                <span className="line-clamp-1">{date}</span>
               </motion.div>
             )}
             {points && (
@@ -156,9 +192,23 @@ export function AnimatedCard({
                 className="flex items-center gap-2 text-xs text-muted-foreground"
                 transition={springConfig}
               >
-                <Tag className="w-3.5 h-3.5" />
-                <span>{t("point", { count: points })}</span>
+                <Tag className="min-w-3.5 w-3.5 h-3.5" />
+                <span className="line-clamp-1">
+                  {t("point", { count: points })}
+                </span>
               </motion.div>
+            )}
+
+            {getPriceDisplay() && (
+              <motion.p
+                layoutId={`price-${id}`}
+                className="space-y-0.5"
+                transition={springConfig}
+              >
+                <span className="flex items-baseline gap-2 text-lg font-semibold">
+                  {getPriceDisplay()}
+                </span>
+              </motion.p>
             )}
           </div>
         </div>

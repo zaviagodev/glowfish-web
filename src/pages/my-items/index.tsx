@@ -53,7 +53,7 @@ export default function MyItemsPage() {
   });
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("My Items")} />
 
       <div className="pt-14 pb-4">

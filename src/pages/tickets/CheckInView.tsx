@@ -57,7 +57,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
             >
               <X className="h-4 w-4" />
             </button>
-            <button
+            {/* <button
               className="absolute right-5 top-[60%] text-sm text-primary"
               onClick={(e) => {
                 e.stopPropagation();
@@ -65,7 +65,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
               }}
             >
               {t("Test")}
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -120,11 +120,13 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
-
                   <div className="w-64 h-64 bg-background rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
-
                     <QRCodeCanvas
-                      value={`${import.meta.env.VITE_ADMIN_URL}/dashboard/events/record-attendance?ticket_code=${ticket.ticketNumber}`}
+                      value={`${
+                        import.meta.env.VITE_ADMIN_URL
+                      }/dashboard/events/record-attendance?ticket_code=${
+                        ticket.ticketNumber
+                      }`}
                       size={224}
                       level="H"
                       includeMargin={false}
@@ -190,14 +192,18 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
           <div className="bg-darkgray rounded-lg p-4">
             <h3 className="font-medium mb-3">{ticket.eventName}</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>{format(new Date(ticket.date), "PPp")}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                <span>{ticket.location}</span>
-              </div>
+              {ticket.date && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>{format(new Date(ticket.date), "PPp")}</span>
+                </div>
+              )}
+              {ticket.location && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  <span>{ticket.location}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

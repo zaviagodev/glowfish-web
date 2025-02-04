@@ -1,12 +1,12 @@
 import { useTranslate } from "@refinedev/core";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Filter, ArrowUpDown, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { useProducts } from "@/hooks/useProducts";
-import { supabase } from "@/lib/supabase";
+import { format } from "date-fns";
 import {
   Sheet,
   SheetContent,
@@ -95,8 +95,19 @@ export default function ProductsPage() {
     return 0;
   });
 
+  const formattedDate = (product: any) => {
+    return (
+      product?.start_datetime &&
+      product?.end_datetime &&
+      `${format(
+        new Date(product.start_datetime),
+        "dd-MM-yyyy HH:mm"
+      )} - ${format(new Date(product.end_datetime), "dd-MM-yyyy HH:mm")}`
+    );
+  };
+
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       {/* Search Bar */}
       <div className="sticky top-0 z-50 bg-background border-b">
         <div className="px-5 pt-4 py-2">
@@ -156,9 +167,13 @@ export default function ProductsPage() {
                 image={product.image}
                 title={product.name}
                 price={product.price}
-                compareAtPrice={product.product_variants?.[0]?.compare_at_price || undefined}
+                compareAtPrice={
+                  product.product_variants?.[0]?.compare_at_price || undefined
+                }
+                product_variants={product.product_variants}
+                location={product.location}
+                date={formattedDate(product)}
                 description={product.description}
-                type="small"
                 onClick={() => {
                   // Get the default variant if product has variants
                   const defaultVariant = product.product_variants?.[0];
@@ -313,6 +328,8 @@ export default function ProductsPage() {
       {selectedProduct && (
         <ProductDetail
           {...selectedProduct}
+          location={selectedProduct.location}
+          date={formattedDate(selectedProduct)}
           onClose={() => setSelectedProduct(null)}
         />
       )}

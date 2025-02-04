@@ -246,7 +246,7 @@ const ProfileSettings = () => {
             )}
           />
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="birthday"
             render={({ field }) => (
@@ -281,6 +281,7 @@ const ProfileSettings = () => {
                       disabled={(date) =>
                         date > new Date() || date < new Date("1900-01-01")
                       }
+                      captionLayout="dropdown"
                       initialFocus
                       className="text-white"
                       classNames={{
@@ -316,7 +317,7 @@ const ProfileSettings = () => {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           <div className="pt-4">
             <Button

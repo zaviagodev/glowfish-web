@@ -74,7 +74,7 @@ export default function PointsPage() {
   };
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       {/* Header */}
       <PageHeader title={t("Use Points")} />
 

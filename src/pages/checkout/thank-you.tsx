@@ -33,7 +33,7 @@ export default function ThankYouPage() {
   });
 
   return (
-    <div className="min-h-dvh bg-background relative isolate">
+    <div className="bg-background relative isolate">
       {/* Glowing Edge Indicator */}
       <GlowingEdges />
 
@@ -88,28 +88,12 @@ export default function ThankYouPage() {
             {t("Your order has been confirmed")}
           </motion.p>
         </div>
-
-        {/* Decorative Wave */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg
-            viewBox="0 0 1440 120"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-            className="w-full h-[60px]"
-          >
-            <path
-              d="M0 0L48 8.875C96 17.75 192 35.5 288 44.375C384 53.25 480 53.25 576 44.375C672 35.5 768 17.75 864 26.625C960 35.5 1056 71 1152 79.875C1248 88.75 1344 71 1392 62.125L1440 53.25V120H1392C1344 120 1248 120 1152 120C1056 120 960 120 864 120C768 120 672 120 576 120C480 120 384 120 288 120C192 120 96 120 48 120H0V0Z"
-              fill="white"
-            />
-          </svg>
-        </div>
       </motion.div>
 
       {/* Order Details */}
       <div className="px-5 py-8 space-y-6 relative z-20">
         <motion.div
-          className="space-y-4"
+          className="space-y-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
@@ -117,32 +101,24 @@ export default function ThankYouPage() {
           <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Order Details")}
           </h2>
-          <div className="bg-tertiary rounded-lg border border-[#E5E5E5] divide-y">
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
-                  {t("Order Number")}
-                </span>
-                <span className="text-sm font-medium">{orderNumber}</span>
-              </div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">
+                {t("Order Number")}
+              </span>
+              <span className="text-sm font-medium">{orderNumber}</span>
             </div>
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
-                  {t("Amount Paid")}
-                </span>
-                <span className="text-sm font-medium">
-                  ฿{amount?.toLocaleString()}.00
-                </span>
-              </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">
+                {t("Amount Paid")}
+              </span>
+              <span className="text-sm font-medium">
+                ฿{amount?.toLocaleString()}.00
+              </span>
             </div>
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
-                  {t("Date")}
-                </span>
-                <span className="text-sm font-medium">{formattedDate}</span>
-              </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">{t("Date")}</span>
+              <span className="text-sm font-medium">{formattedDate}</span>
             </div>
           </div>
         </motion.div>
@@ -168,13 +144,13 @@ export default function ThankYouPage() {
                     {t("Order Processing")}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    {t("We're preparing your order for shipment")}
+                    {t("Admin is reviewing your payment")}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-darkgray rounded-lg p-4">
+            {/* <div className="bg-darkgray rounded-lg p-4">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-lg bg-[#2196F3]/10 flex items-center justify-center">
                   <Clock className="w-5 h-5 text-[#2196F3]" />
@@ -188,7 +164,7 @@ export default function ThankYouPage() {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </motion.div>
 
@@ -200,19 +176,15 @@ export default function ThankYouPage() {
           transition={{ delay: 0.8 }}
         >
           <Button
-            className="w-full bg-black text-white hover:bg-black/90 h-12"
-            onClick={() => navigate("/home")}
-          >
-            {t("Continue Shopping")}
-          </Button>
-
-          <Button
             variant="outline"
-            className="w-full h-12 border-[#E5E5E5] flex items-center justify-between"
+            className="w-full h-12 bg-darkgray flex items-center justify-between rounded-lg"
             onClick={() => navigate("/my-orders")}
           >
-            <span>{t("Track Order")}</span>
+            <span>{t("Go to my order")}</span>
             <ChevronRight className="w-4 h-4" />
+          </Button>
+          <Button className="w-full main-btn" onClick={() => navigate("/home")}>
+            {t("Continue Shopping")}
           </Button>
         </motion.div>
       </div>

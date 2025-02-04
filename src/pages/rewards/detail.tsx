@@ -69,7 +69,11 @@ const RewardDetail = () => {
   } = useOrders();
 
   if (rewardsLoading || customerLoading) {
-    return <div className="text-center mt-8">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   if (rewardsError || customerError) {
@@ -86,7 +90,8 @@ const RewardDetail = () => {
     return <div className="text-center mt-8">{t("Reward not found")}</div>;
   }
 
-  const imageUrl = reward?.product_images?.[0]?.url || 
+  const imageUrl =
+    reward?.product_images?.[0]?.url ||
     'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
 
   const pointsRequired = reward.product_variants?.[0]?.points_based_price || 0;
@@ -103,17 +108,21 @@ const RewardDetail = () => {
     setError(null);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
       // Prepare order items
-      const orderItems = [{
-        variant_id: reward.product_variants[0].id,
-        quantity: 1,
-        price: reward.product_variants[0].price,
-        total: reward.product_variants[0].price,
-        points_based_price: reward.product_variants[0].points_based_price,
-      }];
+      const orderItems = [
+        {
+          variant_id: reward.product_variants[0].id,
+          quantity: 1,
+          price: reward.product_variants[0].price,
+          total: reward.product_variants[0].price,
+          points_based_price: reward.product_variants[0].points_based_price,
+        },
+      ];
 
       // Create order using place_order function
       const { data: newOrder, error } = await supabase.rpc("place_order", {
@@ -147,7 +156,6 @@ const RewardDetail = () => {
 
       // Refresh customer data to get updated points
       await refreshCustomer();
-      
       // Refresh orders list
       await refreshOrders();
       
@@ -169,33 +177,38 @@ const RewardDetail = () => {
   };
 
   return (
-    <>
+    <div className="pb-10">
       <Header className="bg-transparent border-0" />
-      <img src={imageUrl} className="w-full h-full object-cover" />
-      <section className="p-5 bg-background relative -top-10 backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
+      <img
+        src={imageUrl}
+        className="w-full h-full aspect-square object-cover"
+      />
+      <section className="p-5 bg-background relative backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
         <div className="flex flex-col gap-4">
-          <h2 className="page-title">{reward.name}</h2>
+          <p className="text-sm text-muted-foreground">Reward</p>
+          <h2 className="text-2xl">{reward.name}</h2>
         </div>
 
         <div className="grid grid-cols-2">
           <div className="flex flex-col gap-1 pr-7 border-r border-r-[#FFFFFF1A]">
-            <p className="text-xs text-fadewhite">{t("Required Points")}</p>
-            <h2 className="text-mainorange text-xl font-semibold">
-              {pointsRequired.toLocaleString()}{" "}
-              {t("points")}
+            <p className="text-sm text-muted-foreground">
+              {t("Required Points")}
+            </p>
+            <h2 className="text-orangefocus text-xl font-semibold">
+              {pointsRequired.toLocaleString()} {t("points")}
             </h2>
           </div>
-          <div className="flex flex-col gap-2 pl-7">
-            <p className="text-xs text-fadewhite">{t("Your Points")}</p>
-            <h2 className="page-title">
-              {customerPoints.toLocaleString()}
-            </h2>
+          <div className="flex flex-col gap-1 pl-7">
+            <p className="text-sm text-muted-foreground">{t("Your Points")}</p>
+            <h2 className="page-title">{customerPoints.toLocaleString()}</h2>
           </div>
         </div>
 
         <div className="flex flex-col gap-4">
-          <h2 className="font-medium text-sm">{t("Description")}</h2>
-          <p className="text-xs">{reward.description}</p>
+          <h2 className="text-base">{t("Description")}</h2>
+          <p className="text-[13px] text-secondary-foreground font-light">
+            {reward.description}
+          </p>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -208,7 +221,9 @@ const RewardDetail = () => {
                 {t("How to redeem the reward")}
               </AccordionTrigger>
               <AccordionContent className="pt-4 pb-0">
-                {t("Click the Redeem button below and show the code to our staff to claim your reward.")}
+                {t(
+                  "Click the Redeem button below and show the code to our staff to claim your reward."
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -222,7 +237,9 @@ const RewardDetail = () => {
                 {t("Redemption condition")}
               </AccordionTrigger>
               <AccordionContent className="pt-4 pb-0">
-                {t("This reward can only be redeemed once and cannot be combined with other promotions.")}
+                {t(
+                  "This reward can only be redeemed once and cannot be combined with other promotions."
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -231,15 +248,18 @@ const RewardDetail = () => {
 
       {error && (
         <div className="px-5 mb-4">
-          <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-lg flex items-center gap-2">
+          <div className="bg-red-500/10 text-red-500 px-4 py-3 rounded-lg flex items-center gap-2">
             <AlertCircle className="w-4 h-4" />
             <p className="text-sm">{error}</p>
           </div>
         </div>
       )}
 
-      <footer className="btn-footer flex flex-col gap-7 z-[51]">
-        <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+      <footer className="btn-footer flex flex-col gap-7 z-[50]">
+        <Dialog
+          open={isConfirmDialogOpen}
+          onOpenChange={setIsConfirmDialogOpen}
+        >
           <Button
             disabled={isProcessing || !hasEnoughPoints}
             onClick={() => setIsConfirmDialogOpen(true)}
@@ -248,23 +268,26 @@ const RewardDetail = () => {
             <Gift />
             {isProcessing ? t("Processing...") : t("Redeem Reward")}
           </Button>
-          <DialogContent>
+          <DialogContent className="w-[90%] rounded-lg">
             <DialogHeader>
               <DialogTitle>{t("Confirm Redemption")}</DialogTitle>
               <DialogDescription>
-                {t("Are you sure you want to redeem this reward for")} {pointsRequired.toLocaleString()} {t("points")}?
+                {t("Are you sure you want to redeem this reward for")}{" "}
+                {pointsRequired.toLocaleString()} {t("points")}?
               </DialogDescription>
             </DialogHeader>
-            <div className="flex justify-end gap-4 mt-4">
+            <div className="flex gap-4 mt-4">
               <Button
                 variant="outline"
                 onClick={() => setIsConfirmDialogOpen(false)}
+                className="!bg-darkgray text-white rounded-full w-full"
               >
                 {t("Cancel")}
               </Button>
               <Button
                 onClick={handleRedeem}
                 disabled={isProcessing}
+                className="main-btn w-full"
               >
                 {isProcessing ? t("Processing...") : t("Confirm")}
               </Button>
@@ -278,7 +301,9 @@ const RewardDetail = () => {
             side="bottom"
           >
             <div>
-              <h3 className="text-lg font-semibold text-center mb-4">{t("Redeem Your Reward")}</h3>
+              <h3 className="text-lg font-semibold text-center mb-4">
+                {t("Redeem Your Reward")}
+              </h3>
               <p className="text-sm text-[#979797] text-center mb-6">
                 {t("Show this code to the staff to redeem your reward")}
               </p>
@@ -297,7 +322,10 @@ const RewardDetail = () => {
                     {t("Code")}
                   </TabsTrigger>
                 </TabsList>
-                <TabsContent value="barcode" className="mt-10 flex justify-center">
+                <TabsContent
+                  value="barcode"
+                  className="mt-10 flex justify-center"
+                >
                   <Barcode value={reward.id} width={2.5} />
                 </TabsContent>
                 <TabsContent value="qrcode" className="mt-10 text-center">
@@ -305,7 +333,9 @@ const RewardDetail = () => {
                   QR Code Prototype
                 </TabsContent>
                 <TabsContent value="coupon-code" className="mt-10">
-                  <h3 className="text-center text-2xl font-bold tracking-wider">{reward.id}</h3>
+                  <h3 className="text-center text-2xl font-bold tracking-wider">
+                    {reward.id}
+                  </h3>
                 </TabsContent>
               </Tabs>
             </div>
@@ -321,7 +351,7 @@ const RewardDetail = () => {
           </SheetContent>
         </Sheet>
       </footer>
-    </>
+    </div>
   );
 };
 
