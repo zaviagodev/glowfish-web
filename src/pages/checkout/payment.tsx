@@ -199,14 +199,14 @@ export default function PaymentPage() {
 
   if (!order || !paymentOptions) {
     return (
-      <div className="min-h-dvh bg-background pt-14 text-center">
-        Loading...
+      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("PromptPay QR")} />
 
       <div className="pt-14 pb-24">
@@ -504,7 +504,7 @@ export default function PaymentPage() {
       {/* Footer */}
       <motion.div
         className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t z-[99]"
-        initial={{ y: 100 }}
+        initial={{ y: 50 }}
         animate={{ y: 0 }}
         transition={{ delay: 1.6, type: "spring", stiffness: 200, damping: 20 }}
       >

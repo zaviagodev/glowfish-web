@@ -68,7 +68,7 @@ const HowToSpendPoints = () => {
   ];
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("How to Spend Points")} />
 
       <div className="pt-14 pb-10">

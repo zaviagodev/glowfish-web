@@ -1,12 +1,5 @@
 import { motion } from "framer-motion";
-import {
-  MapPin,
-  Calendar,
-  Tag,
-  ChevronLeft,
-  ChevronRight,
-  ShoppingCart,
-} from "lucide-react";
+import { MapPin, Calendar, Tag, ChevronLeft, ShoppingCart } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -16,42 +9,11 @@ import { VariantDrawer } from "./VariantDrawer";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+import { ProductDetailProps } from "@/type/type";
 
 interface ProductVariantOption {
   name: string;
   value: string;
-}
-
-interface ProductVariant {
-  id: string;
-  name: string;
-  sku: string;
-  price: number;
-  compare_at_price: number | null;
-  quantity: number;
-  options: Array<{
-    name: string;
-    value: string;
-  }>;
-  status: string;
-  position: number;
-}
-
-interface ProductDetailProps {
-  id: string | number;
-  image: string;
-  name: string;
-  description?: string;
-  location?: string;
-  date?: string;
-  price?: string | number;
-  points?: string | number;
-  variant_id?: string;
-  quantity?: number;
-  track_quantity?: boolean;
-  onClose: () => void;
-  variant_options?: any[];
-  product_variants?: ProductVariant[];
 }
 
 export function ProductDetail({
@@ -60,6 +22,7 @@ export function ProductDetail({
   name,
   description,
   location,
+  venue_address,
   date,
   price,
   points,
@@ -179,7 +142,7 @@ export function ProductDetail({
 
       setIsClamped(paragraphRef.current.scrollHeight > maxHeight);
     }
-  }, [description]);
+  }, [description, venue_address]);
 
   return createPortal(
     <div className="fixed inset-0 z-50">
@@ -216,23 +179,33 @@ export function ProductDetail({
           <ShoppingCart className="h-6 w-6" />
         </Button>
 
-        <div
-          // layoutId={`image-container-${id}`}
-          className="w-full aspect-square overflow-hidden"
-          // transition={{
-          //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
-          // }}
-        >
-          <img
-            // layoutId={`image-${id}`}
-            src={image}
-            alt={name}
-            className="w-full h-full object-cover object-top"
+        {image ? (
+          <div
+            // layoutId={`image-container-${id}`}
+            className="w-full aspect-square overflow-hidden"
             // transition={{
             //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
             // }}
-          />
-        </div>
+          >
+            <img
+              // layoutId={`image-${id}`}
+              src={image}
+              alt={name}
+              className="w-full h-full object-cover object-top"
+              // transition={{
+              //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
+              // }}
+            />
+          </div>
+        ) : (
+          <div
+            // layoutId={`image-container-${id}`}
+            className="w-full aspect-square overflow-hidden bg-white/20"
+            // transition={{
+            //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
+            // }}
+          ></div>
+        )}
 
         <div className="p-5 space-y-6 bg-background/80 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-48">
           <div className="space-y-4">
@@ -284,7 +257,7 @@ export function ProductDetail({
 
           <div className="space-y-6">
             {description && (
-              <div className="space-y-4">
+              <div className="space-y-2">
                 <h2
                   // initial={{ opacity: 0, y: 20 }}
                   // animate={{ opacity: 1, y: 0 }}
@@ -297,7 +270,7 @@ export function ProductDetail({
                   // initial={{ opacity: 0, y: 20 }}
                   // animate={{ opacity: 1, y: 0 }}
                   // transition={{ delay: 0.4 }}
-                  className="text-[13px] text-secondary-foreground"
+                  className="text-[13px] text-secondary-foreground font-light"
                   ref={paragraphRef}
                 >
                   <span className={!expanded ? "line-clamp-5" : ""}>
@@ -312,6 +285,27 @@ export function ProductDetail({
                       {expanded ? "Read less..." : "Read more..."}
                     </p>
                   ) : null}
+                </p>
+              </div>
+            )}
+
+            {venue_address && (
+              <div className="space-y-2">
+                <h2
+                  // initial={{ opacity: 0, y: 20 }}
+                  // animate={{ opacity: 1, y: 0 }}
+                  // transition={{ delay: 0.3 }}
+                  className="text-base"
+                >
+                  {t("Venue & Location")}
+                </h2>
+                <p
+                  // initial={{ opacity: 0, y: 20 }}
+                  // animate={{ opacity: 1, y: 0 }}
+                  // transition={{ delay: 0.4 }}
+                  className="text-[13px] text-secondary-foreground font-light"
+                >
+                  {venue_address}
                 </p>
               </div>
             )}
@@ -497,33 +491,35 @@ export function ProductDetail({
                   }}
                 >
                   <span className="text-sm font-normal">start from</span>
-                  {getPriceDisplay()}
-                </span>
-                {selectedVariant?.compare_at_price && (
-                  <span
-                    // initial={{ opacity: 0, x: -10 }}
-                    // animate={{ opacity: 0.6, x: 0 }}
-                    className="text-sm line-through text-[#999999]"
-                  >
-                    ฿{selectedVariant.compare_at_price.toLocaleString()}
+                  <span className="flex items-center gap-2">
+                    {getPriceDisplay()}
+                    {selectedVariant?.compare_at_price && (
+                      <>
+                        <span
+                          // initial={{ opacity: 0, x: -10 }}
+                          // animate={{ opacity: 0.6, x: 0 }}
+                          className="text-sm line-through text-[#999999]"
+                        >
+                          ฿{selectedVariant.compare_at_price.toLocaleString()}
+                        </span>
+                        <div
+                          // initial={{ opacity: 0, scale: 0.9 }}
+                          // animate={{ opacity: 1, scale: 1 }}
+                          className="inline-flex items-center px-2 py-1 text-xs font-medium bg-mainbutton rounded text-primary-foreground"
+                        >
+                          {Math.round(
+                            (1 -
+                              selectedVariant.price /
+                                selectedVariant.compare_at_price) *
+                              100
+                          )}
+                          % OFF
+                        </div>
+                      </>
+                    )}
                   </span>
-                )}
+                </span>
               </div>
-              {selectedVariant?.compare_at_price && (
-                <div
-                  // initial={{ opacity: 0, scale: 0.9 }}
-                  // animate={{ opacity: 1, scale: 1 }}
-                  className="inline-flex items-center px-2 py-1 text-xs font-medium bg-mainbutton rounded text-primary-foreground"
-                >
-                  {Math.round(
-                    (1 -
-                      selectedVariant.price /
-                        selectedVariant.compare_at_price) *
-                      100
-                  )}
-                  % OFF
-                </div>
-              )}
             </div>
           )}
           <Button

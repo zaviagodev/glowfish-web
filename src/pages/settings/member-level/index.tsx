@@ -66,7 +66,7 @@ const MemberLevel = () => {
   ];
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("Member Level")} />
 
       <div className="pt-14 pb-10">

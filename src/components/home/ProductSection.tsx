@@ -5,6 +5,7 @@ import { Product } from "@/hooks/useProducts";
 import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { format } from "date-fns";
 
 interface ProductSectionProps {
   title: string;
@@ -43,8 +44,9 @@ export const ProductSection = memo(function ProductSection({
         </div>
       ) : (
         <div
+          ref={sliderRef}
           className={cn(
-            "flex gap-3 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
+            "flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
             "scroll-smooth"
           )}
         >
@@ -64,6 +66,19 @@ export const ProductSection = memo(function ProductSection({
                 price={product.price}
                 compareAtPrice={product.compare_at_price}
                 description={product.description}
+                location={product.location}
+                product_variants={product.product_variants}
+                date={
+                  product.start_datetime &&
+                  product.end_datetime &&
+                  `${format(
+                    new Date(product.start_datetime),
+                    "dd-MM-yyyy HH:mm"
+                  )} - ${format(
+                    new Date(product.end_datetime),
+                    "dd-MM-yyyy HH:mm"
+                  )}`
+                }
               />
             </motion.div>
           ))}

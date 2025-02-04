@@ -127,7 +127,7 @@ export default function AddressSelection() {
                       >
                         <Pencil className="w-3.5 h-3.5" />
                       </Button>
-                      <Button
+                      {/* <Button
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-foreground"
@@ -137,7 +137,7 @@ export default function AddressSelection() {
                         }}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                   <div className="text-xs text-muted-foreground mb-1">

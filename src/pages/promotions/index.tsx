@@ -77,7 +77,7 @@ export default function PromotionsPage() {
   };
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       {/* Header */}
       <PageHeader title={t("All Promotions")} />
 

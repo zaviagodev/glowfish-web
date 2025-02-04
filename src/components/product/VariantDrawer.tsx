@@ -12,21 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface ProductVariant {
-  id: string;
-  name: string;
-  sku: string;
-  price: number;
-  compare_at_price: number | null;
-  quantity: number;
-  options: Array<{
-    name: string;
-    value: string;
-  }>;
-  status: string;
-  position: number;
-}
+import { ProductVariant } from "@/type/type";
 
 interface VariantOption {
   id: string;

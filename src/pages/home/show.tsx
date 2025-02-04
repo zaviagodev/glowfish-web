@@ -162,12 +162,12 @@ export const HomeShow = () => {
       <section className="p-5 bg-background/80 relative -top-10 backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
         <div className="flex flex-col gap-1.5">
           <h2 className="page-title">{product.name}</h2>
-          <div className="flex items-center gap-2 text-xs">
+          <div className="flex items-center gap-2 text-sm font-light">
             <MapPin />
             <p>{product.location}</p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs">
+          <div className="flex items-center gap-2 text-sm font-light">
             <Calendar />
             <p>
               {product.start_datetime && product.end_datetime
@@ -181,25 +181,6 @@ export const HomeShow = () => {
                 : t("Date not available")}
             </p>
           </div>
-        </div>
-        <div className="flex gap-4 items-center">
-          <div className="flex -space-x-3">
-            <Avatar className="h-7 w-7">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            <Avatar className="h-7 w-7">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            <Avatar className="h-7 w-7">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </div>
-          <h2 className="page-title">
-            {t("participant", { count: numOfParticipants })}
-          </h2>
         </div>
         {product.description && (
           <div className="flex flex-col gap-1.5">
@@ -261,9 +242,9 @@ export const HomeShow = () => {
                             onClick={() =>
                               handleAttributeSelect(option.name, value)
                             }
-                            className={`px-4 py-2 ${
+                            className={`px-4 py-2 rounded-full${
                               selectedAttributes[option.name] === value
-                                ? "!bg-mainbutton rounded-full"
+                                ? "!bg-mainbutton "
                                 : "bg-darkgray"
                             }`}
                           >

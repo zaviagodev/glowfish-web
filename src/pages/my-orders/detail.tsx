@@ -51,7 +51,7 @@ export default function OrderDetailPage() {
 
   if (!order) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("Order Details")} />
         <div className="p-4 text-center text-muted-foreground">
           {t("Order not found")}
@@ -93,11 +93,14 @@ export default function OrderDetailPage() {
     },
   ] as const;
 
+  const isPendingAndNoAmount =
+    order.status === "pending" && order.total_amount > 0;
+
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("Order Details")} onBack={handleBack} />
 
-      <div className="pt-14 pb-4">
+      <div className={cn("pt-14", { "pb-10": isPendingAndNoAmount })}>
         {/* Order Status Header */}
         <div className="px-5 py-3">
           <div className="flex items-center justify-between mb-2">
@@ -216,20 +219,24 @@ export default function OrderDetailPage() {
         </div>
 
         {/* Order Items */}
-        <div className="p-4 space-y-5">
+        <div className="p-5 space-y-5">
           <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Order Items")}
           </h2>
           <div className="space-y-6 bg-darkgray p-5 rounded-lg">
             {order.order_items.map((item) => (
               <div key={item.id} className="flex gap-5">
-                <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
-                  <img
-                    src={item.product_variants.product.image}
-                    alt={item.product_variants.product.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                {item.product_variants.product.image ? (
+                  <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                      src={item.product_variants.product.image}
+                      alt={item.product_variants.product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-lg overflow-hidden bg-white/20"></div>
+                )}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-medium line-clamp-2 text-card-foreground">
                     {item.product_variants.product.name}
@@ -260,7 +267,7 @@ export default function OrderDetailPage() {
         </div>
 
         {/* Order Summary */}
-        <div className="p-4 space-y-5">
+        <div className="p-5 space-y-5">
           <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Order Summary")}
           </h2>
@@ -339,19 +346,17 @@ export default function OrderDetailPage() {
       </div>
 
       {/* Footer Actions */}
-      {order.status === "pending" && (
-        <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border px-6 py-5">
+      {isPendingAndNoAmount && (
+        <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border p-5">
           <div className="space-y-3">
-            {order.status === "pending" && order.total_amount > 0 && (
-              <Button
-                variant="default"
-                size="lg"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                onClick={() => navigate(`/checkout/payment/${order.id}`)}
-              >
-                {t("Pay Now")}
-              </Button>
-            )}
+            <Button
+              variant="default"
+              size="lg"
+              className="w-full main-btn"
+              onClick={() => navigate(`/checkout/payment/${order.id}`)}
+            >
+              {t("Pay Now")}
+            </Button>
             {/* <Button
             variant={
               order.status === "pending" && order.total_amount > 0

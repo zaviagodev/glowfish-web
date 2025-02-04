@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserProfile } from "@/lib/auth";
 import { useProducts } from "@/hooks/useProducts";
-import { supabase } from "@/lib/supabase";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
@@ -109,8 +109,8 @@ export const HomeList = () => {
       if (profile) {
         setUserProfile({
           id: profile.id,
-          full_name: profile.full_name || '',
-          avatar_url: profile.avatar_url || '',
+          full_name: profile.full_name || "",
+          avatar_url: profile.avatar_url || "",
         });
       }
     };
@@ -122,7 +122,13 @@ export const HomeList = () => {
     navigate("/products", { state: { selectedCategory: categoryId } });
   };
 
-  console.log(selectedProduct);
+  const formattedDate =
+    selectedProduct?.start_datetime &&
+    selectedProduct?.end_datetime &&
+    `${format(
+      new Date(selectedProduct.start_datetime),
+      "dd-MM-yyyy HH:mm"
+    )} - ${format(new Date(selectedProduct.end_datetime), "dd-MM-yyyy HH:mm")}`;
 
   return (
     <div className="min-h-full relative">
@@ -206,7 +212,7 @@ export const HomeList = () => {
 
       <section className="py-6 space-y-6">
         <ProductSection
-          title={t("Featured Products")}
+          title={t("Upcoming Events")}
           linkTo="/products"
           products={products}
           onProductSelect={handleProductSelect}
@@ -229,6 +235,8 @@ export const HomeList = () => {
       {selectedProduct && (
         <ProductDetail
           {...selectedProduct}
+          location={selectedProduct.location}
+          date={formattedDate}
           onClose={() => setSelectedProduct(null)}
         />
       )}

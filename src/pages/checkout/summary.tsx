@@ -44,7 +44,7 @@ export default function PaymentSummaryPage() {
     : "";
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("Order Summary")} />
 
       <div className="pt-14 pb-10">

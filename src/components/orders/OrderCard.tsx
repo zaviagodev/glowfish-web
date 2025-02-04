@@ -45,7 +45,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
   const handleClick = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     navigate(`/my-orders/${order.id}`, {
-      state: { from: 'orders-list', page: currentPage }
+      state: { from: "orders-list", page: currentPage },
     });
   };
 
@@ -87,13 +87,18 @@ export function OrderCard({ order, index }: OrderCardProps) {
       {/* Order Items */}
       {order.order_items.map((item) => (
         <div key={item.id} className="p-4 flex gap-4">
-          <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-            <img
-              src={item.product_variants.product.image}
-              alt={item.product_variants.product.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          {item.product_variants.product.image ? (
+            <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+              <img
+                src={item.product_variants.product.image}
+                alt={item.product_variants.product.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className="w-20 h-20 rounded-lg overflow-hidden bg-white/20"></div>
+          )}
+
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-medium line-clamp-2">
               {item.product_variants.product.name}

@@ -168,30 +168,37 @@ const RewardDetail = () => {
   };
 
   return (
-    <>
+    <div className="pb-10">
       <Header className="bg-transparent border-0" />
-      <img src={imageUrl} className="w-full h-full object-cover" />
-      <section className="p-5 bg-background relative -top-10 backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
+      <img
+        src={imageUrl}
+        className="w-full h-full aspect-square object-cover"
+      />
+      <section className="p-5 bg-background relative backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
         <div className="flex flex-col gap-4">
-          <h2 className="page-title">{reward.name}</h2>
+          <h2 className="text-2xl">{reward.name}</h2>
         </div>
 
         <div className="grid grid-cols-2">
           <div className="flex flex-col gap-1 pr-7 border-r border-r-[#FFFFFF1A]">
-            <p className="text-xs text-fadewhite">{t("Required Points")}</p>
+            <p className="text-sm text-muted-foreground">
+              {t("Required Points")}
+            </p>
             <h2 className="text-mainorange text-xl font-semibold">
               {pointsRequired.toLocaleString()} {t("points")}
             </h2>
           </div>
-          <div className="flex flex-col gap-2 pl-7">
-            <p className="text-xs text-fadewhite">{t("Your Points")}</p>
+          <div className="flex flex-col gap-1 pl-7">
+            <p className="text-sm text-muted-foreground">{t("Your Points")}</p>
             <h2 className="page-title">{customerPoints.toLocaleString()}</h2>
           </div>
         </div>
 
         <div className="flex flex-col gap-4">
-          <h2 className="font-medium text-sm">{t("Description")}</h2>
-          <p className="text-xs">{reward.description}</p>
+          <h2 className="text-base">{t("Description")}</h2>
+          <p className="text-[13px] text-secondary-foreground font-light">
+            {reward.description}
+          </p>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -231,14 +238,14 @@ const RewardDetail = () => {
 
       {error && (
         <div className="px-5 mb-4">
-          <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-lg flex items-center gap-2">
+          <div className="bg-red-500/10 text-red-500 px-4 py-3 rounded-lg flex items-center gap-2">
             <AlertCircle className="w-4 h-4" />
             <p className="text-sm">{error}</p>
           </div>
         </div>
       )}
 
-      <footer className="btn-footer flex flex-col gap-7 z-[51]">
+      <footer className="btn-footer flex flex-col gap-7 z-[50]">
         <Dialog
           open={isConfirmDialogOpen}
           onOpenChange={setIsConfirmDialogOpen}
@@ -259,14 +266,19 @@ const RewardDetail = () => {
                 {pointsRequired.toLocaleString()} {t("points")}?
               </DialogDescription>
             </DialogHeader>
-            <div className="flex justify-end gap-4 mt-4">
+            <div className="flex gap-4 mt-4">
               <Button
                 variant="outline"
                 onClick={() => setIsConfirmDialogOpen(false)}
+                className="!bg-darkgray text-white rounded-full w-full"
               >
                 {t("Cancel")}
               </Button>
-              <Button onClick={handleRedeem} disabled={isProcessing}>
+              <Button
+                onClick={handleRedeem}
+                disabled={isProcessing}
+                className="main-btn w-full"
+              >
                 {isProcessing ? t("Processing...") : t("Confirm")}
               </Button>
             </div>
@@ -329,7 +341,7 @@ const RewardDetail = () => {
           </SheetContent>
         </Sheet>
       </footer>
-    </>
+    </div>
   );
 };
 

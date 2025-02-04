@@ -21,7 +21,7 @@ export default function TicketDetails() {
 
   if (!event) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("Event Details")} />
         <div className="flex items-center justify-center h-[60vh]">
           <p className="text-muted-foreground">{t("Ticket not found")}</p>
@@ -42,7 +42,7 @@ export default function TicketDetails() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("Event Details")} />
         <div className="flex items-center justify-center h-[calc(100vh-200px)]">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -53,7 +53,7 @@ export default function TicketDetails() {
 
   if (error) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("Event Details")} />
         <div className="flex items-center justify-center h-[60vh]">
           <p className="text-destructive">
@@ -68,7 +68,7 @@ export default function TicketDetails() {
   const isUpcoming = eventDate > new Date();
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="bg-background">
       <PageHeader title={t("Event Details")} />
 
       <div className="pt-14 pb-20">

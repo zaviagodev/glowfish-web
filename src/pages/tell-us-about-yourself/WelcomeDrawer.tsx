@@ -32,11 +32,7 @@ const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
         {t("Welcome, this is where get people")}{" "}
         <span className="text-[#9B6CDE]">{t("connected.")}</span>
       </h2>
-      <EventSection
-        list={productEvents}
-        title={t("Upcoming Events")}
-        cardType="event"
-      />
+      <EventSection list={products} title={t("Upcoming Events")} />
       <footer className="btn-footer">
         <Button className="main-btn w-full" onClick={() => navigate("/home")}>
           {t("Let Glowfish")}

@@ -29,6 +29,7 @@ const Rewards = () => {
       id: reward.id,
       image: reward?.product_images?.[0]?.url || imageUrl,
       title: reward.name,
+      description: reward.description,
       location: reward.location,
       date: reward.date,
       price: reward.product_variants?.[0]?.price,
@@ -101,7 +102,7 @@ const Rewards = () => {
           </div>
         </div>
 
-        <div className="px-5 mt-[30px]">
+        <div className="px-5 pb-7">
           <h3 className="page-title mb-4">{t("Available Rewards")}</h3>
           {hasRewards ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -109,49 +110,50 @@ const Rewards = () => {
                 <div
                   key={reward.id}
                   onClick={() => navigate(`/rewards/detail/${reward.id}`)}
-                  className="relative overflow-hidden rounded-lg cursor-pointer w-full border border-border/10 transition-all duration-200 hover:scale-[0.98] active:scale-[0.97]"
+                  className="relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full border border-input transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm"
                 >
-                  <div className="relative overflow-hidden h-[220px] w-full">
+                  <div className="relative overflow-hidden h-[50vw] w-full">
                     <img
                       src={reward.image}
                       alt={reward.title}
-                      className="w-full h-full object-cover rounded-lg object-top"
+                      className="w-full h-full object-cover object-top"
                     />
-                    <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-orangefocus text-white text-xs font-medium">
+                    {/* <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-orangefocus text-white text-xs font-medium">
                       {reward.price && reward.price !== 0
                         ? `฿${reward.price}`
-                        : ""}
-                    </div>
+                        : "Free"}
+                    </div> */}
                   </div>
 
-                  <div className="p-2 space-y-4 flex-1 text-white absolute bottom-0 w-full">
-                    <div className="space-y-2 backdrop-blur-sm rounded-lg bg-background/50 p-4">
-                      <h3 className="font-semibold line-clamp-2 text-sm">
+                  <div className="p-4 space-y-2 bg-card">
+                    <div>
+                      <h3 className="font-semibold text-foreground line-clamp-1">
                         {reward.title}
                       </h3>
-                      {reward.location && (
-                        <div className="flex items-center gap-2 text-xs">
-                          <MapPin className="w-3.5 h-3.5" />
-                          <span className="line-clamp-1">
-                            {reward.location}
-                          </span>
-                        </div>
-                      )}
-                      {reward.date && (
-                        <div className="flex items-center gap-2 text-xs">
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>{reward.date}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2 text-xs">
-                        <Tag className="w-3.5 h-3.5" />
-                        <span>
-                          {reward.points
-                            ? t("point", { count: reward.points })
-                            : t("Free")}
-                        </span>
-                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-1">
+                        {reward.description}
+                      </p>
                     </div>
+                    <div className="flex items-baseline gap-2 text-lg font-semibold">
+                      {/* <Tag className="w-3.5 h-3.5" /> */}
+                      <span>
+                        {reward.points
+                          ? t("point", { count: reward.points })
+                          : t("Free")}
+                      </span>
+                    </div>
+                    {reward.location && (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span className="line-clamp-1">{reward.location}</span>
+                      </div>
+                    )}
+                    {reward.date && (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>{reward.date}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
