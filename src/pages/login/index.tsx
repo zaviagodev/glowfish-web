@@ -38,12 +38,6 @@ export const Login = () => {
           {t("Continue with Line")}
         </Button>
 
-        <Button
-          className="main-btn relative font-semibold mt-2"
-          onClick={handleTestLogin}
-        >
-          {t("Test Login")}
-        </Button>
 
         <p className="text-center font-light text-xs">
           {t(
