@@ -233,12 +233,10 @@ export function ProductDetail({
               </h2>
 
               <div className="space-y-2.5">
-                {location && (
-                  <div className="flex items-center gap-2 text-sm font-light">
-                    <MapPin className="w-4 h-4" />
-                    <span>{location}</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-2 text-sm font-light">
+                  <MapPin className="w-4 h-4" />
+                  <span>{location || "-"}</span>
+                </div>
                 {date && (
                   <div className="flex items-center gap-2 text-sm font-light">
                     <Calendar className="w-4 h-4" />
@@ -336,7 +334,7 @@ export function ProductDetail({
               )} */}
 
               {/* Stock Status */}
-              {track_quantity && (
+              {/* {track_quantity && (
                 <div className="text-sm">
                   <span className="text-muted-foreground">{t("Stock")}:</span>{" "}
                   {selectedVariant ? (
@@ -363,7 +361,7 @@ export function ProductDetail({
                     </span>
                   )}
                 </div>
-              )}
+              )} */}
 
               {/* <Button 
                 className="w-full bg-[rgba(245,245,245,0.5)] text-black hover:bg-[#EBEBEB] border border-[#E5E5E5]"
@@ -493,7 +491,7 @@ export function ProductDetail({
                   <span className="text-sm font-normal">start from</span>
                   <span className="flex items-center gap-2">
                     {getPriceDisplay()}
-                    {selectedVariant?.compare_at_price && (
+                    {/* {selectedVariant?.compare_at_price && (
                       <>
                         <span
                           // initial={{ opacity: 0, x: -10 }}
@@ -502,7 +500,7 @@ export function ProductDetail({
                         >
                           ฿{selectedVariant.compare_at_price.toLocaleString()}
                         </span>
-                        <div
+                        {/* <div
                           // initial={{ opacity: 0, scale: 0.9 }}
                           // animate={{ opacity: 1, scale: 1 }}
                           className="inline-flex items-center px-2 py-1 text-xs font-medium bg-mainbutton rounded text-primary-foreground"
@@ -516,7 +514,7 @@ export function ProductDetail({
                           % OFF
                         </div>
                       </>
-                    )}
+                    )} */}
                   </span>
                 </span>
               </div>

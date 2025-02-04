@@ -167,29 +167,15 @@ export function AnimatedCard({
             <p className="text-lg font-semibold space-y-0.5">Free</p>
           )} */}
 
-          {getPriceDisplay() && (
-            <motion.p
-              layoutId={`price-${id}`}
-              className="space-y-0.5"
+          <div className="space-y-2">
+            <motion.div
+              layoutId={`location-${id}`}
+              className="flex items-center gap-2 text-xs text-muted-foreground"
               transition={springConfig}
             >
-              <span className="flex items-baseline gap-2 text-lg font-semibold">
-                {getPriceDisplay()}
-              </span>
-            </motion.p>
-          )}
-
-          <div className="space-y-2">
-            {location && (
-              <motion.div
-                layoutId={`location-${id}`}
-                className="flex items-center gap-2 text-xs text-muted-foreground"
-                transition={springConfig}
-              >
-                <MapPin className="min-w-3.5 w-3.5 h-3.5" />
-                <span className="line-clamp-1">{location}</span>
-              </motion.div>
-            )}
+              <MapPin className="min-w-3.5 w-3.5 h-3.5" />
+              <span className="line-clamp-1">{location || "-"}</span>
+            </motion.div>
             {date && (
               <motion.div
                 layoutId={`date-${id}`}
@@ -211,6 +197,18 @@ export function AnimatedCard({
                   {t("point", { count: points })}
                 </span>
               </motion.div>
+            )}
+
+            {getPriceDisplay() && (
+              <motion.p
+                layoutId={`price-${id}`}
+                className="space-y-0.5"
+                transition={springConfig}
+              >
+                <span className="flex items-baseline gap-2 text-lg font-semibold">
+                  {getPriceDisplay()}
+                </span>
+              </motion.p>
             )}
           </div>
         </div>

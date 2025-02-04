@@ -144,13 +144,13 @@ export default function ThankYouPage() {
                     {t("Order Processing")}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    {t("We're preparing your order for shipment")}
+                    {t("Admin is reviewing your payment")}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-darkgray rounded-lg p-4">
+            {/* <div className="bg-darkgray rounded-lg p-4">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-lg bg-[#2196F3]/10 flex items-center justify-center">
                   <Clock className="w-5 h-5 text-[#2196F3]" />
@@ -164,7 +164,7 @@ export default function ThankYouPage() {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </motion.div>
 
@@ -175,17 +175,16 @@ export default function ThankYouPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
         >
-          <Button className="w-full main-btn" onClick={() => navigate("/home")}>
-            {t("Continue Shopping")}
-          </Button>
-
           <Button
             variant="outline"
             className="w-full h-12 bg-darkgray flex items-center justify-between rounded-lg"
             onClick={() => navigate("/my-orders")}
           >
-            <span>{t("Track Order")}</span>
+            <span>{t("Go to my order")}</span>
             <ChevronRight className="w-4 h-4" />
+          </Button>
+          <Button className="w-full main-btn" onClick={() => navigate("/home")}>
+            {t("Continue Shopping")}
           </Button>
         </motion.div>
       </div>

@@ -176,6 +176,7 @@ const RewardDetail = () => {
       />
       <section className="p-5 bg-background relative backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
         <div className="flex flex-col gap-4">
+          <p className="text-sm text-muted-foreground">Reward</p>
           <h2 className="text-2xl">{reward.name}</h2>
         </div>
 
@@ -184,7 +185,7 @@ const RewardDetail = () => {
             <p className="text-sm text-muted-foreground">
               {t("Required Points")}
             </p>
-            <h2 className="text-mainorange text-xl font-semibold">
+            <h2 className="text-orangefocus text-xl font-semibold">
               {pointsRequired.toLocaleString()} {t("points")}
             </h2>
           </div>
@@ -258,7 +259,7 @@ const RewardDetail = () => {
             <Gift />
             {isProcessing ? t("Processing...") : t("Redeem Reward")}
           </Button>
-          <DialogContent>
+          <DialogContent className="w-[90%] rounded-lg">
             <DialogHeader>
               <DialogTitle>{t("Confirm Redemption")}</DialogTitle>
               <DialogDescription>

@@ -574,7 +574,7 @@ export default function PaymentPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                {t("Payment Successful!")}
+                {t("Awaiting confirmation")}
               </motion.h2>
 
               <motion.p

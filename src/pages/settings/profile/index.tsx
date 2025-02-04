@@ -246,7 +246,7 @@ const ProfileSettings = () => {
             )}
           />
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="birthday"
             render={({ field }) => (
@@ -317,7 +317,7 @@ const ProfileSettings = () => {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           <div className="pt-4">
             <Button

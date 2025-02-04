@@ -513,11 +513,8 @@
 }
 
 .member-card {
-  background: radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.35) 0%, rgba(171, 171, 171, 0) 100%) padding-box,
-  linear-gradient(169.15deg, rgba(255, 255, 255, 0.9) 0%, rgba(238, 237, 237, 0.45) 35.49%) border-box;
+  background:radial-gradient(100% 100% at 0% 0%, rgb(0 0 0) 0%, rgb(42 42 42) 100%) padding-box, linear-gradient(169.15deg, rgba(255, 255, 255, 0.9) 0%, rgba(238, 237, 237, 0.45) 35.49%) border-box;
   border-radius:20px;
-  border: 1px solid transparent;
-  border-left:none
 }
 
 .text-title2 {

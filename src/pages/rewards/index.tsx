@@ -7,6 +7,7 @@ import { useRewards } from "@/hooks/useRewards";
 import type { Customer } from "@/services/customerService";
 import { useNavigate } from "react-router-dom";
 import { Calendar, MapPin, Tag } from "lucide-react";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 const Rewards = () => {
   const t = useTranslate();
@@ -65,7 +66,7 @@ const Rewards = () => {
 
   return (
     <>
-      <Header title={t("Your card")} rightButton={t("Detail")} />
+      <Header title={t("Your card")} />
       <section>
         <div className="flex items-center justify-between px-5">
           <h1 className="font-semibold text-[28px] m-0">
@@ -83,36 +84,37 @@ const Rewards = () => {
             </AvatarFallback>
           </Avatar>
         </div>
-        <div className="member-card h-[60px]">
+        <div className="member-card h-[250px] relative">
           <img
             src={cardReward}
-            className="absolute z-0 w-full h-full object-cover"
+            className="absolute z-0 w-full h-full object-cover opacity-75"
           />
-          <div className="flex justify-between items-center p-5 z-5 font-semibold text-xl relative">
-            <h3>{t("Glowfish reward.")}</h3>
-            <h3>
-              {hasPoints ? (
-                t("point", { count: customerData.loyalty_points })
-              ) : (
-                <span className="text-sm font-normal">
-                  {t("No points yet")}
-                </span>
-              )}
+          <div className="flex justify-between items-center p-5 z-5 relative">
+            <h3 className="font-semibold text-2xl tracking-[-0.4px]">
+              {t("Good After Work")}
             </h3>
+            <h3 className="font-semibold text-2xl">
+              {hasPoints
+                ? t("point", { count: customerData.loyalty_points })
+                : "0 points"}
+            </h3>
+          </div>
+          <div className="absolute z-[99] right-5 bottom-2 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
+            <GlowfishIcon className="w-[72px]" />| Glowfish
           </div>
         </div>
 
         <div className="px-5 pb-7">
-          <h3 className="page-title mb-4">{t("Available Rewards")}</h3>
+          <h3 className="page-title mb-4">{t("Rewards")}</h3>
           {hasRewards ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {rewardEvents.map((reward) => (
                 <div
                   key={reward.id}
                   onClick={() => navigate(`/rewards/detail/${reward.id}`)}
                   className="relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full border border-input transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm"
                 >
-                  <div className="relative overflow-hidden h-[50vw] w-full">
+                  <div className="relative overflow-hidden h-[40vw] w-full">
                     <img
                       src={reward.image}
                       alt={reward.title}
@@ -134,7 +136,7 @@ const Rewards = () => {
                         {reward.description}
                       </p>
                     </div>
-                    <div className="flex items-baseline gap-2 text-lg font-semibold">
+                    <div className="flex items-baseline gap-2 text-lg font-semibold text-orangefocus">
                       {/* <Tag className="w-3.5 h-3.5" /> */}
                       <span>
                         {reward.points

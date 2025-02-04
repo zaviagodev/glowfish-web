@@ -73,7 +73,7 @@ export default function OrderDetailPage() {
     {
       status: "Processing",
       date: order.status === "processing" ? formatDate(new Date()) : "",
-      description: "Your order is processed and Payment Completed",
+      description: "Your order is processed and payment completed",
       icon: Package2,
       isActive: order.status === "processing",
       isPending: !["processing", "shipped", "delivered", "completed"].includes(
@@ -81,9 +81,9 @@ export default function OrderDetailPage() {
       ),
     },
     {
-      status: "Completed and Shipped",
+      status: "Completed",
       date: order.status === "shipped" ? formatDate(new Date()) : "",
-      description: "Your order has been Completed and Shipped",
+      description: "Your order has been completed",
       icon: Truck,
       isActive:
         order.status === "shipped" ||

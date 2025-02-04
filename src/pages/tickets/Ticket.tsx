@@ -84,7 +84,7 @@ export function Ticket({ ticket }: TicketProps) {
             {ticket.used ? t("Used") : t("Valid")}
           </div>
 
-          <h3 className="font-medium mb-1">{ticket.eventName}</h3>
+          <h3 className="font-medium mb-2">{ticket.eventName}</h3>
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="w-4 h-4 flex-shrink-0" />

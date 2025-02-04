@@ -53,7 +53,7 @@ export const ProductSection = memo(function ProductSection({
           {products.map((product) => (
             <motion.div
               key={product.name}
-              className="flex-shrink-0 w-[280px]"
+              className="flex-shrink-0 w-[360px]"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
@@ -68,14 +68,21 @@ export const ProductSection = memo(function ProductSection({
                 description={product.description}
                 location={product.location}
                 product_variants={product.product_variants}
+                // date={
+                //   product.start_datetime &&
+                //   product.end_datetime &&
+                //   `${format(
+                //     new Date(product.start_datetime),
+                //     "dd-MM-yyyy HH:mm"
+                //   )} - ${format(
+                //     new Date(product.end_datetime),
+                //     "dd-MM-yyyy HH:mm"
+                //   )}`
+                // }
                 date={
                   product.start_datetime &&
-                  product.end_datetime &&
                   `${format(
                     new Date(product.start_datetime),
-                    "dd-MM-yyyy HH:mm"
-                  )} - ${format(
-                    new Date(product.end_datetime),
                     "dd-MM-yyyy HH:mm"
                   )}`
                 }

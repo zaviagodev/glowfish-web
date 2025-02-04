@@ -156,7 +156,7 @@ export const HomeList = () => {
             <div className="flex items-center justify-between">
               <div className="px-5">
                 {/* TODO: add GlowfishIcon */}
-                <GlowfishIcon className="w-[80px] h-[40px]" />
+                <GlowfishIcon className="w-[90px]" />
               </div>
               <Link to="/settings">
                 <div className="px-5">
