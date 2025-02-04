@@ -127,6 +127,9 @@ export default function CheckoutPage() {
       // Clear the cart
       localStorage.removeItem("cart");
 
+      // Refresh orders list
+      await refreshOrders();
+
       // Navigate to payment page with order ID
       navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
     } catch (error) {

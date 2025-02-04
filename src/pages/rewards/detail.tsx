@@ -36,6 +36,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useOrders } from "@/hooks/useOrders";
 
 const RewardDetail = () => {
   const t = useTranslate();
@@ -62,6 +63,10 @@ const RewardDetail = () => {
     error: customerError,
     refreshCustomer,
   } = useCustomer();
+
+  const {
+    refreshOrders,
+  } = useOrders();
 
   if (rewardsLoading || customerLoading) {
     return <div className="text-center mt-8">Loading...</div>;
@@ -142,6 +147,9 @@ const RewardDetail = () => {
 
       // Refresh customer data to get updated points
       await refreshCustomer();
+      
+      // Refresh orders list
+      await refreshOrders();
       
       // Navigate to orders page instead of showing the drawer
       setIsConfirmDialogOpen(false);

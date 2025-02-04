@@ -189,12 +189,12 @@ export default function TicketDetails() {
                   <div
                     className={cn(
                       "px-2 py-1 rounded-full text-sm",
-                      !isUpcoming
+                      ticket.status === 'used'
                         ? "bg-[#8E8E93]/10 text-[#8E8E93]"
                         : "bg-[#34C759]/10 text-[#34C759]"
                     )}
                   >
-                    {!isUpcoming ? t("Used") : t("Valid")}
+                    {ticket.status === 'used' ? t("Used") : t("Valid")}
                   </div>
                 </div>
 
