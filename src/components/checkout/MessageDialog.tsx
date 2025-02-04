@@ -30,7 +30,7 @@ export function MessageDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-background max-w-[90%] w-[400px] rounded-lg p-0 border-0 gap-0">
         {/* Header */}
-        <DialogHeader className="px-4 py-3 border-b">
+        <DialogHeader className="px-5 py-3 border-b">
           <div className="flex items-center gap-2">
             <MessageCircle className="w-5 h-5 text-primary" />
             <DialogTitle className="text-lg font-semibold">
@@ -40,7 +40,7 @@ export function MessageDialog({
         </DialogHeader>
 
         {/* Content */}
-        <div className="p-4 space-y-4">
+        <div className="p-5 space-y-4">
           <Textarea
             placeholder={t("Enter your message to the store...")}
             className="min-h-[120px] bg-darkgray border border-input focus:border-[#EE5736] resize-none focus:!ring-0 !ring-offset-0"

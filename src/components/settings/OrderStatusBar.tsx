@@ -26,6 +26,13 @@ const defaultOrderStatuses: OrderStatus[] = [
     bgColor: "rgba(255, 152, 0, 0.1)",
   },
   {
+    icon: <Package2 className="w-4 h-4" />,
+    label: "Processing",
+    count: 2,
+    color: "#2196F3",
+    bgColor: "rgba(33, 150, 243, 0.1)",
+  },
+  {
     icon: <Truck className="w-4 h-4" />,
     label: "Shipped",
     value: "shipped",
@@ -63,7 +70,7 @@ export function OrderStatusBar({
   };
 
   return (
-    <div className="px-4 py-6">
+    <div className="px-5 py-6">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-sm font-medium text-muted-foreground">
           {t("My Orders")}

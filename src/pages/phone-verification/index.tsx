@@ -8,7 +8,7 @@ const PhoneVerification = () => {
   return (
     <>
       <Header />
-      <section className="flex flex-col gap-y-6 p-6 mt-14">
+      <section className="flex flex-col gap-y-6 p-5 mt-14">
         <div>
           <h2 className="text-primary font-bold text-xl">
             {t("Fill the phone number")}

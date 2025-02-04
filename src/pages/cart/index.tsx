@@ -58,7 +58,7 @@ export default function CartPage() {
       <PageHeader title={`${t("Cart")} (${getTotalItems()})`} />
 
       {/* Cart Items */}
-      <div className="mt-14 overflow-auto h-[calc(100%_-_260px)]">
+      <div className="mt-14 overflow-auto h-[calc(100%_-_64px)]">
         <div className="divide-y">
           <AnimatePresence>
             {items.map((item) => (
@@ -68,7 +68,7 @@ export default function CartPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="p-3 flex gap-2.5 items-center"
+                className="py-3 px-5 flex gap-2.5 items-center"
               >
                 <Checkbox
                   checked={selectedItems.includes(item.variantId)}

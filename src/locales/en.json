@@ -41,6 +41,8 @@
   "ticket_other": "{{count}} tickets",
   "coupons applied_one": "{{count}} coupon applied",
   "coupons applied_other": "{{count}} coupons applied",
+  "items_one": "{{count}} item",
+  "items_other": "{{count}} items",
 
   "Didn't receive the OTP": "Didn't receive the OTP",
   "Language": "Language",

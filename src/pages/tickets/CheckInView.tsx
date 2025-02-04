@@ -43,7 +43,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative px-4 py-3 text-left border-b">
+        <div className="relative px-5 py-3 text-left border-b">
           <div className="absolute left-1/2 -top-3 w-12 h-1 bg-[#E5E5EA] rounded-full transform -translate-x-1/2" />
           <h2 className="text-lg font-semibold">{t("Check In")}</h2>
           <p className="text-sm text-muted-foreground mt-1">
@@ -52,13 +52,13 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
 
           <div>
             <button
-              className="bg-white/[12%] p-1 absolute right-4 top-3 rounded-full opacity-70"
+              className="bg-white/[12%] p-1 absolute right-5 top-4 rounded-full opacity-70"
               onClick={onClose}
             >
               <X className="h-4 w-4" />
             </button>
             <button
-              className="absolute right-4 top-[60%] text-sm text-primary"
+              className="absolute right-5 top-[60%] text-sm text-primary"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowTestView(true);

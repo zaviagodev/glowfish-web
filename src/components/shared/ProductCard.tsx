@@ -83,7 +83,7 @@ export function ProductCard({
       </motion.div>
 
       <div
-        className={cn("p-4 space-y-4", type === "event" ? "flex-1" : "bg-card")}
+        className={cn("p-5 space-y-4", type === "event" ? "flex-1" : "bg-card")}
       >
         <div className="space-y-2">
           <motion.h3

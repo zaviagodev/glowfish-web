@@ -31,7 +31,7 @@ export default function OrderDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("Order Details")} />
         <div className="flex items-center justify-center h-[calc(100vh-200px)]">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -42,7 +42,7 @@ export default function OrderDetailPage() {
 
   if (error) {
     return (
-      <div className="min-h-dvh bg-background">
+      <div className="bg-background">
         <PageHeader title={t("Order Details")} />
         <div className="p-4 text-center text-destructive">{error}</div>
       </div>
@@ -95,14 +95,15 @@ export default function OrderDetailPage() {
         onBack={handleBack}
       />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-4">
         {/* Order Status Header */}
-        <div className="px-6 py-5 border-b border-border bg-card">
+        <div className="px-5 py-3">
           <div className="flex items-center justify-between mb-2">
             <div className="text-base font-medium text-card-foreground">
-              {t("Order")} #{order.id && order.id.includes('-') 
-                ? order.id.split('-')[0]
-                : order.id?.substring(0, 8) || ''}
+              {t("Order")} #
+              {order.id && order.id.includes("-")
+                ? order.id.split("-")[0]
+                : order.id?.substring(0, 8) || ""}
             </div>
             <div className="text-sm text-muted-foreground">
               {formatDate(order.created_at)}
@@ -113,12 +114,9 @@ export default function OrderDetailPage() {
           </div>
         </div>
 
-        {/* Spacer */}
-        <div className="h-2 bg-muted/30" />
-
         {/* Timeline */}
-        <div className="p-6 space-y-4 bg-card border-b border-border">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+        <div className="p-5 space-y-4">
+          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Order Timeline")}
           </h2>
           <div className="relative">
@@ -139,7 +137,7 @@ export default function OrderDetailPage() {
                 )}
               >
                 {/* Icon */}
-                <div 
+                <div
                   className={cn(
                     "absolute left-0 w-[30px] h-[30px] rounded-full flex items-center justify-center",
                     "shadow-sm border border-border",
@@ -147,27 +145,34 @@ export default function OrderDetailPage() {
                     event.isPending
                       ? "bg-muted/50 scale-90 opacity-50"
                       : event.isActive
-                        ? "bg-primary/20 scale-110 ring-4 ring-primary/20"
-                        : "bg-primary/20"
+                      ? "bg-primary/20 scale-110 ring-4 ring-primary/20"
+                      : "bg-primary/20"
                   )}
                 >
-                  <event.icon className={cn(
-                    "w-4 h-4 stroke-[1.5]",
-                    event.isPending ? "text-muted-foreground" : "text-primary",
-                    event.isActive && "animate-pulse"
-                  )} />
+                  <event.icon
+                    className={cn(
+                      "w-4 h-4 stroke-[1.5]",
+                      event.isPending
+                        ? "text-muted-foreground"
+                        : "text-primary",
+                      event.isActive && "animate-pulse"
+                    )}
+                  />
                 </div>
 
                 {/* Content */}
-                <div className={cn(
-                  "relative",
-                  event.isActive && "animate-pulse"
-                )}>
+                <div
+                  className={cn("relative", event.isActive && "animate-pulse")}
+                >
                   <div className="flex items-center justify-between mb-1.5">
-                    <h3 className={cn(
-                      "text-[15px] font-semibold leading-none tracking-tight",
-                      event.isPending ? "text-muted-foreground" : "text-card-foreground"
-                    )}>
+                    <h3
+                      className={cn(
+                        "text-[15px] font-semibold leading-none tracking-tight",
+                        event.isPending
+                          ? "text-muted-foreground"
+                          : "text-card-foreground"
+                      )}
+                    >
                       {t(event.status)}
                     </h3>
                     {event.date && (
@@ -185,19 +190,18 @@ export default function OrderDetailPage() {
           </div>
         </div>
 
-        {/* Spacer */}
-        <div className="h-2 bg-muted/30" />
-
         {/* Customer Information */}
-        <div className="p-6 space-y-4 bg-card border-b border-border">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+        <div className="p-5 space-y-4">
+          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Customer Information")}
           </h2>
-          <div className="bg-muted/30 rounded-lg p-5">
+          <div className="bg-darkgray rounded-lg p-5">
             <div className="space-y-2">
               {(order.customer.first_name || order.customer.last_name) && (
                 <h3 className="text-base font-medium text-card-foreground">
-                  {[order.customer.first_name, order.customer.last_name].filter(Boolean).join(' ')}
+                  {[order.customer.first_name, order.customer.last_name]
+                    .filter(Boolean)
+                    .join(" ")}
                 </h3>
               )}
               {order.customer.email && (
@@ -209,20 +213,17 @@ export default function OrderDetailPage() {
           </div>
         </div>
 
-        {/* Spacer */}
-        <div className="h-2 bg-muted/30" />
-
         {/* Order Items */}
-        <div className="p-6 space-y-5 bg-card border-b border-border">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+        <div className="p-4 space-y-5">
+          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Order Items")}
           </h2>
-          <div className="space-y-6">
+          <div className="space-y-6 bg-darkgray p-5 rounded-lg">
             {order.order_items.map((item) => (
               <div key={item.id} className="flex gap-5">
                 <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
-                  <img 
-                    src={item.product_variants.product.image} 
+                  <img
+                    src={item.product_variants.product.image}
                     alt={item.product_variants.product.name}
                     className="w-full h-full object-cover"
                   />
@@ -233,7 +234,10 @@ export default function OrderDetailPage() {
                   </h3>
                   <div className="mt-2 space-y-2">
                     {item.product_variants.options?.map((option, idx) => (
-                      <div key={idx} className="flex items-center text-sm text-muted-foreground">
+                      <div
+                        key={idx}
+                        className="flex items-center text-sm text-muted-foreground"
+                      >
                         <span className="font-medium">{option.name}:</span>
                         <span className="ml-1">{option.value}</span>
                       </div>
@@ -253,12 +257,9 @@ export default function OrderDetailPage() {
           </div>
         </div>
 
-        {/* Spacer */}
-        <div className="h-2 bg-muted/30" />
-
         {/* Order Summary */}
-        <div className="p-6 space-y-5 bg-card border-b border-border">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+        <div className="p-4 space-y-5">
+          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Order Summary")}
           </h2>
 
@@ -266,18 +267,24 @@ export default function OrderDetailPage() {
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{t("Subtotal")}</span>
-                <span className="text-card-foreground">฿{(order.subtotal || 0).toLocaleString()}</span>
+                <span className="text-card-foreground">
+                  ฿{(order.subtotal || 0).toLocaleString()}
+                </span>
               </div>
               {(order.tax ?? 0) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("Tax")}</span>
-                  <span className="text-card-foreground">฿{(order.tax || 0).toLocaleString()}</span>
+                  <span className="text-card-foreground">
+                    ฿{(order.tax || 0).toLocaleString()}
+                  </span>
                 </div>
               )}
               {(order.shipping ?? 0) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("Shipping")}</span>
-                  <span className="text-card-foreground">฿{(order.shipping || 0).toLocaleString()}</span>
+                  <span className="text-card-foreground">
+                    ฿{(order.shipping || 0).toLocaleString()}
+                  </span>
                 </div>
               )}
               {(order.discount ?? 0) > 0 && (
@@ -301,12 +308,12 @@ export default function OrderDetailPage() {
               <div className="pt-3 border-t border-border">
                 <div className="flex justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-[15px] font-medium text-card-foreground">{t("Total")}</span>
+                    <span className="text-sm font-medium">{t("Total")}</span>
                     <span className="text-xs text-muted-foreground">
                       ({order.order_items.length} {t("items")})
                     </span>
                   </div>
-                  <span className="text-[15px] font-bold text-card-foreground">
+                  <span className="text-sm font-bold">
                     ฿{(order.total_amount || 0).toLocaleString()}
                   </span>
                 </div>

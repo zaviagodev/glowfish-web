@@ -107,7 +107,7 @@ export default function ProductsPage() {
     <div className="min-h-dvh bg-background">
       {/* Search Bar */}
       <div className="sticky top-0 z-50 bg-background border-b">
-        <div className="px-5 py-4">
+        <div className="px-5 pt-4 py-2">
           <div className="relative">
             <Input
               className="pl-10 h-12 bg-darkgray border border-input"
@@ -132,7 +132,7 @@ export default function ProductsPage() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground"
+            className="text-muted-foreground px-0 !bg-background"
             onClick={() => setShowFilterDrawer(true)}
           >
             <Filter className="w-4 h-4 mr-2" />
@@ -141,7 +141,7 @@ export default function ProductsPage() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground"
+            className="text-muted-foreground px-0 !bg-background"
             onClick={() => setShowSortDrawer(true)}
           >
             <ArrowUpDown className="w-4 h-4 mr-2" />
@@ -188,12 +188,12 @@ export default function ProductsPage() {
       {/* Filter Drawer */}
       <Sheet open={showFilterDrawer} onOpenChange={setShowFilterDrawer}>
         <SheetContent side="bottom" className="h-[70%] p-0">
-          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
+          <SheetHeader className="px-5 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Filter Products")}
             </SheetTitle>
           </SheetHeader>
-          <div className="p-4 space-y-6 overflow-auto">
+          <div className="p-5 space-y-6 overflow-auto">
             <div className="space-y-4">
               <h3 className="text-sm font-medium">{t("Price Range")}</h3>
               <div className="flex items-center gap-4">
@@ -271,7 +271,7 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          <div className="p-4 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0">
+          <div className="p-5 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0">
             <Button
               className="w-full main-btn"
               onClick={() => setShowFilterDrawer(false)}
@@ -285,7 +285,7 @@ export default function ProductsPage() {
       {/* Sort Drawer */}
       <Sheet open={showSortDrawer} onOpenChange={setShowSortDrawer}>
         <SheetContent side="bottom" className="h-[40%] p-0">
-          <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
+          <SheetHeader className="px-5 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Sort By")}
             </SheetTitle>

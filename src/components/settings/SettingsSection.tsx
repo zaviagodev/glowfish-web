@@ -29,8 +29,7 @@ export function SettingsSection({
   const navigate = useNavigate();
 
   return (
-    // <div className={cn("px-4 py-6", index > 0 && "border-t border-[#F5F5F5]")}>
-    <div className={cn("px-4 py-6")}>
+    <div className={cn("px-5 py-4")}>
       <h2 className="text-sm font-medium text-muted-foreground mb-2">
         {title}
       </h2>

@@ -94,7 +94,7 @@ export default function MyItemsPage() {
             </TabsList>
           </div>
 
-          <div className="p-4 space-y-4">
+          <div className="p-5 space-y-4">
             {filteredVouchers.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

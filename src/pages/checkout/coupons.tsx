@@ -136,7 +136,7 @@ export default function CouponsPage() {
   return (
     <div className="min-h-dvh bg-background">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-14 px-4 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b">
+      <header className="fixed top-0 left-0 right-0 z-50 h-14 px-5 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b">
         <Button
           variant="ghost"
           size="icon"
@@ -151,7 +151,7 @@ export default function CouponsPage() {
         <div className="w-10" />
       </header>
 
-      <div className="pt-20 px-4 pb-4">
+      <div className="pt-20 px-5 pb-4">
         {/* Search Bar */}
         <div className="relative mb-4">
           <Input

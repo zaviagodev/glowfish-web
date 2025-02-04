@@ -33,7 +33,7 @@ export function CategoryGrid({
   };
 
   return (
-    <div className="flex items-center gap-3 px-5 overflow-auto py-4 scrollbar-hide">
+    <div className="flex items-center gap-3 px-5 overflow-auto pt-[21px] pb-4 scrollbar-hide">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -42,13 +42,16 @@ export function CategoryGrid({
         <Button
           onClick={() => handleCategoryClick(null)}
           variant={selectedCategory === null ? "default" : "secondary"}
-          className={`px-3 py-2 h-7 ${selectedCategory === null ? "!bg-mainbutton" : "!bg-darkgray"}`}
+          className={`px-3 py-2 h-7 ${
+            selectedCategory === null ? "!bg-mainbutton" : "!bg-darkgray"
+          }`}
         >
           {t("All")}
         </Button>
       </motion.div>
       {categories.map((category, index) => (
         <motion.div
+          key={category.id}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.2 + index * 0.1 }}
@@ -57,7 +60,11 @@ export function CategoryGrid({
             key={category.id}
             onClick={() => handleCategoryClick(category.id)}
             variant={selectedCategory === category.id ? "default" : "secondary"}
-            className={`whitespace-nowrap px-3 py-2 h-7 ${selectedCategory === category.id ? "!bg-mainbutton" : "!bg-darkgray"}`}
+            className={`whitespace-nowrap px-3 py-2 h-7 ${
+              selectedCategory === category.id
+                ? "!bg-mainbutton"
+                : "!bg-darkgray"
+            }`}
           >
             {category.name}
           </Button>

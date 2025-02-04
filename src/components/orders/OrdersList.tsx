@@ -9,52 +9,56 @@ interface OrdersListProps {
   isLoading?: boolean;
 }
 
-export function OrdersList({ orders, searchQuery, isLoading }: OrdersListProps) {
+export function OrdersList({
+  orders,
+  searchQuery,
+  isLoading,
+}: OrdersListProps) {
   const t = useTranslate();
 
   if (isLoading) {
     return (
-      <div className="space-y-4 px-4">
+      <div className="space-y-4 px-5">
         {[1, 2, 3].map((index) => (
-          <div 
+          <div
             key={index}
-            className="bg-[#FAFAFA] rounded-lg border border-[#E5E5E5] overflow-hidden animate-pulse"
+            className="bg-darkgray/50 rounded-lg overflow-hidden animate-pulse"
           >
             {/* Order Header Skeleton */}
-            <div className="p-4 border-b border-[#E5E5E5] flex items-center justify-between">
+            <div className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div>
-                  <div className="h-4 w-24 bg-gray-200 rounded"></div>
-                  <div className="h-3 w-32 bg-gray-200 rounded mt-2"></div>
+                  <div className="h-4 w-24 bg-darkgray rounded"></div>
+                  <div className="h-3 w-32 bg-darkgray rounded mt-2"></div>
                 </div>
               </div>
-              <div className="h-6 w-20 bg-gray-200 rounded-full"></div>
+              <div className="h-6 w-20 bg-darkgray rounded-full"></div>
             </div>
 
             {/* Order Items Skeleton */}
             <div className="p-4 flex gap-4">
-              <div className="w-20 h-20 rounded-lg bg-gray-200 flex-shrink-0"></div>
+              <div className="w-20 h-20 rounded-lg bg-darkgray flex-shrink-0"></div>
               <div className="flex-1">
-                <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
+                <div className="h-4 w-3/4 bg-darkgray rounded"></div>
                 <div className="mt-2 space-y-2">
                   <div className="flex items-center justify-between">
-                    <div className="h-4 w-16 bg-gray-200 rounded"></div>
-                    <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-16 bg-darkgray rounded"></div>
+                    <div className="h-4 w-20 bg-darkgray rounded"></div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Order Footer Skeleton */}
-            <div className="px-4 py-4 border-t border-[#E5E5E5]">
+            <div className="p-4">
               <div className="flex items-center justify-between">
-                <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                <div className="h-4 w-20 bg-darkgray rounded"></div>
                 <div className="flex items-center gap-4">
                   <div>
-                    <div className="h-3 w-12 bg-gray-200 rounded mb-1"></div>
-                    <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                    <div className="h-3 w-12 bg-darkgray rounded mb-1"></div>
+                    <div className="h-4 w-16 bg-darkgray rounded"></div>
                   </div>
-                  <div className="h-5 w-5 bg-gray-200 rounded"></div>
+                  <div className="h-5 w-5 bg-darkgray rounded"></div>
                 </div>
               </div>
             </div>
@@ -87,7 +91,7 @@ export function OrdersList({ orders, searchQuery, isLoading }: OrdersListProps) 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="space-y-4 px-4"
+      className="space-y-4 px-5"
     >
       {orders.map((order, index) => (
         <OrderCard key={order.id} order={order} index={index} />

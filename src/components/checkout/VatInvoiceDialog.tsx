@@ -105,7 +105,7 @@ export function VatInvoiceDialog({
         </DialogHeader>
 
         {/* Content */}
-        <div className="p-4 space-y-4">
+        <div className="p-5 space-y-4">
           {/* Enable/Disable Switch */}
           <div className="flex items-center justify-between">
             <Label htmlFor="vat-invoice" className="text-base font-medium">

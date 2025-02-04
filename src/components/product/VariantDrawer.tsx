@@ -144,7 +144,7 @@ export function VariantDrawer({
         side="bottom"
         className="h-[85%] p-0 bg-background rounded-t-[14px]"
       >
-        <SheetHeader className="px-4 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
+        <SheetHeader className="px-5 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-lg font-semibold">
               {t("Select Options")}
@@ -160,7 +160,7 @@ export function VariantDrawer({
           </div>
         </SheetHeader>
 
-        <div className="p-4 space-y-6 pb-[144px]">
+        <div className="p-5 space-y-6 pb-[144px]">
           {/* Variant Options */}
           {variantOptions
             .sort((a, b) => a.position - b.position)
@@ -198,7 +198,7 @@ export function VariantDrawer({
         </div>
 
         {/* Add to Cart Button */}
-        <div className="p-4 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0 space-y-3">
+        <div className="p-5 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0 space-y-3">
           {/* Price Display */}
           {currentVariant && (
             <div>
