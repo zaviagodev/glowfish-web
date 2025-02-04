@@ -198,14 +198,18 @@ export default function PaymentPage() {
   };
 
   if (!order || !paymentOptions) {
-    return <div className="min-h-dvh bg-background pt-14">Loading...</div>;
+    return (
+      <div className="min-h-dvh bg-background pt-14 text-center">
+        Loading...
+      </div>
+    );
   }
 
   return (
     <div className="min-h-dvh bg-background">
       <PageHeader title={t("PromptPay QR")} />
 
-      <div className="pt-14 pb-32">
+      <div className="pt-14 pb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

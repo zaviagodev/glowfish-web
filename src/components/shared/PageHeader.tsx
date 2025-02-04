@@ -5,18 +5,19 @@ import { Button } from "@/components/ui/button";
 interface PageHeaderProps {
   title: string;
   rightElement?: React.ReactNode;
+  onBack?: () => void;
 }
 
-export function PageHeader({ title, rightElement }: PageHeaderProps) {
+export function PageHeader({ title, rightElement, onBack }: PageHeaderProps) {
   const navigate = useNavigate();
-
+  const handleNavigate = () => navigate(-1);
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-14 px-5 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b">
       <Button
         variant="ghost"
         size="icon"
         className="hover:bg-transparent -ml-2"
-        onClick={() => navigate(-1)}
+        onClick={onBack || handleNavigate}
       >
         <ChevronLeft className="h-6 w-6" />
       </Button>
