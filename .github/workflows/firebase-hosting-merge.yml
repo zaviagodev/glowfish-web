@@ -20,6 +20,7 @@ jobs:
       SMS2PRO_API: ${{ secrets.SMS2PRO_API }}
       STORAGE_BUCKET: ${{ vars.STORAGE_BUCKET }}
       VITE_ADMIN_URL: ${{ vars.VITE_ADMIN_URL }}
+      VITE_DEFAULT_STORE: ${{ vars.VITE_DEFAULT_STORE }}
     steps:
       - uses: actions/checkout@v4
       - run: yarn
