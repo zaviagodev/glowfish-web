@@ -253,10 +253,19 @@ export const HomeList = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div
+            className={cn(
+              "flex gap-3 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
+              "scroll-smooth"
+            )}
+          >
             {products.slice(0, 4).map((product) => (
-              <div
-                key={product.id}
+              <motion.div
+                key={product.name}
+                className="flex-shrink-0 w-[280px]"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
                 onClick={() => handleProductSelect(product)}
               >
                 <AnimatedCard
@@ -266,9 +275,8 @@ export const HomeList = () => {
                   price={product.price}
                   compareAtPrice={product.compare_at_price}
                   description={product.description}
-                  type="small"
                 />
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

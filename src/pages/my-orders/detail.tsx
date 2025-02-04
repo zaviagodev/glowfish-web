@@ -21,8 +21,8 @@ export default function OrderDetailPage() {
   const location = useLocation();
   const { id } = useParams();
   const { orders, loading, error } = useOrders(1, 1000);
-  
-  const order = orders?.find(order => order.id === id);
+
+  const order = orders?.find((order) => order.id === id);
   const page = location.state?.page || "1";
 
   const handleBack = () => {
@@ -68,7 +68,7 @@ export default function OrderDetailPage() {
       description: "Your order has been confirmed",
       icon: Package2,
       isActive: order.status === "pending" || order.status === "unpaid",
-      isPending: false
+      isPending: false,
     },
     {
       status: "Processing",
@@ -76,24 +76,26 @@ export default function OrderDetailPage() {
       description: "Your order is processed and Payment Completed",
       icon: Package2,
       isActive: order.status === "processing",
-      isPending: !["processing", "shipped", "delivered", "completed"].includes(order.status)
+      isPending: !["processing", "shipped", "delivered", "completed"].includes(
+        order.status
+      ),
     },
     {
       status: "Completed and Shipped",
       date: order.status === "shipped" ? formatDate(new Date()) : "",
       description: "Your order has been Completed and Shipped",
       icon: Truck,
-      isActive: order.status === "shipped" || order.status === "delivered" || order.status === "completed",
-      isPending: !["shipped", "delivered", "completed"].includes(order.status)
-    }
+      isActive:
+        order.status === "shipped" ||
+        order.status === "delivered" ||
+        order.status === "completed",
+      isPending: !["shipped", "delivered", "completed"].includes(order.status),
+    },
   ] as const;
 
   return (
     <div className="min-h-dvh bg-background">
-      <PageHeader 
-        title={t("Order Details")} 
-        onBack={handleBack}
-      />
+      <PageHeader title={t("Order Details")} onBack={handleBack} />
 
       <div className="pt-14 pb-4">
         {/* Order Status Header */}
@@ -290,25 +292,38 @@ export default function OrderDetailPage() {
               {(order.discount ?? 0) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("Discount")}</span>
-                  <span className="text-green-600">-฿{(order.discount || 0).toLocaleString()}</span>
+                  <span className="text-green-600">
+                    -฿{(order.discount || 0).toLocaleString()}
+                  </span>
                 </div>
               )}
               {(order.points_discount ?? 0) > 0 && (
                 <>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">{t("Points Discount")}</span>
-                    <span className="text-green-600">-฿{(order.points_discount || 0).toLocaleString()}</span>
+                    <span className="text-muted-foreground">
+                      {t("Points Discount")}
+                    </span>
+                    <span className="text-green-600">
+                      -฿{(order.points_discount || 0).toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">{t("Loyalty Points Used")}</span>
-                    <span className="text-muted-foreground">{(order.loyalty_points_used || 0).toLocaleString()} {t("points")}</span>
+                    <span className="text-muted-foreground">
+                      {t("Loyalty Points Used")}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {(order.loyalty_points_used || 0).toLocaleString()}{" "}
+                      {t("points")}
+                    </span>
                   </div>
                 </>
               )}
               <div className="pt-3 border-t border-border">
                 <div className="flex justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">{t("Total")}</span>
+                    <span className="text-[15px] font-medium text-card-foreground">
+                      {t("Total")}
+                    </span>
                     <span className="text-xs text-muted-foreground">
                       ({order.order_items.length} {t("items")})
                     </span>
@@ -336,15 +351,15 @@ export default function OrderDetailPage() {
               {t("Pay Now")}
             </Button>
           )}
-          <Button
+          {/* <Button
             variant={order.status === "pending" && order.total_amount > 0 ? "outline" : "default"}
             size="lg"
             className="w-full"
-            onClick={() => {/* Add help functionality */}}
+            onClick={() => {/* Add help functionality
           >
             <MessageCircle className="w-4 h-4 mr-2" />
             {t("Need Help?")}
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

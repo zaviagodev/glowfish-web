@@ -1,5 +1,12 @@
 import { motion } from "framer-motion";
-import { MapPin, Calendar, Tag, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  Tag,
+  ChevronLeft,
+  ChevronRight,
+  ShoppingCart,
+} from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +15,7 @@ import { useCart } from "@/lib/cart";
 import { VariantDrawer } from "./VariantDrawer";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
+import { cn } from "@/lib/utils";
 
 interface ProductVariantOption {
   name: string;
@@ -190,18 +198,28 @@ export function ProductDetail({
         }}
         className="absolute inset-0 overflow-y-auto bg-background"
       >
-        <Button
-          variant="ghost"
-          size="icon"
-          className="fixed left-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
-          onClick={onClose}
-        >
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
+        <div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="fixed left-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
+            onClick={onClose}
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="fixed right-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
+            onClick={() => navigate("/cart")}
+          >
+            <ShoppingCart className="h-6 w-6" />
+          </Button>
+        </div>
 
         <motion.div
           layoutId={`image-container-${id}`}
-          className="w-full aspect-[4/3] h-[300px] overflow-hidden fixed top-0"
+          className="w-full aspect-square overflow-hidden"
           transition={{
             layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
           }}
@@ -217,12 +235,24 @@ export function ProductDetail({
           />
         </motion.div>
 
-        <div className="p-5 space-y-6 bg-background/80 relative z-[99] backdrop-blur-sm mt-[230px] rounded-t-2xl h-[calc(100%_-_230px)] overflow-auto pb-40">
+        <div className="p-6 space-y-6 bg-background/80 relative z-[99] backdrop-blur-sm overflow-auto pb-40">
           <div className="space-y-4">
             <div className="space-y-2">
+              <motion.span
+                className={cn(
+                  "text-2xl font-bold tracking-tight text-secondary-foreground",
+                  { "text-orangefocus text-4xl": price === 0 }
+                )}
+                style={{
+                  willChange: "transform",
+                  transform: "translateZ(0)",
+                }}
+              >
+                {getPriceDisplay()}
+              </motion.span>
               <motion.h2
                 layoutId={`title-${id}`}
-                className="text-base"
+                className="text-2xl"
                 transition={{
                   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
                 }}
@@ -286,6 +316,75 @@ export function ProductDetail({
                 </motion.p>
               </div>
             )}
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="space-y-3"
+            >
+              {/* Show variant selection button if product has variants */}
+              {variant_options && variant_options.length > 0 && (
+                <Button
+                  variant="ghost"
+                  className="w-full h-12 flex items-center justify-between bg-darkgray"
+                  onClick={() => setShowVariantDrawer(true)}
+                >
+                  <div className="flex flex-col items-start">
+                    <span className="text-xs text-muted-foreground">
+                      {t("Options")}
+                    </span>
+                    <span className="text-sm">
+                      {getSelectedOptionsDisplay()}
+                    </span>
+                  </div>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              )}
+
+              {/* Stock Status */}
+              {track_quantity && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">{t("Stock")}:</span>{" "}
+                  {selectedVariant ? (
+                    <span
+                      className={
+                        selectedVariant.quantity > 0
+                          ? "text-green-600"
+                          : "text-red-500"
+                      }
+                    >
+                      {selectedVariant.quantity > 0
+                        ? t("In Stock")
+                        : t("Out of Stock")}
+                      ({selectedVariant.quantity} {t("available")})
+                    </span>
+                  ) : (
+                    <span
+                      className={
+                        quantity > 0 ? "text-green-600" : "text-red-500"
+                      }
+                    >
+                      {quantity > 0 ? t("In Stock") : t("Out of Stock")}(
+                      {quantity} {t("available")})
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* <Button 
+                className="w-full bg-[rgba(245,245,245,0.5)] text-black hover:bg-[#EBEBEB] border border-[#E5E5E5]"
+                onClick={() => handleAddToCart(false)}
+              >
+                {t("Add to Cart")}
+              </Button>
+              <Button 
+                className="w-full bg-[#EE4D2D] text-white hover:bg-[#EE4D2D]/90"
+                onClick={() => handleAddToCart(true)}
+              >
+                {t("Buy Now")}
+              </Button> */}
+            </motion.div>
           </div>
 
           <motion.div

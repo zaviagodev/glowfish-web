@@ -3,14 +3,6 @@ import { Link } from "react-router-dom";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { Product } from "@/hooks/useProducts";
 import { memo } from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import EventCard from "../main/EventCard";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -44,21 +36,28 @@ export const ProductSection = memo(function ProductSection({
       </div>
 
       <div
-        ref={sliderRef}
         className={cn(
           "flex gap-3 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
           "scroll-smooth"
         )}
       >
-        {products.slice(0, 4).map((product) => (
+        {products.map((product) => (
           <motion.div
-            key={product.id}
+            key={product.name}
             className="flex-shrink-0 w-[280px]"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
+            onClick={() => onProductSelect(product)}
           >
-            <EventCard {...product} />
+            <AnimatedCard
+              id={product.id}
+              image={product.image}
+              title={product.name}
+              price={product.price}
+              compareAtPrice={product.compare_at_price}
+              description={product.description}
+            />
           </motion.div>
         ))}
       </div>

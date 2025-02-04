@@ -44,7 +44,7 @@ export function WalletSection() {
     //   count: 2500,
     //   description: t("Active items"),
     //   color: "#4CAF50", // Green
-    //   bgColor: "rgba(76, 175, 80, 0.1)",
+    //   bgColor: "rgba(76, 175, 80, 0.1)"
     // },
     // {
     //   icon: <Gift className="w-5 h-5" />,
@@ -53,7 +53,7 @@ export function WalletSection() {
     //   count: 3,
     //   description: t("Active coupons"),
     //   color: "#FF9800", // Orange
-    //   bgColor: "rgba(255, 152, 0, 0.1)",
+    //   bgColor: "rgba(255, 152, 0, 0.1)"
     // },
     {
       icon: <Coins className="w-5 h-5" />,
@@ -72,41 +72,43 @@ export function WalletSection() {
       <h2 className="text-sm font-medium text-muted-foreground mb-2">
         {t("My Items")}
       </h2>
-      <div className="space-y-3">
-        {walletItems.map((item) => (
-          <button
-            key={item.label}
-            onClick={() => navigate(item.path)}
-            className="bg-darkgray rounded-lg w-full flex items-center gap-3 p-4 transition-colors"
-          >
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ backgroundColor: item.bgColor }}
+      <div className="bg-darkgray rounded-lg overflow-hidden">
+        <div className="divide-y">
+          {walletItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={() => navigate(item.path)}
+              className="w-full flex items-center gap-3 p-4 hover:bg-[#F8F8F8] transition-colors"
             >
-              <div style={{ color: item.color }}>{item.icon}</div>
-            </div>
-            <div className="flex-1 text-left">
-              <div className="text-sm font-medium">{item.label}</div>
-              <div className="text-xs text-muted-foreground">
-                {item.description}
-              </div>
-            </div>
-            <div className="text-right">
               <div
-                className="text-sm font-semibold"
-                style={{ color: item.color }}
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: item.bgColor }}
               >
-                {item.count?.toLocaleString()}
+                <div style={{ color: item.color }}>{item.icon}</div>
               </div>
-            </div>
-          </button>
-        ))}
+              <div className="flex-1 text-left">
+                <div className="text-sm font-medium text-[#1A1A1A]">
+                  {item.label}
+                </div>
+                <div className="text-xs text-[#666666]">{item.description}</div>
+              </div>
+              <div className="text-right">
+                <div
+                  className="text-sm font-semibold"
+                  style={{ color: item.color }}
+                >
+                  {item.count?.toLocaleString()}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Standalone Tickets Button */}
       <button
         onClick={() => navigate("/tickets")}
-        className="bg-darkgray rounded-lg w-full flex items-center gap-3 p-4 transition-colors"
+        className="w-full bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-3 hover:bg-[#F8F8F8] transition-colors"
       >
         <div className="flex items-center gap-3 w-full">
           <div className="w-12 h-12 rounded-lg bg-[#E1F5FE1A] flex items-center justify-center">

@@ -18,20 +18,14 @@ export default function MyOrdersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const ITEMS_PER_PAGE = 10;
 
-  const { 
-    orders, 
-    loading, 
-    error,
-    totalPages,
-    hasNextPage,
-    hasPreviousPage 
-  } = useOrders(currentPage, ITEMS_PER_PAGE);
+  const { orders, loading, error, totalPages, hasNextPage, hasPreviousPage } =
+    useOrders(currentPage, ITEMS_PER_PAGE);
 
   const handlePageChange = (newPage: number) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("page", newPage.toString());
     setSearchParams(newParams);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleStatusChange = (status: string) => {
@@ -41,36 +35,41 @@ export default function MyOrdersPage() {
     setSearchParams(newParams);
   };
 
-  const filteredOrders = orders?.filter(order => 
-    currentStatus === "all" || order.status === currentStatus
-  ).filter(order =>
-    order.order_items.some(item => 
-      item.product_variants.product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredOrders = orders
+    ?.filter(
+      (order) => currentStatus === "all" || order.status === currentStatus
     )
-  );
+    .filter((order) =>
+      order.order_items.some((item) =>
+        item.product_variants.product.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      )
+    );
 
-  const formattedOrders = filteredOrders?.map(order => ({
-    id: order.id,
-    status: order.status === "shipped" ? "completed" : order.status,
-    created_at: order.created_at,
-    order_items: order.order_items.map(item => ({
-      id: item.id,
-      quantity: item.quantity,
-      unit_price: item.unit_price,
-      variant_id: item.variant_id,
-      product_variants: {
-        name: item.product_variants.name,
-        options: item.product_variants.options,
-        product: {
-          id: item.product_variants.product.id,
-          name: item.product_variants.product.name,
-          description: item.product_variants.product.description,
-          image: item.product_variants.product.image
-        }
-      }
-    })),
-    total_amount: order.total_amount
-  })) || [];
+  const formattedOrders =
+    filteredOrders?.map((order) => ({
+      id: order.id,
+      status: order.status === "shipped" ? "completed" : order.status,
+      created_at: order.created_at,
+      order_items: order.order_items.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        variant_id: item.variant_id,
+        product_variants: {
+          name: item.product_variants.name,
+          options: item.product_variants.options,
+          product: {
+            id: item.product_variants.product.id,
+            name: item.product_variants.product.name,
+            description: item.product_variants.product.description,
+            image: item.product_variants.product.image,
+          },
+        },
+      })),
+      total_amount: order.total_amount,
+    })) || [];
 
   if (loading) {
     return (
@@ -142,9 +141,9 @@ export default function MyOrdersPage() {
           </div>
 
           <div className="mt-4">
-            <OrdersList 
-              orders={formattedOrders} 
-              searchQuery={searchQuery} 
+            <OrdersList
+              orders={formattedOrders}
+              searchQuery={searchQuery}
               isLoading={loading}
             />
           </div>
@@ -152,12 +151,13 @@ export default function MyOrdersPage() {
 
         {/* Pagination Controls */}
         {!loading && formattedOrders.length > 0 && (
-          <div className="flex items-center justify-between px-4 py-4 mt-4 bg-white border-t">
+          <div className="flex items-center justify-between px-4 py-4 mt-4 border-t">
             <Button
               variant="outline"
               size="sm"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={!hasPreviousPage}
+              className="border-0"
             >
               <ChevronLeft className="w-4 h-4 mr-1" />
               {t("Previous")}
@@ -170,6 +170,7 @@ export default function MyOrdersPage() {
               size="sm"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={!hasNextPage}
+              className="border-0"
             >
               {t("Next")}
               <ChevronRight className="w-4 h-4 ml-1" />
