@@ -87,10 +87,10 @@ export function WalletSection() {
                 <div style={{ color: item.color }}>{item.icon}</div>
               </div>
               <div className="flex-1 text-left">
-                <div className="text-sm font-medium text-[#1A1A1A]">
-                  {item.label}
+                <div className="text-sm font-medium">{item.label}</div>
+                <div className="text-xs text-muted-foreground">
+                  {item.description}
                 </div>
-                <div className="text-xs text-[#666666]">{item.description}</div>
               </div>
               <div className="text-right">
                 <div
@@ -108,7 +108,7 @@ export function WalletSection() {
       {/* Standalone Tickets Button */}
       <button
         onClick={() => navigate("/tickets")}
-        className="w-full bg-[rgba(245,245,245,0.5)] rounded-lg border border-[#E5E5E5] p-3 hover:bg-[#F8F8F8] transition-colors"
+        className="w-full bg-darkgray rounded-lg p-4 transition-colors"
       >
         <div className="flex items-center gap-3 w-full">
           <div className="w-12 h-12 rounded-lg bg-[#E1F5FE1A] flex items-center justify-center">
@@ -120,9 +120,7 @@ export function WalletSection() {
               {t("View all your event tickets")}
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            
-          </div>
+          <div className="flex items-center gap-2 text-[#E1F5FE]"></div>
         </div>
       </button>
     </div>

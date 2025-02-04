@@ -78,10 +78,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-4 pb-20"
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         {/* First Name */}
         <FormField
           control={form.control}
@@ -308,9 +305,7 @@ export function AddressForm({ initialData, onSubmit }: AddressFormProps) {
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>
-                  {t("Set as default address")}
-                </FormLabel>
+                <FormLabel>{t("Set as default address")}</FormLabel>
               </div>
             </FormItem>
           )}

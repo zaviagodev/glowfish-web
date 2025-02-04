@@ -43,7 +43,7 @@ import Rewards from "./pages/rewards";
 import RewardDetail from "./pages/rewards/detail";
 import CheckoutPage from "./pages/checkout";
 import useConfig, { ConfigProvider } from "./hooks/useConfig";
-import { createContext, useEffect, useState } from "react";
+import { useEffect } from "react";
 import MyOrdersPage from "./pages/my-orders";
 import OrderDetailPage from "./pages/my-orders/detail";
 import MyItemsPage from "./pages/my-items";
@@ -64,16 +64,6 @@ import AddressSelection from "./pages/checkout/address";
 import ThankYouPage from "./pages/checkout/thank-you";
 import MyEventsPage from "./pages/my-events";
 import MyEventDetail from "./pages/my-events/detail";
-
-interface ProductContextType {
-  isProductOpen: boolean;
-  setIsProductOpen: (open: boolean) => void;
-}
-
-export const ProductContext = createContext<ProductContextType>({
-  isProductOpen: false,
-  setIsProductOpen: () => {},
-});
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -221,7 +211,10 @@ function App() {
                     path="/checkout/address"
                     element={<AddressSelection />}
                   />
-                  <Route path="/checkout/payment/:orderId" element={<PaymentPage />} />
+                  <Route
+                    path="/checkout/payment/:orderId"
+                    element={<PaymentPage />}
+                  />
                   <Route
                     path="/checkout/thank-you"
                     element={<ThankYouPage />}
@@ -263,17 +256,14 @@ function App() {
 }
 
 function AppWrapper() {
-  const [isProductOpen, setIsProductOpen] = useState(false);
   return (
-    <ProductContext.Provider value={{ isProductOpen, setIsProductOpen }}>
-      <ConfigProvider>
-        <ToastProvider>
-          <ThemeProvider>
-            <App />
-          </ThemeProvider>
-        </ToastProvider>
-      </ConfigProvider>
-    </ProductContext.Provider>
+    <ConfigProvider>
+      <ToastProvider>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
+      </ToastProvider>
+    </ConfigProvider>
   );
 }
 

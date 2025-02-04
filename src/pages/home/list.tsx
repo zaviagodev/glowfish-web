@@ -1,28 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslate } from "@refinedev/core";
-import { ChevronLeft, ChevronRight, SearchIcon } from "lucide-react";
-import Header from "@/components/main/Header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserProfile } from "@/lib/auth";
 import { useProducts } from "@/hooks/useProducts";
 import { supabase } from "@/lib/supabase";
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { ProductDetail } from "@/components/product/ProductDetail";
-import { motion } from "framer-motion";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { SearchDialog } from "@/components/home/SearchDialog";
@@ -51,6 +35,7 @@ export const HomeList = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const productSliderRef = useRef<HTMLDivElement>(null);
+  const eventSliderRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = selectedCategory
     ? products.filter((product) => product.category_id === selectedCategory)
@@ -150,6 +135,8 @@ export const HomeList = () => {
     navigate("/products", { state: { selectedCategory: categoryId } });
   };
 
+  console.log(selectedProduct);
+
   return (
     <div className="min-h-full relative">
       {/* Hero Section */}
@@ -240,46 +227,13 @@ export const HomeList = () => {
         />
 
         {/* Events you might enjoy Section */}
-        <div className="space-y-4 px-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold">
-              {t("Events you might enjoy")}
-            </h2>
-            <Link
-              to="/products"
-              className="text-sm text-muted-foreground hover:text-foreground no-underline"
-            >
-              {t("See all")}
-            </Link>
-          </div>
-
-          <div
-            className={cn(
-              "flex gap-3 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
-              "scroll-smooth"
-            )}
-          >
-            {products.slice(0, 4).map((product) => (
-              <motion.div
-                key={product.name}
-                className="flex-shrink-0 w-[280px]"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => handleProductSelect(product)}
-              >
-                <AnimatedCard
-                  id={product.id}
-                  image={product.image}
-                  title={product.name}
-                  price={product.price}
-                  compareAtPrice={product.compare_at_price}
-                  description={product.description}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </div>
+        <ProductSection
+          title={t("Events you might enjoy")}
+          linkTo="/products"
+          products={products.slice(0, 4)}
+          onProductSelect={handleProductSelect}
+          sliderRef={eventSliderRef}
+        />
       </section>
 
       {/* Product Detail */}

@@ -53,7 +53,8 @@ export default function CheckoutPage() {
 
   // Get customer addresses and default address
   const addresses = customer?.addresses || [];
-  const defaultAddress = addresses.find(addr => addr.is_default) || addresses[0];
+  const defaultAddress =
+    addresses.find((addr) => addr.is_default) || addresses[0];
 
   // Redirect to cart if accessed directly without selected items
   if (!location.state?.selectedItems) {
@@ -121,18 +122,10 @@ export default function CheckoutPage() {
       }
 
       // Clear the cart
-      clearCart();
-      
-      // Refresh orders using useOrders hook
-      await refreshOrders();
+      localStorage.removeItem("cart");
 
-      // Check if order total is 0
-      if (total === 0) {
-        setShowSuccess(true);
-      } else {
-        // Navigate to payment page with order ID
-        navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
-      }
+      // Navigate to payment page with order ID
+      navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
     } catch (error) {
       console.error("Error creating order:", error);
       alert(
@@ -148,7 +141,11 @@ export default function CheckoutPage() {
   };
 
   if (customerLoading) {
-    return <div className="min-h-dvh bg-background pt-14">Loading...</div>;
+    return (
+      <div className="min-h-dvh bg-background pt-14 text-center">
+        Loading...
+      </div>
+    );
   }
 
   return (
@@ -164,7 +161,11 @@ export default function CheckoutPage() {
                 title={t("Delivery Address")}
                 name={`${defaultAddress.first_name} ${defaultAddress.last_name}`}
                 phone={defaultAddress.phone}
-                address={`${defaultAddress.address1}${defaultAddress.address2 ? `, ${defaultAddress.address2}` : ''}, ${defaultAddress.city}, ${defaultAddress.state} ${defaultAddress.postal_code}`}
+                address={`${defaultAddress.address1}${
+                  defaultAddress.address2 ? `, ${defaultAddress.address2}` : ""
+                }, ${defaultAddress.city}, ${defaultAddress.state} ${
+                  defaultAddress.postal_code
+                }`}
               />
             </div>
           ) : (

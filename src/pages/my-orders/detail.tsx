@@ -265,7 +265,7 @@ export default function OrderDetailPage() {
             {t("Order Summary")}
           </h2>
 
-          <div className="bg-muted/30 rounded-lg p-5">
+          <div>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{t("Subtotal")}</span>
@@ -339,29 +339,37 @@ export default function OrderDetailPage() {
       </div>
 
       {/* Footer Actions */}
-      <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border px-6 py-5">
-        <div className="space-y-3">
-          {order.status === "pending" && order.total_amount > 0 && (
-            <Button
-              variant="default"
-              size="lg"
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => navigate(`/checkout/payment/${order.id}`)}
-            >
-              {t("Pay Now")}
-            </Button>
-          )}
-          {/* <Button
-            variant={order.status === "pending" && order.total_amount > 0 ? "outline" : "default"}
+      {order.status === "pending" && (
+        <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border px-6 py-5">
+          <div className="space-y-3">
+            {order.status === "pending" && order.total_amount > 0 && (
+              <Button
+                variant="default"
+                size="lg"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                onClick={() => navigate(`/checkout/payment/${order.id}`)}
+              >
+                {t("Pay Now")}
+              </Button>
+            )}
+            {/* <Button
+            variant={
+              order.status === "pending" && order.total_amount > 0
+                ? "outline"
+                : "default"
+            }
             size="lg"
             className="w-full"
-            onClick={() => {/* Add help functionality
+            onClick={() => {
+              /* Add help functionality
+            }}
           >
             <MessageCircle className="w-4 h-4 mr-2" />
             {t("Need Help?")}
           </Button> */}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

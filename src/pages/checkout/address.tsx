@@ -55,7 +55,7 @@ export default function AddressSelection() {
         .eq("id", addressId);
 
       if (error) throw error;
-      
+
       // Refresh customer data to get updated addresses
       await refreshCustomer();
       setAddressToDelete(null);
@@ -70,7 +70,11 @@ export default function AddressSelection() {
   };
 
   if (customerLoading) {
-    return <div className="min-h-dvh bg-background pt-14">Loading...</div>;
+    return (
+      <div className="min-h-dvh bg-background pt-14 text-center">
+        Loading...
+      </div>
+    );
   }
 
   return (
@@ -199,18 +203,25 @@ export default function AddressSelection() {
       </Sheet>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!addressToDelete} onOpenChange={() => setAddressToDelete(null)}>
+      <AlertDialog
+        open={!!addressToDelete}
+        onOpenChange={() => setAddressToDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("Delete Address")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("Are you sure you want to delete this address? This action cannot be undone.")}
+              {t(
+                "Are you sure you want to delete this address? This action cannot be undone."
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => addressToDelete && handleDeleteAddress(addressToDelete)}
+              onClick={() =>
+                addressToDelete && handleDeleteAddress(addressToDelete)
+              }
             >
               {t("Delete")}
             </AlertDialogAction>
