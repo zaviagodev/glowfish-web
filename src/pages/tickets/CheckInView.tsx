@@ -120,9 +120,11 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center"
                 >
+
                   <div className="w-64 h-64 bg-background rounded-2xl p-4 shadow-sm flex items-center justify-center mb-4">
+
                     <QRCodeCanvas
-                      value={ticket.ticketNumber}
+                      value={`${import.meta.env.VITE_ADMIN_URL}/dashboard/events/record-attendance?ticket_code=${ticket.ticketNumber}`}
                       size={224}
                       level="H"
                       includeMargin={false}

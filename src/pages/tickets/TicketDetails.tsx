@@ -284,8 +284,10 @@ export default function TicketDetails() {
         {showCheckIn && selectedTicket && (
           <CheckInView
             ticket={{
-              code: selectedTicket,
+              id: selectedTicket,
+              ticketNumber: selectedTicket,
               eventName: event.event_name,
+              seat: "",
               date: event.start_datetime,
               location: event.venue_name,
             }}
