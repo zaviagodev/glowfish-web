@@ -161,8 +161,8 @@ const Rewards = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">
+            <div className="text-center py-8 rounded-lg">
+              <p className="text-muted-foreground">
                 {t("No rewards available at the moment")}
               </p>
             </div>
