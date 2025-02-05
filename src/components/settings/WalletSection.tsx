@@ -73,36 +73,34 @@ export function WalletSection() {
         {t("My Items")}
       </h2>
       <div className="bg-darkgray rounded-lg overflow-hidden">
-        <div className="divide-y">
-          {walletItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => navigate(item.path)}
-              className="w-full flex items-center gap-3 p-4 hover:bg-[#F8F8F8] transition-colors"
+        {walletItems.map((item) => (
+          <button
+            key={item.label}
+            onClick={() => navigate(item.path)}
+            className="w-full flex items-center gap-3 p-4 transition-colors"
+          >
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: item.bgColor }}
             >
+              <div style={{ color: item.color }}>{item.icon}</div>
+            </div>
+            <div className="flex-1 text-left">
+              <div className="text-sm font-medium">{item.label}</div>
+              <div className="text-xs text-muted-foreground">
+                {item.description}
+              </div>
+            </div>
+            <div className="text-right">
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: item.bgColor }}
+                className="text-sm font-semibold"
+                style={{ color: item.color }}
               >
-                <div style={{ color: item.color }}>{item.icon}</div>
+                {item.count?.toLocaleString()}
               </div>
-              <div className="flex-1 text-left">
-                <div className="text-sm font-medium">{item.label}</div>
-                <div className="text-xs text-muted-foreground">
-                  {item.description}
-                </div>
-              </div>
-              <div className="text-right">
-                <div
-                  className="text-sm font-semibold"
-                  style={{ color: item.color }}
-                >
-                  {item.count?.toLocaleString()}
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
+            </div>
+          </button>
+        ))}
       </div>
 
       {/* Standalone Tickets Button */}

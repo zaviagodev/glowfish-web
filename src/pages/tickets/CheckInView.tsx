@@ -192,16 +192,14 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
           <div className="bg-darkgray rounded-lg p-4">
             <h3 className="font-medium mb-3">{ticket.eventName}</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                <span>{ticket.location || t("Location TBD")}</span>
+              </div>
               {ticket.date && (
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   <span>{format(new Date(ticket.date), "PPp")}</span>
-                </div>
-              )}
-              {ticket.location && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  <span>{ticket.location}</span>
                 </div>
               )}
             </div>

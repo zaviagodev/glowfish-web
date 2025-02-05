@@ -37,7 +37,11 @@ interface AddressFormProps {
   onDelete?: (id: string) => void;
 }
 
-export function AddressForm({ initialData, onSubmit, onDelete }: AddressFormProps) {
+export function AddressForm({
+  initialData,
+  onSubmit,
+  onDelete,
+}: AddressFormProps) {
   const t = useTranslate();
   const { storeName } = useStore();
   const { customer, refreshCustomer } = useCustomer();
@@ -70,7 +74,11 @@ export function AddressForm({ initialData, onSubmit, onDelete }: AddressFormProp
 
       if (initialData?.id) {
         // Update existing address
-        await CustomerService.updateAddress(initialData.id, addressData, storeName);
+        await CustomerService.updateAddress(
+          initialData.id,
+          addressData,
+          storeName
+        );
       } else {
         // Add new address
         await CustomerService.addAddress(addressData, storeName);
@@ -338,7 +346,7 @@ export function AddressForm({ initialData, onSubmit, onDelete }: AddressFormProp
         </Button>
 
         {/* Delete Button */}
-        {initialData && (
+        {/* {initialData && (
           <Button
             type="button"
             variant="outline"
@@ -347,7 +355,7 @@ export function AddressForm({ initialData, onSubmit, onDelete }: AddressFormProp
           >
             {t("Delete Address")}
           </Button>
-        )}
+        )} */}
       </form>
     </Form>
   );
