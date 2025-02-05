@@ -5,8 +5,8 @@
   "targets": {
     "ai-commerce-c1f4d": {
       "hosting": {
-        "ai-commerce-c1f4d": [
-          "ai-commerce-c1f4d"
+        "ai-commerce-store": [
+          "ai-commerce-store"
         ],
         "glowfish-store": [
           "glowfish-store"
