@@ -5,22 +5,22 @@ name: Deploy to Firebase Hosting on merge
 on:
   push:
     branches:
-      - main
+      - glowfish
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_ID: ${{ vars.SUPABASE_PROJECT_ID }}
-      VITE_LINE_CLIENT_ID: ${{ vars.VITE_LINE_CLIENT_ID }}
-      VITE_LINE_CLIENT_SECRET: ${{ secrets.VITE_LINE_CLIENT_SECRET }}
-      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
-      VITE_SERVICE_ROLE_KEY: ${{ secrets.VITE_SERVICE_ROLE_KEY }}
+      SUPABASE_PROJECT_ID: ${{ vars.GLOWFISH_SUPABASE_PROJECT_ID }}
+      VITE_LINE_CLIENT_ID: ${{ vars.GLOWFISH_VITE_LINE_CLIENT_ID }}
+      VITE_LINE_CLIENT_SECRET: ${{ secrets.GLOWFISH_VITE_LINE_CLIENT_SECRET }}
+      VITE_SUPABASE_URL: ${{ vars.GLOWFISH_VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.GLOWFISH_VITE_SUPABASE_ANON_KEY }}
+      VITE_SERVICE_ROLE_KEY: ${{ secrets.GLOWFISH_VITE_SERVICE_ROLE_KEY }}
       SMS2PRO_API: ${{ secrets.SMS2PRO_API }}
       STORAGE_BUCKET: ${{ vars.STORAGE_BUCKET }}
-      VITE_ADMIN_URL: ${{ vars.VITE_ADMIN_URL }}
-      VITE_DEFAULT_STORE: ${{ vars.VITE_DEFAULT_STORE }}
+      VITE_ADMIN_URL: ${{ vars.GLOWFISH_VITE_ADMIN_URL }}
+      VITE_DEFAULT_STORE: ${{ vars.GLOWFISH_VITE_DEFAULT_STORE }}
     steps:
       - uses: actions/checkout@v4
       - run: yarn
@@ -41,6 +41,8 @@ jobs:
           echo "VITE_DEFAULT_STORE=$VITE_DEFAULT_STORE" >> ./supabase/.env
           echo "STORAGE_BUCKET=$STORAGE_BUCKET" >> ./supabase/.env
 
+
+
       - name: update supabase functions and secret
         run: |
           supabase link --project-ref $SUPABASE_PROJECT_ID
@@ -55,6 +57,6 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_AI_COMMERCE_C1F4D }}
           channelId: live
-          site: ai-commerce-store
-          target: ai-commerce-store
+          site: glowfish-store
+          target: glowfish-store
           projectId: ai-commerce-c1f4d

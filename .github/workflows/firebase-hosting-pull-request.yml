@@ -39,6 +39,9 @@ jobs:
           echo "VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY" >> ./supabase/.env
           echo "VITE_SERVICE_ROLE_KEY=$VITE_SERVICE_ROLE_KEY" >> ./supabase/.env
           echo "SMS2PRO_API=$SMS2PRO_API" >> ./supabase/.env
+          echo "VITE_ADMIN_URL=$VITE_ADMIN_URL" >> ./supabase/.env
+          echo "VITE_DEFAULT_STORE=$VITE_DEFAULT_STORE" >> ./supabase/.env
+          echo "STORAGE_BUCKET=$STORAGE_BUCKET" >> ./supabase/.env
 
       - name: update supabase functions and secret
         run: |
@@ -53,6 +56,6 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_AI_COMMERCE_C1F4D }}
-          site: glowfish-store
-          target: glowfish-store
+          site: ai-commerce-store
+          target: ai-commerce-store
           projectId: ai-commerce-c1f4d
