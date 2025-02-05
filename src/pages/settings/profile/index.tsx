@@ -186,15 +186,10 @@ const ProfileSettings = () => {
       <Header title={t("Profile Settings")} />
       <Form {...form}>
         <form
-          onSubmit={(e) => {
-            console.log("Form submission started");
-            e.preventDefault();
-            console.log("Form values:", form.getValues());
-            form.handleSubmit((data) => {
-              console.log("Form is valid, calling onSubmit with data:", data);
-              onSubmit(data);
-            })(e);
-          }}
+          onSubmit={form.handleSubmit((data) => {
+            console.log("Form is valid, calling onSubmit with data:", data);
+            onSubmit(data);
+          })}
           className="pt-20 space-y-6 p-5"
         >
           {error && (
