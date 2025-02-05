@@ -125,35 +125,60 @@ const ProfileSettings = () => {
   };
 
   const onSubmit = async (data: any) => {
-    setIsLoading(true);
-    setError("");
+    try {
+      setIsLoading(true);
+      setError("");
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error("No user found");
+      console.log("Starting profile update...");
+      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      
+      console.log("Auth user check:", user ? "User found" : "No user");
+      
+      if (!user) {
+        setError("No authenticated user found");
+        return;
+      }
 
-    // Split full name into first and last name
-    const nameParts = data.full_name.trim().split(/\s+/);
-    const firstName = nameParts[0];
-    const lastName = nameParts.slice(1).join(" ");
+      // Split full name into first and last name
+      const nameParts = data.full_name.trim().split(/\s+/);
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(" ");
 
-    const { error: updateError } = await supabase
-      .from("customers")
-      .update({
+      const updateData = {
         first_name: firstName,
         last_name: lastName || "",
         email: data.email,
         date_of_birth: data.birthday?.toISOString(),
         updated_at: new Date().toISOString(),
-      })
-      .eq("auth_id", user.id);
+      };
 
-    if (updateError) throw updateError;
+      console.log("Attempting to update customer with data:", updateData);
 
-    await refreshCustomer();
-    addToast(t("Profile updated successfully"), "success");
-    navigate("/settings");
+      const { data: updateResult, error: updateError } = await supabase
+        .from("customers")
+        .update(updateData)
+        .eq("auth_id", user.id);
+
+      console.log("Update result:", updateResult);
+      
+      if (updateError) {
+        console.error("Supabase update error:", updateError);
+        throw updateError;
+      }
+
+      await refreshCustomer();
+      addToast(t("Profile updated successfully"), "success");
+      navigate("/settings");
+    } catch (error: any) {
+      console.error("Profile update failed:", error);
+      setError(error.message || "Failed to update profile");
+      addToast(t("Failed to update profile"), "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
