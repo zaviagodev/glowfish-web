@@ -72,18 +72,6 @@ export function Ticket({ ticket }: TicketProps) {
             </div>
           )}
 
-          {/* Status Badge */}
-          <div
-            className={cn(
-              "absolute top-4 right-3 px-2 py-1 rounded-full text-xs font-medium",
-              ticket.used
-                ? "bg-[#8E8E93]/10 text-[#8E8E93]"
-                : "bg-[#34C759]/10 text-[#34C759]"
-            )}
-          >
-            {ticket.used ? t("Used") : t("Valid")}
-          </div>
-
           <h3 className="font-medium mb-2">{ticket.eventName}</h3>
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
