@@ -173,10 +173,10 @@ export const HomeShow = () => {
               {product.start_datetime && product.end_datetime
                 ? `${format(
                     new Date(product.start_datetime),
-                    "dd-MM-yyyy HH:mm"
+                    "dd/MM/yyyy, hh:mm aa"
                   )} - ${format(
                     new Date(product.end_datetime),
-                    "dd-MM-yyyy HH:mm"
+                    "dd/MM/yyyy, hh:mm aa"
                   )}`
                 : t("Date not available")}
             </p>
