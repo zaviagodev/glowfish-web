@@ -4,13 +4,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserProfile } from "@/lib/auth";
 import { useProducts } from "@/hooks/useProducts";
-import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { SearchDialog } from "@/components/home/SearchDialog";
 import { ProductSection } from "@/components/home/ProductSection";
+import { format } from "date-fns";
+
 
 interface Category {
   id: string;
@@ -123,12 +124,12 @@ export const HomeList = () => {
   };
 
   const formattedDate =
-    selectedProduct?.start_datetime &&
-    selectedProduct?.end_datetime &&
-    `${format(
-      new Date(selectedProduct.start_datetime),
-      "dd-MM-yyyy HH:mm"
-    )} - ${format(new Date(selectedProduct.end_datetime), "dd-MM-yyyy HH:mm")}`;
+  selectedProduct?.start_datetime &&
+  selectedProduct?.end_datetime &&
+  `${format(
+    new Date(selectedProduct.start_datetime),
+    "dd/MM/yyyy, hh:mm a"
+  )} - ${format(new Date(selectedProduct.end_datetime), "dd/MM/yyyy, hh:mm a")}`;
 
   return (
     <div className="min-h-full relative">

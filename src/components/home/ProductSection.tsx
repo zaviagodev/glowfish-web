@@ -68,23 +68,12 @@ export const ProductSection = memo(function ProductSection({
                 description={product.description}
                 location={product.location}
                 product_variants={product.product_variants}
-                // date={
-                //   product.start_datetime &&
-                //   product.end_datetime &&
-                //   `${format(
-                //     new Date(product.start_datetime),
-                //     "dd-MM-yyyy HH:mm"
-                //   )} - ${format(
-                //     new Date(product.end_datetime),
-                //     "dd-MM-yyyy HH:mm"
-                //   )}`
-                // }
                 date={
                   product.start_datetime &&
-                  `${format(
+                  format(
                     new Date(product.start_datetime),
-                    "dd-MM-yyyy HH:mm"
-                  )}`
+                    "dd/MM/yyyy, hh:mm a"
+                  )
                 }
               />
             </motion.div>
