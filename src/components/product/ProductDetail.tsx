@@ -213,7 +213,7 @@ export function ProductDetail({
               <span
                 className={cn(
                   "text-2xl flex flex-col font-bold tracking-tight text-secondary-foreground",
-                  { "text-4xl text-orangefocus": price == 0 }
+                  { "text-4xl text-orangefocus": getPriceDisplay() === "free" }
                 )}
                 style={{
                   willChange: "transform",

@@ -177,7 +177,7 @@ export default function CheckoutPage() {
           ) : (
             <Button
               onClick={() => navigate("/checkout/address")}
-              className="w-full"
+              className="w-full main-btn"
             >
               {t("Add Delivery Address")}
             </Button>
