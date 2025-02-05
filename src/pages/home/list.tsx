@@ -10,7 +10,7 @@ import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { SearchDialog } from "@/components/home/SearchDialog";
 import { ProductSection } from "@/components/home/ProductSection";
-import { format } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 
 interface Category {
@@ -127,9 +127,12 @@ export const HomeList = () => {
   selectedProduct?.start_datetime &&
   selectedProduct?.end_datetime &&
   `${format(
-    new Date(selectedProduct.start_datetime),
+    toZonedTime(new Date(selectedProduct.start_datetime), "UTC"),
     "dd/MM/yyyy, hh:mm a"
-  )} - ${format(new Date(selectedProduct.end_datetime), "dd/MM/yyyy, hh:mm a")}`;
+  )} - ${format(
+    toZonedTime(new Date(selectedProduct.end_datetime), "UTC"),
+    "dd/MM/yyyy, hh:mm a"
+  )}`;
 
   return (
     <div className="min-h-full relative">
