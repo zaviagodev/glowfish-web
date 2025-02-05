@@ -24,6 +24,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import { useLocation } from "react-router-dom";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { Product } from "@/services/productService";
 
 interface Category {
   id: string;
@@ -68,32 +69,28 @@ export default function ProductsPage() {
         (priceRange.max !== null ? product.price <= priceRange.max : true)
     )
     .sort((a, b) => {
+      // Helper function to get the highest price from variants or base price
+      const getHighestPrice = (product: Product) => {
+        if (!product.product_variants?.length) return product.price;
+        const variantPrices = product.product_variants.map((v) => v.price);
+        return Math.max(product.price, ...variantPrices);
+      };
+
       switch (sortBy) {
         case "price-low":
-          return a.price - b.price;
+          return getHighestPrice(a) - getHighestPrice(b);
         case "price-high":
-          return b.price - a.price;
+          return getHighestPrice(b) - getHighestPrice(a);
         case "oldest":
           return (
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+            new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
           );
         default: // newest
           return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            new Date(b.start_datetime).getTime() - new Date(a.start_datetime).getTime()
           );
       }
     });
-
-  // Sort products
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sortBy === "newest") {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    }
-    if (sortBy === "oldest") {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    }
-    return 0;
-  });
 
   const formattedDate = (product: any) => {
     return (

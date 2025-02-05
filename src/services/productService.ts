@@ -8,10 +8,11 @@ export interface Product {
   category_id: string;
   image: string;
   location: string;
-  organizer_name : string;
+  organizer_name: string;
   organizer_contact: string;
-  venue_address : string;
-  date: string;
+  venue_address: string;
+  start_datetime: string;
+  end_datetime: string;
   variant_options: any[];
   product_variants: {
     id: string;
@@ -20,7 +21,7 @@ export interface Product {
     price: number;
     compare_at_price: number | null;
     quantity: number;
-    options: Record<string, any>;
+    options: { name: string; value: string; }[];
     status: string;
     position: number;
   }[];
