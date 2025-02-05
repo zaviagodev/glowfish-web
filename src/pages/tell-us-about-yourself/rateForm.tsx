@@ -28,26 +28,26 @@ const RateForm = ({ onSubmit }: RateFormProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
   const ratings: RatingProps[] = [
-    { title: t("Music and Live Show"), key: "music", activeColor: "#9B6CDE" },
-    { title: t("Art and Creativity"), key: "art", activeColor: "#F7D767" },
+    { title: t("Music and Live Show"), key: "music", activeColor: "#DE473C" },
+    { title: t("Art and Creativity"), key: "art", activeColor: "#F5853B" },
     {
       title: t("Wellness and Mindfulness"),
       key: "wellness",
-      activeColor: "#E66C9E",
+      activeColor: "#FADB28",
     },
-    { title: t("Fun and Games"), key: "fun", activeColor: "#EC441E" },
+    { title: t("Fun and Games"), key: "fun", activeColor: "#14A852" },
     {
       title: t("Social event and networking"),
       key: "social",
-      activeColor: "#016F64",
+      activeColor: "#317ABF",
     },
-    { title: t("Sports"), key: "sport", activeColor: "#016F64" },
+    { title: t("Sports"), key: "sport", activeColor: "#DE473C" },
     {
       title: t("Family Fun and Kid Activity"),
       key: "family",
-      activeColor: "#016F64",
+      activeColor: "#F5853B",
     },
-    { title: t("Food and Beverages"), key: "food", activeColor: "#016F64" },
+    { title: t("Food and Beverages"), key: "food", activeColor: "#FADB28" },
   ];
 
   const defaultValues = ratings.reduce((acc, rating) => {
