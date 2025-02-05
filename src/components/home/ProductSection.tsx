@@ -6,6 +6,7 @@ import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 interface ProductSectionProps {
   title: string;
@@ -71,7 +72,7 @@ export const ProductSection = memo(function ProductSection({
                 date={
                   product.start_datetime &&
                   format(
-                    new Date(product.start_datetime),
+                    toZonedTime(new Date(product.start_datetime), "UTC"),
                     "dd/MM/yyyy, hh:mm a"
                   )
                 }
