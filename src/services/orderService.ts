@@ -198,5 +198,102 @@ export const OrderService = {
       console.error('Failed to fetch orders:', error);
       throw error;
     }
+  },
+
+  async getOrderById(
+    storeName: string,
+    orderId: string
+  ): Promise<Order | null> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const { data, error } = await supabase
+        .from('orders')
+        .select(`
+          *,
+          customer:customers (*),
+          order_items (
+            id,
+            variant_id,
+            quantity,
+            price,
+            total,
+            product_variants (
+              name,
+              options,
+              product:products (
+                name,
+                id,
+                status,
+                description,
+                product_images (
+                  id,
+                  url,
+                  alt,
+                  position
+                )
+              )
+            )
+          )
+        `)
+        .eq('customer_id', user.id)
+        .eq('store_name', storeName)
+        .eq('id', orderId)
+        .single();
+
+      if (error) {
+        console.error('Supabase query error:', error);
+        throw error;
+      }
+
+      if (!data) {
+        console.warn('No order found with ID:', orderId);
+        return null;
+      }
+
+      // Transform the data to match the Order interface
+      const order = data as unknown as DbOrder;
+      return {
+        id: order.id,
+        status: order.status,
+        total_amount: order.total || 0,
+        subtotal: order.subtotal || 0,
+        tax: order.tax || 0,
+        shipping: order.shipping || 0,
+        discount: order.discount || 0,
+        points_discount: order.points_discount || 0,
+        loyalty_points_used: order.loyalty_points_used || 0,
+        created_at: order.created_at,
+        customer_id: order.customer_id,
+        customer: {
+          id: order.customer.id,
+          email: order.customer.email,
+          first_name: order.customer.first_name,
+          last_name: order.customer.last_name
+        },
+        order_items: order.order_items.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+          unit_price: item.total,
+          variant_id: item.variant_id,
+          product_variants: {
+            name: item.product_variants.name,
+            options: item.product_variants.options,
+            product: {
+              id: item.product_variants.product.id,
+              name: item.product_variants.product.name,
+              description: item.product_variants.product.description,
+              image: item.product_variants.product.product_images?.[0]?.url || '/placeholder-image.jpg'
+            }
+          }
+        }))
+      };
+    } catch (error) {
+      console.error('Failed to fetch order:', error);
+      throw error;
+    }
   }
 }; 

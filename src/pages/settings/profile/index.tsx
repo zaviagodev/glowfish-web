@@ -351,7 +351,6 @@ const ProfileSettings = () => {
             <Button
               type="submit"
               className="main-btn w-full"
-              disabled={isLoading}
             >
               {isLoading ? t("Saving...") : t("Save Changes")}
             </Button>

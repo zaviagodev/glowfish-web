@@ -1,12 +1,11 @@
-import { useState } from "react";
 import { useTranslate } from "@refinedev/core";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Package2, Truck, MessageCircle } from "lucide-react";
-import { useOrders } from "@/hooks/useOrders";
+import { Package2, Truck } from "lucide-react";
+import { useOrder } from "@/hooks/useOrder";
 
 // Helper function to format dates
 const formatDate = (date: Date | string | null) => {
@@ -20,9 +19,7 @@ export default function OrderDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const { orders, loading, error } = useOrders(1, 1000);
-
-  const order = orders?.find((order) => order.id === id);
+  const { order, loading, error } = useOrder(id || '');
   const page = location.state?.page || "1";
 
   const handleBack = () => {
@@ -357,21 +354,6 @@ export default function OrderDetailPage() {
             >
               {t("Pay Now")}
             </Button>
-            {/* <Button
-            variant={
-              order.status === "pending" && order.total_amount > 0
-                ? "outline"
-                : "default"
-            }
-            size="lg"
-            className="w-full"
-            onClick={() => {
-              /* Add help functionality
-            }}
-          >
-            <MessageCircle className="w-4 h-4 mr-2" />
-            {t("Need Help?")}
-          </Button> */}
           </div>
         </div>
       )}
