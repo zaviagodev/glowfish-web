@@ -72,11 +72,11 @@ const RegisterForm = ({
             <FormItem>
               <FormLabel htmlFor="first_name" className="text-muted-foreground">
                 {t("What should we call you?")}{" "}
-                <span className="text-orangefocus">*</span>
+                <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder={t("First name")}
+                  placeholder={t("John")}
                   {...field}
                   className="font-sfpro-rounded font-semibold main-input"
                 />
@@ -91,12 +91,12 @@ const RegisterForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel htmlFor="last_name" className="text-muted-foreground">
-                {t("What is your last name")}{" "}
-                <span className="text-orangefocus">*</span>
+                {t("What is your last name?")}{" "}
+                <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder={t("Last name")}
+                  placeholder={t("Doe")}
                   {...field}
                   className="font-sfpro-rounded font-semibold main-input"
                 />
@@ -115,7 +115,7 @@ const RegisterForm = ({
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder={t("Company")}
+                  placeholder={t("Your company name")}
                   {...field}
                   className="font-sfpro-rounded font-semibold main-input"
                 />
@@ -130,7 +130,7 @@ const RegisterForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel htmlFor="phone" className="text-muted-foreground">
-                {t("Phone")} <span className="text-orangefocus">*</span>
+                {t("Phone")} <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
@@ -149,11 +149,11 @@ const RegisterForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel htmlFor="email" className="text-muted-foreground">
-                {t("Email")} <span className="text-orangefocus">*</span>
+                {t("Email")} <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder={t("Email")}
+                  placeholder={t("youremail@mail.com")}
                   {...field}
                   className="font-sfpro-rounded font-semibold main-input"
                 />
@@ -171,7 +171,7 @@ const RegisterForm = ({
                 htmlFor="date_of_birth"
                 className="text-muted-foreground"
               >
-                {t("Date of birth")} <span className="text-orangefocus">*</span>
+                {t("Date of birth")} <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Popover>
@@ -179,14 +179,14 @@ const RegisterForm = ({
                     <FormControl>
                       <Button
                         className={cn(
-                          "flex items-center h-12 w-full rounded-md bg-darkgray outline-none border border-input text-white px-3 py-2 text-left justify-between",
+                          "flex items-center h-12 text-base font-semibold w-full rounded-md !bg-darkgray outline-none border border-input text-white px-3 py-2 text-left justify-between",
                           !field.value && "text-[#979797]"
                         )}
                       >
                         {field.value ? (
-                          format(field.value, "PPP")
+                          format(field.value, "dd/MM/yyyy")
                         ) : (
-                          <span>{t("Pick a date")}</span>
+                          <span>{t("DD/MM/YYYY")}</span>
                         )}
                         <CalendarIcon className="h-4 w-4" />
                       </Button>
