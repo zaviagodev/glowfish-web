@@ -277,7 +277,7 @@ const ScanToRedeemPage = () => {
     <div className="bg-background min-h-screen">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b p-4">
-        <div className="flex items-center">
+        <div className="flex ">
           <Button
             variant="ghost"
             className="p-0 mr-2"
@@ -308,7 +308,7 @@ const ScanToRedeemPage = () => {
 
         {/* Camera Section */}
         {!data && (
-          <div className="flex-1 flex items-center justify-center px-4">
+          <div className="flex-1 flex justify-center px-4">
             <div className="w-full max-w-sm relative">
               <div className="aspect-square rounded-lg overflow-hidden bg-black relative">
                 <video
@@ -333,12 +333,12 @@ const ScanToRedeemPage = () => {
 
         {/* Results Section */}
         {(data || error) && (
-          <div className="px-4 py-4 flex-1 flex items-center">
+          <div className="px-4 py-4 flex-1 flex ">
             <div className="max-w-sm mx-auto w-full animate-in fade-in slide-in-from-bottom-4">
               <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                 {data && (
                   <div className="p-4 border-b">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between ">
                       <h3 className="font-semibold">{t("Scanned Code")}</h3>
                       <Button
                         variant="ghost"
@@ -355,7 +355,7 @@ const ScanToRedeemPage = () => {
                 
                 <div className="p-4 bg-gray-50">
                   {isRedeeming ? (
-                    <div className="flex flex-col items-center justify-center py-2">
+                    <div className="flex flex-col  justify-center py-2">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mb-2" />
                       <p className="text-sm text-gray-600">{t("Redeeming code...")}</p>
                     </div>
