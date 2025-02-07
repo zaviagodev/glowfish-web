@@ -67,8 +67,8 @@ const Rewards = () => {
   return (
     <>
       <Header title={t("Your card")} />
-      <section>
-        <div className="flex items-center justify-between px-5">
+      <section className="pt-14">
+        <div className="flex items-center justify-between p-5 pb-0">
           <h1 className="font-semibold text-[28px] m-0">
             {t("Hello")}, <span className="text-mainorange">{fullName}</span>
           </h1>
