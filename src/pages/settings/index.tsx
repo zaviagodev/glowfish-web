@@ -6,7 +6,7 @@ import { UserProfile } from "@/components/settings/UserProfile";
 import { OrderStatusBar } from "@/components/settings/OrderStatusBar";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { WalletSection } from "@/components/settings/WalletSection";
-import { Crown, Gift, Star, User } from "lucide-react";
+import { Crown, Gift, QrCode, Star, User } from "lucide-react";
 
 const SettingsPage = () => {
   const t = useTranslate();
@@ -43,6 +43,14 @@ const SettingsPage = () => {
     {
       title: t("Points & Rewards"),
       items: [
+        {
+          icon: <QrCode className="h-5 w-5" />,
+          label: t("Scan to Redeem"),
+          path: "/settings/scan-to-redeem",
+          showArrow: true,
+          color: "#2196F3", // Blue
+          bgColor: "rgba(33, 150, 243, 0.1)",
+        },
         {
           icon: <Star className="h-5 w-5" />,
           label: t("How to Get Points"),

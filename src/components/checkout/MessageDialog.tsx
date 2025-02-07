@@ -43,7 +43,7 @@ export function MessageDialog({
         <div className="p-5 space-y-4">
           <Textarea
             placeholder={t("Enter your message to the store...")}
-            className="min-h-[120px] bg-darkgray border border-input focus:border-[#EE5736] resize-none focus:!ring-0 !ring-offset-0"
+            className="min-h-[120px] bg-darkgray border border-input focus:border-mainbutton resize-none focus:!ring-0 !ring-offset-0"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />

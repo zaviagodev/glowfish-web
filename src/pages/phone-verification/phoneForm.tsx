@@ -91,11 +91,11 @@ const PhoneForm = ({
                       <span className="block h-1 w-10 bg-[#FFFFFF]"></span>
                       <span className="block h-1 w-10 bg-[#BB1C37]"></span>
                     </div>
-                    <span>+66</span>
+                    <span>TH</span>
                   </div>
                   <FormControl>
                     <Input
-                      placeholder="098-7654321"
+                      placeholder="09X-XXX-XXXX"
                       type="number"
                       className="font-semibold"
                       {...field}

@@ -73,7 +73,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter company name")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -93,7 +93,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter tax ID")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -113,7 +113,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter branch number")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -133,7 +133,7 @@ export function VatForm({ initialData, onSubmit }: VatFormProps) {
                 <Input
                   {...field}
                   placeholder={t("Enter company address")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />

@@ -121,7 +121,7 @@ export function AddressForm({
                 <Input
                   {...field}
                   placeholder={t("Enter your first name")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -142,7 +142,7 @@ export function AddressForm({
                 <Input
                   {...field}
                   placeholder={t("Enter your last name")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -163,7 +163,7 @@ export function AddressForm({
                 <Input
                   {...field}
                   placeholder={t("Enter your phone number")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -184,7 +184,7 @@ export function AddressForm({
                 <Input
                   {...field}
                   placeholder={t("Enter street address")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -205,7 +205,7 @@ export function AddressForm({
                 <Input
                   {...field}
                   placeholder={t("Enter building/unit number")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -227,7 +227,7 @@ export function AddressForm({
                   <Input
                     {...field}
                     placeholder={t("Enter city")}
-                    className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                    className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                   />
                 </FormControl>
                 <FormMessage />
@@ -247,7 +247,7 @@ export function AddressForm({
                   <Input
                     {...field}
                     placeholder={t("Enter state")}
-                    className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                    className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                   />
                 </FormControl>
                 <FormMessage />
@@ -269,7 +269,7 @@ export function AddressForm({
                 <Input
                   {...field}
                   placeholder={t("Enter postal code")}
-                  className="h-12 bg-darkgray border-input focus:border-[#EE5736] focus:ring-0"
+                  className="h-12 bg-darkgray border-input focus:border-mainbutton focus:ring-0"
                 />
               </FormControl>
               <FormMessage />
