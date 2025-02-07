@@ -39,6 +39,7 @@ import ProfileSettings from "./pages/settings/profile";
 import HowToGetPoints from "./pages/settings/how-to-get-points";
 import HowToSpendPoints from "./pages/settings/how-to-spend-points";
 import MemberLevel from "./pages/settings/member-level";
+import ScanToRedeemPage from "./pages/settings/scan-to-redeem";
 import MyRewards from "./pages/my-rewards";
 import Rewards from "./pages/rewards";
 import RewardDetail from "./pages/rewards/detail";
@@ -203,6 +204,7 @@ function App() {
                     />
                     <Route path="member-level" element={<MemberLevel />} />
                     <Route path="points" element={<MyPointsPage />} />
+                    <Route path="scan-to-redeem" element={<ScanToRedeemPage />} />
                   </Route>
 
                   <Route path="/my-orders">
