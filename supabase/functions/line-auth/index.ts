@@ -22,7 +22,7 @@ serve(async (req) => {
   }
 
   try {
-    const { code, redirectUri } = await req.json()
+    const { code, redirectUri, storeName } = await req.json()
     
     // Get LINE credentials from environment variables
     const clientId = Deno.env.get('VITE_LINE_CLIENT_ID')
@@ -84,14 +84,36 @@ serve(async (req) => {
     }
 
     if (existingOAuth?.user_id) {
-      // Get existing customer data
-      const { data: customer, error: customerError } = await supabase
+      // Get existing customer data - modified to handle multiple customers
+      const { data: customers, error: customerError } = await supabase
         .from('customers')
         .select('*, auth_id')
         .eq('auth_id', existingOAuth.user_id)
-        .single();
+        .eq('store_name', storeName);
 
       if (customerError) throw customerError;
+
+      // If no customer found for this store, treat as new registration
+      if (!customers || customers.length === 0) {
+        return new Response(
+          JSON.stringify({
+            ...tokenData,
+            type: 0,
+            line_id: profileData.userId,
+            profile: profileData,
+            redirect: 'register',
+          }),
+          { 
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+      }
+
+      // Use the first customer found for this store
+      const customer = customers[0];
 
       const userid = existingOAuth?.user_id;
       const { data : userData, error } = await supabase.auth.admin.getUserById(userid)

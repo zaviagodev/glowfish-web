@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useLogin, useNavigation } from "@refinedev/core";
 import { useLocation } from "react-router-dom";
+import { useStore } from "@/hooks/useStore";
 
 export const LineCallback = () => {
   const { replace } = useNavigation();
@@ -8,6 +9,7 @@ export const LineCallback = () => {
   const { mutate: login } = useLogin();
   const loginAttempted = useRef(false);
   const timeoutRef = useRef<number | null>(null);
+  const { storeName } = useStore();
 
   useEffect(() => {
     // Clear any existing timeout on unmount
@@ -40,13 +42,14 @@ export const LineCallback = () => {
         replace("/login");
       }, 30000); // 30 seconds timeout
 
-      // Attempt login
+      // Attempt login with store name from hook
       login({
         providerName: "line",
         code,
+        storeName // Use store name from hook
       });
     }
-  }, [location.search, login, replace]);
+  }, [location.search, login, replace, storeName]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
