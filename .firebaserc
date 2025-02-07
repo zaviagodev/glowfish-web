@@ -10,6 +10,9 @@
         ],
         "glowfish-store": [
           "glowfish-store"
+        ],
+        "glowfish-store-stage": [
+          "glowfish-store-stage"
         ]
       }
     }

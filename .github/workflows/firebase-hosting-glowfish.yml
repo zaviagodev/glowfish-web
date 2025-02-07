@@ -7,7 +7,37 @@ on:
     branches:
       - glowfish
 jobs:
-  build_and_deploy:
+  build_and_deploy_stage:
+    runs-on: ubuntu-latest
+    env:
+      VITE_LINE_CLIENT_ID: ${{ vars.GLOWFISH_STAGE_VITE_LINE_CLIENT_ID }}
+      VITE_LINE_CLIENT_SECRET: ${{ secrets.GLOWFISH_STAGE_VITE_LINE_CLIENT_SECRET }}
+      VITE_SUPABASE_URL: ${{ vars.GLOWFISH_STAGE_VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.GLOWFISH_STAGE_VITE_SUPABASE_ANON_KEY }}
+      VITE_SERVICE_ROLE_KEY: ${{ secrets.GLOWFISH_STAGE_VITE_SERVICE_ROLE_KEY }}
+      VITE_ADMIN_URL: ${{ vars.GLOWFISH_STAGE_VITE_ADMIN_URL }}
+      VITE_DEFAULT_STORE: ${{ vars.GLOWFISH_STAGE_VITE_DEFAULT_STORE }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: yarn
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Build
+        run: yarn build
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_AI_COMMERCE_C1F4D }}
+          channelId: live
+          site: glowfish-store-stage
+          target: glowfish-store-stage
+          projectId: ai-commerce-c1f4d
+
+  build_and_deploy_prod:
     runs-on: ubuntu-latest
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
