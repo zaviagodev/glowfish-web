@@ -1,11 +1,12 @@
 import { useTranslate } from "@refinedev/core";
 import { useState, useEffect, useRef } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Camera, QrCode, X } from "lucide-react";
+import { ArrowLeft, Camera, QrCode, X, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/toast";
+import { useCustomer } from "@/hooks/useCustomer";
+import jsQR from "jsqr";
 
 interface RedeemResponse {
   points_earned: number;
@@ -15,19 +16,29 @@ const ScanToRedeemPage = () => {
   const t = useTranslate();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const { refreshCustomer } = useCustomer();
   const [data, setData] = useState("");
   const [isRedeeming, setIsRedeeming] = useState(false);
   const [pointsEarned, setPointsEarned] = useState<number | null>(null);
-  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const [error, setError] = useState<string>("");
+  const [isScanning, setIsScanning] = useState(false);
+  const [initAttempts, setInitAttempts] = useState(0);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const animationFrameRef = useRef<number>();
+  const initTimeoutRef = useRef<NodeJS.Timeout>();
 
   const redeemCode = async (code: string) => {
     try {
       setIsRedeeming(true);
+      setError("");
       console.log('Attempting to redeem code:', code);
       
       const { data, error } = await supabase
         .rpc('redeem_campaign_code', {
-          p_code: code // Match the parameter name from the SQL function
+          p_code: code
         })
         .single();
 
@@ -40,61 +51,226 @@ const ScanToRedeemPage = () => {
       const response = data as RedeemResponse;
       setPointsEarned(response.points_earned);
       addToast(t("Success! You earned {{points}} points!", { points: response.points_earned }), "success");
+      
+      // Refresh customer data after successful redemption
+      await refreshCustomer();
     } catch (error: any) {
       console.error('Error in redeemCode:', error);
+      setError(error.message || t("Failed to redeem code"));
       addToast(error.message || t("Failed to redeem code"), "error");
-      // Reset data on error
-      setData("");
-      setPointsEarned(null);
     } finally {
       setIsRedeeming(false);
     }
   };
 
-  useEffect(() => {
-    // Success callback is called when QR code is successfully scanned
-    const onScanSuccess = async (decodedText: string) => {
-      setData(decodedText);
-      await redeemCode(decodedText);
-    };
+  const scanQRCode = () => {
+    if (!videoRef.current || !canvasRef.current) {
+      console.log('Scan skipped: missing refs', { 
+        hasVideo: !!videoRef.current, 
+        hasCanvas: !!canvasRef.current 
+      });
+      return;
+    }
 
-    // Failure callback is called when QR code scanning fails
-    const onScanFailure = (error: any) => {
-      // Just log the error, don't show to user as it can be frequent
-      console.warn('QR code scan error:', error);
-    };
+    // Force scanning state if not set
+    if (!isScanning) {
+      console.log('Setting scanning state to true');
+      setIsScanning(true);
+    }
 
-    // Initialize the scanner
-    scannerRef.current = new Html5QrcodeScanner(
-      "reader",
-      {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        aspectRatio: 1,
-        showTorchButtonIfSupported: true,
-        showZoomSliderIfSupported: true,
-        defaultZoomValueIfSupported: 2
-      },
-      false // verbose flag
-    );
+    const canvas = canvasRef.current;
+    const video = videoRef.current;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
 
-    // Render the scanner
-    scannerRef.current.render(onScanSuccess, onScanFailure);
+    if (!context) {
+      console.log('No canvas context');
+      return;
+    }
 
-    // Cleanup function
-    return () => {
-      if (scannerRef.current) {
-        scannerRef.current.clear().catch(console.error);
+    // Make sure video has valid dimensions before proceeding
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      console.log('Invalid video dimensions, retrying...');
+      animationFrameRef.current = requestAnimationFrame(scanQRCode);
+      return;
+    }
+
+    // Set canvas size to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    try {
+      // Draw current video frame
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Get image data for QR code scanning
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert",
+      });
+
+      if (code) {
+        console.log('QR code found:', code.data);
+        // QR Code found
+        stopScanner();
+        setData(code.data);
+        redeemCode(code.data);
+      } else {
+        // Continue scanning if we're still in scanning state
+        if (isScanning) {
+          animationFrameRef.current = requestAnimationFrame(scanQRCode);
+        } else {
+          console.log('Scanning stopped');
+        }
       }
+    } catch (err) {
+      console.error('Error scanning QR code:', err);
+      if (isScanning) {
+        animationFrameRef.current = requestAnimationFrame(scanQRCode);
+      }
+    }
+  };
+
+  const startScanner = async () => {
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("Camera not supported on this device");
+      }
+
+      const constraints = {
+        video: { 
+          facingMode: "environment",
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      };
+
+      console.log('Requesting camera access...');
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log('Camera access granted');
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        streamRef.current = stream;
+        
+        // Wait for video to be ready and playing
+        await new Promise((resolve, reject) => {
+          if (!videoRef.current) {
+            reject(new Error("Video element not found"));
+            return;
+          }
+
+          const timeoutId = setTimeout(() => {
+            reject(new Error("Video initialization timeout"));
+          }, 10000); // 10 second timeout
+
+          videoRef.current.onloadedmetadata = () => {
+            console.log('Video metadata loaded');
+            videoRef.current?.play().catch(reject);
+          };
+          
+          videoRef.current.onplaying = () => {
+            console.log('Video started playing');
+            clearTimeout(timeoutId);
+            resolve(true);
+          };
+
+          videoRef.current.onerror = (e) => {
+            console.error('Video error:', e);
+            clearTimeout(timeoutId);
+            reject(new Error("Video error: " + e));
+          };
+        });
+
+        // Add a small delay to ensure camera is fully initialized
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        console.log("Camera initialized successfully");
+        
+        // Set scanning state and wait for it to be updated
+        setIsScanning(true);
+        await new Promise(resolve => setTimeout(resolve, 0));
+        
+        // Start scanning loop
+        console.log("Starting QR code scanning...");
+        requestAnimationFrame(() => {
+          if (!isScanning) {
+            console.log("Starting scan directly");
+            setIsScanning(true);
+            scanQRCode();
+          } else {
+            console.log("First scan frame requested");
+            scanQRCode();
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Error accessing camera:', err);
+      setError(t("Unable to access camera. Please check your permissions."));
+      
+      // Retry initialization if we haven't exceeded max attempts
+      if (initAttempts < 3) {
+        console.log("Retrying camera initialization...", initAttempts + 1);
+        setInitAttempts(prev => prev + 1);
+        initTimeoutRef.current = setTimeout(() => {
+          startScanner();
+        }, 1000); // Wait 1 second before retrying
+      }
+    }
+  };
+
+  const stopScanner = () => {
+    console.log('Stopping scanner...');
+    if (animationFrameRef.current) {
+      console.log('Canceling animation frame');
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    if (streamRef.current) {
+      console.log('Stopping camera stream');
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    if (initTimeoutRef.current) {
+      console.log('Clearing init timeout');
+      clearTimeout(initTimeoutRef.current);
+    }
+    setIsScanning(false);
+  };
+
+  useEffect(() => {
+    let mounted = true;
+
+    const initScanner = async () => {
+      try {
+        if (mounted) {
+          console.log("Initializing scanner...");
+          await startScanner();
+        }
+      } catch (err) {
+        console.error('Failed to initialize scanner:', err);
+      }
+    };
+
+    // Add a small delay before initial start
+    const timeoutId = setTimeout(() => {
+      initScanner();
+    }, 500);
+
+    return () => {
+      mounted = false;
+      clearTimeout(timeoutId);
+      stopScanner();
     };
   }, []);
 
-  const resetScanner = () => {
+  const resetScanner = async () => {
     setData("");
     setPointsEarned(null);
-    if (scannerRef.current) {
-      scannerRef.current.resume();
-    }
+    setError("");
+    setInitAttempts(0);
+    stopScanner();
+    // Add a small delay before restarting
+    await new Promise(resolve => setTimeout(resolve, 500));
+    startScanner();
   };
 
   return (
@@ -105,7 +281,10 @@ const ScanToRedeemPage = () => {
           <Button
             variant="ghost"
             className="p-0 mr-2"
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              stopScanner();
+              navigate(-1);
+            }}
           >
             <ArrowLeft className="h-6 w-6" />
           </Button>
@@ -116,49 +295,81 @@ const ScanToRedeemPage = () => {
       {/* Scanner */}
       <div className="flex flex-col min-h-screen pt-16">
         {/* Instructions */}
-        <div className="px-4 py-2">
-          <div className="max-w-sm mx-auto mb-2 p-4 bg-blue-50 rounded-lg flex items-start">
-            <QrCode className="h-5 w-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0" />
-            <p className="text-sm text-blue-700">
-              {t("Point your camera at a QR code to scan and earn points. Make sure the code is well-lit and centered in the frame.")}
-            </p>
+        {!data && (
+          <div className="px-4 py-2">
+            <div className="max-w-sm mx-auto mb-2 p-4 bg-blue-50 rounded-lg flex items-start">
+              <QrCode className="h-5 w-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0" />
+              <p className="text-sm text-blue-700">
+                {t("Point your camera at a QR code to scan and earn points. Make sure the code is well-lit and centered in the frame.")}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Camera Section */}
-        <div className="flex-1 flex items-center justify-center px-4">
-          <div className="w-full max-w-sm">
-            <div 
-              id="reader"
-              className="overflow-hidden rounded-lg shadow-lg bg-white"
-            />
+        {!data && (
+          <div className="flex-1 flex items-center justify-center px-4">
+            <div className="w-full max-w-sm relative">
+              <div className="aspect-square rounded-lg overflow-hidden bg-black relative">
+                <video
+                  ref={videoRef}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  playsInline
+                  muted
+                  autoPlay
+                />
+                <canvas
+                  ref={canvasRef}
+                  className="hidden"
+                />
+                {/* Scanning overlay */}
+                <div className="absolute inset-0 border-2 border-white/30">
+                  <div className="absolute inset-[25%] border-2 border-white rounded-lg" />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Results Section */}
-        {data && (
-          <div className="px-4 py-4">
-            <div className="max-w-sm mx-auto animate-in fade-in slide-in-from-bottom-4">
+        {(data || error) && (
+          <div className="px-4 py-4 flex-1 flex items-center">
+            <div className="max-w-sm mx-auto w-full animate-in fade-in slide-in-from-bottom-4">
               <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="p-4 border-b">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-semibold">{t("Scanned Code")}</h3>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={resetScanner}
-                      className="h-8 w-8 p-0"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                {data && (
+                  <div className="p-4 border-b">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-semibold">{t("Scanned Code")}</h3>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={resetScanner}
+                        className="h-8 w-8 p-0"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <p className="text-sm mt-1 text-gray-600">{data}</p>
                   </div>
-                  <p className="text-sm mt-1 text-gray-600">{data}</p>
-                </div>
+                )}
                 
                 <div className="p-4 bg-gray-50">
                   {isRedeeming ? (
-                    <div className="flex items-center justify-center py-2">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500" />
+                    <div className="flex flex-col items-center justify-center py-2">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mb-2" />
+                      <p className="text-sm text-gray-600">{t("Redeeming code...")}</p>
+                    </div>
+                  ) : error ? (
+                    <div className="text-center">
+                      <p className="text-sm text-red-600 mb-2">{error}</p>
+                      <Button
+                        onClick={resetScanner}
+                        variant="outline"
+                        className="gap-2"
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                        {t("Try Again")}
+                      </Button>
                     </div>
                   ) : pointsEarned ? (
                     <div className="text-center">
@@ -179,82 +390,6 @@ const ScanToRedeemPage = () => {
           </div>
         )}
       </div>
-
-      <style>
-        {`
-          #reader {
-            width: 100% !important;
-            background: white !important;
-          }
-          #reader * {
-            border-radius: 8px;
-          }
-          #reader__scan_region {
-            min-width: unset !important;
-            width: 100% !important;
-            border: 2px solid #e5e7eb !important;
-            position: relative !important;
-          }
-          #reader__scan_region::before {
-            content: '';
-            display: block;
-            padding-bottom: 100%;
-          }
-          #reader__scan_region video {
-            position: absolute !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            width: auto !important;
-            height: auto !important;
-          }
-          #reader__scan_region img {
-            object-fit: cover;
-          }
-          #reader__camera_selection {
-            width: 100%;
-            max-width: 100%;
-            padding: 8px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-            background: white;
-          }
-          #reader__dashboard {
-            padding: 8px;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-          }
-          #reader__dashboard_section {
-            padding: 8px;
-          }
-          #reader__dashboard_section_csr {
-            text-align: center;
-          }
-          #reader__dashboard_section_csr button {
-            padding: 8px 16px;
-            background: #2563eb;
-            color: white;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-          }
-          #reader__dashboard_section_csr button:hover {
-            background: #1d4ed8;
-          }
-          #reader__status_span {
-            padding: 8px;
-            color: #4b5563;
-          }
-          #reader__header_message {
-            display: none;
-          }
-        `}
-      </style>
     </div>
   );
 };
