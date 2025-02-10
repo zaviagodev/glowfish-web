@@ -25,10 +25,10 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
               <ScanQrCode className="h-4 w-4" />
             </div>
             <div>
-              <div className="text-sm font-medium text-muted-foreground">
+              <div className="text-sm font-medium text-secondary-foreground">
                 {t("PromptPay")}
               </div>
-              <div className="text-xs text-secondary-foreground">
+              <div className="text-xs text-muted-foreground">
                 {t("Pay via PromptPay QR Code")}
               </div>
             </div>

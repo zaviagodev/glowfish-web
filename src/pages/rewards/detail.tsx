@@ -64,9 +64,7 @@ const RewardDetail = () => {
     refreshCustomer,
   } = useCustomer();
 
-  const {
-    refreshOrders,
-  } = useOrders();
+  const { refreshOrders } = useOrders();
 
   if (rewardsLoading || customerLoading) {
     return (
@@ -158,7 +156,7 @@ const RewardDetail = () => {
       await refreshCustomer();
       // Refresh orders list
       await refreshOrders();
-      
+
       // Navigate to orders page instead of showing the drawer
       setIsConfirmDialogOpen(false);
       navigate("/my-orders");
@@ -206,7 +204,7 @@ const RewardDetail = () => {
 
         <div className="flex flex-col gap-4">
           <h2 className="text-base">{t("Description")}</h2>
-          <p className="text-[13px] text-secondary-foreground font-light">
+          <p className="text-sm text-secondary-foreground font-light">
             {reward.description}
           </p>
         </div>

@@ -12,7 +12,6 @@ import { SearchDialog } from "@/components/home/SearchDialog";
 import { ProductSection } from "@/components/home/ProductSection";
 import { format, toZonedTime } from "date-fns-tz";
 
-
 interface Category {
   id: string;
   name: string;
@@ -124,18 +123,18 @@ export const HomeList = () => {
   };
 
   const formattedDate =
-  selectedProduct?.start_datetime &&
-  selectedProduct?.end_datetime &&
-  `${format(
-    toZonedTime(new Date(selectedProduct.start_datetime), "UTC"),
-    "dd/MM/yyyy, hh:mm a"
-  )} - ${format(
-    toZonedTime(new Date(selectedProduct.end_datetime), "UTC"),
-    "dd/MM/yyyy, hh:mm a"
-  )}`;
+    selectedProduct?.start_datetime &&
+    selectedProduct?.end_datetime &&
+    `${format(
+      toZonedTime(new Date(selectedProduct.start_datetime), "UTC"),
+      "dd/MM/yyyy, hh:mm a"
+    )} - ${format(
+      toZonedTime(new Date(selectedProduct.end_datetime), "UTC"),
+      "dd/MM/yyyy, hh:mm a"
+    )}`;
 
   return (
-    <div className="min-h-full relative">
+    <div className="min-h-screen relative">
       {/* Hero Section */}
       <div className="relative">
         <section

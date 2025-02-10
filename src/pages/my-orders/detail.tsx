@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Package2, Truck } from "lucide-react";
 import { useOrder } from "@/hooks/useOrder";
+import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 
 // Helper function to format dates
 const formatDate = (date: Date | string | null) => {
@@ -19,7 +20,7 @@ export default function OrderDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const { order, loading, error } = useOrder(id || '');
+  const { order, loading, error } = useOrder(id || "");
   const page = location.state?.page || "1";
 
   const handleBack = () => {
@@ -107,12 +108,13 @@ export default function OrderDetailPage() {
                 ? order.id.split("-")[0]
                 : order.id?.substring(0, 8) || ""}
             </div>
-            <div className="text-sm text-muted-foreground">
-              {formatDate(order.created_at)}
-            </div>
+            <OrderStatusBadge status={order.status} />
           </div>
-          <div className="text-sm text-muted-foreground capitalize">
+          {/* <div className="text-sm text-muted-foreground capitalize">
             {t("Status")}: {order.status}
+          </div> */}
+          <div className="text-sm text-muted-foreground">
+            {formatDate(order.created_at)}
           </div>
         </div>
 
@@ -121,7 +123,7 @@ export default function OrderDetailPage() {
           <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
             {t("Order Timeline")}
           </h2>
-          <div className="relative">
+          <div className="relative bg-darkgray rounded-lg p-5">
             {timeline.map((event, index) => (
               <motion.div
                 key={event.status}
@@ -323,16 +325,16 @@ export default function OrderDetailPage() {
                 </>
               )}
               <div className="pt-3 border-t border-border">
-                <div className="flex justify-between">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-[15px] font-medium text-card-foreground">
+                    <span className="text-base font-medium text-card-foreground">
                       {t("Total")}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       ({order.order_items.length} {t("items")})
                     </span>
                   </div>
-                  <span className="text-sm font-bold">
+                  <span className="text-lg font-bold">
                     ฿{(order.total_amount || 0).toLocaleString()}
                   </span>
                 </div>

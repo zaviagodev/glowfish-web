@@ -194,7 +194,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                <span>{ticket.location || t("Location TBD")}</span>
+                <span>{ticket.location || t("To be determined")}</span>
               </div>
               {ticket.date && (
                 <div className="flex items-center gap-2">

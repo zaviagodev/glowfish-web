@@ -41,7 +41,7 @@ export function AddressCard({
         </Button>
       </div>
       <div className="px-3 pb-3">
-        <p className="text-xs font-medium">
+        <p className="text-sm font-medium">
           {name} | {phone}
         </p>
         <p className="text-xs text-muted-foreground mt-0.5">{address}</p>

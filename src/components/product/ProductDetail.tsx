@@ -1,5 +1,13 @@
 import { motion } from "framer-motion";
-import { MapPin, Calendar, Tag, ChevronLeft, ShoppingCart } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  Tag,
+  ChevronLeft,
+  ShoppingCart,
+  Contact,
+  Phone,
+} from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +40,8 @@ export function ProductDetail({
   onClose,
   variant_options,
   product_variants,
+  organizer_name,
+  organizer_contact,
 }: ProductDetailProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -235,14 +245,12 @@ export function ProductDetail({
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2 text-sm font-light">
                   <MapPin className="w-4 h-4" />
-                  <span>{location || "-"}</span>
+                  <span>{location || "To be determined"}</span>
                 </div>
-                {date && (
-                  <div className="flex items-center gap-2 text-sm font-light">
-                    <Calendar className="w-4 h-4" />
-                    <span>{date}</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-2 text-sm font-light">
+                  <Calendar className="w-4 h-4" />
+                  <span>{date || "To be determined"}</span>
+                </div>
                 {points && (
                   <div className="flex items-center gap-2 text-sm text-primary font-medium">
                     <Tag className="w-4 h-4" />
@@ -268,7 +276,7 @@ export function ProductDetail({
                   // initial={{ opacity: 0, y: 20 }}
                   // animate={{ opacity: 1, y: 0 }}
                   // transition={{ delay: 0.4 }}
-                  className="text-[13px] text-secondary-foreground font-light"
+                  className="text-sm text-secondary-foreground font-light"
                   ref={paragraphRef}
                 >
                   <span className={!expanded ? "line-clamp-5" : ""}>
@@ -301,12 +309,25 @@ export function ProductDetail({
                   // initial={{ opacity: 0, y: 20 }}
                   // animate={{ opacity: 1, y: 0 }}
                   // transition={{ delay: 0.4 }}
-                  className="text-[13px] text-secondary-foreground font-light"
+                  className="text-sm text-secondary-foreground font-light"
                 >
                   {venue_address}
                 </p>
               </div>
             )}
+
+            {/* Organizer Details */}
+            <div className="space-y-2">
+              <h2 className="text-base">{t("Organizer")}</h2>
+              <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
+                <Contact className="w-4 h-4" />
+                {organizer_name || "To be determined"}
+              </div>
+              <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
+                <Phone className="w-4 h-4" />
+                {organizer_contact || "To be determined"}
+              </div>
+            </div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -482,14 +503,14 @@ export function ProductDetail({
             <div className="flex items-center gap-2">
               <div className="flex items-baseline gap-2">
                 <span
-                  className="text-lg flex flex-col font-bold tracking-tight text-secondary-foreground"
+                  className="flex flex-col font-bold tracking-tight text-secondary-foreground"
                   style={{
                     willChange: "transform",
                     transform: "translateZ(0)",
                   }}
                 >
                   <span className="text-sm font-normal">start from</span>
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 text-2xl">
                     {getPriceDisplay()}
                     {/* {selectedVariant?.compare_at_price && (
                       <>

@@ -4,12 +4,13 @@ import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { ProductVariant } from "@/type/type";
+import GlowfishIcon from "../icons/GlowfishIcon";
 
 interface AnimatedCardProps {
   id: string | number;
   image: string;
   title: string;
-  description: string;
+  description?: string;
   location?: string;
   date?: string;
   price?: string | number;
@@ -86,7 +87,7 @@ export function AnimatedCard({
       layoutId={`card-${id}`}
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full border border-input",
+        "relative overflow-hidden rounded-2xl cursor-pointer w-full bg-card h-full border border-input",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
         type === "event" && "flex h-fit"
       )}
@@ -97,17 +98,22 @@ export function AnimatedCard({
         className={cn(
           "relative overflow-hidden",
           type === "small" ? "h-[32vw] w-full" : "h-[50vw] w-full",
-          type === "event" && "w-[125px] min-w-[125px]"
+          type === "event" && "w-[125px] min-w-[125px]",
+          { "flex items-center justify-center bg-white/10": !image }
         )}
         transition={springConfig}
       >
-        <motion.img
-          layoutId={`image-${id}`}
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover object-top"
-          transition={springConfig}
-        />
+        {image ? (
+          <motion.img
+            layoutId={`image-${id}`}
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover object-top"
+            transition={springConfig}
+          />
+        ) : (
+          <GlowfishIcon />
+        )}
       </motion.div>
 
       <div
@@ -120,19 +126,19 @@ export function AnimatedCard({
           <div>
             <motion.h3
               layoutId={`title-${id}`}
-              className="font-semibold text-foreground line-clamp-1"
+              className="font-semibold text-foreground line-clamp-1 text-base"
               transition={springConfig}
             >
               {title}
             </motion.h3>
 
-            <motion.p
+            {/* <motion.p
               layoutId={`desc-${id}`}
               className="text-sm text-muted-foreground line-clamp-1"
               transition={springConfig}
             >
               {description}
-            </motion.p>
+            </motion.p> */}
           </div>
 
           {/* {price ? (
@@ -174,18 +180,18 @@ export function AnimatedCard({
               transition={springConfig}
             >
               <MapPin className="min-w-3.5 w-3.5 h-3.5" />
-              <span className="line-clamp-1">{location || "-"}</span>
+              <span className="line-clamp-1">
+                {location || "To be determined"}
+              </span>
             </motion.div>
-            {date && (
-              <motion.div
-                layoutId={`date-${id}`}
-                className="flex items-center gap-2 text-xs text-muted-foreground"
-                transition={springConfig}
-              >
-                <Calendar className="min-w-3.5 w-3.5 h-3.5" />
-                <span className="line-clamp-1">{date}</span>
-              </motion.div>
-            )}
+            <motion.div
+              layoutId={`date-${id}`}
+              className="flex items-center gap-2 text-xs text-muted-foreground"
+              transition={springConfig}
+            >
+              <Calendar className="min-w-3.5 w-3.5 h-3.5" />
+              <span className="line-clamp-1">{date || "To be determined"}</span>
+            </motion.div>
             {points && (
               <motion.div
                 layoutId={`points-${id}`}

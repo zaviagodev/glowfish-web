@@ -40,7 +40,7 @@ export function CheckoutFooter({
         </span>
       </div>
       <Button
-        className="w-full !bg-mainbutton rounded-full h-12"
+        className="w-full main-btn h-12"
         disabled={isProcessing}
         onClick={onPlaceOrder}
       >

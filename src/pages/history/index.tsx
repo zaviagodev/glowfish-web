@@ -167,7 +167,7 @@ const HistoryPage = () => {
       <Header title={t("History")} />
       <div className="mb-4 px-5">
         <h2 className="text-lg font-semibold">{t("Total Points")}</h2>
-        <p className="text-2xl font-bold text-mainorange">
+        <p className="text-2xl font-bold text-orangefocus">
           {customer?.loyalty_points || 0}
         </p>
       </div>

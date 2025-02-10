@@ -36,8 +36,8 @@ export const defaultOrderStatuses: OrderStatus[] = [
     icon: <Truck className="w-4 h-4" />,
     label: "Shipped",
     value: "shipped",
-    color: "#2196F3",
-    bgColor: "rgba(33, 150, 243, 0.1)",
+    color: "#af52de",
+    bgColor: "rgba(175, 82, 222, 0.1)",
   },
   {
     icon: <CheckCircle2 className="w-4 h-4" />,

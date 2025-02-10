@@ -8,6 +8,7 @@ import type { Customer } from "@/services/customerService";
 import { useNavigate } from "react-router-dom";
 import { Calendar, MapPin, Tag } from "lucide-react";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { cn } from "@/lib/utils";
 
 const Rewards = () => {
   const t = useTranslate();
@@ -70,7 +71,7 @@ const Rewards = () => {
       <section className="pt-14">
         <div className="flex items-center justify-between p-5 pb-0">
           <h1 className="font-semibold text-[28px] m-0">
-            {t("Hello")}, <span className="text-mainorange">{fullName}</span>
+            {t("Hello")}, <span className="text-orangefocus">{fullName}</span>
           </h1>
           <Avatar className="h-[50px] w-[50px]">
             <AvatarImage
@@ -112,14 +113,23 @@ const Rewards = () => {
                 <div
                   key={reward.id}
                   onClick={() => navigate(`/rewards/detail/${reward.id}`)}
-                  className="relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full border border-input transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm"
+                  className="relative overflow-hidden rounded-2xl cursor-pointer w-full bg-card h-full border border-input transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm"
                 >
-                  <div className="relative overflow-hidden h-[40vw] w-full">
-                    <img
-                      src={reward.image}
-                      alt={reward.title}
-                      className="w-full h-full object-cover object-top"
-                    />
+                  <div
+                    className={cn("relative overflow-hidden h-[40vw] w-full", {
+                      "bg-white/10 flex items-center justify-center":
+                        !reward.image,
+                    })}
+                  >
+                    {reward.image ? (
+                      <img
+                        src={reward.image}
+                        alt={reward.title}
+                        className="w-full h-full object-cover object-top"
+                      />
+                    ) : (
+                      <GlowfishIcon />
+                    )}
                     {/* <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-orangefocus text-white text-xs font-medium">
                       {reward.price && reward.price !== 0
                         ? `฿${reward.price}`
@@ -132,9 +142,9 @@ const Rewards = () => {
                       <h3 className="font-semibold text-foreground line-clamp-1">
                         {reward.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground line-clamp-1">
+                      {/* <p className="text-sm text-muted-foreground line-clamp-1">
                         {reward.description}
-                      </p>
+                      </p> */}
                     </div>
                     <div className="flex items-baseline gap-2 text-lg font-semibold text-orangefocus">
                       {/* <Tag className="w-3.5 h-3.5" /> */}

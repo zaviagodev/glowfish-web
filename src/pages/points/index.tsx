@@ -238,7 +238,7 @@ export default function MyPointsPage() {
           side="bottom"
           className="h-[70%] p-0 bg-background rounded-t-[14px]"
         >
-          <SheetHeader className="px-5 py-3 border-b sticky top-0 bg-background/80 backdrop-blur-xl justify-center h-[50px]">
+          <SheetHeader className="px-5 pb-3 pt-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl justify-center h-[50px]">
             <SheetTitle className="text-xs">{t("My Profile QR")}</SheetTitle>
           </SheetHeader>
           <div className="p-6 flex flex-col items-center justify-start h-full">

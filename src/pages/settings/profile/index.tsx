@@ -130,13 +130,13 @@ const ProfileSettings = () => {
       setError("");
 
       console.log("Starting profile update...");
-      
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      
+
       console.log("Auth user check:", user ? "User found" : "No user");
-      
+
       if (!user) {
         setError("No authenticated user found");
         return;
@@ -163,7 +163,7 @@ const ProfileSettings = () => {
         .eq("auth_id", user.id);
 
       console.log("Update result:", updateResult);
-      
+
       if (updateError) {
         console.error("Supabase update error:", updateError);
         throw updateError;
@@ -215,7 +215,7 @@ const ProfileSettings = () => {
               />
               <label
                 htmlFor="avatar"
-                className="text-mainorange cursor-pointer text-sm"
+                className="text-orangefocus cursor-pointer text-sm"
               >
                 {t("Change Profile Picture")}
               </label>
@@ -348,10 +348,7 @@ const ProfileSettings = () => {
           /> */}
 
           <div className="pt-4">
-            <Button
-              type="submit"
-              className="main-btn w-full"
-            >
+            <Button type="submit" className="main-btn w-full">
               {isLoading ? t("Saving...") : t("Save Changes")}
             </Button>
           </div>

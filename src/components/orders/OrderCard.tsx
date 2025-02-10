@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OrderStatusBadge } from "./OrderStatusBadge";
+import { Button } from "../ui/button";
 
 interface OrderItem {
   id: string;
@@ -61,7 +62,6 @@ export function OrderCard({ order, index }: OrderCardProps) {
 
   return (
     <motion.div
-      onClick={handleClick}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
@@ -70,13 +70,13 @@ export function OrderCard({ order, index }: OrderCardProps) {
       {/* Order Header */}
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div>
-            <div className="text-sm font-medium">
+          <div className="text-sm">
+            <div className="font-medium">
               {order.id && order.id.includes("-")
                 ? `${t("Order")} #${order.id.split("-")[0]}`
                 : `${t("Order")} #${order.id?.substring(0, 8) || ""}`}
             </div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-muted-foreground">
               {formatDate(order.created_at)}
             </div>
           </div>
@@ -86,7 +86,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
 
       {/* Order Items */}
       {order.order_items.map((item) => (
-        <div key={item.id} className="p-4 flex gap-4">
+        <div key={item.id} className="p-4 pb-0 flex gap-4">
           {item.product_variants.product.image ? (
             <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
               <img
@@ -103,7 +103,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
             <h3 className="text-sm font-medium line-clamp-2">
               {item.product_variants.product.name}
             </h3>
-            <div className="mt-2 space-y-2">
+            <div className="mt-1 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-muted-foreground">
                   x{item.quantity}
@@ -119,21 +119,19 @@ export function OrderCard({ order, index }: OrderCardProps) {
 
       {/* Order Footer */}
       <div className="p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-2">
           <div className="text-sm text-muted-foreground">
             {t("items", { count: order.order_items.length })}
           </div>
-          <div className="flex items-center gap-4">
-            <div>
-              <div className="text-xs text-muted-foreground mb-1">
-                {t("Total")}
-              </div>
-              <div className="text-sm font-medium">
-                ฿{order.total_amount.toLocaleString()}
-              </div>
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-muted-foreground">{t("Total")}</div>
+            <div className="text-lg font-semibold">
+              ฿{order.total_amount.toLocaleString()}
             </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
+          <Button onClick={handleClick} className="main-btn mt-2">
+            Order details
+          </Button>
         </div>
       </div>
     </motion.div>

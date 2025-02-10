@@ -1,7 +1,14 @@
 import { useTranslate } from "@refinedev/core";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Camera, QrCode, X, RefreshCw } from "lucide-react";
+import {
+  ArrowLeft,
+  Camera,
+  QrCode,
+  X,
+  RefreshCw,
+  ChevronLeft,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/toast";
@@ -23,7 +30,7 @@ const ScanToRedeemPage = () => {
   const [error, setError] = useState<string>("");
   const [isScanning, setIsScanning] = useState(false);
   const [initAttempts, setInitAttempts] = useState(0);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -34,28 +41,33 @@ const ScanToRedeemPage = () => {
     try {
       setIsRedeeming(true);
       setError("");
-      console.log('Attempting to redeem code:', code);
-      
+      console.log("Attempting to redeem code:", code);
+
       const { data, error } = await supabase
-        .rpc('redeem_campaign_code', {
-          p_code: code
+        .rpc("redeem_campaign_code", {
+          p_code: code,
         })
         .single();
 
       if (error) {
-        console.error('Redemption error:', error);
+        console.error("Redemption error:", error);
         throw error;
       }
 
-      console.log('Redemption response:', data);
+      console.log("Redemption response:", data);
       const response = data as RedeemResponse;
       setPointsEarned(response.points_earned);
-      addToast(t("Success! You earned {{points}} points!", { points: response.points_earned }), "success");
-      
+      addToast(
+        t("Success! You earned {{points}} points!", {
+          points: response.points_earned,
+        }),
+        "success"
+      );
+
       // Refresh customer data after successful redemption
       await refreshCustomer();
     } catch (error: any) {
-      console.error('Error in redeemCode:', error);
+      console.error("Error in redeemCode:", error);
       setError(error.message || t("Failed to redeem code"));
       addToast(error.message || t("Failed to redeem code"), "error");
     } finally {
@@ -65,31 +77,31 @@ const ScanToRedeemPage = () => {
 
   const scanQRCode = () => {
     if (!videoRef.current || !canvasRef.current) {
-      console.log('Scan skipped: missing refs', { 
-        hasVideo: !!videoRef.current, 
-        hasCanvas: !!canvasRef.current 
+      console.log("Scan skipped: missing refs", {
+        hasVideo: !!videoRef.current,
+        hasCanvas: !!canvasRef.current,
       });
       return;
     }
 
     // Force scanning state if not set
     if (!isScanning) {
-      console.log('Setting scanning state to true');
+      console.log("Setting scanning state to true");
       setIsScanning(true);
     }
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
-    const context = canvas.getContext('2d', { willReadFrequently: true });
+    const context = canvas.getContext("2d", { willReadFrequently: true });
 
     if (!context) {
-      console.log('No canvas context');
+      console.log("No canvas context");
       return;
     }
 
     // Make sure video has valid dimensions before proceeding
     if (video.videoWidth === 0 || video.videoHeight === 0) {
-      console.log('Invalid video dimensions, retrying...');
+      console.log("Invalid video dimensions, retrying...");
       animationFrameRef.current = requestAnimationFrame(scanQRCode);
       return;
     }
@@ -109,7 +121,7 @@ const ScanToRedeemPage = () => {
       });
 
       if (code) {
-        console.log('QR code found:', code.data);
+        console.log("QR code found:", code.data);
         // QR Code found
         stopScanner();
         setData(code.data);
@@ -119,11 +131,11 @@ const ScanToRedeemPage = () => {
         if (isScanning) {
           animationFrameRef.current = requestAnimationFrame(scanQRCode);
         } else {
-          console.log('Scanning stopped');
+          console.log("Scanning stopped");
         }
       }
     } catch (err) {
-      console.error('Error scanning QR code:', err);
+      console.error("Error scanning QR code:", err);
       if (isScanning) {
         animationFrameRef.current = requestAnimationFrame(scanQRCode);
       }
@@ -137,21 +149,21 @@ const ScanToRedeemPage = () => {
       }
 
       const constraints = {
-        video: { 
+        video: {
           facingMode: "environment",
           width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
+          height: { ideal: 720 },
+        },
       };
 
-      console.log('Requesting camera access...');
+      console.log("Requesting camera access...");
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      console.log('Camera access granted');
-      
+      console.log("Camera access granted");
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
-        
+
         // Wait for video to be ready and playing
         await new Promise((resolve, reject) => {
           if (!videoRef.current) {
@@ -164,32 +176,32 @@ const ScanToRedeemPage = () => {
           }, 10000); // 10 second timeout
 
           videoRef.current.onloadedmetadata = () => {
-            console.log('Video metadata loaded');
+            console.log("Video metadata loaded");
             videoRef.current?.play().catch(reject);
           };
-          
+
           videoRef.current.onplaying = () => {
-            console.log('Video started playing');
+            console.log("Video started playing");
             clearTimeout(timeoutId);
             resolve(true);
           };
 
           videoRef.current.onerror = (e) => {
-            console.error('Video error:', e);
+            console.error("Video error:", e);
             clearTimeout(timeoutId);
             reject(new Error("Video error: " + e));
           };
         });
 
         // Add a small delay to ensure camera is fully initialized
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         console.log("Camera initialized successfully");
-        
+
         // Set scanning state and wait for it to be updated
         setIsScanning(true);
-        await new Promise(resolve => setTimeout(resolve, 0));
-        
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
         // Start scanning loop
         console.log("Starting QR code scanning...");
         requestAnimationFrame(() => {
@@ -204,13 +216,13 @@ const ScanToRedeemPage = () => {
         });
       }
     } catch (err) {
-      console.error('Error accessing camera:', err);
+      console.error("Error accessing camera:", err);
       setError(t("Unable to access camera. Please check your permissions."));
-      
+
       // Retry initialization if we haven't exceeded max attempts
       if (initAttempts < 3) {
         console.log("Retrying camera initialization...", initAttempts + 1);
-        setInitAttempts(prev => prev + 1);
+        setInitAttempts((prev) => prev + 1);
         initTimeoutRef.current = setTimeout(() => {
           startScanner();
         }, 1000); // Wait 1 second before retrying
@@ -219,18 +231,18 @@ const ScanToRedeemPage = () => {
   };
 
   const stopScanner = () => {
-    console.log('Stopping scanner...');
+    console.log("Stopping scanner...");
     if (animationFrameRef.current) {
-      console.log('Canceling animation frame');
+      console.log("Canceling animation frame");
       cancelAnimationFrame(animationFrameRef.current);
     }
     if (streamRef.current) {
-      console.log('Stopping camera stream');
-      streamRef.current.getTracks().forEach(track => track.stop());
+      console.log("Stopping camera stream");
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
     if (initTimeoutRef.current) {
-      console.log('Clearing init timeout');
+      console.log("Clearing init timeout");
       clearTimeout(initTimeoutRef.current);
     }
     setIsScanning(false);
@@ -246,7 +258,7 @@ const ScanToRedeemPage = () => {
           await startScanner();
         }
       } catch (err) {
-        console.error('Failed to initialize scanner:', err);
+        console.error("Failed to initialize scanner:", err);
       }
     };
 
@@ -269,38 +281,38 @@ const ScanToRedeemPage = () => {
     setInitAttempts(0);
     stopScanner();
     // Add a small delay before restarting
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     startScanner();
   };
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className="bg-background">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b p-4">
-        <div className="flex ">
-          <Button
-            variant="ghost"
-            className="p-0 mr-2"
-            onClick={() => {
-              stopScanner();
-              navigate(-1);
-            }}
-          >
-            <ArrowLeft className="h-6 w-6" />
-          </Button>
-          <h1 className="text-lg font-semibold">{t("Scan to Redeem")}</h1>
-        </div>
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b p-4 h-14 flex items-center gap-5">
+        <Button
+          variant="ghost"
+          className="p-0 text-muted-foreground hover:text-foreground transition-colors"
+          onClick={() => {
+            stopScanner();
+            navigate(-1);
+          }}
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </Button>
+        <h1 className="text-lg font-semibold">{t("Scan to Redeem")}</h1>
       </div>
 
       {/* Scanner */}
-      <div className="flex flex-col min-h-screen pt-16">
+      <div className="flex flex-col pt-16">
         {/* Instructions */}
         {!data && (
           <div className="px-4 py-2">
-            <div className="max-w-sm mx-auto mb-2 p-4 bg-blue-50 rounded-lg flex items-start">
+            <div className="max-w-sm mx-auto mb-2 p-4 bg-blue-800 rounded-lg flex items-start">
               <QrCode className="h-5 w-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0" />
-              <p className="text-sm text-blue-700">
-                {t("Point your camera at a QR code to scan and earn points. Make sure the code is well-lit and centered in the frame.")}
+              <p className="text-sm text-blue-200">
+                {t(
+                  "Point your camera at a QR code to scan and earn points. Make sure the code is well-lit and centered in the frame."
+                )}
               </p>
             </div>
           </div>
@@ -318,10 +330,7 @@ const ScanToRedeemPage = () => {
                   muted
                   autoPlay
                 />
-                <canvas
-                  ref={canvasRef}
-                  className="hidden"
-                />
+                <canvas ref={canvasRef} className="hidden" />
                 {/* Scanning overlay */}
                 <div className="absolute inset-0 border-2 border-white/30">
                   <div className="absolute inset-[25%] border-2 border-white rounded-lg" />
@@ -335,7 +344,7 @@ const ScanToRedeemPage = () => {
         {(data || error) && (
           <div className="px-4 py-4 flex-1 flex ">
             <div className="max-w-sm mx-auto w-full animate-in fade-in slide-in-from-bottom-4">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="bg-red-600 rounded-lg shadow-lg overflow-hidden">
                 {data && (
                   <div className="p-4 border-b">
                     <div className="flex justify-between ">
@@ -352,20 +361,22 @@ const ScanToRedeemPage = () => {
                     <p className="text-sm mt-1 text-gray-600">{data}</p>
                   </div>
                 )}
-                
-                <div className="p-4 bg-gray-50">
+
+                <div className="p-4">
                   {isRedeeming ? (
                     <div className="flex flex-col  justify-center py-2">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mb-2" />
-                      <p className="text-sm text-gray-600">{t("Redeeming code...")}</p>
+                      <p className="text-sm text-gray-600">
+                        {t("Redeeming code...")}
+                      </p>
                     </div>
                   ) : error ? (
                     <div className="text-center">
-                      <p className="text-sm text-red-600 mb-2">{error}</p>
+                      <p className="text-sm mb-2">{error}</p>
                       <Button
                         onClick={resetScanner}
-                        variant="outline"
-                        className="gap-2"
+                        variant="ghost"
+                        className="gap-2 main-btn"
                       >
                         <RefreshCw className="h-4 w-4" />
                         {t("Try Again")}
@@ -376,10 +387,7 @@ const ScanToRedeemPage = () => {
                       <p className="text-lg font-semibold text-green-600">
                         +{pointsEarned} {t("Points")}
                       </p>
-                      <Button
-                        className="mt-2"
-                        onClick={resetScanner}
-                      >
+                      <Button className="mt-2" onClick={resetScanner}>
                         {t("Scan Another Code")}
                       </Button>
                     </div>
@@ -394,4 +402,4 @@ const ScanToRedeemPage = () => {
   );
 };
 
-export default ScanToRedeemPage; 
+export default ScanToRedeemPage;

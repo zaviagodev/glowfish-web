@@ -6,7 +6,16 @@ import { format, formatDistanceToNow, isFuture, isToday } from "date-fns";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { CheckInView } from "./CheckInView";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Users, QrCode, Ticket, Clock } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  Users,
+  QrCode,
+  Ticket,
+  Clock,
+  Contact,
+  Phone,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEvents } from "@/hooks/useEvents";
 
@@ -93,7 +102,7 @@ export default function TicketDetails() {
                   : "bg-[#34C759]/10 text-[#34C759]"
               )}
             >
-              {!isUpcoming ? t("Used") : t("Valid")}
+              {!isUpcoming ? t("Ended") : t("Upcoming")}
             </div>
           </motion.div>
         </div>
@@ -148,7 +157,7 @@ export default function TicketDetails() {
             >
               <div className="flex items-center gap-2 text-sm font-light">
                 <MapPin className="w-4 h-4 flex-shrink-0" />
-                <span>{event.venue_name || t("Location TBD")}</span>
+                <span>{event.venue_name || t("To be determined")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm font-light">
                 <Calendar className="w-4 h-4 flex-shrink-0" />
@@ -189,12 +198,12 @@ export default function TicketDetails() {
                   <div
                     className={cn(
                       "px-2 py-1 rounded-full text-sm",
-                      ticket.status === 'used'
+                      ticket.status === "used"
                         ? "bg-[#8E8E93]/10 text-[#8E8E93]"
                         : "bg-[#34C759]/10 text-[#34C759]"
                     )}
                   >
-                    {ticket.status === 'used' ? t("Used") : t("Valid")}
+                    {ticket.status === "used" ? t("Used") : t("Valid")}
                   </div>
                 </div>
 
@@ -240,7 +249,7 @@ export default function TicketDetails() {
             <div className="bg-darkgray rounded-lg p-4 space-y-3">
               <div className="flex items-center gap-2 text-sm">
                 <MapPin className="w-4 h-4 text-muted-foreground" />
-                <span>{event.venue_address || t("Address TBD")}</span>
+                <span>{event.venue_address || t("To be determined")}</span>
               </div>
               {event.google_maps_link && (
                 <Button
@@ -266,15 +275,15 @@ export default function TicketDetails() {
             transition={{ delay: 0.8 }}
           >
             <h3 className="font-medium">{t("Organizer")}</h3>
-            <div className="bg-darkgray rounded-lg p-4 space-y-1">
-              <div className="text-sm font-medium">
-                {event.organizer_name || "Organizer TBD"}
+            <div className="bg-darkgray rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2 text-sm">
+                <Contact className="w-4 h-4 text-muted-foreground" />
+                {event.organizer_name || "To be determined"}
               </div>
-              {event.organizer_contact && (
-                <div className="text-sm text-muted-foreground">
-                  {event.organizer_contact}
-                </div>
-              )}
+              <div className="flex items-center gap-2 text-sm">
+                <Phone className="w-4 h-4 text-muted-foreground" />
+                {event.organizer_contact || "To be determined"}
+              </div>
             </div>
           </motion.div>
         </div>

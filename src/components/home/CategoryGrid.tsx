@@ -42,34 +42,42 @@ export function CategoryGrid({
         <Button
           onClick={() => handleCategoryClick(null)}
           variant={selectedCategory === null ? "default" : "secondary"}
-          className={`px-3 py-2 h-8 ${
-            selectedCategory === null ? "!bg-mainbutton" : "!bg-darkgray"
-          }`}
+          className="whitespace-nowrap px-3 py-2 h-9 bg-[#FF5050] text-white text-base"
+          // className={`px-3 py-2 h-8 ${
+          //   selectedCategory === null ? "!bg-mainbutton" : "!bg-darkgray"
+          // }`}
         >
           {t("All")}
         </Button>
       </motion.div>
-      {categories.map((category, index) => (
-        <motion.div
-          key={category.id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 + index * 0.1 }}
-        >
-          <Button
+      {categories.map((category, index) => {
+        const colors = ["#FF5050", "#EE5736", "#14A852", "#FADB28", "#4578BA"];
+        return (
+          <motion.div
             key={category.id}
-            onClick={() => handleCategoryClick(category.id)}
-            variant={selectedCategory === category.id ? "default" : "secondary"}
-            className={`whitespace-nowrap px-3 py-2 h-8 ${
-              selectedCategory === category.id
-                ? "!bg-mainbutton"
-                : "!bg-darkgray"
-            }`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 + index * 0.1 }}
           >
-            {category.name}
-          </Button>
-        </motion.div>
-      ))}
+            <Button
+              key={category.id}
+              onClick={() => handleCategoryClick(category.id)}
+              variant={
+                selectedCategory === category.id ? "default" : "secondary"
+              }
+              className="whitespace-nowrap px-3 py-2 h-9 text-white text-base"
+              style={{ backgroundColor: colors[(index + 1) % colors.length] }}
+              // className={`whitespace-nowrap px-3 py-2 h-8 ${
+              //   selectedCategory === category.id
+              //     ? "!bg-mainbutton"
+              //     : "!bg-darkgray"
+              // }`}
+            >
+              {category.name}
+            </Button>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

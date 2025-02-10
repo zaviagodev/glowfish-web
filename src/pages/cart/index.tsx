@@ -84,7 +84,7 @@ export default function CartPage() {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium line-clamp-2 mb-1">
+                  <h3 className="text-base font-medium line-clamp-2 mb-1">
                     {item.name}
                   </h3>
                   {item.variant && (
@@ -133,7 +133,7 @@ export default function CartPage() {
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
-                      <span className="w-8 text-center text-xs">
+                      <span className="w-8 text-center text-sm">
                         {item.quantity}
                       </span>
                       <Button
@@ -183,18 +183,18 @@ export default function CartPage() {
             {/* Total and Checkout */}
             <div className="flex items-center gap-3">
               <div className="flex flex-col items-end">
-                <div className="text-sm font-medium">
-                  {t("Total")}:{" "}
-                  <span className="text-[#EE4D2D] font-bold">
+                <div className="text-sm font-medium flex items-center gap-1 text-muted-foreground">
+                  {t("Total")}:
+                  <span className="text-[#EE4D2D] font-bold text-lg">
                     ฿{total.toLocaleString()}
                   </span>
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-sm text-muted-foreground">
                   {discount > 0 && (
                     <>
-                      <span>
-                        {t("Discount")}:{" "}
-                        <span className="text-[#EE4D2D]">
+                      <span className="flex items-center gap-1">
+                        {t("Discount")}:
+                        <span className="text-[#EE4D2D] font-semibold">
                           -฿{discount.toLocaleString()}
                         </span>
                       </span>
@@ -203,7 +203,7 @@ export default function CartPage() {
                 </div>
               </div>
               <Button
-                className="main-btn w-[100px]"
+                className="main-btn w-[130px] h-12"
                 disabled={selectedItems.length === 0}
                 onClick={() =>
                   navigate("/checkout", {

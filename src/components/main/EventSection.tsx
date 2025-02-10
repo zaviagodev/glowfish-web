@@ -68,7 +68,6 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
               title={item.title}
               price={item.price}
               compareAtPrice={item.compare_at_price}
-              description={item.description}
               location={item.location}
               product_variants={item.product_variants}
               date={
