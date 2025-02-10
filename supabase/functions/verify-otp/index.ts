@@ -95,15 +95,17 @@ serve(async (req) => {
       throw new Error('Missing Supabase configuration');
     }
 
+
     // Create or update user
+    let user_email = `${profileData.userId}@${cleanStoreName}.line.com`;
     const { data: { user }, error: createUserError } = await adminClient.auth.admin.createUser({
       phone,
-      email,
+      user_email,
       user_metadata: {
         line_id,
         avatar_url: profileData.pictureUrl,
         full_name: profileData.displayName,
-        email
+        email: user_email
       },
       email_confirm: true,
       phone_confirm: true
