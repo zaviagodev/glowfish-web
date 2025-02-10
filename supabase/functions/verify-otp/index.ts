@@ -141,6 +141,7 @@ serve(async (req) => {
       .upsert({
         provider: 'line',
         user_id: user.id,
+        provider_user_id: profileData.userId,
         store_name: effectiveStore
       });
 
