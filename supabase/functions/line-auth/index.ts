@@ -77,6 +77,7 @@ serve(async (req) => {
       .select('user_id')
       .eq('provider', 'line')
       .eq('provider_user_id', profileData.userId)
+      .eq('store_name', storeName)
       .single();
 
     if (oauthError && oauthError.code !== 'PGRST116') { // PGRST116 is "not found"

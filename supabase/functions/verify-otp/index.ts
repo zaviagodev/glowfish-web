@@ -62,8 +62,15 @@ serve(async (req) => {
 
     const profileData = await profileResponse.json();
 
+    // Clean store name for email use
+    const cleanStoreName = effectiveStore
+      .toLowerCase()
+      .replace(/\s+/g, '-')       // Replace spaces with hyphens
+      .replace(/[^a-z0-9-]/g, '') // Remove any characters that aren't letters, numbers, or hyphens
+      .replace(/^-+|-+$/g, '');   // Remove leading/trailing hyphens
+
     // Get email from Line
-    let email = `${profileData.userId}@line.com`;
+    let email = `${profileData.userId}@${cleanStoreName}.line.com`;
     try {
       const emailResponse = await fetch('https://api.line.me/v2/profile/email', {
         headers: {
