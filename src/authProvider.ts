@@ -3,6 +3,7 @@ import type { AuthProvider } from "@refinedev/core";
 import { supabase } from "./lib/supabase";
 import { setSupabaseSession } from "@/lib/auth";
 import { custom } from "zod";
+import { useStore } from '@/hooks/useStore';  
 
 export const TOKEN_KEY = "refine-auth";
 export const LINE_USER_KEY = "line-user";
@@ -78,7 +79,7 @@ export const createTestSession = async () => {
 };
 
 export const authProvider: AuthProvider = {
-  login: async ({ providerName, code }) => {
+  login: async ({ providerName, code, storeName }) => {
     // For storefront mode
     if (isStorefrontMode()) {
       try {
@@ -110,10 +111,10 @@ export const authProvider: AuthProvider = {
         const { data: tokenData, error: functionError } = await supabase.functions.invoke('line-auth', {
           body: {
             code,
-            redirectUri: LINE_CONFIG.redirectUri
+            redirectUri: LINE_CONFIG.redirectUri,
+            storeName: storeName
           }
         });
-
         if (functionError) {
           throw new Error("Failed to get access token");
         }
@@ -193,12 +194,14 @@ export const authProvider: AuthProvider = {
   getIdentity: async () => {
     if (isStorefrontMode()) {
       const { data: { user } } = await supabase.auth.getUser();
+      const { storeName } = useStore();
       if (!user) return null;
 
       const { data: customer } = await supabase
         .from('customers')
         .select('*')
         .eq('auth_id', user.id)
+        .eq('store_name', storeName)
         .single();
 
       return {
@@ -239,7 +242,7 @@ export const loginWithLine = () => {
     client_id: LINE_CONFIG.clientId,
     redirect_uri: LINE_CONFIG.redirectUri,
     scope: LINE_CONFIG.scope,
-    state: Math.random().toString(36).substring(7),
+    state: Math.random().toString(36).substring(7), // Random state for security
   });
 
   window.location.href = `https://access.line.me/oauth2/v2.1/authorize?${params.toString()}`;
