@@ -45,7 +45,7 @@ export const verifyOTP = async (
   try {
     const token = localStorage.getItem("refine-auth");
     const lineUser = JSON.parse(localStorage.getItem("line-user") || "{}");
-    const store = localStorage.getItem("store") || ""; // Get store from localStorage
+    const store = localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE; // Get store from localStorage
 
     const { data: tokenData, error } = await supabase.functions.invoke('verify-otp', {
       body: {
