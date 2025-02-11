@@ -61,7 +61,7 @@ export function AnimatedCard({
   {
     /* TODO: set the condition if there is a gallery */
   }
-  const [hasGallery, setHasGallery] = useState(true);
+  const [hasGallery, setHasGallery] = useState(false);
 
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined

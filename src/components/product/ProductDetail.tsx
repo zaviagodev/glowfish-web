@@ -149,7 +149,7 @@ export function ProductDetail({
   {
     /* TODO: set the condition if there is a gallery */
   }
-  const [hasGallery, setHasGallery] = useState(true);
+  const [hasGallery, setHasGallery] = useState(false);
 
   useEffect(() => {
     if (paragraphRef.current) {
