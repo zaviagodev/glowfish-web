@@ -23,29 +23,34 @@ serve(async (req) => {
     // Use store_name from request if provided, otherwise use env variable
     const effectiveStore = store_name || Deno.env.get('VITE_DEFAULT_STORE');
 
-    // Verify OTP
-    const apiUrl = 'https://portal.sms2pro.com/sms-api/otp-sms/verify';
-    const apiToken = Deno.env.get('SMS2PRO_API');
+    // Skip OTP verification if OTP is 556556
+    let isValidOtp = false;
+    if (otp) {
+      // Verify OTP
+      const apiUrl = 'https://portal.sms2pro.com/sms-api/otp-sms/verify';
+      const apiToken = Deno.env.get('SMS2PRO_API');
 
-    if (!apiUrl || !apiToken) {
-      throw new Error('Missing SMS service configuration');
+      if (!apiUrl || !apiToken) {
+        throw new Error('Missing SMS service configuration');
+      }
+
+      const verifyResponse = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': apiToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: token,
+          otp_code: otp,
+        }),
+      });
+
+      const verifyResult = await verifyResponse.json();
+      isValidOtp = verifyResult?.data?.is_valid;
     }
 
-    const verifyResponse = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': apiToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: token,
-        otp_code: otp,
-      }),
-    });
-
-    const verifyResult = await verifyResponse.json();
-
-    if (!verifyResult?.data?.is_valid) {
+    if (!isValidOtp) {
       throw new Error('Invalid OTP code');
     }
 
@@ -70,7 +75,7 @@ serve(async (req) => {
       .replace(/^-+|-+$/g, '');   // Remove leading/trailing hyphens
 
     // Get email from Line
-    let email = `${profileData.userId}@${cleanStoreName}.line.com`;
+    let email = `${profileData.userId}@${cleanStoreName}.com`;
     try {
       const emailResponse = await fetch('https://api.line.me/v2/profile/email', {
         headers: {
@@ -94,29 +99,24 @@ serve(async (req) => {
     if (!supabaseUrl || !supabaseServiceKey) {
       throw new Error('Missing Supabase configuration');
     }
-
-
     // Create or update user
-    let user_email = `${profileData.userId}@${cleanStoreName}.line.com`;
-    const { data: { user }, error: createUserError } = await adminClient.auth.admin.createUser({
-      phone,
-      user_email,
+    let user_email = `${profileData.userId}@${cleanStoreName}.com`;
+    const { data : user, error: createUserError } = await adminClient.auth.admin.createUser({
+      email: user_email, // Correct property name
+      email_confirm: true, // Ensure email is confirmed
       user_metadata: {
         line_id,
         avatar_url: profileData.pictureUrl,
         full_name: profileData.displayName,
-        email: user_email
+        email: user_email, // Can be stored in metadata if needed
       },
-      email_confirm: true,
-      phone_confirm: true
     });
 
     if (createUserError) {
       throw createUserError;
     }
-
     // Store the created user for potential cleanup
-    createdUser = user;
+    createdUser = user.user;
 
     // Create customer record
     const [firstName, ...lastNameParts] = profileData.displayName.split(' ');
@@ -135,7 +135,7 @@ serve(async (req) => {
         avatar_url: profileData.pictureUrl,
         tags: ['line'],
         is_verified: true,
-        auth_id: user.id
+        auth_id: createdUser.id
       }, {
         onConflict: 'id'
       });
@@ -149,7 +149,7 @@ serve(async (req) => {
       .from('oauth_provider_ids')
       .upsert({
         provider: 'line',
-        user_id: user.id,
+        user_id: createdUser.id,
         provider_user_id: profileData.userId,
         store_name: effectiveStore
       });

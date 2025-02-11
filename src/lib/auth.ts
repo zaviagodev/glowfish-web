@@ -58,8 +58,7 @@ export const verifyOTP = async (
       },
     });
 
-    
-    if (error) throw error;
+    if (error) throw tokenData;
 
     const sessionSet = await setSupabaseSession(tokenData);
     if (!sessionSet) {
