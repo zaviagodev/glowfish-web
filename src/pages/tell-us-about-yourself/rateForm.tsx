@@ -68,6 +68,8 @@ const RateForm = ({ onSubmit }: RateFormProps) => {
       } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
+      
+
       // Update customer meta data
       const { error } = await supabase
         .from("customers")
@@ -76,7 +78,7 @@ const RateForm = ({ onSubmit }: RateFormProps) => {
             interests: data,
           },
         })
-        .eq("id", user.id);
+        .eq("auth_id", user.id);
 
       if (error) throw error;
 
