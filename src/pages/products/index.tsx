@@ -1,7 +1,14 @@
 import { useTranslate } from "@refinedev/core";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Filter, ArrowUpDown, Search, Check, ShoppingCart } from "lucide-react";
+import {
+  Filter,
+  ArrowUpDown,
+  Search,
+  Check,
+  ShoppingCart,
+  Package2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
@@ -172,41 +179,57 @@ export default function ProductsPage() {
 
       {/* Product Grid */}
       <div className="p-5">
-        <div className="grid grid-cols-2 gap-4">
-          {filteredProducts.map((product) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <AnimatedCard
-                id={product.id}
-                image={product.image}
-                title={product.name}
-                price={product.price}
-                compareAtPrice={
-                  product.product_variants?.[0]?.compare_at_price || undefined
-                }
-                product_variants={product.product_variants}
-                location={product.location}
-                date={formattedDate(product)}
-                onClick={() => {
-                  // Get the default variant if product has variants
-                  const defaultVariant = product.product_variants?.[0];
-                  if (defaultVariant) {
-                    setSelectedProduct({
-                      ...product,
-                      variant_id: defaultVariant.id,
-                      quantity: defaultVariant.quantity,
-                    });
-                  } else {
-                    setSelectedProduct(product);
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4">
+            {filteredProducts.map((product) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <AnimatedCard
+                  id={product.id}
+                  image={product.image}
+                  title={product.name}
+                  price={product.price}
+                  compareAtPrice={
+                    product.product_variants?.[0]?.compare_at_price || undefined
                   }
-                }}
-              />
-            </motion.div>
-          ))}
-        </div>
+                  product_variants={product.product_variants}
+                  location={product.location}
+                  date={formattedDate(product)}
+                  onClick={() => {
+                    // Get the default variant if product has variants
+                    const defaultVariant = product.product_variants?.[0];
+                    if (defaultVariant) {
+                      setSelectedProduct({
+                        ...product,
+                        variant_id: defaultVariant.id,
+                        quantity: defaultVariant.quantity,
+                      });
+                    } else {
+                      setSelectedProduct(product);
+                    }
+                  }}
+                />
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="flex flex-col items-center justify-center py-12 px-4"
+          >
+            <Package2 className="w-16 h-16 text-muted-foreground/50 mb-4" />
+            <p className="text-muted-foreground text-center">
+              {searchQuery
+                ? t("No products found matching your search")
+                : t("No products found")}
+            </p>
+          </motion.div>
+        )}
       </div>
 
       {/* Filter Drawer */}

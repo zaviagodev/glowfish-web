@@ -616,7 +616,7 @@ export default function PaymentPage() {
               </motion.h2>
 
               <motion.p
-                className="text-white/80 text-center"
+                className="text-muted-foreground text-center text-sm"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}

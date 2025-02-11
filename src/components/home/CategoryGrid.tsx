@@ -41,8 +41,12 @@ export function CategoryGrid({
       >
         <Button
           onClick={() => handleCategoryClick(null)}
-          variant={selectedCategory === null ? "default" : "secondary"}
-          className="whitespace-nowrap px-3 py-2 h-9 bg-[#FF5050] text-white text-base"
+          className={cn(
+            "whitespace-nowrap px-3 py-2 h-9 !bg-[#FF5050] text-white text-base",
+            {
+              "shadow-[0px_0px_0px_4px_#FFFFFF40]": selectedCategory === null,
+            }
+          )}
           // className={`px-3 py-2 h-8 ${
           //   selectedCategory === null ? "!bg-mainbutton" : "!bg-darkgray"
           // }`}
@@ -62,10 +66,13 @@ export function CategoryGrid({
             <Button
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
-              variant={
-                selectedCategory === category.id ? "default" : "secondary"
-              }
-              className="whitespace-nowrap px-3 py-2 h-9 text-white text-base"
+              className={cn(
+                "whitespace-nowrap px-3 py-2 h-9 text-white text-base",
+                {
+                  "shadow-[0px_0px_0px_4px_#FFFFFF40]":
+                    selectedCategory === category.id,
+                }
+              )}
               style={{ backgroundColor: colors[(index + 1) % colors.length] }}
               // className={`whitespace-nowrap px-3 py-2 h-8 ${
               //   selectedCategory === category.id
