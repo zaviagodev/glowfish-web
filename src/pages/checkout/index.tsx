@@ -19,6 +19,8 @@ import { CheckoutFooter } from "@/components/checkout/CheckoutFooter";
 import { ShippingMethod } from "@/components/checkout/ShippingMethod";
 import { SuccessDialog } from "@/components/checkout/SuccessDialog";
 import type { Address } from "@/services/customerService";
+import { ChevronRight, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CartItem {
   variantId: string;
@@ -175,12 +177,28 @@ export default function CheckoutPage() {
               />
             </div>
           ) : (
-            <Button
+            <div
+              className={cn(
+                "flex items-center justify-between p-3 rounded-lg bg-darkgray"
+              )}
               onClick={() => navigate("/checkout/address")}
-              className="w-full main-btn"
             >
-              {t("Add Delivery Address")}
-            </Button>
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-lg"
+                  style={{
+                    background: "rgba(33, 150, 243, 0.1)",
+                    color: "rgb(33, 150, 243)",
+                  }}
+                >
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <span className="text-sm font-medium">
+                  {t("Add Delivery Address")}
+                </span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </div>
           )}
 
           {/* <PointsCoupons subtotal={subtotal} /> */}

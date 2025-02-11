@@ -69,9 +69,7 @@ export function WalletSection() {
   return (
     <div className="px-5 py-6 space-y-3">
       {/* Wallet Grid */}
-      <h2 className="text-sm font-medium text-muted-foreground mb-2">
-        {t("My Items")}
-      </h2>
+      <h2 className="text-sm font-medium mb-2">{t("My Items")}</h2>
       <div className="bg-darkgray rounded-lg overflow-hidden">
         {walletItems.map((item) => (
           <button

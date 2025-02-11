@@ -1,10 +1,18 @@
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Tag } from "lucide-react";
+import {
+  BookImage,
+  Calendar,
+  Images,
+  Layers2,
+  MapPin,
+  Tag,
+} from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { ProductVariant } from "@/type/type";
 import GlowfishIcon from "../icons/GlowfishIcon";
+import { Button } from "../ui/button";
 
 interface AnimatedCardProps {
   id: string | number;
@@ -21,6 +29,7 @@ interface AnimatedCardProps {
   type?: "small" | "event";
   validDate?: string;
   isSelected?: boolean;
+  hasGallery?: boolean;
   onClick?: () => void;
 }
 
@@ -49,6 +58,10 @@ export function AnimatedCard({
   onClick,
 }: AnimatedCardProps) {
   const t = useTranslate();
+  {
+    /* TODO: set the condition if there is a gallery */
+  }
+  const [hasGallery, setHasGallery] = useState(true);
 
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
@@ -113,6 +126,13 @@ export function AnimatedCard({
           />
         ) : (
           <GlowfishIcon />
+        )}
+
+        {/* View gallery button: this will link the page to gallery page when clicked */}
+        {hasGallery && (
+          <Button className="main-btn w-8 h-8 p-0 absolute right-4 top-4">
+            <BookImage className="w-4 h-4" />
+          </Button>
         )}
       </motion.div>
 

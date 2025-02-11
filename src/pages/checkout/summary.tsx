@@ -99,7 +99,7 @@ export default function PaymentSummaryPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
           >
-            <h3 className="text-sm font-medium text-muted-foreground tracking-wide">
+            <h3 className="text-sm font-medium tracking-wide">
               {t("Order Details")}
             </h3>
             <div className="space-y-3">
@@ -152,7 +152,7 @@ export default function PaymentSummaryPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
             >
-              <h3 className="text-sm font-medium text-muted-foreground tracking-wide">
+              <h3 className="text-sm font-medium tracking-wide">
                 {t("Payment Instructions")}
               </h3>
               <ol className="list-decimal list-inside space-y-2">

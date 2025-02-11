@@ -120,7 +120,7 @@ export default function OrderDetailPage() {
 
         {/* Timeline */}
         <div className="p-5 space-y-4">
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("Order Timeline")}
           </h2>
           <div className="relative bg-darkgray rounded-lg p-5">
@@ -196,7 +196,7 @@ export default function OrderDetailPage() {
 
         {/* Customer Information */}
         <div className="p-5 space-y-4">
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("Customer Information")}
           </h2>
           <div className="bg-darkgray rounded-lg p-5">
@@ -219,7 +219,7 @@ export default function OrderDetailPage() {
 
         {/* Order Items */}
         <div className="p-5 space-y-5">
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("Order Items")}
           </h2>
           <div className="space-y-6 bg-darkgray p-5 rounded-lg">
@@ -267,7 +267,7 @@ export default function OrderDetailPage() {
 
         {/* Order Summary */}
         <div className="p-5 space-y-5">
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("Order Summary")}
           </h2>
 

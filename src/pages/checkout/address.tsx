@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
-import { Plus, MapPin, Home, Building2, Pencil, Trash2 } from "lucide-react";
+import {
+  Plus,
+  MapPin,
+  Home,
+  Building2,
+  Pencil,
+  Trash2,
+  Package2,
+} from "lucide-react";
 import { useCustomer } from "@/hooks/useCustomer";
 import { supabase } from "@/lib/supabase";
 import type { Address } from "@/services/customerService";
@@ -84,50 +92,51 @@ export default function AddressSelection() {
 
       <div className="mt-14 p-4">
         {/* Address List */}
-        <div className="space-y-3">
-          {addresses.map((address) => (
-            <div
-              key={address.id}
-              className={`bg-darkgray p-3 rounded-lg transition-all ${
-                selectedAddress === address.id
-                  ? "border-primary ring-2 ring-primary/10"
-                  : "border-[#E5E5E5]"
-              } cursor-pointer hover:border-primary/50`}
-              onClick={() => handleAddressSelect(address.id)}
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-icon-blue-background text-icon-blue-foreground flex-shrink-0 flex items-center justify-center">
-                  {address.type === "shipping" ? (
-                    <Home className="w-4 h-4" />
-                  ) : (
-                    <Building2 className="w-4 h-4" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="font-medium truncate">
-                        {`${address.first_name} ${address.last_name}`.trim()}
-                      </span>
-                      {address.is_default && (
-                        <span className="text-[10px] bg-primary/10 text-primary font-medium px-1.5 py-0.5 rounded-full flex-shrink-0">
-                          {t("Default")}
+        {addresses.length > 0 ? (
+          <div className="space-y-3">
+            {addresses.map((address) => (
+              <div
+                key={address.id}
+                className={`bg-darkgray p-3 rounded-lg transition-all ${
+                  selectedAddress === address.id
+                    ? "border-primary ring-2 ring-primary/10"
+                    : "border-[#E5E5E5]"
+                } cursor-pointer hover:border-primary/50`}
+                onClick={() => handleAddressSelect(address.id)}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-icon-blue-background text-icon-blue-foreground flex-shrink-0 flex items-center justify-center">
+                    {address.type === "shipping" ? (
+                      <Home className="w-4 h-4" />
+                    ) : (
+                      <Building2 className="w-4 h-4" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="font-medium truncate">
+                          {`${address.first_name} ${address.last_name}`.trim()}
                         </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditAddress(address);
-                        }}
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                      </Button>
-                      {/* <Button
+                        {address.is_default && (
+                          <span className="text-[10px] bg-primary/10 text-primary font-medium px-1.5 py-0.5 rounded-full flex-shrink-0">
+                            {t("Default")}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditAddress(address);
+                          }}
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </Button>
+                        {/* <Button
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-foreground"
@@ -138,21 +147,26 @@ export default function AddressSelection() {
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button> */}
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground mb-1">
-                    {address.phone}
-                  </div>
-                  <div className="text-sm text-muted-foreground mb-2">
-                    {address.address1}
-                    {address.address2 && `, ${address.address2}`}
-                    {`, ${address.city}, ${address.state} ${address.postal_code}`}
+                    <div className="text-xs text-muted-foreground mb-1">
+                      {address.phone}
+                    </div>
+                    <div className="text-sm text-muted-foreground mb-2">
+                      {address.address1}
+                      {address.address2 && `, ${address.address2}`}
+                      {`, ${address.city}, ${address.state} ${address.postal_code}`}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-muted-foreground text-center py-4">
+            {t("No delivery addresses. Please add the new address")}
+          </p>
+        )}
 
         {/* Add New Address Button */}
         <Button

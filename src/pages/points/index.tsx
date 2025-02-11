@@ -130,7 +130,7 @@ export default function MyPointsPage() {
         {/* Points History */}
         <div className="mt-8">
           <div className="px-5 mb-4">
-            <h3 className="text-sm font-medium text-muted-foreground tracking-wide">
+            <h3 className="text-sm font-medium tracking-wide">
               {t("Points History")}
             </h3>
           </div>

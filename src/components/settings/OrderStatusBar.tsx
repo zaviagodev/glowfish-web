@@ -72,9 +72,7 @@ export function OrderStatusBar({
   return (
     <div className="px-5 py-6">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-sm font-medium text-muted-foreground">
-          {t("My Orders")}
-        </h2>
+        <h2 className="text-sm font-medium">{t("My Orders")}</h2>
         <button
           onClick={handleSeeAll}
           className="text-sm text-primary hover:text-primary/90 transition-colors no-underline"

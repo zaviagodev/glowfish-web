@@ -7,6 +7,8 @@ import {
   ShoppingCart,
   Contact,
   Phone,
+  BookImage,
+  ChevronRight,
 } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
@@ -144,6 +146,11 @@ export function ProductDetail({
   const [isClamped, setIsClamped] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
+  {
+    /* TODO: set the condition if there is a gallery */
+  }
+  const [hasGallery, setHasGallery] = useState(true);
+
   useEffect(() => {
     if (paragraphRef.current) {
       const style = window.getComputedStyle(paragraphRef.current);
@@ -259,6 +266,17 @@ export function ProductDetail({
                 )}
               </div>
             </div>
+
+            {/* TODO: link to gallery page if the gallery is available */}
+            {hasGallery && (
+              <button className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full">
+                <div className="flex items-center gap-3">
+                  <BookImage className="w-5 h-5 text-white" />
+                  {t("View gallery")}
+                </div>
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              </button>
+            )}
           </div>
 
           <div className="space-y-6">

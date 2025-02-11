@@ -113,7 +113,7 @@ const HowToSpendPoints = () => {
         {/* Redemption Methods */}
         <div className="px-5">
           <motion.h2
-            className="text-sm font-medium text-muted-foreground tracking-wide mb-4"
+            className="text-sm font-medium tracking-wide mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -165,7 +165,7 @@ const HowToSpendPoints = () => {
         {/* Terms & Conditions */}
         <div className="px-5 mt-8">
           <motion.h2
-            className="text-sm font-medium text-muted-foreground tracking-wide mb-4"
+            className="text-sm font-medium tracking-wide mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}

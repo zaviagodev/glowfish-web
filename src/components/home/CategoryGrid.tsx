@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useTranslate } from "@refinedev/core";
+import { useState } from "react";
 
 interface Category {
   id: string;
@@ -41,21 +42,26 @@ export function CategoryGrid({
       >
         <Button
           onClick={() => handleCategoryClick(null)}
-          className={cn(
-            "whitespace-nowrap px-3 py-2 h-9 !bg-[#FF5050] text-white text-base",
-            {
-              "shadow-[0px_0px_0px_4px_#FFFFFF40]": selectedCategory === null,
-            }
-          )}
-          // className={`px-3 py-2 h-8 ${
-          //   selectedCategory === null ? "!bg-mainbutton" : "!bg-darkgray"
-          // }`}
+          className="whitespace-nowrap px-3 py-2 h-9 text-white text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40]"
+          style={{
+            backgroundColor: "#DE473C",
+            boxShadow: `0px 0px 0px 3px ${
+              selectedCategory === null ? "#EAC4C3" : "transparent"
+            }`,
+          }}
         >
           {t("All")}
         </Button>
       </motion.div>
       {categories.map((category, index) => {
-        const colors = ["#FF5050", "#EE5736", "#14A852", "#FADB28", "#4578BA"];
+        const colors = ["#DE473C", "#F5853B", "#FADB28", "#14A852", "#317ABF"];
+        const activeColors = [
+          "#EAC4C3",
+          "#F2D1AA",
+          "#FBF5D9",
+          "#8DD69D",
+          "#90BBE1",
+        ];
         return (
           <motion.div
             key={category.id}
@@ -66,25 +72,56 @@ export function CategoryGrid({
             <Button
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
-              className={cn(
-                "whitespace-nowrap px-3 py-2 h-9 text-white text-base",
-                {
-                  "shadow-[0px_0px_0px_4px_#FFFFFF40]":
-                    selectedCategory === category.id,
-                }
-              )}
-              style={{ backgroundColor: colors[(index + 1) % colors.length] }}
-              // className={`whitespace-nowrap px-3 py-2 h-8 ${
-              //   selectedCategory === category.id
-              //     ? "!bg-mainbutton"
-              //     : "!bg-darkgray"
-              // }`}
+              className="whitespace-nowrap px-3 py-2 h-9 text-white text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40]"
+              style={{
+                backgroundColor: colors[(index + 1) % colors.length],
+                boxShadow: `0px 0px 0px 3px ${
+                  selectedCategory === category.id
+                    ? activeColors[(index + 1) % colors.length]
+                    : "transparent"
+                }`,
+              }}
             >
               {category.name}
             </Button>
           </motion.div>
         );
       })}
+
+      {/* {mockCategories.map((category, index) => {
+        const colors = ["#DE473C", "#F5853B", "#FADB28", "#14A852", "#317ABF"];
+        const activeColors = [
+          "#EAC4C3",
+          "#F2D1AA",
+          "#FBF5D9",
+          "#8DD69D",
+          "#90BBE1",
+        ];
+        return (
+          <motion.div
+            key={category}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 + index * 0.1 }}
+          >
+            <Button
+              key={category}
+              onClick={() => setTestMock(index)}
+              className="whitespace-nowrap px-3 rounded-lg py-2 h-9 text-white text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40]"
+              style={{
+                backgroundColor: colors[index % colors.length],
+                boxShadow: `0px 0px 0px 3px ${
+                  testMock === index
+                    ? activeColors[index % colors.length]
+                    : "transparent"
+                }`,
+              }}
+            >
+              {category}
+            </Button>
+          </motion.div>
+        );
+      })} */}
     </div>
   );
 }
