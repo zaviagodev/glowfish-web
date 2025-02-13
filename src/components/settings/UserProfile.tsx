@@ -7,9 +7,7 @@ interface UserProfileProps {
   memberLevel?: string;
 }
 
-export function UserProfile({
-  memberLevel = "Gold Member",
-}: UserProfileProps) {
+export function UserProfile({ memberLevel = "Gold Member" }: UserProfileProps) {
   const t = useTranslate();
   const navigate = useNavigate();
   const { customer } = useCustomer();
@@ -23,22 +21,24 @@ export function UserProfile({
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <h2 className="text-2xl font-semibold tracking-tight">
-            {customer?.first_name || customer?.last_name ? 
-              `${customer?.first_name || ''} ${customer?.last_name || ''}`.trim() 
-              : ''}
+            {customer?.first_name || customer?.last_name
+              ? `${customer?.first_name || ""} ${
+                  customer?.last_name || ""
+                }`.trim()
+              : ""}
           </h2>
           <div className="flex items-center gap-2">
             {/* Member level content */}
           </div>
         </div>
-        <Button
+        {/* <Button
           variant="ghost"
           size="sm"
           // className="main-btn !h-10"
           onClick={handleEditClick}
         >
           {t("Edit")}
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

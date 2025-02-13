@@ -53,7 +53,7 @@ export default function CartPage() {
   const total = subtotal - discount;
 
   return (
-    <div className="fixed inset-0 bg-background z-50">
+    <div className="absolute inset-0 bg-background z-50">
       {/* Header */}
       <PageHeader title={`${t("Cart")} (${getTotalItems()})`} />
 

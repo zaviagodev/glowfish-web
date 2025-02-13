@@ -33,6 +33,7 @@ export interface ProductDetailProps {
     product_variants?: ProductVariant[];
     organizer_name?: string;
     organizer_contact?: string;
+    gallery_link?: string | null;
   }
 
 type EventDataTypes = "small" | "event"

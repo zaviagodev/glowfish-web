@@ -253,7 +253,7 @@
 
 /* Mobile container styles */
 .mobile-container {
-  max-width: 600px;
+  max-width: 500px;
   width: 100%;
   margin: 0 auto;
   padding: 0;
@@ -372,7 +372,7 @@
   }
 
   .btn-footer {
-    @apply fixed bottom-0 w-full max-w-[600px] p-5 left-[50%] translate-x-[-50%] bg-background
+    @apply fixed bottom-0 w-full max-w-[500px] p-5 left-[50%] translate-x-[-50%] bg-background
   }
 
   .page-title {
@@ -519,4 +519,8 @@
 
 .text-title2 {
   @apply text-base
+}
+
+.max-width-mobile {
+  @apply max-w-[500px] mx-auto
 }

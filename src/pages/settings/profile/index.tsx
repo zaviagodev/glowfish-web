@@ -32,6 +32,8 @@ import { useToast } from "@/components/ui/toast";
 
 const schema = yup.object().shape({
   full_name: yup.string().required("Full name is required"),
+  // first_name: yup.string().required("First name is required"),
+  // last_name: yup.string().required("Last name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
   birthday: yup.date().nullable().required("Birthday is required"),
 });
@@ -48,7 +50,10 @@ const ProfileSettings = () => {
   const form = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
+      /* TODO: Set the input fields from 'full name' to 'first name' and 'last name' */
       full_name: "",
+      // first_name: "",
+      // last_name: "",
       email: "",
       phone: "",
       birthday: null,
@@ -64,7 +69,10 @@ const ProfileSettings = () => {
         ? new Date(customer.date_of_birth)
         : null;
       form.reset({
+        /* TODO: Set the input fields from 'full name' to 'first name' and 'last name' */
         full_name: fullName,
+        // first_name: customer.first_name || "",
+        // last_name: customer.last_name || "",
         email: customer.email || "",
         phone: customer.phone || "",
         birthday: birthday,
@@ -222,6 +230,7 @@ const ProfileSettings = () => {
             </div>
           </div>
 
+          {/* TODO: Set the input fields from 'full name' to 'first name' and 'last name' */}
           <FormField
             control={form.control}
             name="full_name"
@@ -235,6 +244,35 @@ const ProfileSettings = () => {
               </FormItem>
             )}
           />
+
+          {/* This will be uncommented */}
+          {/* <FormField
+            control={form.control}
+            name="first_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("First Name")}</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Enter your first name" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="last_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("Last Name")}</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Enter your last name" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
 
           <FormField
             control={form.control}
@@ -274,7 +312,7 @@ const ProfileSettings = () => {
             )}
           />
 
-          {/* <FormField
+          <FormField
             control={form.control}
             name="birthday"
             render={({ field }) => (
@@ -345,7 +383,7 @@ const ProfileSettings = () => {
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
 
           <div className="pt-4">
             <Button type="submit" className="main-btn w-full">

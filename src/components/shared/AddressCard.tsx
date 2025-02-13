@@ -9,6 +9,7 @@ interface AddressCardProps {
   phone: string;
   address: string;
   className?: string;
+  isDefault?: boolean;
 }
 
 export function AddressCard({
@@ -17,6 +18,7 @@ export function AddressCard({
   phone,
   address,
   className,
+  isDefault,
 }: AddressCardProps) {
   const navigate = useNavigate();
 
@@ -35,12 +37,16 @@ export function AddressCard({
             <MapPin className="w-4 h-4 text-icon-blue-foreground" />
           </div>
         </div>
-        <div>
-          <p className="text-sm font-medium">
-            {name} | {phone}
-          </p>
-          <p className="text-xs text-muted-foreground mt-0.5">{address}</p>
-        </div>
+        {isDefault ? (
+          <div>
+            <p className="text-sm font-medium">
+              {name} | {phone}
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">{address}</p>
+          </div>
+        ) : (
+          <p className="text-sm font-medium">Add Delivery Address</p>
+        )}
       </div>
     </div>
   );

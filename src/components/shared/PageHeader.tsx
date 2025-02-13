@@ -12,7 +12,7 @@ export function PageHeader({ title, rightElement, onBack }: PageHeaderProps) {
   const navigate = useNavigate();
   const handleNavigate = () => navigate(-1);
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-14 px-5 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b">
+    <header className="fixed top-0 left-0 right-0 z-50 h-14 px-5 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b max-width-mobile">
       <Button
         variant="ghost"
         size="icon"

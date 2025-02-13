@@ -13,6 +13,7 @@ export interface Product {
   venue_address: string;
   start_datetime: string;
   end_datetime: string;
+  gallery_link?: string;
   variant_options: any[];
   product_variants: {
     id: string;

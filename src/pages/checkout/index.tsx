@@ -163,43 +163,19 @@ export default function CheckoutPage() {
       <div className="pt-14 pb-32">
         <div className="p-5 space-y-6">
           <ProductList items={items} />
-          {defaultAddress ? (
-            <div onClick={() => navigate("/checkout/address")}>
-              <AddressCard
-                title={t("Delivery Address")}
-                name={`${defaultAddress.first_name} ${defaultAddress.last_name}`}
-                phone={defaultAddress.phone}
-                address={`${defaultAddress.address1}${
-                  defaultAddress.address2 ? `, ${defaultAddress.address2}` : ""
-                }, ${defaultAddress.city}, ${defaultAddress.state} ${
-                  defaultAddress.postal_code
-                }`}
-              />
-            </div>
-          ) : (
-            <div
-              className={cn(
-                "flex items-center justify-between p-3 rounded-lg bg-darkgray"
-              )}
-              onClick={() => navigate("/checkout/address")}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-lg"
-                  style={{
-                    background: "rgba(33, 150, 243, 0.1)",
-                    color: "rgb(33, 150, 243)",
-                  }}
-                >
-                  <MapPin className="w-4 h-4" />
-                </div>
-                <span className="text-sm font-medium">
-                  {t("Add Delivery Address")}
-                </span>
-              </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground" />
-            </div>
-          )}
+          <div onClick={() => navigate("/checkout/address")}>
+            <AddressCard
+              title={t("Delivery Address")}
+              name={`${defaultAddress?.first_name} ${defaultAddress?.last_name}`}
+              phone={defaultAddress?.phone}
+              address={`${defaultAddress?.address1}${
+                defaultAddress?.address2 ? `, ${defaultAddress?.address2}` : ""
+              }, ${defaultAddress?.city}, ${defaultAddress?.state} ${
+                defaultAddress?.postal_code
+              }`}
+              isDefault={defaultAddress !== null}
+            />
+          </div>
 
           {/* <PointsCoupons subtotal={subtotal} /> */}
 

@@ -44,6 +44,7 @@ export function ProductDetail({
   product_variants,
   organizer_name,
   organizer_contact,
+  gallery_link,
 }: ProductDetailProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -146,11 +147,6 @@ export function ProductDetail({
   const [isClamped, setIsClamped] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  {
-    /* TODO: set the condition if there is a gallery */
-  }
-  const [hasGallery, setHasGallery] = useState(false);
-
   useEffect(() => {
     if (paragraphRef.current) {
       const style = window.getComputedStyle(paragraphRef.current);
@@ -162,7 +158,7 @@ export function ProductDetail({
   }, [description, venue_address]);
 
   return createPortal(
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-50 max-width-mobile">
       <div
         // initial={{ opacity: 0 }}
         // animate={{ opacity: 1 }}
@@ -177,12 +173,12 @@ export function ProductDetail({
         // transition={{
         //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
         // }}
-        className="absolute inset-0 overflow-y-auto bg-background"
+        className="fixed inset-0 overflow-y-auto bg-background max-width-mobile"
       >
         <Button
           variant="ghost"
           size="icon"
-          className="fixed left-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
+          className="absolute left-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
           onClick={onClose}
         >
           <ChevronLeft className="h-6 w-6" />
@@ -190,7 +186,7 @@ export function ProductDetail({
         <Button
           variant="ghost"
           size="icon"
-          className="fixed right-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
+          className="absolute right-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
           onClick={() => navigate("/cart")}
         >
           <ShoppingCart className="h-6 w-6" />
@@ -267,9 +263,14 @@ export function ProductDetail({
               </div>
             </div>
 
-            {/* TODO: link to gallery page if the gallery is available */}
-            {hasGallery && (
-              <button className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full">
+            {/* TODO: link to gallery page if the gallery is available
+              e.g. product.gallery_link = "https://google.com"
+            */}
+            {gallery_link && (
+              <button
+                onClick={() => (window.location.href = gallery_link)}
+                className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
+              >
                 <div className="flex items-center gap-3">
                   <BookImage className="w-5 h-5 text-white" />
                   {t("View gallery")}
@@ -516,7 +517,7 @@ export function ProductDetail({
           </motion.div> */}
         </div>
 
-        <div className="fixed bottom-0 left-0 w-full p-5 pt-4 z-[99] bg-background space-y-4">
+        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background space-y-4 max-width-mobile">
           {getPriceDisplay() && (
             <div className="flex items-center gap-2">
               <div className="flex items-baseline gap-2">

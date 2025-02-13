@@ -346,7 +346,7 @@ export default function OrderDetailPage() {
 
       {/* Footer Actions */}
       {isPendingAndNoAmount && (
-        <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border p-5">
+        <div className="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border p-5">
           <div className="space-y-3">
             <Button
               variant="default"

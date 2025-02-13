@@ -30,7 +30,7 @@ export function CheckoutFooter({
   const t = useTranslate();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t p-5">
+    <div className="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto bg-background/80 backdrop-blur-xl border-t p-5">
       <div className="flex items-center justify-between mb-4 text-sm">
         <span className="text-base">{t("Total Payment")}</span>
         <span className="text-base font-bold text-[#EE4D2D]">

@@ -541,7 +541,7 @@ export default function PaymentPage() {
 
       {/* Footer */}
       <motion.div
-        className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t z-[99]"
+        className="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto bg-background/80 backdrop-blur-xl border-t z-[99]"
         initial={{ y: 50 }}
         animate={{ y: 0 }}
         transition={{ delay: 1.6, type: "spring", stiffness: 200, damping: 20 }}

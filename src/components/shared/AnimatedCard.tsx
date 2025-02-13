@@ -55,14 +55,10 @@ export function AnimatedCard({
   type,
   validDate,
   isSelected = false,
+  hasGallery,
   onClick,
 }: AnimatedCardProps) {
   const t = useTranslate();
-  {
-    /* TODO: set the condition if there is a gallery */
-  }
-  const [hasGallery, setHasGallery] = useState(false);
-
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
   >(variant_id);
@@ -110,7 +106,9 @@ export function AnimatedCard({
         layoutId={`image-container-${id}`}
         className={cn(
           "relative overflow-hidden",
-          type === "small" ? "h-[32vw] w-full" : "h-[50vw] w-full",
+          type === "small"
+            ? "h-[32vw] w-full"
+            : "max-h-[300px] h-[60vw] w-full",
           type === "event" && "w-[125px] min-w-[125px]",
           { "flex items-center justify-center bg-white/10": !image }
         )}
@@ -128,7 +126,7 @@ export function AnimatedCard({
           <GlowfishIcon />
         )}
 
-        {/* View gallery button: this will link the page to gallery page when clicked */}
+        {/* This button is not clickable, it is used to identify that there is a gallery in this product card, but there will be a 'view gallery' button to click to another link on the single product page */}
         {hasGallery && (
           <Button className="main-btn w-8 h-8 p-0 absolute right-4 top-4">
             <BookImage className="w-4 h-4" />
