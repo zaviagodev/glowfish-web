@@ -75,10 +75,7 @@ const Rewards = () => {
           </h1>
           <Avatar className="h-[50px] w-[50px]">
             <AvatarImage
-              src={
-                // This link is not working: customerData?.meta?.avatar_url
-                customerData?.avatar_url || "https://github.com/shadcn.png"
-              }
+              src={customerData?.avatar_url || "https://github.com/shadcn.png"}
             />
             <AvatarFallback>
               {fullName?.charAt(0)?.toUpperCase() || "U"}

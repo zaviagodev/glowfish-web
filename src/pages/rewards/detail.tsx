@@ -125,7 +125,7 @@ const RewardDetail = () => {
       // Create order using place_order function
       const { data: newOrder, error } = await supabase.rpc("place_order", {
         p_store_name: storeName,
-        p_customer_id: user.id,
+        p_customer_id: customer?.id,
         p_status: "pending",
         p_subtotal: reward.product_variants[0].price,
         p_shipping: 0,
@@ -151,7 +151,6 @@ const RewardDetail = () => {
       if (!newOrder) {
         throw new Error("No order data returned");
       }
-
       // Refresh customer data to get updated points
       await refreshCustomer();
       // Refresh orders list
