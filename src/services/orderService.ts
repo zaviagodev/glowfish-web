@@ -209,7 +209,8 @@ export const OrderService = {
 
   async getOrderById(
     storeName: string,
-    orderId: string
+    orderId: string,
+    customerId: string
   ): Promise<Order | null> {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -246,7 +247,7 @@ export const OrderService = {
             )
           )
         `)
-        .eq('customer_id', user.id)
+        .eq('customer_id', customerId)
         .eq('store_name', storeName)
         .eq('id', orderId)
         .single();
