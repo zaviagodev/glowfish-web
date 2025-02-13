@@ -213,7 +213,7 @@ export const HomeList = () => {
         />
       </div>
 
-      <section className="py-6 space-y-6">
+      <section className="py-6 space-y-6 px-[1px]">
         <ProductSection
           title={t("Upcoming Events")}
           linkTo="/products"

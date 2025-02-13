@@ -173,7 +173,7 @@ export default function CheckoutPage() {
               }, ${defaultAddress?.city}, ${defaultAddress?.state} ${
                 defaultAddress?.postal_code
               }`}
-              isDefault={defaultAddress !== null}
+              isDefault={addresses.length !== 0}
             />
           </div>
 

@@ -288,7 +288,7 @@ const ScanToRedeemPage = () => {
   return (
     <div className="bg-background">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b p-4 h-14 flex items-center gap-5">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b p-4 h-14 flex items-center gap-5 max-width-mobile">
         <Button
           variant="ghost"
           className="p-0 text-muted-foreground hover:text-foreground transition-colors"

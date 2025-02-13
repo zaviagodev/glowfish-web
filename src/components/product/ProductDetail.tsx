@@ -158,7 +158,7 @@ export function ProductDetail({
   }, [description, venue_address]);
 
   return createPortal(
-    <div className="fixed inset-0 z-50 max-width-mobile">
+    <div className="fixed inset-0 z-50 max-width-mobile bg-background">
       <div
         // initial={{ opacity: 0 }}
         // animate={{ opacity: 1 }}

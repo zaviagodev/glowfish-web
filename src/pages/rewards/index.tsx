@@ -116,10 +116,13 @@ const Rewards = () => {
                   className="relative overflow-hidden rounded-2xl cursor-pointer w-full bg-card h-full border border-input transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm"
                 >
                   <div
-                    className={cn("relative overflow-hidden h-[40vw] w-full", {
-                      "bg-white/10 flex items-center justify-center":
-                        !reward.image,
-                    })}
+                    className={cn(
+                      "relative overflow-hidden max-h-[220px] h-[40vw] w-full",
+                      {
+                        "bg-white/10 flex items-center justify-center":
+                          !reward.image,
+                      }
+                    )}
                   >
                     {reward.image ? (
                       <img

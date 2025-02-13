@@ -86,7 +86,7 @@ export default function AddressSelection() {
   }
 
   return (
-    <div className="fixed inset-0 bg-background">
+    <div className="fixed inset-0 bg-background max-width-mobile">
       {/* Header */}
       <PageHeader title={t("Select Delivery Address")} />
 

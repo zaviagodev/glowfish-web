@@ -174,7 +174,7 @@ export default function CartPage() {
       </div>
 
       {/* Footer */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t max-width-mobile">
         {/* <div className="mx-4 mt-3">
           <PromotionCard />
         </div>

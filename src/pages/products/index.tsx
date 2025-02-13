@@ -198,6 +198,8 @@ export default function ProductsPage() {
                   product_variants={product.product_variants}
                   location={product.location}
                   date={formattedDate(product)}
+                  hasGallery={false}
+                  imageClassName="max-h-[220px] h-[40vw]"
                   onClick={() => {
                     // Get the default variant if product has variants
                     const defaultVariant = product.product_variants?.[0];

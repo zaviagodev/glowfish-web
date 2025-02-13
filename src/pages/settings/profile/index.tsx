@@ -51,9 +51,9 @@ const ProfileSettings = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       /* TODO: Set the input fields from 'full name' to 'first name' and 'last name' */
-      full_name: "",
-      // first_name: "",
-      // last_name: "",
+      // full_name: "",
+      first_name: "",
+      last_name: "",
       email: "",
       phone: "",
       birthday: null,
@@ -62,17 +62,17 @@ const ProfileSettings = () => {
 
   useEffect(() => {
     if (customer) {
-      const fullName = `${customer.first_name || ""} ${
-        customer.last_name || ""
-      }`.trim();
+      // const fullName = `${customer.first_name || ""} ${
+      //   customer.last_name || ""
+      // }`.trim();
       const birthday = customer.date_of_birth
         ? new Date(customer.date_of_birth)
         : null;
       form.reset({
         /* TODO: Set the input fields from 'full name' to 'first name' and 'last name' */
-        full_name: fullName,
-        // first_name: customer.first_name || "",
-        // last_name: customer.last_name || "",
+        // full_name: fullName,
+        first_name: customer.first_name || "",
+        last_name: customer.last_name || "",
         email: customer.email || "",
         phone: customer.phone || "",
         birthday: birthday,
@@ -151,9 +151,9 @@ const ProfileSettings = () => {
       }
 
       // Split full name into first and last name
-      const nameParts = data.full_name.trim().split(/\s+/);
-      const firstName = nameParts[0];
-      const lastName = nameParts.slice(1).join(" ");
+      // const nameParts = data.full_name.trim().split(/\s+/);
+      // const firstName = nameParts[0];
+      // const lastName = nameParts.slice(1).join(" ");
 
       const updateData = {
         first_name: firstName,
@@ -231,7 +231,7 @@ const ProfileSettings = () => {
           </div>
 
           {/* TODO: Set the input fields from 'full name' to 'first name' and 'last name' */}
-          <FormField
+          {/* <FormField
             control={form.control}
             name="full_name"
             render={({ field }) => (
@@ -243,10 +243,10 @@ const ProfileSettings = () => {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           {/* This will be uncommented */}
-          {/* <FormField
+          <FormField
             control={form.control}
             name="first_name"
             render={({ field }) => (
@@ -272,7 +272,7 @@ const ProfileSettings = () => {
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
 
           <FormField
             control={form.control}

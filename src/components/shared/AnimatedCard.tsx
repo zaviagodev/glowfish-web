@@ -30,6 +30,7 @@ interface AnimatedCardProps {
   validDate?: string;
   isSelected?: boolean;
   hasGallery?: boolean;
+  imageClassName?: string;
   onClick?: () => void;
 }
 
@@ -56,6 +57,7 @@ export function AnimatedCard({
   validDate,
   isSelected = false,
   hasGallery,
+  imageClassName,
   onClick,
 }: AnimatedCardProps) {
   const t = useTranslate();
@@ -110,7 +112,8 @@ export function AnimatedCard({
             ? "h-[32vw] w-full"
             : "max-h-[300px] h-[60vw] w-full",
           type === "event" && "w-[125px] min-w-[125px]",
-          { "flex items-center justify-center bg-white/10": !image }
+          { "flex items-center justify-center bg-white/10": !image },
+          imageClassName
         )}
         transition={springConfig}
       >
