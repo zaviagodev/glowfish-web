@@ -89,7 +89,8 @@ export const OrderService = {
   async getOrders(
     storeName: string, 
     page: number = 1, 
-    limit: number = 10
+    limit: number = 10,
+    customerId?: string
   ): Promise<{ orders: Order[]; total: number }> {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -100,15 +101,18 @@ export const OrderService = {
       // Calculate offset based on page and limit
       const offset = (page - 1) * limit;
 
-      // First get total count
-      const { count: total } = await supabase
+      // Build query for total count
+      let query = supabase
         .from('orders')
         .select('*', { count: 'exact', head: true })
-        .eq('customer_id', user.id)
+        .eq('customer_id', customerId)
         .eq('store_name', storeName);
 
-      // Then get paginated data
-      const { data, error } = await supabase
+      // Get total count
+      const { count: total } = await query;
+
+      // Build main query
+      let ordersQuery = supabase
         .from('orders')
         .select(`
             *,
@@ -138,10 +142,13 @@ export const OrderService = {
             )
           )
         `)
-        .eq('customer_id', user.id)
+        .eq('customer_id', customerId)
         .eq('store_name', storeName)
         .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1);
+
+
+      const { data, error } = await ordersQuery;
 
       if (error) {
         console.error('Supabase query error:', error);

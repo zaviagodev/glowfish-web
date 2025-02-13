@@ -1,53 +1,5 @@
--- Create campaign_codes table
-CREATE TABLE IF NOT EXISTS campaign_codes (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  campaign_id uuid REFERENCES campaigns(id) ON DELETE CASCADE,
-  code text NOT NULL UNIQUE,
-  redemption_count integer DEFAULT 0,
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
-);
-
--- Create index for faster lookups
-CREATE INDEX campaign_codes_code_idx ON campaign_codes(code);
-CREATE INDEX campaign_codes_campaign_idx ON campaign_codes(campaign_id);
-
--- Enable RLS
-ALTER TABLE campaign_codes ENABLE ROW LEVEL SECURITY;
-
--- Policy to allow authenticated store owners to manage their store's campaign codes
-CREATE POLICY "Users can manage their store's campaign codes"
-  ON campaign_codes
-  USING (
-    EXISTS (
-      SELECT 1 FROM campaigns c
-      JOIN profiles p ON p.store_name = c.store_name
-      WHERE c.id = campaign_codes.campaign_id
-      AND p.id = auth.uid()
-    )
-  );
-
--- Create generate_campaign_code function
-CREATE OR REPLACE FUNCTION generate_campaign_code()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Only generate code for scan or click campaigns
-    IF NEW.type IN ('scan_to_get_points', 'click_link_to_get_points') THEN
-        -- Insert new code into campaign_codes
-        INSERT INTO campaign_codes (campaign_id, code)
-        VALUES (NEW.id, generate_ticket_code());
-    END IF;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Create trigger
-DROP TRIGGER IF EXISTS campaign_code_generator ON campaigns;
-CREATE TRIGGER campaign_code_generator
-    AFTER INSERT ON campaigns
-    FOR EACH ROW
-    EXECUTE FUNCTION generate_campaign_code();
+-- Drop the existing redeem_campaign_code function
+DROP FUNCTION IF EXISTS redeem_campaign_code;
 
 -- Function to validate and redeem campaign code
 CREATE OR REPLACE FUNCTION redeem_campaign_code(
@@ -170,6 +122,4 @@ $$;
 GRANT EXECUTE ON FUNCTION redeem_campaign_code TO authenticated;
 
 -- Add helpful comments
-COMMENT ON TABLE campaign_codes IS 'Stores campaign codes and their usage statistics';
 COMMENT ON FUNCTION redeem_campaign_code IS 'Validates and redeems a campaign code, creating a points transaction if successful';
-COMMENT ON FUNCTION generate_campaign_code IS 'Generates a unique code for scan or click campaigns';
