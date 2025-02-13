@@ -22,6 +22,7 @@ import type { Address } from "@/services/customerService";
 import { ChevronRight, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+
 interface CartItem {
   variantId: string;
   quantity: number;
@@ -98,7 +99,7 @@ export default function CheckoutPage() {
       // Create order using place_order function
       const { data: newOrder, error } = await supabase.rpc("place_order", {
         p_store_name: "glowfish",
-        p_customer_id: user.id,
+        p_customer_id: customer.id,
         p_status: "pending",
         p_subtotal: subtotal,
         p_shipping: 0,

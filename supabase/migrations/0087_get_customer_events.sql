@@ -1,4 +1,7 @@
--- Up Migration
+-- Drop existing get_customer_events function
+DROP FUNCTION IF EXISTS get_customer_events;
+
+-- update get_customer_events to include end_datetime
 CREATE OR REPLACE FUNCTION get_customer_events(p_customer_id UUID, p_limit INT, p_offset INT)
 RETURNS TABLE (
     event_id UUID,
@@ -7,14 +10,15 @@ RETURNS TABLE (
     organizer_contact TEXT,
     organizer_name TEXT,
     start_datetime TIMESTAMP,
+    end_datetime TIMESTAMP,
     updated_at TIMESTAMP,
     venue_address TEXT,
     venue_name TEXT,
     image_url TEXT,
+    attendance_points INTEGER,
     ticket_details JSON[],
     total_count BIGINT
 ) AS $$
-
 DECLARE
     total_events BIGINT;
 BEGIN
@@ -70,10 +74,12 @@ BEGIN
         e.organizer_contact,
         e.organizer_name,
         e.start_datetime::TIMESTAMP,
+        e.end_datetime::TIMESTAMP,
         e.updated_at::TIMESTAMP,
         e.venue_address,
         e.venue_name,
         ei.image_url,
+        e.attendance_points,
         et.tickets,
         total_events
     FROM event_tickets et
@@ -85,3 +91,6 @@ BEGIN
     OFFSET p_offset;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Grant execute permission to authenticated users
+GRANT EXECUTE ON FUNCTION get_customer_events TO authenticated;
