@@ -75,7 +75,7 @@ const Rewards = () => {
           <Avatar className="h-[50px] w-[50px]">
             <AvatarImage
               src={
-                customerData?.meta?.avatar_url ||
+                customerData?.avatar_url ||
                 "https://github.com/shadcn.png"
               }
             />

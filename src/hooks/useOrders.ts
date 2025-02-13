@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { OrderService, type Order } from '@/services/orderService';
 import { useStore } from '@/hooks/useStore';
+import { useCustomer } from '@/hooks/useCustomer';
 
 // Cache key for localStorage
 const ORDERS_CACHE_KEY = 'cached_orders';
@@ -11,6 +12,7 @@ export const useOrders = (page: number = 1, limit: number = 10) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { storeName } = useStore();
+  const { customer } = useCustomer();
 
   // Use React Query for data fetching and caching
   const { 
@@ -19,11 +21,12 @@ export const useOrders = (page: number = 1, limit: number = 10) => {
     isError: ordersError,
     refetch: refetchData
   } = useQuery({
-    queryKey: ['orders', storeName, page, limit],
-    queryFn: () => OrderService.getOrders(storeName, page, limit),
+    queryKey: ['orders', storeName, customer?.id, page, limit],
+    queryFn: () => OrderService.getOrders(storeName, page, limit, customer?.id),
     staleTime: CACHE_EXPIRY_TIME,
     cacheTime: CACHE_EXPIRY_TIME * 2,
     retry: 2,
+    enabled: !!customer?.id, // Only fetch when customer ID is available
     onError: (err: any) => {
       console.error('Error fetching orders:', err);
       setError(err.message || 'Failed to load orders');
