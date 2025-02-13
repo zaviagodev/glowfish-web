@@ -6,7 +6,7 @@ import { useCustomer } from "@/hooks/useCustomer";
 import { useRewards } from "@/hooks/useRewards";
 import type { Customer } from "@/services/customerService";
 import { useNavigate } from "react-router-dom";
-import { Calendar, MapPin, Tag } from "lucide-react";
+import { Calendar, Gift, MapPin, Package2, Tag } from "lucide-react";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { cn } from "@/lib/utils";
 
@@ -24,12 +24,13 @@ const Rewards = () => {
     error: customerError,
   } = useCustomer();
 
-  const imageUrl =
-    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
+  // The link below is going to be used as the empty state image on the settings page
+  // const imageUrl =
+  //   'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
   const rewardEvents = rewards.map((reward) => {
     return {
       id: reward.id,
-      image: reward?.product_images?.[0]?.url || imageUrl,
+      image: reward?.product_images?.[0]?.url || "",
       title: reward.name,
       description: reward.description,
       location: reward.location,
@@ -171,8 +172,9 @@ const Rewards = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 rounded-lg">
-              <p className="text-muted-foreground">
+            <div className="flex flex-col items-center justify-center py-8 px-4">
+              <Gift className="w-16 h-16 text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground text-center">
                 {t("No rewards available at the moment")}
               </p>
             </div>

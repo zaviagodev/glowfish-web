@@ -98,7 +98,7 @@ export function AnimatedCard({
       layoutId={`card-${id}`}
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-2xl cursor-pointer w-full bg-card h-full border border-input",
+        "relative overflow-hidden rounded-2xl cursor-pointer w-full h-full border border-input",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
         type === "event" && "flex h-fit"
       )}
@@ -112,7 +112,7 @@ export function AnimatedCard({
             ? "h-[32vw] w-full"
             : "max-h-[300px] h-[60vw] w-full",
           type === "event" && "w-[125px] min-w-[125px]",
-          { "flex items-center justify-center bg-white/10": !image },
+          { "flex items-center justify-center bg-white/20": !image },
           imageClassName
         )}
         transition={springConfig}

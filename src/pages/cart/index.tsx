@@ -10,6 +10,7 @@ import { CouponCard } from "@/components/cart/CouponCard";
 import { useState, useRef, useEffect } from "react";
 import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 export default function CartPage() {
   const t = useTranslate();
@@ -78,11 +79,17 @@ export default function CartPage() {
                     }
                   />
                   <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20">
+                        <GlowfishIcon className="h-10 w-10" />
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-base font-medium line-clamp-2 mb-1">

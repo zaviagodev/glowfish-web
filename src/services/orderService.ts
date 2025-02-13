@@ -191,6 +191,7 @@ export const OrderService = {
               id: item.product_variants.product.id,
               name: item.product_variants.product.name,
               description: item.product_variants.product.description,
+              // /placeholder-image.jpg will be dynamically set as an empty state image on the settings page
               image: item.product_variants.product.product_images?.[0]?.url || '/placeholder-image.jpg'
             }
           }

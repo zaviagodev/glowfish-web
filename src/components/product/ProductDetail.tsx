@@ -20,6 +20,7 @@ import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { ProductDetailProps } from "@/type/type";
+import GlowfishIcon from "../icons/GlowfishIcon";
 
 interface ProductVariantOption {
   name: string;
@@ -178,7 +179,7 @@ export function ProductDetail({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute left-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
+          className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
           onClick={onClose}
         >
           <ChevronLeft className="h-6 w-6" />
@@ -186,7 +187,7 @@ export function ProductDetail({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute right-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
+          className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
           onClick={() => navigate("/cart")}
         >
           <ShoppingCart className="h-6 w-6" />
@@ -213,11 +214,13 @@ export function ProductDetail({
         ) : (
           <div
             // layoutId={`image-container-${id}`}
-            className="w-full aspect-square overflow-hidden bg-white/20"
+            className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20"
             // transition={{
             //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
             // }}
-          ></div>
+          >
+            <GlowfishIcon />
+          </div>
         )}
 
         <div className="p-5 space-y-6 bg-background/80 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-48">

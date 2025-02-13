@@ -1,5 +1,6 @@
 import { useTranslate } from "@refinedev/core";
 import { CartItem } from "@/lib/cart";
+import GlowfishIcon from "../icons/GlowfishIcon";
 
 interface ProductListProps {
   items: CartItem[];
@@ -21,11 +22,17 @@ export function ProductList({ items }: ProductListProps) {
         {items.map((item) => (
           <div key={item.variantId} className="p-4 flex gap-3">
             <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-full object-cover object-top"
-              />
+              {item.image ? (
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-cover object-top"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20">
+                  <GlowfishIcon className="h-10 w-10" />
+                </div>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <h4 className="text-base line-clamp-2 font-normal">

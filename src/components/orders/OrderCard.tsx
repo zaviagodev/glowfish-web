@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Button } from "../ui/button";
+import GlowfishIcon from "../icons/GlowfishIcon";
 
 interface OrderItem {
   id: string;
@@ -87,18 +88,19 @@ export function OrderCard({ order, index }: OrderCardProps) {
       {/* Order Items */}
       {order.order_items.map((item) => (
         <div key={item.id} className="p-4 pb-0 flex gap-4">
-          {item.product_variants.product.image ? (
-            <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+          <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+            {item.product_variants.product.image ? (
               <img
                 src={item.product_variants.product.image}
                 alt={item.product_variants.product.name}
                 className="w-full h-full object-cover"
               />
-            </div>
-          ) : (
-            <div className="w-20 h-20 rounded-lg overflow-hidden bg-white/20"></div>
-          )}
-
+            ) : (
+              <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20">
+                <GlowfishIcon className="h-10 w-10" />
+              </div>
+            )}
+          </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-medium line-clamp-2">
               {item.product_variants.product.name}

@@ -37,6 +37,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useOrders } from "@/hooks/useOrders";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 const RewardDetail = () => {
   const t = useTranslate();
@@ -88,9 +89,9 @@ const RewardDetail = () => {
     return <div className="text-center mt-8">{t("Reward not found")}</div>;
   }
 
-  const imageUrl =
-    reward?.product_images?.[0]?.url ||
-    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
+  const imageUrl = reward?.product_images?.[0]?.url || "";
+  // The link below is going to be used as the empty state image on the settings page
+  // 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
 
   const pointsRequired = reward.product_variants?.[0]?.points_based_price || 0;
   const customerPoints = customer?.loyalty_points || 0;
@@ -176,10 +177,16 @@ const RewardDetail = () => {
   return (
     <div className="pb-10">
       <Header className="bg-transparent border-0" />
-      <img
-        src={imageUrl}
-        className="w-full h-full aspect-square object-cover"
-      />
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          className="w-full h-full aspect-square object-cover"
+        />
+      ) : (
+        <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20">
+          <GlowfishIcon />
+        </div>
+      )}
       <section className="p-5 bg-background relative backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
         <div className="flex flex-col gap-4">
           <p className="text-sm text-muted-foreground">Reward</p>

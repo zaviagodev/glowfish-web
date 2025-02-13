@@ -40,8 +40,9 @@ export interface Category {
 // Transform product data
 const transformProduct = (event: any): Product => {
   // Get the first valid image URL or use a data URI for a light gray placeholder
-  const imageUrl = event?.product?.product_images?.[0]?.url || 
-    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
+  const imageUrl = event?.product?.product_images?.[0]?.url || ''
+  // The link below is going to be used as the empty state image on the settings page
+    // 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
 
   return {
     id: event.id,

@@ -144,7 +144,7 @@ export default function PaymentPage() {
   const handleCopyAccountNum = () => {
     navigator.clipboard.writeText(paymentOptions?.promptpay?.id);
     setIsBankNumCopied(true);
-    setTimeout(() => setIsBankNumCopied(false), 1000);
+    setTimeout(() => setIsBankNumCopied(false), 1500);
   };
 
   const handleFileUpload = async (
@@ -355,7 +355,7 @@ export default function PaymentPage() {
                         className="absolute -right-4 bg-darkgray px-3 py-1 rounded-full"
                         initial={{ y: -30, opacity: 1 }}
                         animate={{ y: -50, opacity: 0 }}
-                        transition={{ duration: 0.8 }}
+                        transition={{ duration: 1.5 }}
                       >
                         Copied
                       </motion.span>

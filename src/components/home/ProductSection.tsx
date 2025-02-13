@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { Package2 } from "lucide-react";
+import { Package2, StickyNote } from "lucide-react";
 
 interface ProductSectionProps {
   title: string;
@@ -90,7 +90,7 @@ export const ProductSection = memo(function ProductSection({
               exit={{ opacity: 0, y: -20 }}
               className="flex flex-col items-center justify-center py-8 px-4"
             >
-              <Package2 className="w-16 h-16 text-muted-foreground/50 mb-4" />
+              <StickyNote className="w-16 h-16 text-muted-foreground/50 mb-4" />
               <p className="text-muted-foreground text-center">
                 {t("No products found")}
               </p>
