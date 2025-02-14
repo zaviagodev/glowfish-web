@@ -41,41 +41,6 @@ export interface PaginatedEvents {
 }
 
 export const EventService = {
-  async getEvents(
-    storeName: string,
-    page: number = 1,
-    pageSize: number = 10
-  ): Promise<PaginatedEvents> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        throw new Error('User not authenticated');
-      }
-
-      const offset = (page - 1) * pageSize;
-
-      const { data: eventsWithTickets, error } = await supabase
-        .rpc('get_customer_events', {
-          p_customer_id: user.id,
-          p_limit: pageSize,
-          p_offset: offset
-        });
-
-      if (error) throw error;
-
-      return {
-        data: eventsWithTickets || [],
-        total: eventsWithTickets?.[0]?.total_count || 0,
-        page,
-        pageSize
-      };
-
-    } catch (error) {
-      console.error('Failed to fetch events:', error);
-      throw error;
-    }
-  },
-
   async getEventsByCustomerId(
     customerId: string,
     storeName: string,
@@ -83,12 +48,15 @@ export const EventService = {
     pageSize: number = 10
   ): Promise<PaginatedEvents> {
     try {
+      if (!customerId) {
+        throw new Error('Customer ID is required');
+      }
+
       const offset = (page - 1) * pageSize;
 
       const { data: eventsWithTickets, error: eventsError } = await supabase
         .rpc('get_customer_events', {
           p_customer_id: customerId,
-          p_store_name: storeName,
           p_limit: pageSize,
           p_offset: offset
         });
