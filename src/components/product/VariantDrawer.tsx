@@ -30,6 +30,7 @@ interface VariantDrawerProps {
   variants: ProductVariant[];
   variantOptions: VariantOption[];
   selectedVariantId?: string;
+  track_quantity?: boolean;
 }
 
 export function VariantDrawer({
@@ -40,6 +41,7 @@ export function VariantDrawer({
   variants,
   variantOptions,
   selectedVariantId,
+  track_quantity
 }: VariantDrawerProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -211,15 +213,23 @@ export function VariantDrawer({
                   </>
                 )} */}
               </div>
-              {currentVariant.quantity > 0 ? (
-                <p className="text-sm text-muted-foreground mt-1">
-                  {t("{{count}} in stock", { count: currentVariant.quantity })}
-                </p>
+
+              {track_quantity ? (
+                currentVariant.quantity > 0 ? (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {t("{{count}} in stock", { count: currentVariant.quantity })}
+                  </p>
+                ) : (
+                  <p className="text-sm text-red-500 font-semibold mt-1">
+                    {t("Out of stock")}
+                  </p>
+                )
               ) : (
-                <p className="text-sm text-red-500 font-semibold mt-1">
-                  {t("Out of stock")}
+                <p className="text-sm text-muted-foreground mt-1">
+                  {t("In stock")}
                 </p>
               )}
+
             </div>
           )}
           <Button

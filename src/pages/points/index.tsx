@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/sheet";
 import { useState } from "react";
 import { useCustomer } from "@/hooks/useCustomer";
+import { useEvents } from "@/hooks/useEvents";
 import { format } from "date-fns";
 
 export default function MyPointsPage() {
@@ -51,6 +52,10 @@ export default function MyPointsPage() {
   }
 
   const pointsTransactions = customer?.points_transactions || [];
+
+  //console.log(customer);
+
+  
   const availablePoints = customer?.loyalty_points || 0;
   const nextTierPoints = 2000; // This should come from tiers data when available
 

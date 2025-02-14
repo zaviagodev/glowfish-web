@@ -192,7 +192,7 @@ export default function TicketDetails() {
                       <Ticket className="w-5 h-5 text-primary" />
                     </div>
                     <h3 className="font-medium">
-                      {t("Ticket {{number}}", { number: index + 1 })}
+                    {ticket.code}
                     </h3>
                   </div>
                   <div
@@ -207,13 +207,7 @@ export default function TicketDetails() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 mt-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">
-                      {t("Ticket No.")}
-                    </div>
-                    <div className="text-sm font-medium">{ticket.code}</div>
-                  </div>
+                <div className="grid grid-cols-2 gap-6 mt-6">
                   <div>
                     <div className="text-sm text-muted-foreground mb-1">
                       {t("Attendee")}
@@ -226,7 +220,7 @@ export default function TicketDetails() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full"
+                      className="w-full mt-2.5"
                       onClick={() => handleTicketCheckIn(ticket.code)}
                     >
                       <QrCode className="w-4 h-4 mr-2" />
