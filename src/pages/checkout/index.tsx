@@ -133,8 +133,20 @@ export default function CheckoutPage() {
       // Refresh orders list
       await refreshOrders();
 
-      // Navigate to payment page with order ID
-      navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
+      // Redirect based on order total
+      if (total > 0) {
+        // If total is greater than 0, redirect to payment page
+        navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
+      } else {
+        // If total is 0, redirect to thank you page
+        navigate('/checkout/thank-you', {
+          state: {
+            orderNumber: newOrder[0]?.order_id,
+            amount: total,
+            date: new Date().toISOString()
+          }
+        });
+      }
     } catch (error) {
       console.error("Error creating order:", error);
       alert(

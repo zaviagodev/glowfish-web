@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
+import { useStore } from "@/hooks/useStore";
 import {
   Upload,
   X,
@@ -35,6 +36,7 @@ export default function PaymentPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const { orderId } = useParams();
+  const { storeName } = useStore();
   const [order, setOrder] = useState<Order | null>(null);
   const [paymentOptions, setPaymentOptions] = useState<any>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -47,9 +49,6 @@ export default function PaymentPage() {
   useEffect(() => {
     const fetchOrderAndPaymentOptions = async () => {
       try {
-        const store_name =
-          localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
-
         // Fetch order
         const { data: orderData, error: orderError } = await supabase
           .from("orders")
@@ -68,7 +67,7 @@ export default function PaymentPage() {
         // Fetch payment options
         const { data: paymentData, error: paymentError } = await supabase.rpc(
           "get_payment_options",
-          { store: store_name }
+          { store: storeName }
         );
 
         if (paymentError) throw paymentError;
@@ -80,7 +79,7 @@ export default function PaymentPage() {
     };
 
     fetchOrderAndPaymentOptions();
-  }, [orderId, navigate]);
+  }, [orderId, navigate, storeName]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -155,13 +154,10 @@ export default function PaymentPage() {
       if (!file) return;
       setIsUploading(true);
 
-      const store_name =
-        localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
-
       // Create form data
       const formData = new FormData();
       formData.append("orderId", orderId!);
-      formData.append("storeName", store_name);
+      formData.append("storeName", storeName);
       formData.append("paymentType", "promptpay");
       formData.append("slipFile", file);
 

@@ -29,6 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarIcon } from "lucide-react";
 import { useCustomer } from "@/hooks/useCustomer";
 import { useToast } from "@/components/ui/toast";
+import { useStore } from "@/hooks/useStore";
 
 const schema = yup.object().shape({
   full_name: yup.string().required("Full name is required"),
@@ -42,6 +43,7 @@ const ProfileSettings = () => {
   const t = useTranslate();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const { storeName } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -96,11 +98,8 @@ const ProfileSettings = () => {
       } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
 
-      const store_name =
-        localStorage.getItem("store") || import.meta.env.VITE_DEFAULT_STORE;
-
       const fileExt = file.name.split(".").pop();
-      const filePath = `${store_name}/customers/avatars/${user.id}.${fileExt}`;
+      const filePath = `${storeName}/customers/avatars/${user.id}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from("product-images")
