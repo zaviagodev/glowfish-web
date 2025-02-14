@@ -6,6 +6,7 @@ import { useCoupons } from "@/lib/coupon";
 import { usePoints } from "@/lib/points";
 import { useCustomer } from "@/hooks/useCustomer";
 import { useOrders } from "@/hooks/useOrders";
+import { useEvents } from "@/hooks/useEvents";
 import { useStore } from "@/hooks/useStore";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ export default function CheckoutPage() {
   const { getDiscountAmount } = usePoints();
   const { customer, loading: customerLoading } = useCustomer();
   const { refreshOrders } = useOrders();
+  const { refreshEvents } = useEvents();
   const { storeName } = useStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -132,6 +134,7 @@ export default function CheckoutPage() {
 
       // Refresh orders list
       await refreshOrders();
+      await refreshEvents();
 
       // Redirect based on order total
       if (total > 0) {
