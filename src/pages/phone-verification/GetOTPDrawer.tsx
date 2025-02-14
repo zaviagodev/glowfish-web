@@ -77,7 +77,7 @@ const GetOTPDrawer = ({
         <SheetTitle className="text-[#E0DCDD]">
           {t("Please fill the OTP")}
         </SheetTitle>
-        <SheetDescription className="text-fadewhite">
+        <SheetDescription className="text-muted-foreground">
           {t("Your OTP will be sent to your phone number")}
         </SheetDescription>
       </SheetHeader>

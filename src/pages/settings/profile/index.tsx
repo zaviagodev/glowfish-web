@@ -323,7 +323,7 @@ const ProfileSettings = () => {
                     <FormControl>
                       <Button
                         className={cn(
-                          "flex items-center h-12 w-full rounded-md bg-darkgray outline-none border border-input text-white px-3 py-2 text-left justify-between",
+                          "flex items-center h-12 w-full rounded-md !bg-darkgray outline-none border border-input text-white px-3 py-2 text-left justify-between",
                           !field.value && "text-[#979797]"
                         )}
                       >
@@ -336,7 +336,7 @@ const ProfileSettings = () => {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent
+                  {/* <PopoverContent
                     className="w-auto p-0 bg-darkgray border-0"
                     align="start"
                   >
@@ -378,7 +378,7 @@ const ProfileSettings = () => {
                         day_hidden: "invisible",
                       }}
                     />
-                  </PopoverContent>
+                  </PopoverContent> */}
                 </Popover>
                 <FormMessage />
               </FormItem>
