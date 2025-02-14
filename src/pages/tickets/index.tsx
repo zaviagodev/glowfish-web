@@ -33,7 +33,7 @@ export default function TicketsPage() {
   });
 
   const filteredTickets = sortedEvents.filter((event) => {
-    const eventDate = new Date(event.start_datetime);
+    const eventDate = new Date(event.end_datetime);
     const isUpcoming = eventDate > new Date();
     return activeTab === "upcoming" ? isUpcoming : !isUpcoming;
   });
