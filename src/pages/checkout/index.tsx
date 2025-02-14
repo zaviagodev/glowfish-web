@@ -6,6 +6,7 @@ import { useCoupons } from "@/lib/coupon";
 import { usePoints } from "@/lib/points";
 import { useCustomer } from "@/hooks/useCustomer";
 import { useOrders } from "@/hooks/useOrders";
+import { useStore } from "@/hooks/useStore";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { AddressCard } from "@/components/shared/AddressCard";
@@ -36,6 +37,7 @@ export default function CheckoutPage() {
   const { getDiscountAmount } = usePoints();
   const { customer, loading: customerLoading } = useCustomer();
   const { refreshOrders } = useOrders();
+  const { storeName } = useStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cash");
@@ -96,7 +98,7 @@ export default function CheckoutPage() {
 
       // Create order using place_order function
       const { data: newOrder, error } = await supabase.rpc("place_order", {
-        p_store_name: "glowfish",
+        p_store_name: storeName,
         p_customer_id: customer.id,
         p_status: "pending",
         p_subtotal: subtotal,
