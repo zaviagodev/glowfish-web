@@ -12,13 +12,6 @@ export interface OrderStatus {
 
 export const defaultOrderStatuses: OrderStatus[] = [
   {
-    icon: <Package2 className="w-4 h-4" />,
-    label: "Unpaid",
-    value: "unpaid",
-    color: "#F44336",
-    bgColor: "rgba(244, 67, 54, 0.1)",
-  },
-  {
     icon: <Clock className="w-4 h-4" />,
     label: "Pending",
     value: "pending",
@@ -50,8 +43,8 @@ export const defaultOrderStatuses: OrderStatus[] = [
     icon: <XCircle className="w-4 h-4" />,
     label: "Cancelled",
     value: "cancelled",
-    color: "#9E9E9E",
-    bgColor: "rgba(158, 158, 158, 0.1)",
+    color: "#F44336",
+    bgColor: "rgba(244, 67, 54, 0.1)",
   },
 ];
 

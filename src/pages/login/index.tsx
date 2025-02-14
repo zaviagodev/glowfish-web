@@ -5,6 +5,8 @@ import { loginWithLine } from "../../authProvider";
 import { supabase } from "../../lib/supabase";
 import { createTestSession } from "../../authProvider";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { Link } from "react-router-dom";
+import LineIcon from "@/components/icons/LineIcon";
 
 export const Login = () => {
   const t = useTranslate();
@@ -35,13 +37,16 @@ export const Login = () => {
           onClick={handleLineLogin}
         >
           {/* TODO: add LineIcon className="absolute left-4" */}
+          <LineIcon className="w-7 h-7 absolute left-4" fill="#06c755" />
           {t("Continue with Line")}
         </Button>
 
         <p className="text-center font-light text-sm">
-          {t(
+          {/* {t(
             "By proceeding, you agree to our terms of use and Confirm you have read our Privacy and Cookie statement."
-          )}
+          )} */}
+          By proceeding, you agree to our <Link to="/">terms of use</Link> and
+          acknowledge the <Link to="/">privacy statement</Link>.
         </p>
       </div>
     </section>

@@ -33,7 +33,7 @@ const BottomNav = () => {
 
   return (
     <nav className="fixed bottom-0 w-full z-[49] bg-background/80 backdrop-blur-xl border-t max-width-mobile">
-      <div className="flex justify-around items-center h-[49px]">
+      <div className="flex justify-around items-center h-[60px]">
         {navItems.map(({ icon: Icon, label, path }) => {
           const active = isActive(path);
           return (
@@ -52,7 +52,7 @@ const BottomNav = () => {
               />
               <span
                 className={cn(
-                  "text-[9px] font-medium transition-colors duration-200 no-underline",
+                  "text-xs font-medium transition-colors duration-200 no-underline",
                   active ? "text-primary" : "text-muted-foreground"
                 )}
               >

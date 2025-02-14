@@ -37,7 +37,7 @@ const RateForm = ({ onSubmit }: RateFormProps) => {
     },
     { title: t("Fun and Games"), key: "fun", activeColor: "#14A852" },
     {
-      title: t("Social event and networking"),
+      title: t("Social Event and Networking"),
       key: "social",
       activeColor: "#317ABF",
     },
@@ -47,7 +47,7 @@ const RateForm = ({ onSubmit }: RateFormProps) => {
       key: "family",
       activeColor: "#F5853B",
     },
-    { title: t("Food and Beverages"), key: "food", activeColor: "#FADB28" },
+    { title: t("Food and Beverage"), key: "food", activeColor: "#FADB28" },
   ];
 
   const defaultValues = ratings.reduce((acc, rating) => {
@@ -67,8 +67,6 @@ const RateForm = ({ onSubmit }: RateFormProps) => {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
-
-      
 
       // Update customer meta data
       const { error } = await supabase

@@ -34,6 +34,7 @@ export interface ProductDetailProps {
     organizer_name?: string;
     organizer_contact?: string;
     gallery_link?: string | null;
+    hide_cart?: boolean;
   }
 
 type EventDataTypes = "small" | "event"

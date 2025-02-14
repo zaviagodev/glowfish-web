@@ -22,7 +22,6 @@ import type { Address } from "@/services/customerService";
 import { ChevronRight, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-
 interface CartItem {
   variantId: string;
   quantity: number;
@@ -139,12 +138,12 @@ export default function CheckoutPage() {
         navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
       } else {
         // If total is 0, redirect to thank you page
-        navigate('/checkout/thank-you', {
+        navigate("/checkout/thank-you", {
           state: {
             orderNumber: newOrder[0]?.order_id,
             amount: total,
-            date: new Date().toISOString()
-          }
+            date: new Date().toISOString(),
+          },
         });
       }
     } catch (error) {
@@ -207,6 +206,7 @@ export default function CheckoutPage() {
       <CheckoutFooter
         total={total}
         isProcessing={isProcessing}
+        disabled={addresses.length === 0}
         onPlaceOrder={handleCreateOrder}
         storeMessage={storeMessage}
         vatInvoiceData={vatInvoiceData}

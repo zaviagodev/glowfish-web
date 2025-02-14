@@ -72,7 +72,10 @@ const Rewards = () => {
       <section className="pt-14">
         <div className="flex items-center justify-between p-5 pb-0">
           <h1 className="font-semibold text-[28px] m-0">
-            {t("Hello")}, <span className="text-orangefocus">{fullName}</span>
+            {t("Hello")},{" "}
+            <span className="text-mainbutton">
+              {customerData?.first_name || "User"}
+            </span>
           </h1>
           <Avatar className="h-[50px] w-[50px]">
             <AvatarImage
@@ -147,26 +150,26 @@ const Rewards = () => {
                         {reward.description}
                       </p> */}
                     </div>
+                    {reward.location && (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <MapPin className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span className="line-clamp-1">{reward.location}</span>
+                      </div>
+                    )}
+                    {reward.date && (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Calendar className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span>{reward.date}</span>
+                      </div>
+                    )}
                     <div className="flex items-baseline gap-2 text-lg font-semibold text-orangefocus">
-                      {/* <Tag className="w-3.5 h-3.5" /> */}
+                      <Tag className="w-4 h-4 stroke-[2.5]" />
                       <span>
                         {reward.points
                           ? t("point", { count: reward.points })
                           : t("Free")}
                       </span>
                     </div>
-                    {reward.location && (
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <MapPin className="w-3.5 h-3.5" />
-                        <span className="line-clamp-1">{reward.location}</span>
-                      </div>
-                    )}
-                    {reward.date && (
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>{reward.date}</span>
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}

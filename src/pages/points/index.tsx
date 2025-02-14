@@ -11,6 +11,8 @@ import {
   Gift,
   Info,
   QrCode,
+  ArrowUpToLine,
+  ArrowDownToLine,
 } from "lucide-react";
 import {
   Sheet,
@@ -129,67 +131,71 @@ export default function MyPointsPage() {
 
         {/* Points History */}
         <div className="mt-8">
-          <div className="px-5 mb-4">
+          <div className="px-5">
             <h3 className="text-sm font-medium tracking-wide">
               {t("Points History")}
             </h3>
           </div>
           <div className="space-y-px">
-            {sortedTransactions.slice(0, 10).map((transaction, index) => (
-              <motion.div
-                key={transaction.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-                className="px-5 py-4"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
+            {sortedTransactions.slice(0, 5).map((transaction, index) => {
+              const Icon =
+                transaction.type === "earn" ? ArrowUpToLine : ArrowDownToLine;
+              return (
+                <motion.div
+                  key={transaction.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
+                  className="px-5 py-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          "min-w-10 h-10 rounded-lg flex items-center justify-center",
+                          transaction.type === "earn"
+                            ? "bg-[#34C759]/10"
+                            : "bg-[#FF3B30]/10"
+                        )}
+                      >
+                        <Icon
+                          className={cn(
+                            "w-5 h-5",
+                            transaction.type === "earn"
+                              ? "text-[#34C759]"
+                              : "text-[#FF3B30]"
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">
+                          {transaction.description ||
+                            t(
+                              transaction.type === "earn"
+                                ? "Points Earned"
+                                : "Points Redeemed"
+                            )}
+                        </p>
+                        <p className="text-xs text-[#8E8E93]">
+                          {format(new Date(transaction.created_at), "MMM dd")}
+                        </p>
+                      </div>
+                    </div>
                     <div
                       className={cn(
-                        "min-w-10 h-10 rounded-lg flex items-center justify-center",
+                        "text-sm font-semibold",
                         transaction.type === "earn"
-                          ? "bg-[#34C759]/10"
-                          : "bg-[#FF3B30]/10"
+                          ? "text-[#34C759]"
+                          : "text-[#FF3B30]"
                       )}
                     >
-                      <Coins
-                        className={cn(
-                          "w-5 h-5",
-                          transaction.type === "earn"
-                            ? "text-[#34C759]"
-                            : "text-[#FF3B30]"
-                        )}
-                      />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">
-                        {transaction.description ||
-                          t(
-                            transaction.type === "earn"
-                              ? "Points Earned"
-                              : "Points Redeemed"
-                          )}
-                      </p>
-                      <p className="text-xs text-[#8E8E93]">
-                        {format(new Date(transaction.created_at), "MMM dd")}
-                      </p>
+                      {transaction.type === "earn" ? "+" : "-"}
+                      {transaction.points}
                     </div>
                   </div>
-                  <div
-                    className={cn(
-                      "text-sm font-semibold",
-                      transaction.type === "earn"
-                        ? "text-[#34C759]"
-                        : "text-[#FF3B30]"
-                    )}
-                  >
-                    {transaction.type === "earn" ? "+" : "-"}
-                    {transaction.points}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
           {pointsTransactions.length > 10 && (
             <motion.div

@@ -224,7 +224,7 @@ export default function CartPage() {
                 </div>
               </div>
               <Button
-                className="main-btn w-[130px] h-12"
+                className="main-btn w-[130px]"
                 disabled={selectedItems.length === 0}
                 onClick={() =>
                   navigate("/checkout", {

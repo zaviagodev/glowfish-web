@@ -5,6 +5,7 @@ import { ChevronRight, MessageCircle, Receipt } from "lucide-react";
 interface CheckoutFooterProps {
   total: number;
   isProcessing: boolean;
+  disabled?: boolean;
   onPlaceOrder: () => void;
   storeMessage?: string;
   vatInvoiceData?: {
@@ -21,6 +22,7 @@ interface CheckoutFooterProps {
 export function CheckoutFooter({
   total,
   isProcessing,
+  disabled,
   onPlaceOrder,
   storeMessage,
   vatInvoiceData,
@@ -39,7 +41,7 @@ export function CheckoutFooter({
       </div>
       <Button
         className="w-full main-btn h-12"
-        disabled={isProcessing}
+        disabled={isProcessing || disabled}
         onClick={onPlaceOrder}
       >
         {isProcessing ? t("Processing...") : t("Place Order")}

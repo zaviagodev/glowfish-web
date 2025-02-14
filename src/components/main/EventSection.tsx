@@ -12,23 +12,18 @@ interface EventSectionProps {
   list: EventDataProps[];
   title?: string;
   seeAllLink?: string;
+  selectedEvent: any;
+  setSelectedEvent: (val: any) => void;
 }
 
-const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
+const EventSection = ({
+  list,
+  title,
+  seeAllLink,
+  selectedEvent,
+  setSelectedEvent,
+}: EventSectionProps) => {
   const t = useTranslate();
-  const navigate = useNavigate();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
-
-  const scroll = (direction: "left" | "right") => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = direction === "left" ? -400 : 400;
-      scrollContainerRef.current.scrollBy({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
 
   return (
     <section className="flex flex-col gap-4 mt-[30px] px-5">
@@ -82,16 +77,6 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
           </motion.div>
         ))}
       </div>
-
-      {selectedEvent && (
-        <ProductDetail
-          {...selectedEvent}
-          onClose={(e: any) => {
-            e.stopPropagation();
-            setSelectedEvent(null);
-          }}
-        />
-      )}
     </section>
   );
 };

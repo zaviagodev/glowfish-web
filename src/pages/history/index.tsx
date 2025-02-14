@@ -26,7 +26,7 @@ const HistoryPage = () => {
     const actionTitle =
       action.type === "earn" ? t("Get Point") : t("Spend Point");
     const formattedDate = format(new Date(action.created_at), "MMM dd");
-    const Icon = action.type === "Received" ? ArrowDownToLine : ArrowUpToLine;
+    const Icon = action.type === "earn" ? ArrowUpToLine : ArrowDownToLine;
     {
       /* action.type === "earn" */
     }
@@ -37,13 +37,18 @@ const HistoryPage = () => {
         className="flex items-center justify-between py-2 mb-2"
       >
         <div className="flex items-center gap-1.5">
-          <div className="border border-[#252525] rounded-full h-9 w-9 flex items-center justify-center">
-            <Icon className="w-4 h-4" />
+          <div
+            className={cn(
+              "min-w-10 h-10 rounded-lg flex items-center justify-center text-[#34C759] bg-[#34C759]/10",
+              { "text-[#FF3B30] bg-[#FF3B30]/10": action.type === "redeem" }
+            )}
+          >
+            <Icon className="w-5 h-5" />
           </div>
 
-          <div className="space-y-1">
-            <h3 className="page-title">{actionTitle}</h3>
-            <p className="text-[#6D6D6D] text-xs">
+          <div>
+            <h3 className={cn("text-sm font-medium")}>{actionTitle}</h3>
+            <p className="text-muted-foreground text-sm">
               {t(action.type)} • {formattedDate}
               {action.description && (
                 <span className="ml-1">• {action.description}</span>
@@ -53,11 +58,11 @@ const HistoryPage = () => {
         </div>
 
         <p
-          className={cn("page-title", {
+          className={cn("text-sm font-semibold text-[#34C759]", {
             "text-[#EE3636]": action.type === "redeem",
           })}
         >
-          {action.type === "redeem" ? "-" : ""}
+          {action.type === "redeem" ? "-" : "+"}
           {action.points}
         </p>
       </div>
@@ -157,10 +162,10 @@ const HistoryPage = () => {
     return pages;
   };
 
-  const totalPages = Math.ceil(sortedHistory.length / ITEMS_PER_PAGE);
-  const paginatedHistory = paginateTransactions(sortedHistory);
-  const paginatedEarnedPoints = paginateTransactions(sortedEarnedPoints);
-  const paginatedRedeemedPoints = paginateTransactions(sortedRedeemedPoints);
+  // const totalPages = Math.ceil(sortedHistory.length / ITEMS_PER_PAGE);
+  // const paginatedHistory = paginateTransactions(sortedHistory);
+  // const paginatedEarnedPoints = paginateTransactions(sortedEarnedPoints);
+  // const paginatedRedeemedPoints = paginateTransactions(sortedRedeemedPoints);
 
   return (
     <>
@@ -186,19 +191,19 @@ const HistoryPage = () => {
           </TabsList>
           <TabsContent value="All">
             <div className="mt-10">
-              {pointsHistory.map((action) => renderAction(action))}
+              {pointsHistory.map((action: any) => renderAction(action))}
             </div>
           </TabsContent>
 
           <TabsContent value="Received">
             <div className="mt-10">
-              {earnedPoints.map((action) => renderAction(action))}
+              {earnedPoints.map((action: any) => renderAction(action))}
             </div>
           </TabsContent>
 
           <TabsContent value="Used">
             <div className="mt-10">
-              {redeemedPoints.map((action) => renderAction(action))}
+              {redeemedPoints.map((action: any) => renderAction(action))}
             </div>
           </TabsContent>
         </Tabs>

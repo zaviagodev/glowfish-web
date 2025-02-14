@@ -51,6 +51,7 @@ export function ProductDetail({
   organizer_name,
   organizer_contact,
   gallery_link,
+  hide_cart,
 }: ProductDetailProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -164,7 +165,7 @@ export function ProductDetail({
   }, [description, venue_address]);
 
   return createPortal(
-    <div className="fixed inset-0 z-50 max-width-mobile bg-background">
+    <div className="fixed inset-0 z-50 max-width-mobile bg-background pointer-events-auto">
       <div
         // initial={{ opacity: 0 }}
         // animate={{ opacity: 1 }}
@@ -189,15 +190,16 @@ export function ProductDetail({
         >
           <ChevronLeft className="h-6 w-6" />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
-          onClick={() => navigate("/cart")}
-        >
-          <ShoppingCart className="h-6 w-6" />
-        </Button>
-
+        {!hide_cart && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
+            onClick={() => navigate("/cart")}
+          >
+            <ShoppingCart className="h-6 w-6" />
+          </Button>
+        )}
         {image ? (
           <div
             // layoutId={`image-container-${id}`}
