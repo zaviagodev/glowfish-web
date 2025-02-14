@@ -21,6 +21,11 @@ import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { ProductDetailProps } from "@/type/type";
 import GlowfishIcon from "../icons/GlowfishIcon";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
 interface ProductVariantOption {
   name: string;
@@ -201,7 +206,7 @@ export function ProductDetail({
             //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
             // }}
           >
-            <img
+            {/* <img
               // layoutId={`image-${id}`}
               src={image}
               alt={name}
@@ -209,7 +214,18 @@ export function ProductDetail({
               // transition={{
               //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
               // }}
-            />
+            /> */}
+            <Carousel>
+              <CarouselContent>
+                <CarouselItem>
+                  <img
+                    src={image}
+                    alt={name}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </CarouselItem>
+              </CarouselContent>
+            </Carousel>
           </div>
         ) : (
           <div
