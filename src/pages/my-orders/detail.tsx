@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Package2, Truck } from "lucide-react";
 import { useOrder } from "@/hooks/useOrder";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 // Helper function to format dates
 const formatDate = (date: Date | string | null) => {
@@ -234,7 +235,9 @@ export default function OrderDetailPage() {
                     />
                   </div>
                 ) : (
-                  <div className="w-24 h-24 rounded-lg overflow-hidden bg-white/20"></div>
+                  <div className="flex items-center justify-center w-24 h-24 rounded-lg overflow-hidden bg-white/20">
+                    <GlowfishIcon className="w-14 h-14" />
+                  </div>
                 )}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-medium line-clamp-2 text-card-foreground">

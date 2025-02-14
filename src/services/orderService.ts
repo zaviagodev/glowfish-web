@@ -185,14 +185,14 @@ export const OrderService = {
           unit_price: item.total,
           variant_id: item.variant_id,
           product_variants: {
-            name: item.product_variants.name,
-            options: item.product_variants.options,
+            name: item.product_variants?.name || "",
+            options: item.product_variants?.options || [],
             product: {
-              id: item.product_variants.product.id,
-              name: item.product_variants.product.name,
-              description: item.product_variants.product.description,
-              // /placeholder-image.jpg will be dynamically set as an empty state image on the settings page
-              image: item.product_variants.product.product_images?.[0]?.url || '/placeholder-image.jpg'
+              id: item.product_variants?.product.id || "",
+              name: item.product_variants?.product.name || "",
+              description: item.product_variants?.product.description || "",
+              // The image for the empty state will be replaced with the backend data
+              image: item.product_variants?.product.product_images?.[0]?.url || ''
             }
           }
         }))
@@ -289,13 +289,13 @@ export const OrderService = {
           unit_price: item.total,
           variant_id: item.variant_id,
           product_variants: {
-            name: item.product_variants.name,
-            options: item.product_variants.options,
+            name: item.product_variants?.name,
+            options: item.product_variants?.options,
             product: {
-              id: item.product_variants.product.id,
-              name: item.product_variants.product.name,
-              description: item.product_variants.product.description,
-              image: item.product_variants.product.product_images?.[0]?.url || '/placeholder-image.jpg'
+              id: item.product_variants?.product.id,
+              name: item.product_variants?.product.name,
+              description: item.product_variants?.product.description,
+              image: item.product_variants?.product.product_images?.[0]?.url || ''
             }
           }
         }))
