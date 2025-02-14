@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useStore } from "@/hooks/useStore";
 
 import RegisterDrawer from "@/components/main/RegisterDrawer";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,7 @@ const GetOTPDrawer = ({
 }: OTPFormProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
+  const { storeName } = useStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,7 +59,8 @@ const GetOTPDrawer = ({
     try {
       setIsSubmitting(true);
       setError(null);
-      const tokenData = await verifyOTP(data.otp, phone, verification_token);
+
+      const tokenData = await verifyOTP(data.otp, phone, verification_token, storeName);
       if (!tokenData.success) {
         throw new Error(tokenData.error || "Verification failed");
       }
