@@ -24,11 +24,10 @@ export const useCustomer = () => {
     queryFn: async () => {
       const [customersData, tiersData] = await Promise.all([
         CustomerService.getCustomers(storeName),
-        CustomerService.getCustomerTiers(storeName)
+        //CustomerService.getCustomerTiers(storeName)
       ]);
       return {
-        customers: customersData,
-        tiers: tiersData
+        customers: customersData
       };
     },
     staleTime: CACHE_EXPIRY_TIME,

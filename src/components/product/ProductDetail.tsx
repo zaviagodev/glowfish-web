@@ -543,6 +543,7 @@ export function ProductDetail({
       </div>
 
       {/* Variant Selection Drawer */}
+
       {variant_options && variant_options.length > 0 && showVariantDrawer && (
         <VariantDrawer
           open={showVariantDrawer}
@@ -551,6 +552,7 @@ export function ProductDetail({
           variants={product_variants || []}
           variantOptions={variant_options}
           selectedVariantId={selectedVariantId}
+          track_quantity={track_quantity}
           onSubmit={handleAddToCart}
         />
       )}
