@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Package2, Truck } from "lucide-react";
 import { useOrder } from "@/hooks/useOrder";
+import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 // Helper function to format dates
 const formatDate = (date: Date | string | null) => {
@@ -19,7 +21,7 @@ export default function OrderDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const { order, loading, error } = useOrder(id || '');
+  const { order, loading, error } = useOrder(id || "");
   const page = location.state?.page || "1";
 
   const handleBack = () => {
@@ -107,21 +109,22 @@ export default function OrderDetailPage() {
                 ? order.id.split("-")[0]
                 : order.id?.substring(0, 8) || ""}
             </div>
-            <div className="text-sm text-muted-foreground">
-              {formatDate(order.created_at)}
-            </div>
+            <OrderStatusBadge status={order.status} />
           </div>
-          <div className="text-sm text-muted-foreground capitalize">
+          {/* <div className="text-sm text-muted-foreground capitalize">
             {t("Status")}: {order.status}
+          </div> */}
+          <div className="text-sm text-muted-foreground">
+            {formatDate(order.created_at)}
           </div>
         </div>
 
         {/* Timeline */}
         <div className="p-5 space-y-4">
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("Order Timeline")}
           </h2>
-          <div className="relative">
+          <div className="relative bg-darkgray rounded-lg p-5">
             {timeline.map((event, index) => (
               <motion.div
                 key={event.status}
@@ -194,7 +197,7 @@ export default function OrderDetailPage() {
 
         {/* Customer Information */}
         <div className="p-5 space-y-4">
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("Customer Information")}
           </h2>
           <div className="bg-darkgray rounded-lg p-5">
@@ -217,7 +220,7 @@ export default function OrderDetailPage() {
 
         {/* Order Items */}
         <div className="p-5 space-y-5">
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("Order Items")}
           </h2>
           <div className="space-y-6 bg-darkgray p-5 rounded-lg">
@@ -232,7 +235,9 @@ export default function OrderDetailPage() {
                     />
                   </div>
                 ) : (
-                  <div className="w-24 h-24 rounded-lg overflow-hidden bg-white/20"></div>
+                  <div className="flex items-center justify-center w-24 h-24 rounded-lg overflow-hidden bg-white/20">
+                    <GlowfishIcon className="w-14 h-14" />
+                  </div>
                 )}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-medium line-clamp-2 text-card-foreground">
@@ -265,7 +270,7 @@ export default function OrderDetailPage() {
 
         {/* Order Summary */}
         <div className="p-5 space-y-5">
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("Order Summary")}
           </h2>
 
@@ -323,16 +328,16 @@ export default function OrderDetailPage() {
                 </>
               )}
               <div className="pt-3 border-t border-border">
-                <div className="flex justify-between">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-[15px] font-medium text-card-foreground">
+                    <span className="text-base font-medium text-card-foreground">
                       {t("Total")}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       ({order.order_items.length} {t("items")})
                     </span>
                   </div>
-                  <span className="text-sm font-bold">
+                  <span className="text-lg font-bold">
                     ฿{(order.total_amount || 0).toLocaleString()}
                   </span>
                 </div>
@@ -344,7 +349,7 @@ export default function OrderDetailPage() {
 
       {/* Footer Actions */}
       {isPendingAndNoAmount && (
-        <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border p-5">
+        <div className="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border p-5">
           <div className="space-y-3">
             <Button
               variant="default"

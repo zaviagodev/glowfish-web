@@ -10,6 +10,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Sparkles,
+  Copy,
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,7 @@ export default function PaymentPage() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [countdown, setCountdown] = useState(900); // 15 minutes in seconds
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isBankNumCopied, setIsBankNumCopied] = useState(false);
 
   useEffect(() => {
     const fetchOrderAndPaymentOptions = async () => {
@@ -136,6 +138,12 @@ export default function PaymentPage() {
       },
       replace: true,
     });
+  };
+
+  const handleCopyAccountNum = () => {
+    navigator.clipboard.writeText(paymentOptions?.promptpay?.id);
+    setIsBankNumCopied(true);
+    setTimeout(() => setIsBankNumCopied(false), 1500);
   };
 
   const handleFileUpload = async (
@@ -322,8 +330,38 @@ export default function PaymentPage() {
           {paymentOptions?.promptpay ? (
             <>
               <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                className="my-4 w-full space-y-3"
+              >
+                <div className="flex items-center justify-between w-full">
+                  <h2 className="text-sm text-muted-foreground">
+                    Account name
+                  </h2>
+                  <p className="text-sm">{paymentOptions.promptpay.name}</p>
+                </div>
+                <div className="flex items-center justify-between w-full">
+                  <h2 className="text-sm text-muted-foreground">Bank number</h2>
+                  <div className="flex items-center gap-2 relative">
+                    <p className="text-sm">{paymentOptions.promptpay.id}</p>
+                    <Copy onClick={handleCopyAccountNum} className="w-4 h-4" />
+                    {isBankNumCopied && (
+                      <motion.span
+                        className="absolute -right-4 bg-darkgray px-3 py-1 rounded-full"
+                        initial={{ y: -30, opacity: 1 }}
+                        animate={{ y: -50, opacity: 0 }}
+                        transition={{ duration: 1.5 }}
+                      >
+                        Copied
+                      </motion.span>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+              <motion.div
                 className={cn(
-                  "w-64 h-64 bg-background rounded-2xl shadow-lg p-4 mb-4",
+                  "w-64 h-64 bg-background rounded-2xl shadow-lg p-4 mb-4 h-max",
                   shimmer
                 )}
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -338,7 +376,7 @@ export default function PaymentPage() {
                 <img
                   src={paymentOptions.promptpay.qr_code}
                   alt="PromptPay QR Code"
-                  className="w-full h-full object-contain"
+                  className="w-full h-max object-contain rounded-3xl"
                 />
               </motion.div>
               <motion.p
@@ -499,7 +537,7 @@ export default function PaymentPage() {
 
       {/* Footer */}
       <motion.div
-        className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t z-[99]"
+        className="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto bg-background/80 backdrop-blur-xl border-t z-[99]"
         initial={{ y: 50 }}
         animate={{ y: 0 }}
         transition={{ delay: 1.6, type: "spring", stiffness: 200, damping: 20 }}
@@ -574,7 +612,7 @@ export default function PaymentPage() {
               </motion.h2>
 
               <motion.p
-                className="text-white/80 text-center"
+                className="text-muted-foreground text-center text-sm"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}

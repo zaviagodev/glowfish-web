@@ -12,13 +12,6 @@ export interface OrderStatus {
 
 export const defaultOrderStatuses: OrderStatus[] = [
   {
-    icon: <Package2 className="w-4 h-4" />,
-    label: "Unpaid",
-    value: "unpaid",
-    color: "#F44336",
-    bgColor: "rgba(244, 67, 54, 0.1)",
-  },
-  {
     icon: <Clock className="w-4 h-4" />,
     label: "Pending",
     value: "pending",
@@ -36,8 +29,8 @@ export const defaultOrderStatuses: OrderStatus[] = [
     icon: <Truck className="w-4 h-4" />,
     label: "Shipped",
     value: "shipped",
-    color: "#2196F3",
-    bgColor: "rgba(33, 150, 243, 0.1)",
+    color: "#af52de",
+    bgColor: "rgba(175, 82, 222, 0.1)",
   },
   {
     icon: <CheckCircle2 className="w-4 h-4" />,
@@ -50,8 +43,8 @@ export const defaultOrderStatuses: OrderStatus[] = [
     icon: <XCircle className="w-4 h-4" />,
     label: "Cancelled",
     value: "cancelled",
-    color: "#9E9E9E",
-    bgColor: "rgba(158, 158, 158, 0.1)",
+    color: "#F44336",
+    bgColor: "rgba(244, 67, 54, 0.1)",
   },
 ];
 
@@ -72,9 +65,7 @@ export function OrderStatusBar({
   return (
     <div className="px-5 py-6">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-sm font-medium text-muted-foreground">
-          {t("My Orders")}
-        </h2>
+        <h2 className="text-sm font-medium">{t("My Orders")}</h2>
         <button
           onClick={handleSeeAll}
           className="text-sm text-primary hover:text-primary/90 transition-colors no-underline"

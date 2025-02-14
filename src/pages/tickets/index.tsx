@@ -92,7 +92,7 @@ export default function TicketsPage() {
                 value="passed"
                 className="text-sm py-2.5 data-[state=active]:bg-background"
               >
-                {t("Past Events")}
+                {t("Ended")}
               </TabsTrigger>
             </TabsList>
           </div>
@@ -108,7 +108,7 @@ export default function TicketsPage() {
                 <p className="text-muted-foreground text-center">
                   {activeTab === "upcoming"
                     ? t("No upcoming events")
-                    : t("No past events")}
+                    : t("No ended events")}
                 </p>
               </motion.div>
             ) : (
@@ -125,7 +125,7 @@ export default function TicketsPage() {
                         ticket={{
                           id: event.event_id,
                           eventName: event.event_name,
-                          location: event.venue_name || "TBD",
+                          location: event.venue_name || "To be determined",
                           date: event.start_datetime,
                           image: event.image_url || "",
                           status: activeTab,

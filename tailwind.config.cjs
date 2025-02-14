@@ -86,7 +86,7 @@ export default {
   			},
   			line: '#04DD00',
   			fadewhite: '#FFFFFF61',
-  			orangefocus: '#EC441E',
+  			orangefocus: '#DE473C', // EC441E
 			icon: {
 				blue: {
 					foreground: 'rgb(33,150,243)',

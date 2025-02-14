@@ -30,9 +30,7 @@ export function SettingsSection({
 
   return (
     <div className={cn("px-5 py-4")}>
-      <h2 className="text-sm font-medium text-muted-foreground mb-2">
-        {title}
-      </h2>
+      <h2 className="text-sm font-medium mb-2">{title}</h2>
       <div className="overflow-hidden space-y-3">
         {items.map((item, itemIndex) => (
           <div

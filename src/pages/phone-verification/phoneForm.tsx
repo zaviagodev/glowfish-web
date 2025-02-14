@@ -32,6 +32,7 @@ const PhoneForm = ({
   const [phone, setPhone] = useState("");
   const [verificationToken, setVerificationToken] = useState("");
   const form = useForm({
+    // Type of phone number is 'number', there is going to be the change of type to string or any type
     resolver: yupResolver(phoneSchema),
     defaultValues: initialValues,
   });
@@ -96,7 +97,7 @@ const PhoneForm = ({
                   <FormControl>
                     <Input
                       placeholder="09X-XXX-XXXX"
-                      type="number"
+                      type="tel"
                       className="font-semibold"
                       {...field}
                     />
@@ -107,7 +108,7 @@ const PhoneForm = ({
             )}
           />
 
-          <p className="text-fadewhite text-sm text-center">
+          <p className="text-muted-foreground text-sm text-center">
             {t("You will receive the 6-digit code")}
           </p>
 

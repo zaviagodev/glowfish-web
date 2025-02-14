@@ -5,6 +5,7 @@ import { ChevronRight, MessageCircle, Receipt } from "lucide-react";
 interface CheckoutFooterProps {
   total: number;
   isProcessing: boolean;
+  disabled?: boolean;
   onPlaceOrder: () => void;
   storeMessage?: string;
   vatInvoiceData?: {
@@ -21,6 +22,7 @@ interface CheckoutFooterProps {
 export function CheckoutFooter({
   total,
   isProcessing,
+  disabled,
   onPlaceOrder,
   storeMessage,
   vatInvoiceData,
@@ -30,18 +32,16 @@ export function CheckoutFooter({
   const t = useTranslate();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t p-5">
+    <div className="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto bg-background/80 backdrop-blur-xl border-t p-5">
       <div className="flex items-center justify-between mb-4 text-sm">
-        <span className="text-body text-muted-foreground">
-          {t("Total Payment")}
-        </span>
-        <span className="text-title1 font-bold text-[#EE4D2D]">
+        <span className="text-base">{t("Total Payment")}</span>
+        <span className="text-base font-bold text-[#EE4D2D]">
           ฿{total.toLocaleString()}
         </span>
       </div>
       <Button
-        className="w-full !bg-mainbutton rounded-full h-12"
-        disabled={isProcessing}
+        className="w-full main-btn h-12"
+        disabled={isProcessing || disabled}
         onClick={onPlaceOrder}
       >
         {isProcessing ? t("Processing...") : t("Place Order")}

@@ -30,7 +30,7 @@ export function MessageDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-background max-w-[90%] w-[400px] rounded-lg p-0 border-0 gap-0">
         {/* Header */}
-        <DialogHeader className="px-5 py-3 border-b">
+        <DialogHeader className="px-5 pb-3 pt-6 border-b">
           <div className="flex items-center gap-2">
             <MessageCircle className="w-5 h-5 text-primary" />
             <DialogTitle className="text-lg font-semibold">

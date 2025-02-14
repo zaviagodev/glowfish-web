@@ -253,7 +253,7 @@
 
 /* Mobile container styles */
 .mobile-container {
-  max-width: 600px;
+  max-width: 500px;
   width: 100%;
   margin: 0 auto;
   padding: 0;
@@ -356,7 +356,7 @@
   }
 
   .main-btn {
-    @apply inline-flex items-center justify-center ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 !bg-mainbutton !rounded-full text-primary-foreground px-4 py-2
+    @apply inline-flex items-center justify-center ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 !bg-mainbutton !rounded-full text-primary-foreground px-4 py-2 !text-base !h-12 !font-semibold
   }
 
   .main-container {
@@ -372,7 +372,7 @@
   }
 
   .btn-footer {
-    @apply fixed bottom-0 w-full max-w-[600px] p-5 left-[50%] translate-x-[-50%] bg-background
+    @apply fixed bottom-0 w-full max-w-[500px] p-5 left-[50%] translate-x-[-50%] bg-background
   }
 
   .page-title {
@@ -519,4 +519,8 @@
 
 .text-title2 {
   @apply text-base
+}
+
+.max-width-mobile {
+  @apply max-w-[500px] mx-auto
 }

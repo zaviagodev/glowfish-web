@@ -39,7 +39,7 @@ export default function ThankYouPage() {
 
       {/* Hero Section */}
       <motion.div
-        className="h-[45vh] bg-gradient-to-b from-[#4CAF50]/10 to-background relative overflow-hidden z-10"
+        className="h-[40vh] bg-gradient-to-b from-[#4CAF50]/10 to-background relative overflow-hidden z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -80,7 +80,7 @@ export default function ThankYouPage() {
           </motion.h1>
 
           <motion.p
-            className="text-muted-foreground"
+            className="text-base text-muted-foreground"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
@@ -98,7 +98,7 @@ export default function ThankYouPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("Order Details")}
           </h2>
           <div className="space-y-3">
@@ -130,7 +130,7 @@ export default function ThankYouPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <h2 className="text-sm font-medium text-muted-foreground tracking-wide">
+          <h2 className="text-sm font-medium tracking-wide">
             {t("What's Next?")}
           </h2>
           <div className="space-y-3">

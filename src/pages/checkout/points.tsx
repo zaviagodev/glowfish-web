@@ -230,7 +230,7 @@ export default function PointsPage() {
       </div>
 
       {/* Footer */}
-      <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-background/80 backdrop-blur-xl border-t p-5 z-50">
+      <div className="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto bg-background/80 backdrop-blur-xl border-t p-5 z-50">
         <Button
           className="w-full main-btn"
           disabled={

@@ -14,7 +14,7 @@ export function Header({ onSearchClick }: HeaderProps) {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
-      <div className="max-w-[600px] mx-auto">
+      <div className="max-w-[500px] mx-auto">
         <div className="flex items-center gap-3 p-4">
           <Button
             variant="outline"

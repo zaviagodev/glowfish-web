@@ -33,6 +33,8 @@ import { useStore } from "@/hooks/useStore";
 
 const schema = yup.object().shape({
   full_name: yup.string().required("Full name is required"),
+  // first_name: yup.string().required("First name is required"),
+  // last_name: yup.string().required("Last name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
   birthday: yup.date().nullable().required("Birthday is required"),
 });
@@ -50,7 +52,10 @@ const ProfileSettings = () => {
   const form = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      full_name: "",
+      /* TODO: Set the input fields from 'full name' to 'first name' and 'last name' */
+      // full_name: "",
+      first_name: "",
+      last_name: "",
       email: "",
       phone: "",
       birthday: null,
@@ -59,14 +64,17 @@ const ProfileSettings = () => {
 
   useEffect(() => {
     if (customer) {
-      const fullName = `${customer.first_name || ""} ${
-        customer.last_name || ""
-      }`.trim();
+      // const fullName = `${customer.first_name || ""} ${
+      //   customer.last_name || ""
+      // }`.trim();
       const birthday = customer.date_of_birth
         ? new Date(customer.date_of_birth)
         : null;
       form.reset({
-        full_name: fullName,
+        /* TODO: Set the input fields from 'full name' to 'first name' and 'last name' */
+        // full_name: fullName,
+        first_name: customer.first_name || "",
+        last_name: customer.last_name || "",
         email: customer.email || "",
         phone: customer.phone || "",
         birthday: birthday,
@@ -129,22 +137,22 @@ const ProfileSettings = () => {
       setError("");
 
       console.log("Starting profile update...");
-      
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      
+
       console.log("Auth user check:", user ? "User found" : "No user");
-      
+
       if (!user) {
         setError("No authenticated user found");
         return;
       }
 
       // Split full name into first and last name
-      const nameParts = data.full_name.trim().split(/\s+/);
-      const firstName = nameParts[0];
-      const lastName = nameParts.slice(1).join(" ");
+      // const nameParts = data.full_name.trim().split(/\s+/);
+      // const firstName = nameParts[0];
+      // const lastName = nameParts.slice(1).join(" ");
 
       const updateData = {
         first_name: firstName,
@@ -162,7 +170,7 @@ const ProfileSettings = () => {
         .eq("auth_id", user.id);
 
       console.log("Update result:", updateResult);
-      
+
       if (updateError) {
         console.error("Supabase update error:", updateError);
         throw updateError;
@@ -214,14 +222,15 @@ const ProfileSettings = () => {
               />
               <label
                 htmlFor="avatar"
-                className="text-mainorange cursor-pointer text-sm"
+                className="text-orangefocus cursor-pointer text-sm"
               >
                 {t("Change Profile Picture")}
               </label>
             </div>
           </div>
 
-          <FormField
+          {/* TODO: Set the input fields from 'full name' to 'first name' and 'last name' */}
+          {/* <FormField
             control={form.control}
             name="full_name"
             render={({ field }) => (
@@ -229,6 +238,35 @@ const ProfileSettings = () => {
                 <FormLabel>{t("Full Name")}</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="Enter your full name" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+
+          {/* This will be uncommented */}
+          <FormField
+            control={form.control}
+            name="first_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("First Name")}</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Enter your first name" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="last_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("Last Name")}</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Enter your last name" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -273,7 +311,7 @@ const ProfileSettings = () => {
             )}
           />
 
-          {/* <FormField
+          <FormField
             control={form.control}
             name="birthday"
             render={({ field }) => (
@@ -284,7 +322,7 @@ const ProfileSettings = () => {
                     <FormControl>
                       <Button
                         className={cn(
-                          "flex items-center h-12 w-full rounded-md bg-darkgray outline-none border border-input text-white px-3 py-2 text-left justify-between",
+                          "flex items-center h-12 w-full rounded-md !bg-darkgray outline-none border border-input text-white px-3 py-2 text-left justify-between",
                           !field.value && "text-[#979797]"
                         )}
                       >
@@ -297,7 +335,7 @@ const ProfileSettings = () => {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent
+                  {/* <PopoverContent
                     className="w-auto p-0 bg-darkgray border-0"
                     align="start"
                   >
@@ -339,18 +377,15 @@ const ProfileSettings = () => {
                         day_hidden: "invisible",
                       }}
                     />
-                  </PopoverContent>
+                  </PopoverContent> */}
                 </Popover>
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
 
           <div className="pt-4">
-            <Button
-              type="submit"
-              className="main-btn w-full"
-            >
+            <Button type="submit" className="main-btn w-full">
               {isLoading ? t("Saving...") : t("Save Changes")}
             </Button>
           </div>

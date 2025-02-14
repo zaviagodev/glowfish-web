@@ -17,7 +17,7 @@ const Header = ({
   return (
     <header
       className={cn(
-        "px-4 py-3 fixed top-0 left-[50%] translate-x-[-50%] w-full max-w-[600px] h-14 z-50 flex items-center justify-between bg-background border-b border-border",
+        "px-4 py-3 fixed top-0 left-[50%] translate-x-[-50%] w-full max-w-[500px] h-14 z-50 flex items-center justify-between bg-background border-b border-border",
         className
       )}
     >

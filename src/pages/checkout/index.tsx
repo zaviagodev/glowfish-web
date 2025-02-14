@@ -21,7 +21,8 @@ import { CheckoutFooter } from "@/components/checkout/CheckoutFooter";
 import { ShippingMethod } from "@/components/checkout/ShippingMethod";
 import { SuccessDialog } from "@/components/checkout/SuccessDialog";
 import type { Address } from "@/services/customerService";
-
+import { ChevronRight, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CartItem {
   variantId: string;
@@ -142,12 +143,12 @@ export default function CheckoutPage() {
         navigate(`/checkout/payment/${newOrder[0]?.order_id}`);
       } else {
         // If total is 0, redirect to thank you page
-        navigate('/checkout/thank-you', {
+        navigate("/checkout/thank-you", {
           state: {
             orderNumber: newOrder[0]?.order_id,
             amount: total,
-            date: new Date().toISOString()
-          }
+            date: new Date().toISOString(),
+          },
         });
       }
     } catch (error) {
@@ -179,27 +180,19 @@ export default function CheckoutPage() {
       <div className="pt-14 pb-32">
         <div className="p-5 space-y-6">
           <ProductList items={items} />
-          {defaultAddress ? (
-            <div onClick={() => navigate("/checkout/address")}>
-              <AddressCard
-                title={t("Delivery Address")}
-                name={`${defaultAddress.first_name} ${defaultAddress.last_name}`}
-                phone={defaultAddress.phone}
-                address={`${defaultAddress.address1}${
-                  defaultAddress.address2 ? `, ${defaultAddress.address2}` : ""
-                }, ${defaultAddress.city}, ${defaultAddress.state} ${
-                  defaultAddress.postal_code
-                }`}
-              />
-            </div>
-          ) : (
-            <Button
-              onClick={() => navigate("/checkout/address")}
-              className="w-full main-btn"
-            >
-              {t("Add Delivery Address")}
-            </Button>
-          )}
+          <div onClick={() => navigate("/checkout/address")}>
+            <AddressCard
+              title={t("Delivery Address")}
+              name={`${defaultAddress?.first_name} ${defaultAddress?.last_name}`}
+              phone={defaultAddress?.phone}
+              address={`${defaultAddress?.address1}${
+                defaultAddress?.address2 ? `, ${defaultAddress?.address2}` : ""
+              }, ${defaultAddress?.city}, ${defaultAddress?.state} ${
+                defaultAddress?.postal_code
+              }`}
+              isDefault={addresses.length !== 0}
+            />
+          </div>
 
           {/* <PointsCoupons subtotal={subtotal} /> */}
 
@@ -218,6 +211,7 @@ export default function CheckoutPage() {
       <CheckoutFooter
         total={total}
         isProcessing={isProcessing}
+        disabled={addresses.length === 0}
         onPlaceOrder={handleCreateOrder}
         storeMessage={storeMessage}
         vatInvoiceData={vatInvoiceData}

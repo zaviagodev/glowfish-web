@@ -1,5 +1,15 @@
 import { motion } from "framer-motion";
-import { MapPin, Calendar, Tag, ChevronLeft, ShoppingCart } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  Tag,
+  ChevronLeft,
+  ShoppingCart,
+  Contact,
+  Phone,
+  BookImage,
+  ChevronRight,
+} from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +20,12 @@ import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { ProductDetailProps } from "@/type/type";
+import GlowfishIcon from "../icons/GlowfishIcon";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
 interface ProductVariantOption {
   name: string;
@@ -32,6 +48,10 @@ export function ProductDetail({
   onClose,
   variant_options,
   product_variants,
+  organizer_name,
+  organizer_contact,
+  gallery_link,
+  hide_cart,
 }: ProductDetailProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -145,7 +165,7 @@ export function ProductDetail({
   }, [description, venue_address]);
 
   return createPortal(
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-50 max-width-mobile bg-background pointer-events-auto">
       <div
         // initial={{ opacity: 0 }}
         // animate={{ opacity: 1 }}
@@ -160,25 +180,26 @@ export function ProductDetail({
         // transition={{
         //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
         // }}
-        className="absolute inset-0 overflow-y-auto bg-background"
+        className="fixed inset-0 overflow-y-auto bg-background max-width-mobile"
       >
         <Button
           variant="ghost"
           size="icon"
-          className="fixed left-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
+          className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
           onClick={onClose}
         >
           <ChevronLeft className="h-6 w-6" />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="fixed right-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-white"
-          onClick={() => navigate("/cart")}
-        >
-          <ShoppingCart className="h-6 w-6" />
-        </Button>
-
+        {!hide_cart && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
+            onClick={() => navigate("/cart")}
+          >
+            <ShoppingCart className="h-6 w-6" />
+          </Button>
+        )}
         {image ? (
           <div
             // layoutId={`image-container-${id}`}
@@ -187,7 +208,7 @@ export function ProductDetail({
             //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
             // }}
           >
-            <img
+            {/* <img
               // layoutId={`image-${id}`}
               src={image}
               alt={name}
@@ -195,16 +216,29 @@ export function ProductDetail({
               // transition={{
               //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
               // }}
-            />
+            /> */}
+            <Carousel>
+              <CarouselContent>
+                <CarouselItem>
+                  <img
+                    src={image}
+                    alt={name}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </CarouselItem>
+              </CarouselContent>
+            </Carousel>
           </div>
         ) : (
           <div
             // layoutId={`image-container-${id}`}
-            className="w-full aspect-square overflow-hidden bg-white/20"
+            className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20"
             // transition={{
             //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
             // }}
-          ></div>
+          >
+            <GlowfishIcon />
+          </div>
         )}
 
         <div className="p-5 space-y-6 bg-background/80 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-48">
@@ -235,14 +269,12 @@ export function ProductDetail({
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2 text-sm font-light">
                   <MapPin className="w-4 h-4" />
-                  <span>{location || "-"}</span>
+                  <span>{location || "To be determined"}</span>
                 </div>
-                {date && (
-                  <div className="flex items-center gap-2 text-sm font-light">
-                    <Calendar className="w-4 h-4" />
-                    <span>{date}</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-2 text-sm font-light">
+                  <Calendar className="w-4 h-4" />
+                  <span>{date || "To be determined"}</span>
+                </div>
                 {points && (
                   <div className="flex items-center gap-2 text-sm text-primary font-medium">
                     <Tag className="w-4 h-4" />
@@ -251,6 +283,22 @@ export function ProductDetail({
                 )}
               </div>
             </div>
+
+            {/* TODO: link to gallery page if the gallery is available
+              e.g. product.gallery_link = "https://google.com"
+            */}
+            {gallery_link && (
+              <button
+                onClick={() => (window.location.href = gallery_link)}
+                className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
+              >
+                <div className="flex items-center gap-3">
+                  <BookImage className="w-5 h-5 text-white" />
+                  {t("View gallery")}
+                </div>
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              </button>
+            )}
           </div>
 
           <div className="space-y-6">
@@ -268,7 +316,7 @@ export function ProductDetail({
                   // initial={{ opacity: 0, y: 20 }}
                   // animate={{ opacity: 1, y: 0 }}
                   // transition={{ delay: 0.4 }}
-                  className="text-[13px] text-secondary-foreground font-light"
+                  className="text-sm text-secondary-foreground font-light"
                   ref={paragraphRef}
                 >
                   <span className={!expanded ? "line-clamp-5" : ""}>
@@ -301,12 +349,25 @@ export function ProductDetail({
                   // initial={{ opacity: 0, y: 20 }}
                   // animate={{ opacity: 1, y: 0 }}
                   // transition={{ delay: 0.4 }}
-                  className="text-[13px] text-secondary-foreground font-light"
+                  className="text-sm text-secondary-foreground font-light"
                 >
                   {venue_address}
                 </p>
               </div>
             )}
+
+            {/* Organizer Details */}
+            <div className="space-y-2">
+              <h2 className="text-base">{t("Organizer")}</h2>
+              <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
+                <Contact className="w-4 h-4" />
+                {organizer_name || "To be determined"}
+              </div>
+              <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
+                <Phone className="w-4 h-4" />
+                {organizer_contact || "To be determined"}
+              </div>
+            </div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -477,19 +538,19 @@ export function ProductDetail({
           </motion.div> */}
         </div>
 
-        <div className="fixed bottom-0 left-0 w-full p-5 pt-4 z-[99] bg-background space-y-4">
+        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background space-y-4 max-width-mobile">
           {getPriceDisplay() && (
             <div className="flex items-center gap-2">
               <div className="flex items-baseline gap-2">
                 <span
-                  className="text-lg flex flex-col font-bold tracking-tight text-secondary-foreground"
+                  className="flex flex-col font-bold tracking-tight text-secondary-foreground"
                   style={{
                     willChange: "transform",
                     transform: "translateZ(0)",
                   }}
                 >
                   <span className="text-sm font-normal">start from</span>
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 text-2xl">
                     {getPriceDisplay()}
                     {/* {selectedVariant?.compare_at_price && (
                       <>

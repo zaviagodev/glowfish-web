@@ -131,7 +131,7 @@ const MemberLevel = () => {
 
         {/* All Levels */}
         <div className="px-5">
-          <h3 className="text-sm font-medium text-muted-foreground tracking-wide mb-4">
+          <h3 className="text-sm font-medium tracking-wide mb-4">
             {t("All Levels")}
           </h3>
           <div className="space-y-4">

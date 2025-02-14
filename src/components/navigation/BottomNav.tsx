@@ -1,4 +1,12 @@
-import { Home, Calendar, Gift, User, History, Ticket } from "lucide-react";
+import {
+  Home,
+  Calendar,
+  Gift,
+  User,
+  History,
+  Ticket,
+  Piano,
+} from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
@@ -16,6 +24,7 @@ const BottomNav = () => {
 
   const navItems = [
     { icon: Home, label: "Home", path: "/home" },
+    { icon: Piano, label: "Events", path: "/products" },
     { icon: Calendar, label: "Products", path: "/products" },
     { icon: Ticket, label: "Tickets", path: "/tickets" },
     { icon: Gift, label: "Rewards", path: "/rewards" },
@@ -23,8 +32,8 @@ const BottomNav = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-[50%] translate-x-[-50%] w-full max-w-[600px] z-[49] bg-background/80 backdrop-blur-xl border-t">
-      <div className="flex justify-around items-center h-[49px]">
+    <nav className="fixed bottom-0 w-full z-[49] bg-background/80 backdrop-blur-xl border-t max-width-mobile">
+      <div className="flex justify-around items-center h-[60px]">
         {navItems.map(({ icon: Icon, label, path }) => {
           const active = isActive(path);
           return (
@@ -43,7 +52,7 @@ const BottomNav = () => {
               />
               <span
                 className={cn(
-                  "text-[9px] font-medium transition-colors duration-200 no-underline",
+                  "text-xs font-medium transition-colors duration-200 no-underline",
                   active ? "text-primary" : "text-muted-foreground"
                 )}
               >

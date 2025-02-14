@@ -216,9 +216,9 @@ export default function VatInvoicePage() {
       >
         <SheetContent
           side="bottom"
-          className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-w-[600px] mx-auto flex flex-col gap-0"
+          className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-w-[500px] mx-auto flex flex-col gap-0"
         >
-          <SheetHeader className="px-5 py-3 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-between">
+          <SheetHeader className="px-5 pb-3 pt-6 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-between">
             <SheetTitle className="text-title2 font-semibold tracking-tight">
               {editingProfile ? t("Edit Company") : t("Add New Company")}
             </SheetTitle>

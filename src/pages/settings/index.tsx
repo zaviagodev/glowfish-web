@@ -82,7 +82,7 @@ const SettingsPage = () => {
   return (
     <div className="bg-background">
       {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b max-width-mobile">
         <UserProfile fullName={userProfile?.full_name} />
       </div>
 
