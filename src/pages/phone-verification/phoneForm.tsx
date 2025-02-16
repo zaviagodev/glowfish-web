@@ -18,19 +18,20 @@ import { supabase } from "@/lib/supabase";
 
 type PhoneFormProps = {
   initialValues?: {
-    phone_verification: undefined | number;
+    phone_verification: number;
   };
 };
 
 const PhoneForm = ({
   initialValues = {
-    phone_verification: undefined,
+    phone_verification: 0,
   },
 }: PhoneFormProps) => {
   const t = useTranslate();
   const [verified, setVerified] = useState(false);
   const [phone, setPhone] = useState("");
   const [verificationToken, setVerificationToken] = useState("");
+  const [refNo, setRefNo] = useState("");
   const form = useForm({
     resolver: yupResolver(phoneSchema),
     defaultValues: initialValues,
@@ -50,9 +51,13 @@ const PhoneForm = ({
 
       if (error) throw error;
 
-      // Store verification token
+      // Store verification token and ref_no
       if (otpData?.token) {
         setVerificationToken(otpData.token);
+      }
+
+      if (otpData?.ref_code) {
+        setRefNo(otpData.ref_code);
       }
 
       // Show OTP input
@@ -125,6 +130,7 @@ const PhoneForm = ({
         isOpen={verified}
         setIsOpen={setVerified}
         phone={phone}
+        ref_no={refNo}
         verification_token={verificationToken}
       />
     </>

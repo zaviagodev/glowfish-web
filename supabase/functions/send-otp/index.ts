@@ -17,7 +17,7 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
-  const { phone,line_id } = await req.json()
+  const { phone,line_id, ref_code } = await req.json()
   const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
   const supabaseUrl = Deno.env.get('SUPABASE_URL')
   const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
@@ -35,6 +35,10 @@ serve(async (req) => {
     digit : 6
   };
 
+  if (ref_code) {
+    Object.assign(payload, { ref_code });
+  }
+
   const response = await fetch(apiUrl, {
     method: 'POST',
     headers: {
@@ -46,11 +50,13 @@ serve(async (req) => {
 
   const result = await response.json();
   const token = result.data?.token;
+  const response_ref_code = result.data?.ref_code;
 
   return new Response(
     JSON.stringify({ 
       success: true,
       token : token,
+      ref_code : response_ref_code
     }),
     { 
       headers: {

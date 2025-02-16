@@ -40,7 +40,7 @@ interface UserProfile {
 export const verifyOTP = async (
   otp: string,
   phone: string,
-  verification_token: string,
+  currentVerificationToken: string,
   store_name: string,
 ): Promise<VerifyOTPResponse> => {
   try {
@@ -51,7 +51,7 @@ export const verifyOTP = async (
       body: {
         otp,
         phone,
-        token: verification_token,
+        token: currentVerificationToken,
         line_id: lineUser.userId,
         access_token: token,
         store_name
