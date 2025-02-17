@@ -15,6 +15,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useStore } from "@/hooks/useStore";
 import { useCustomer } from "@/hooks/useCustomer";
 import { CustomerService } from "@/services/customerService";
+import { addressSchema } from "./addressSchema";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 interface AddressFormData {
   id?: string;
@@ -46,6 +48,7 @@ export function AddressForm({
   const { storeName } = useStore();
   const { customer, refreshCustomer } = useCustomer();
   const form = useForm<AddressFormData>({
+    resolver: yupResolver(addressSchema),
     defaultValues: initialData || {
       first_name: "",
       last_name: "",
@@ -115,7 +118,7 @@ export function AddressForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium text-foreground">
-                {t("First Name")}
+                {t("First Name")} <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
@@ -136,7 +139,7 @@ export function AddressForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium text-foreground">
-                {t("Last Name")}
+                {t("Last Name")} <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
@@ -157,7 +160,7 @@ export function AddressForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium text-foreground">
-                {t("Phone Number")}
+                {t("Phone Number")} <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
@@ -178,7 +181,7 @@ export function AddressForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium text-foreground">
-                {t("Street Address")}
+                {t("Street Address")} <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
@@ -199,7 +202,7 @@ export function AddressForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium text-foreground">
-                {t("Building/Unit Number (Optional)")}
+                {t("Building/Unit Number")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -221,7 +224,7 @@ export function AddressForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-sm font-medium text-foreground">
-                  {t("City")}
+                  {t("City")} <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -241,7 +244,7 @@ export function AddressForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-sm font-medium text-foreground">
-                  {t("State/Province")}
+                  {t("State/Province")} <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -263,7 +266,7 @@ export function AddressForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium text-foreground">
-                {t("Postal Code")}
+                {t("Postal Code")} <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
@@ -294,9 +297,7 @@ export function AddressForm({
                   type="button"
                   variant={field.value === "shipping" ? "default" : "outline"}
                   className={`${
-                    field.value === "shipping"
-                      ? "main-btn"
-                      : "bg-darkgray rounded-full"
+                    field.value === "shipping" ? "main-btn" : "secondary-btn"
                   }`}
                   onClick={() => form.setValue("type", "shipping")}
                 >
@@ -307,9 +308,7 @@ export function AddressForm({
                   type="button"
                   variant={field.value === "billing" ? "default" : "outline"}
                   className={`${
-                    field.value === "billing"
-                      ? "main-btn"
-                      : "bg-darkgray rounded-full"
+                    field.value === "billing" ? "main-btn" : "secondary-btn"
                   }`}
                   onClick={() => form.setValue("type", "billing")}
                 >
