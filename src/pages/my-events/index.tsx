@@ -3,6 +3,7 @@ import { useTranslate } from "@refinedev/core";
 import Header from "@/components/main/Header";
 import EventCard from "@/components/main/EventCard";
 import { useEvents } from "@/hooks/useEvents";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 const MyEventsPage = () => {
   const t = useTranslate();
@@ -13,9 +14,7 @@ const MyEventsPage = () => {
     return (
       <>
         <Header title={t("My Events")} />
-        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <LoadingSpin />
       </>
     );
   }

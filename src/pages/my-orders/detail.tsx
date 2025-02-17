@@ -8,6 +8,7 @@ import { Package2, Truck } from "lucide-react";
 import { useOrder } from "@/hooks/useOrder";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 // Helper function to format dates
 const formatDate = (date: Date | string | null) => {
@@ -32,9 +33,7 @@ export default function OrderDetailPage() {
     return (
       <div className="bg-background">
         <PageHeader title={t("Order Details")} />
-        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <LoadingSpin />
       </div>
     );
   }
@@ -133,7 +132,7 @@ export default function OrderDetailPage() {
                 transition={{ delay: index * 0.1 }}
                 className={cn(
                   "relative pl-12 pb-8 last:pb-0",
-                  "before:absolute before:left-[15px] before:top-8 before:h-[calc(100%-24px)]",
+                  "before:absolute before:left-[14px] before:top-[30px] before:h-[calc(100%-32px)]",
                   "before:w-[2px]",
                   event.isActive || event.isPending
                     ? "before:bg-gradient-to-b before:from-primary before:to-muted"

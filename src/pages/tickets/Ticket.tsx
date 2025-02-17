@@ -4,6 +4,7 @@ import { format, formatDistanceToNow, isFuture, isToday } from "date-fns";
 import { MapPin, Calendar, QrCode, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 interface TicketProps {
   ticket: {
@@ -36,43 +37,50 @@ export function Ticket({ ticket }: TicketProps) {
       transition={{ duration: 0.2 }}
     >
       {/* Content */}
-      <div className="relative flex">
+      <div className="relative grid grid-cols-3">
         {/* Image Section */}
-        <div className="relative w-[120px] object-cover">
+        {ticket.image ? (
           <img
             src={ticket.image}
             alt={ticket.eventName}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover aspect-square object-top"
           />
-        </div>
+        ) : (
+          <div className="h-full bg-white/20 flex items-center justify-center">
+            <GlowfishIcon className="w-20 h-20" />
+          </div>
+        )}
 
         {/* Event Details */}
-        <div className="p-4">
-          {/* Countdown Badge */}
-          {ticket.status === "upcoming" && (
-            <div className="mb-2">
-              <div
-                className={cn(
-                  "inline-flex px-2 py-1 rounded-full text-xs font-medium",
-                  isToday(new Date(ticket.date))
-                    ? "bg-[#FF3B30]/10 text-[#FF3B30]"
-                    : "bg-[#007AFF]/10 text-[#007AFF]"
-                )}
-              >
-                {isToday(new Date(ticket.date))
-                  ? t("Today!")
-                  : isFuture(new Date(ticket.date))
-                  ? t("In {{time}}", {
-                      time: formatDistanceToNow(new Date(ticket.date), {
-                        addSuffix: false,
-                      }),
-                    })
-                  : t("Event Passed")}
+        <div className="p-4 col-span-2">
+          <div className="flex items-center justify-between">
+            <h3 className="font-medium mb-2 whitespace-pre overflow-hidden text-ellipsis">
+              {ticket.eventName}
+            </h3>
+            {/* Countdown Badge */}
+            {ticket.status === "upcoming" && (
+              <div className="mb-2">
+                <div
+                  className={cn(
+                    "inline-flex px-2 py-1 rounded-full text-xs font-medium",
+                    isToday(new Date(ticket.date))
+                      ? "bg-[#FF3B30]/10 text-[#FF3B30]"
+                      : "bg-[#007AFF]/10 text-[#007AFF]"
+                  )}
+                >
+                  {isToday(new Date(ticket.date))
+                    ? t("Today!")
+                    : isFuture(new Date(ticket.date))
+                    ? t("In {{time}}", {
+                        time: formatDistanceToNow(new Date(ticket.date), {
+                          addSuffix: false,
+                        }),
+                      })
+                    : t("Event Passed")}
+                </div>
               </div>
-            </div>
-          )}
-
-          <h3 className="font-medium mb-2">{ticket.eventName}</h3>
+            )}
+          </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="w-4 h-4 flex-shrink-0" />
@@ -82,12 +90,10 @@ export function Ticket({ ticket }: TicketProps) {
               <Calendar className="w-4 h-4 flex-shrink-0" />
               <span>{format(new Date(ticket.date), "PPp")}</span>
             </div>
-            {ticket.groupSize && ticket.groupSize > 1 && (
-              <div className="flex items-center gap-2 text-sm text-primary">
-                <Users className="w-4 h-4 flex-shrink-0" />
-                <span>{t("ticket", { count: ticket.groupSize })}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-2 text-sm text-primary">
+              <Users className="w-4 h-4 flex-shrink-0" />
+              <span>{t("ticket", { count: ticket.groupSize || 0 })}</span>
+            </div>
           </div>
         </div>
       </div>

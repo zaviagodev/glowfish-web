@@ -1,5 +1,5 @@
 import { useTranslate } from "@refinedev/core";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { format, formatDistanceToNow, isFuture, isToday } from "date-fns";
@@ -18,10 +18,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEvents } from "@/hooks/useEvents";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 export default function TicketDetails() {
   const t = useTranslate();
-  const navigate = useNavigate();
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
   const [showCheckIn, setShowCheckIn] = useState(false);
   const { id } = useParams();
@@ -31,7 +32,10 @@ export default function TicketDetails() {
   if (!event) {
     return (
       <div className="bg-background">
-        <PageHeader title={t("Event Details")} />
+        <PageHeader
+          title={t("Event Details")}
+          className="bg-background/20 border-transparent"
+        />
         <div className="flex items-center justify-center h-[60vh]">
           <p className="text-muted-foreground">{t("Ticket not found")}</p>
         </div>
@@ -52,10 +56,11 @@ export default function TicketDetails() {
   if (loading) {
     return (
       <div className="bg-background">
-        <PageHeader title={t("Event Details")} />
-        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <PageHeader
+          title={t("Event Details")}
+          className="bg-background/20 border-transparent"
+        />
+        <LoadingSpin />
       </div>
     );
   }
@@ -63,7 +68,10 @@ export default function TicketDetails() {
   if (error) {
     return (
       <div className="bg-background">
-        <PageHeader title={t("Event Details")} />
+        <PageHeader
+          title={t("Event Details")}
+          className="bg-background/20 border-transparent"
+        />
         <div className="flex items-center justify-center h-[60vh]">
           <p className="text-destructive">
             {t("Failed to load event details")}
@@ -78,7 +86,10 @@ export default function TicketDetails() {
 
   return (
     <div className="bg-background">
-      <PageHeader title={t("Event Details")} />
+      <PageHeader
+        title={t("Event Details")}
+        className="bg-background/20 border-transparent"
+      />
 
       <div className="pt-14 pb-20">
         {/* Hero Section */}
@@ -88,11 +99,18 @@ export default function TicketDetails() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <img
-              src={event.image_url || ""}
-              alt={event.event_name}
-              className="w-full h-full object-cover"
-            />
+            {event.image_url ? (
+              <img
+                src={event.image_url}
+                alt={event.event_name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="flex items-center justify-center w-full h-full overflow-hidden bg-white/20">
+                <GlowfishIcon />
+              </div>
+            )}
+
             {/* Status Badge */}
             <div
               className={cn(
@@ -191,9 +209,7 @@ export default function TicketDetails() {
                     <div className="w-10 h-10 rounded-lg bg-[#F8F8F81A] flex items-center justify-center">
                       <Ticket className="w-5 h-5 text-primary" />
                     </div>
-                    <h3 className="font-medium">
-                    {ticket.code}
-                    </h3>
+                    <h3 className="font-medium">{ticket.code}</h3>
                   </div>
                   <div
                     className={cn(

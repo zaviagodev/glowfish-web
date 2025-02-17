@@ -1,4 +1,3 @@
-import Header from "@/components/main/Header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import cardReward from "@/img/my-card.svg";
 import { useTranslate } from "@refinedev/core";
@@ -9,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { Calendar, Gift, MapPin, Package2, Tag } from "lucide-react";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/shared/PageHeader";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 const Rewards = () => {
   const t = useTranslate();
@@ -42,11 +43,7 @@ const Rewards = () => {
   });
 
   if (customerLoading || rewardsLoading) {
-    return (
-      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpin />;
   }
 
   if (customerError || rewardsError) {
@@ -68,7 +65,7 @@ const Rewards = () => {
 
   return (
     <>
-      <Header title={t("Your card")} />
+      <PageHeader title={t("Your card")} />
       <section className="pt-14">
         <div className="flex items-center justify-between p-5 pb-0">
           <h1 className="font-semibold text-[28px] m-0">
@@ -87,10 +84,12 @@ const Rewards = () => {
           </Avatar>
         </div>
         <div className="member-card h-[250px] relative">
-          <img
-            src={cardReward}
-            className="absolute z-0 w-full h-full object-cover opacity-75"
-          />
+          {cardReward && (
+            <img
+              src={cardReward}
+              className="absolute z-0 w-full h-full object-cover opacity-75"
+            />
+          )}
           <div className="flex justify-between items-center p-5 z-5 relative">
             <h3 className="font-semibold text-2xl tracking-[-0.4px]">
               {t("Good After Work")}

@@ -6,9 +6,9 @@ import { OrdersSearch } from "@/components/orders/OrdersSearch";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOrders } from "@/hooks/useOrders";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { defaultOrderStatuses } from "@/components/settings/OrderStatusBar";
+import LoadingSpin from "@/components/loading/LoadingSpin";
+import Pagination from "@/components/pagination/Pagination";
 
 export default function MyOrdersPage() {
   const t = useTranslate();
@@ -76,9 +76,7 @@ export default function MyOrdersPage() {
     return (
       <div className="bg-background">
         <PageHeader title={t("My Orders")} />
-        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <LoadingSpin />
       </div>
     );
   }
@@ -131,31 +129,13 @@ export default function MyOrdersPage() {
 
         {/* Pagination Controls */}
         {!loading && formattedOrders.length > 0 && (
-          <div className="flex items-center justify-between px-4 py-4 mt-4 border-t">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={!hasPreviousPage}
-              className="border-0"
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              {t("Previous")}
-            </Button>
-            <div className="text-sm text-muted-foreground">
-              {t("Page")} {currentPage} {t("of")} {totalPages}
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={!hasNextPage}
-              className="border-0"
-            >
-              {t("Next")}
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
+          <Pagination
+            hasNextPage={hasNextPage}
+            hasPreviousPage={hasPreviousPage}
+            handlePageChange={handlePageChange}
+            currentPage={currentPage}
+            totalPages={totalPages}
+          />
         )}
       </div>
     </div>

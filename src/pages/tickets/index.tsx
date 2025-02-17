@@ -6,9 +6,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ticket as TicketIcon } from "lucide-react";
 import { Ticket as TicketCard } from "./Ticket";
 import { useEvents } from "@/hooks/useEvents";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import LoadingSpin from "@/components/loading/LoadingSpin";
+import Pagination from "@/components/pagination/Pagination";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -50,9 +49,7 @@ export default function TicketsPage() {
     return (
       <div className="bg-background">
         <PageHeader title={t("My Tickets")} />
-        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <LoadingSpin />
       </div>
     );
   }
@@ -143,45 +140,13 @@ export default function TicketsPage() {
 
                 {/* Pagination */}
                 {total > ITEMS_PER_PAGE && (
-                  <div className="flex justify-center items-center gap-2 mt-8 px-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </Button>
-                    <div className="flex items-center gap-2">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                        (page) => (
-                          <Button
-                            key={page}
-                            variant={
-                              currentPage === page ? "default" : "outline"
-                            }
-                            size="sm"
-                            onClick={() => handlePageChange(page)}
-                            className={cn(
-                              "w-8 h-8",
-                              currentPage === page &&
-                                "bg-primary text-primary-foreground"
-                            )}
-                          >
-                            {page}
-                          </Button>
-                        )
-                      )}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  <Pagination
+                    totalPages={totalPages}
+                    handlePageChange={handlePageChange}
+                    currentPage={currentPage}
+                    hasNextPage={currentPage !== totalPages}
+                    hasPreviousPage={currentPage !== 1}
+                  />
                 )}
               </>
             )}

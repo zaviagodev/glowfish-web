@@ -4,6 +4,7 @@ import { useTranslate } from "@refinedev/core";
 import Header from "@/components/main/Header";
 import { useEvents } from "@/hooks/useEvents";
 import Barcode from "react-barcode";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 const MyEventDetail = () => {
   const { id } = useParams();
@@ -16,9 +17,7 @@ const MyEventDetail = () => {
     return (
       <>
         <Header title={t("Event Details")} />
-        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <LoadingSpin />
       </>
     );
   }

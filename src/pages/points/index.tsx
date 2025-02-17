@@ -7,23 +7,16 @@ import { cn } from "@/lib/utils";
 import {
   Coins,
   ChevronRight,
-  TrendingUp,
   Gift,
   Info,
-  QrCode,
   ArrowUpToLine,
   ArrowDownToLine,
 } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import { useState } from "react";
 import { useCustomer } from "@/hooks/useCustomer";
-import { useEvents } from "@/hooks/useEvents";
 import { format } from "date-fns";
+import LoadingSpin from "@/components/loading/LoadingSpin";
+import QRCodeSheet from "./QRCodeSheet";
 
 export default function MyPointsPage() {
   const t = useTranslate();
@@ -35,9 +28,7 @@ export default function MyPointsPage() {
     return (
       <div className="bg-background">
         <PageHeader title={t("My Points")} />
-        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <LoadingSpin />
       </div>
     );
   }
@@ -52,10 +43,6 @@ export default function MyPointsPage() {
   }
 
   const pointsTransactions = customer?.points_transactions || [];
-
-  //console.log(customer);
-
-  
   const availablePoints = customer?.loyalty_points || 0;
   const nextTierPoints = 2000; // This should come from tiers data when available
 
@@ -205,13 +192,13 @@ export default function MyPointsPage() {
           {pointsTransactions.length > 10 && (
             <motion.div
               className="px-5 mt-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
               <Button
                 variant="outline"
-                className="w-full"
+                className="w-full main-btn"
                 onClick={() => navigate("/history")}
               >
                 {t("View All History")}
@@ -244,24 +231,7 @@ export default function MyPointsPage() {
       </div>
 
       {/* QR Code Sheet */}
-      <Sheet open={showQR} onOpenChange={setShowQR}>
-        <SheetContent
-          side="bottom"
-          className="h-[70%] p-0 bg-background rounded-t-[14px]"
-        >
-          <SheetHeader className="px-5 pb-3 pt-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl justify-center h-[50px]">
-            <SheetTitle className="text-xs">{t("My Profile QR")}</SheetTitle>
-          </SheetHeader>
-          <div className="p-6 flex flex-col items-center justify-start h-full">
-            <div className="w-64 h-64 rounded-2xl flex items-center justify-center mb-6">
-              <QrCode className="w-40 h-40" />
-            </div>
-            <p className="text-sm text-[#8E8E93] text-center">
-              {t("Scan this QR code to view your profile")}
-            </p>
-          </div>
-        </SheetContent>
-      </Sheet>
+      <QRCodeSheet showQR={showQR} setShowQR={setShowQR} />
     </div>
   );
 }
