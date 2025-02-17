@@ -1,6 +1,5 @@
 import { useTranslate } from "@refinedev/core";
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,7 +40,7 @@ export function VariantDrawer({
   variants,
   variantOptions,
   selectedVariantId,
-  track_quantity
+  track_quantity,
 }: VariantDrawerProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -139,14 +138,6 @@ export function VariantDrawer({
               {/* {t("Select Options")} */}
               <GlowfishIcon className="w-[100px]" />
             </SheetTitle>
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-full"
-              onClick={onClose}
-            >
-              <X className="h-4 w-4" />
-            </Button> */}
           </div>
         </SheetHeader>
 
@@ -159,9 +150,9 @@ export function VariantDrawer({
                 <h3 className="text-base font-medium">{option.name}</h3>
                 <div className="flex flex-wrap gap-2">
                   {option.values.map((value) => {
-                    const isAvailable = getAvailableValues(
-                      option.name
-                    ).includes(value);
+                    const isAvailable = !track_quantity
+                      ? true
+                      : getAvailableValues(option.name).includes(value);
                     const isSelected = selectedOptions[option.name] === value;
 
                     return (
@@ -169,7 +160,7 @@ export function VariantDrawer({
                         key={value}
                         // variant={isSelected ? "default" : "outline"}
                         className={cn(
-                          "h-9 px-4 rounded-lg",
+                          "!h-9 px-4 rounded-lg !text-sm font-semibold",
                           !isSelected
                             ? "bg-darkgray border-input text-primary"
                             : "main-btn !rounded-lg",
@@ -217,7 +208,9 @@ export function VariantDrawer({
               {track_quantity ? (
                 currentVariant.quantity > 0 ? (
                   <p className="text-sm text-muted-foreground mt-1">
-                    {t("{{count}} in stock", { count: currentVariant.quantity })}
+                    {t("{{count}} in stock", {
+                      count: currentVariant.quantity,
+                    })}
                   </p>
                 ) : (
                   <p className="text-sm text-red-500 font-semibold mt-1">
@@ -229,21 +222,20 @@ export function VariantDrawer({
                   {t("In stock")}
                 </p>
               )}
-
             </div>
           )}
           <Button
             className="w-full main-btn"
             disabled={!currentVariant || currentVariant.quantity === 0}
             onClick={() => {
-              if (currentVariant) {
-                onSelect(currentVariant.id);
+              if (selectedVariantId) {
+                onSelect(selectedVariantId);
                 onSubmit();
               }
             }}
           >
             {
-              currentVariant?.quantity === 0
+              track_quantity && currentVariant?.quantity === 0
                 ? t("Out of Stock")
                 : t("Confirm booking") // Original: t("Select Options")}
             }
