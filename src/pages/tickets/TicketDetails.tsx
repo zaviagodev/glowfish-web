@@ -16,7 +16,7 @@ export default function TicketDetails() {
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
   const [showCheckIn, setShowCheckIn] = useState(false);
   const { id } = useParams();
-  const { events, loading, error } = useEvents();
+  const { events, loading, error, refreshEvents } = useEvents();
   const eventOrder = events.find((e) => e.event.event_id === id);
 
   if (!eventOrder) {
@@ -35,9 +35,10 @@ export default function TicketDetails() {
     setShowCheckIn(true);
   };
 
-  const handleCloseCheckIn = () => {
+  const handleCloseCheckIn = async () => {
     setSelectedTicket(null);
     setShowCheckIn(false);
+    await refreshEvents();
   };
 
   if (loading) {
