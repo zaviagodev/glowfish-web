@@ -103,3 +103,8 @@ export interface BookedDataCompProps {
 export interface RewardProps extends EventDataProps {
     category?: string
 }
+
+export interface ServiceListProps {
+    title: string;
+    descriptions: ReactNode;
+}

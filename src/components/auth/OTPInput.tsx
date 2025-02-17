@@ -1,4 +1,3 @@
-import { useTranslate } from "@refinedev/core";
 import { OTPInput as BaseOTPInput, SlotProps } from "input-otp";
 import { cn } from "@/lib/utils";
 
@@ -14,9 +13,7 @@ function Slot(props: SlotProps) {
         { "outline-1 outline-orangefocus": props.isActive }
       )}
     >
-      {props.char !== null && (
-        <div className="font-sfpro-rounded">{props.char}</div>
-      )}
+      {props.char !== null && <div>{props.char}</div>}
       {props.hasFakeCaret && <FakeCaret />}
     </div>
   );

@@ -78,7 +78,7 @@ const RegisterForm = ({
                 <Input
                   placeholder={t("John")}
                   {...field}
-                  className="font-sfpro-rounded font-semibold main-input"
+                  className="font-semibold main-input"
                 />
               </FormControl>
               <FormMessage />
@@ -98,7 +98,7 @@ const RegisterForm = ({
                 <Input
                   placeholder={t("Doe")}
                   {...field}
-                  className="font-sfpro-rounded font-semibold main-input"
+                  className="font-semibold main-input"
                 />
               </FormControl>
               <FormMessage />
@@ -117,7 +117,7 @@ const RegisterForm = ({
                 <Input
                   placeholder={t("Your company name")}
                   {...field}
-                  className="font-sfpro-rounded font-semibold main-input"
+                  className="font-semibold main-input"
                 />
               </FormControl>
               <FormMessage />
@@ -136,7 +136,7 @@ const RegisterForm = ({
                 <Input
                   placeholder={t("Phone")}
                   {...field}
-                  className="font-sfpro-rounded font-semibold main-input"
+                  className="font-semibold main-input"
                 />
               </FormControl>
               <FormMessage />
@@ -155,7 +155,7 @@ const RegisterForm = ({
                 <Input
                   placeholder={t("youremail@mail.com")}
                   {...field}
-                  className="font-sfpro-rounded font-semibold main-input"
+                  className="font-semibold main-input"
                 />
               </FormControl>
               <FormMessage />

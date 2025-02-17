@@ -204,7 +204,10 @@ function App() {
                     />
                     <Route path="member-level" element={<MemberLevel />} />
                     <Route path="points" element={<MyPointsPage />} />
-                    <Route path="scan-to-redeem" element={<ScanToRedeemPage />} />
+                    <Route
+                      path="scan-to-redeem"
+                      element={<ScanToRedeemPage />}
+                    />
                   </Route>
 
                   <Route path="/my-orders">
@@ -215,10 +218,10 @@ function App() {
                     <Route index element={<MyItemsPage />} />
                     <Route path=":id" element={<VoucherDetail />} />
                   </Route> */}
-                  <Route path="/my-events">
+                  {/* <Route path="/my-events">
                     <Route index element={<MyEventsPage />} />
                     <Route path="detail/:id" element={<MyEventDetail />} />
-                  </Route>
+                  </Route> */}
                   <Route path="/checkout/coupons" element={<CouponsPage />} />
                   <Route path="/checkout/points" element={<PointsPage />} />
                   <Route

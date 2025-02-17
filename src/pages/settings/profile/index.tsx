@@ -13,8 +13,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-
-import Header from "@/components/main/Header";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -30,6 +28,7 @@ import { CalendarIcon } from "lucide-react";
 import { useCustomer } from "@/hooks/useCustomer";
 import { useToast } from "@/components/ui/toast";
 import { useStore } from "@/hooks/useStore";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 const schema = yup.object().shape({
   full_name: yup.string().required("Full name is required"),
@@ -190,7 +189,7 @@ const ProfileSettings = () => {
 
   return (
     <>
-      <Header title={t("Profile Settings")} />
+      <PageHeader title={t("Profile Settings")} />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((data) => {

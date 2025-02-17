@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import { supabase } from "@/lib/supabase";
 import { format } from "date-fns";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 interface Variant {
   id: string;
@@ -140,11 +141,7 @@ export const HomeShow = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpin />;
   }
 
   if (error || !product) {
@@ -196,7 +193,7 @@ export const HomeShow = () => {
       <footer className="btn-footer flex flex-col gap-7 z-[51]">
         <div className="space-y-1">
           <p className="text-xs">{t("Start from")}</p>
-          <h2 className="font-sfpro-rounded font-semibold">
+          <h2 className="font-semibold">
             {hasVariants
               ? selectedVariant
                 ? `฿${selectedVariant.price}`
@@ -224,7 +221,7 @@ export const HomeShow = () => {
                 {/* TODO: add GlowfishIcon */}
                 GlowfishIcon
                 <span
-                  className="font-semibold bg-[#FFFFFF1F] rounded-full h-[30px] w-[30px] font-sfpro-rounded flex items-center justify-center"
+                  className="font-semibold bg-[#FFFFFF1F] rounded-full h-[30px] w-[30px] flex items-center justify-center"
                   onClick={() => setIsConfirming(false)}
                 >
                   ✕
@@ -259,7 +256,7 @@ export const HomeShow = () => {
             <footer className="space-y-4 px-5 py-10">
               <div className="text-center">
                 <p className="text-sm">{t("Total cost")}</p>
-                <h2 className="text-2xl font-sfpro-rounded font-medium">
+                <h2 className="text-2xl font-medium">
                   {hasVariants
                     ? selectedVariant
                       ? `฿${selectedVariant.price}`

@@ -1,4 +1,3 @@
-import Header from "@/components/main/Header";
 import { useCustomer } from "@/hooks/useCustomer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -6,6 +5,8 @@ import { ArrowDownToLine, ArrowUpToLine } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button"; // Add this import
+import { PageHeader } from "@/components/shared/PageHeader";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 const HistoryPage = () => {
   const t = useTranslate();
@@ -27,16 +28,13 @@ const HistoryPage = () => {
       action.type === "earn" ? t("Get Point") : t("Spend Point");
     const formattedDate = format(new Date(action.created_at), "MMM dd");
     const Icon = action.type === "earn" ? ArrowUpToLine : ArrowDownToLine;
-    {
-      /* action.type === "earn" */
-    }
 
     return (
       <div
         key={action.id}
         className="flex items-center justify-between py-2 mb-2"
       >
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-3">
           <div
             className={cn(
               "min-w-10 h-10 rounded-lg flex items-center justify-center text-[#34C759] bg-[#34C759]/10",
@@ -72,22 +70,20 @@ const HistoryPage = () => {
   if (loading) {
     return (
       <>
-        <Header
+        <PageHeader
           title={t("History")}
-          rightButton={
+          rightElement={
             <Button
               onClick={handleRefresh}
               variant="ghost"
-              className="text-white"
+              className="text-white p-0 justify-end"
               disabled={true}
             >
               {t("Refreshing...")}
             </Button>
           }
         />
-        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <LoadingSpin />
       </>
     );
   }
@@ -95,13 +91,13 @@ const HistoryPage = () => {
   if (error) {
     return (
       <>
-        <Header
+        <PageHeader
           title={t("History")}
-          rightButton={
+          rightElement={
             <Button
               onClick={handleRefresh}
               variant="ghost"
-              className="text-white"
+              className="text-white p-0 justify-end"
             >
               {t("Refresh")}
             </Button>
@@ -115,6 +111,23 @@ const HistoryPage = () => {
   const pointsHistory = customer?.points_transactions || [];
   const earnedPoints = pointsHistory.filter((p) => p.type === "earn");
   const redeemedPoints = pointsHistory.filter((p) => p.type === "redeem");
+  const historyTabs = [
+    {
+      value: "All",
+      label: "All",
+      data: pointsHistory,
+    },
+    {
+      value: "Received",
+      label: "Received",
+      data: earnedPoints,
+    },
+    {
+      value: "Used",
+      label: "Spend",
+      data: redeemedPoints,
+    },
+  ];
 
   // Pagination logic
   const handlePageChange = (newPage: number) => {
@@ -169,7 +182,7 @@ const HistoryPage = () => {
 
   return (
     <>
-      <Header title={t("History")} />
+      <PageHeader title={t("History")} />
       <div className="mb-4 px-5">
         <h2 className="text-lg font-semibold">{t("Total Points")}</h2>
         <p className="text-2xl font-bold text-orangefocus">
@@ -179,33 +192,19 @@ const HistoryPage = () => {
       <section className="px-6">
         <Tabs defaultValue="All">
           <TabsList className="w-full bg-darkgray border border-input rounded-xl h-9">
-            <TabsTrigger value="All" className={tabClassNames}>
-              {t("All")}
-            </TabsTrigger>
-            <TabsTrigger value="Received" className={tabClassNames}>
-              {t("Received")}
-            </TabsTrigger>
-            <TabsTrigger value="Used" className={tabClassNames}>
-              {t("Spend")}
-            </TabsTrigger>
+            {historyTabs.map((tab) => (
+              <TabsTrigger value={tab.value} className={tabClassNames}>
+                {t(tab.label)}
+              </TabsTrigger>
+            ))}
           </TabsList>
-          <TabsContent value="All">
-            <div className="mt-10">
-              {pointsHistory.map((action: any) => renderAction(action))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="Received">
-            <div className="mt-10">
-              {earnedPoints.map((action: any) => renderAction(action))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="Used">
-            <div className="mt-10">
-              {redeemedPoints.map((action: any) => renderAction(action))}
-            </div>
-          </TabsContent>
+          {historyTabs.map((tab) => (
+            <TabsContent value={tab.value}>
+              <div className="mt-10">
+                {tab.data.map((action: any) => renderAction(action))}
+              </div>
+            </TabsContent>
+          ))}
         </Tabs>
       </section>
     </>

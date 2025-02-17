@@ -1,8 +1,6 @@
 import { useTranslate } from "@refinedev/core";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Button } from "../ui/button";
 import GlowfishIcon from "../icons/GlowfishIcon";

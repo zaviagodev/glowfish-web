@@ -1,6 +1,4 @@
 import { useTranslate } from "@refinedev/core";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { useCustomer } from "@/hooks/useCustomer";
 
 interface UserProfileProps {
@@ -9,37 +7,22 @@ interface UserProfileProps {
 
 export function UserProfile({ memberLevel = "Gold Member" }: UserProfileProps) {
   const t = useTranslate();
-  const navigate = useNavigate();
   const { customer } = useCustomer();
-
-  const handleEditClick = () => {
-    navigate("/settings/profile");
-  };
 
   return (
     <div className="px-5 py-4">
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            {/* {customer?.first_name || customer?.last_name
+      <div className="space-y-2">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          {/* {customer?.first_name || customer?.last_name
               ? `${customer?.first_name || ""} ${
                   customer?.last_name || ""
                 }`.trim()
               : ""} */}
-            {customer?.first_name || "User"}
-          </h2>
-          <div className="flex items-center gap-2">
-            {/* Member level content */}
-          </div>
+          {customer?.first_name || "User"}
+        </h2>
+        <div className="flex items-center gap-2">
+          {/* Member level content */}
         </div>
-        {/* <Button
-          variant="ghost"
-          size="sm"
-          // className="main-btn !h-10"
-          onClick={handleEditClick}
-        >
-          {t("Edit")}
-        </Button> */}
       </div>
     </div>
   );

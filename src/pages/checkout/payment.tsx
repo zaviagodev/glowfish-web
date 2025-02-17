@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 // Mock QR code image URL - replace with actual QR code generation
 const mockQRCode =
@@ -202,11 +203,7 @@ export default function PaymentPage() {
   };
 
   if (!order || !paymentOptions) {
-    return (
-      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpin />;
   }
 
   return (

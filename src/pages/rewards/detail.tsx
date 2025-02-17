@@ -1,13 +1,7 @@
-import Header from "@/components/main/Header";
 import { useTranslate } from "@refinedev/core";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  Sheet,
-  SheetContent,
-  SheetOverlay,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import {
   Barcode as BarcodeIcon,
@@ -38,6 +32,8 @@ import {
 } from "@/components/ui/dialog";
 import { useOrders } from "@/hooks/useOrders";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { PageHeader } from "@/components/shared/PageHeader";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 const RewardDetail = () => {
   const t = useTranslate();
@@ -68,11 +64,7 @@ const RewardDetail = () => {
   const { refreshOrders } = useOrders();
 
   if (rewardsLoading || customerLoading) {
-    return (
-      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpin />;
   }
 
   if (rewardsError || customerError) {
@@ -176,7 +168,7 @@ const RewardDetail = () => {
 
   return (
     <div className="pb-10">
-      <Header className="bg-transparent border-0" />
+      <PageHeader className="bg-transparent border-0" />
       {imageUrl ? (
         <img
           src={imageUrl}
@@ -187,7 +179,7 @@ const RewardDetail = () => {
           <GlowfishIcon />
         </div>
       )}
-      <section className="p-5 bg-background relative backdrop-blur-sm rounded-[14px] flex flex-col gap-7">
+      <section className="p-5 bg-background/70 relative backdrop-blur-sm rounded-t-2xl flex flex-col gap-7 -top-20">
         <div className="flex flex-col gap-4">
           <p className="text-sm text-muted-foreground">Reward</p>
           <h2 className="text-2xl">{reward.name}</h2>
@@ -282,9 +274,9 @@ const RewardDetail = () => {
             </DialogHeader>
             <div className="flex gap-4 mt-4">
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={() => setIsConfirmDialogOpen(false)}
-                className="!bg-darkgray text-white rounded-full w-full"
+                className="secondary-btn w-full"
               >
                 {t("Cancel")}
               </Button>

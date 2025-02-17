@@ -23,6 +23,7 @@ import { SuccessDialog } from "@/components/checkout/SuccessDialog";
 import type { Address } from "@/services/customerService";
 import { ChevronRight, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 interface CartItem {
   variantId: string;
@@ -166,11 +167,7 @@ export default function CheckoutPage() {
   };
 
   if (customerLoading) {
-    return (
-      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpin />;
   }
 
   return (

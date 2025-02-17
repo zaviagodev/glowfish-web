@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/sheet";
 import { AddressForm } from "./address-form";
 import { PageHeader } from "@/components/shared/PageHeader";
+import LoadingSpin from "@/components/loading/LoadingSpin";
 
 export default function AddressSelection() {
   const t = useTranslate();
@@ -78,11 +79,7 @@ export default function AddressSelection() {
   };
 
   if (customerLoading) {
-    return (
-      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpin />;
   }
 
   return (
@@ -174,9 +171,8 @@ export default function AddressSelection() {
             setEditingAddress(null);
             setShowAddForm(true);
           }}
-          className="w-full main-btn flex items-center gap-2 mt-3"
+          className="w-full main-btn flex items-center mt-3"
         >
-          <Plus className="w-4 h-4" />
           {t("Add New Address")}
         </Button>
       </div>

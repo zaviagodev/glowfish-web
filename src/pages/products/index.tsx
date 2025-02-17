@@ -20,13 +20,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -179,58 +172,67 @@ export default function ProductsPage() {
 
       {/* Product Grid */}
       <div className="p-5">
-        {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4">
-            {filteredProducts.map((product) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <AnimatedCard
-                  id={product.id}
-                  image={product.image}
-                  title={product.name}
-                  price={product.price}
-                  compareAtPrice={
-                    product.product_variants?.[0]?.compare_at_price || undefined
-                  }
-                  product_variants={product.product_variants}
-                  location={product.location}
-                  date={formattedDate(product)}
-                  hasGallery={false}
-                  imageClassName="max-h-[220px] h-[40vw]"
-                  onClick={() => {
-                    // Get the default variant if product has variants
-                    const defaultVariant = product.product_variants?.[0];
-                    if (defaultVariant) {
-                      setSelectedProduct({
-                        ...product,
-                        variant_id: defaultVariant.id,
-                        quantity: defaultVariant.quantity,
-                      });
-                    } else {
-                      setSelectedProduct(product);
-                    }
-                  }}
-                />
-              </motion.div>
-            ))}
+        {loading ? (
+          <div className="flex items-center justify-center h-40">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="flex flex-col items-center justify-center py-12 px-4"
-          >
-            <Package2 className="w-16 h-16 text-muted-foreground/50 mb-4" />
-            <p className="text-muted-foreground text-center">
-              {searchQuery
-                ? t("No products found matching your search")
-                : t("No products found")}
-            </p>
-          </motion.div>
+          <>
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4">
+                {filteredProducts.map((product) => (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <AnimatedCard
+                      id={product.id}
+                      image={product.image}
+                      title={product.name}
+                      price={product.price}
+                      compareAtPrice={
+                        product.product_variants?.[0]?.compare_at_price ||
+                        undefined
+                      }
+                      product_variants={product.product_variants}
+                      location={product.location}
+                      date={formattedDate(product)}
+                      hasGallery={false}
+                      imageClassName="max-h-[220px] h-[40vw]"
+                      onClick={() => {
+                        // Get the default variant if product has variants
+                        const defaultVariant = product.product_variants?.[0];
+                        if (defaultVariant) {
+                          setSelectedProduct({
+                            ...product,
+                            variant_id: defaultVariant.id,
+                            quantity: defaultVariant.quantity,
+                          });
+                        } else {
+                          setSelectedProduct(product);
+                        }
+                      }}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="flex flex-col items-center justify-center py-12 px-4"
+              >
+                <Package2 className="w-16 h-16 text-muted-foreground/50 mb-4" />
+                <p className="text-muted-foreground text-center">
+                  {searchQuery
+                    ? t("No products found matching your search")
+                    : t("No products found")}
+                </p>
+              </motion.div>
+            )}
+          </>
         )}
       </div>
 
@@ -362,28 +364,6 @@ export default function ProductsPage() {
                 )}
               </motion.button>
             ))}
-
-            {/* <Select
-              value={sortBy}
-              onValueChange={(value) => {
-                setSortBy(value);
-                setShowSortDrawer(false);
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("Select sort order")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest">{t("Newest First")}</SelectItem>
-                <SelectItem value="oldest">{t("Oldest First")}</SelectItem>
-                <SelectItem value="price-low">
-                  {t("Price: Low to High")}
-                </SelectItem>
-                <SelectItem value="price-high">
-                  {t("Price: High to Low")}
-                </SelectItem>
-              </SelectContent>
-            </Select> */}
           </div>
         </SheetContent>
       </Sheet>

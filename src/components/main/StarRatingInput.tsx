@@ -15,7 +15,7 @@ const StarsSection = ({
 }: StarsSectionProps) => {
   return (
     <section className="space-y-2">
-      <FormLabel className="text-[#CFCFCF] text-base font-sfpro-rounded font-semibold">
+      <FormLabel className="text-[#CFCFCF] text-base font-semibold">
         {title}
       </FormLabel>
       <span className="flex justify-between items-center text-4xl">

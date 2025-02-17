@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/toast";
 import { useCustomer } from "@/hooks/useCustomer";
 import jsQR from "jsqr";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 interface RedeemResponse {
   points_earned: number;
@@ -288,19 +289,13 @@ const ScanToRedeemPage = () => {
   return (
     <div className="bg-background">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b p-4 h-14 flex items-center gap-5 max-width-mobile">
-        <Button
-          variant="ghost"
-          className="p-0 text-muted-foreground hover:text-foreground transition-colors"
-          onClick={() => {
-            stopScanner();
-            navigate(-1);
-          }}
-        >
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
-        <h1 className="text-lg font-semibold">{t("Scan to Redeem")}</h1>
-      </div>
+      <PageHeader
+        title={t("Scan to Redeem")}
+        onBack={() => {
+          stopScanner();
+          navigate(-1);
+        }}
+      />
 
       {/* Scanner */}
       <div className="flex flex-col pt-16">

@@ -9,6 +9,7 @@ import {
   Phone,
   BookImage,
   ChevronRight,
+  X,
 } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,6 @@ import { useCart } from "@/lib/cart";
 import { VariantDrawer } from "./VariantDrawer";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
-import { cn } from "@/lib/utils";
 import { ProductDetailProps } from "@/type/type";
 import GlowfishIcon from "../icons/GlowfishIcon";
 import {
@@ -26,6 +26,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { cn } from "@/lib/utils";
 
 interface ProductVariantOption {
   name: string;
@@ -57,6 +58,7 @@ export function ProductDetail({
   const navigate = useNavigate();
   const addItem = useCart((state) => state.addItem);
   const { addToast } = useToast();
+  const [openImageModal, setOpenImageModal] = useState(false);
   const [showVariantDrawer, setShowVariantDrawer] = useState(false);
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
@@ -200,15 +202,30 @@ export function ProductDetail({
             <ShoppingCart className="h-6 w-6" />
           </Button>
         )}
-        {image ? (
-          <div
-            // layoutId={`image-container-${id}`}
-            className="w-full aspect-square overflow-hidden"
-            // transition={{
-            //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
-            // }}
-          >
-            {/* <img
+        <div
+          className={
+            openImageModal
+              ? "absolute h-full z-[999] bg-background flex flex-col justify-center w-full"
+              : ""
+          }
+        >
+          {openImageModal && (
+            <div
+              className="absolute right-5 top-5 h-10 w-10 bg-black/20 rounded-full flex items-center justify-center"
+              onClick={() => setOpenImageModal(false)}
+            >
+              <X className="h-6 w-6" />
+            </div>
+          )}
+          {image ? (
+            <div
+              // layoutId={`image-container-${id}`}
+              className="w-full aspect-square overflow-hidden"
+              // transition={{
+              //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
+              // }}
+            >
+              {/* <img
               // layoutId={`image-${id}`}
               src={image}
               alt={name}
@@ -217,45 +234,34 @@ export function ProductDetail({
               //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
               // }}
             /> */}
-            <Carousel>
-              <CarouselContent>
-                <CarouselItem>
-                  <img
-                    src={image}
-                    alt={name}
-                    className="w-full h-full object-cover object-top"
-                  />
-                </CarouselItem>
-              </CarouselContent>
-            </Carousel>
-          </div>
-        ) : (
-          <div
-            // layoutId={`image-container-${id}`}
-            className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20"
-            // transition={{
-            //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
-            // }}
-          >
-            <GlowfishIcon />
-          </div>
-        )}
+              <Carousel>
+                <CarouselContent>
+                  <CarouselItem onClick={() => setOpenImageModal(true)}>
+                    <img
+                      src={image}
+                      alt={name}
+                      className="w-full h-full object-cover object-top aspect-square"
+                    />
+                  </CarouselItem>
+                </CarouselContent>
+              </Carousel>
+            </div>
+          ) : (
+            <div
+              // layoutId={`image-container-${id}`}
+              className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20"
+              // transition={{
+              //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
+              // }}
+            >
+              <GlowfishIcon />
+            </div>
+          )}
+        </div>
 
-        <div className="p-5 space-y-6 bg-background/80 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-48">
+        <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-48 -top-20">
           <div className="space-y-4">
             <div className="space-y-2">
-              <span
-                className={cn(
-                  "text-2xl flex flex-col font-bold tracking-tight text-secondary-foreground",
-                  { "text-4xl text-orangefocus": getPriceDisplay() === "free" }
-                )}
-                style={{
-                  willChange: "transform",
-                  transform: "translateZ(0)",
-                }}
-              >
-                {getPriceDisplay()}
-              </span>
               <h2
                 // layoutId={`title-${id}`}
                 className="text-2xl"
@@ -275,12 +281,12 @@ export function ProductDetail({
                   <Calendar className="w-4 h-4" />
                   <span>{date || "To be determined"}</span>
                 </div>
-                {points && (
+                {/* {points && (
                   <div className="flex items-center gap-2 text-sm text-primary font-medium">
                     <Tag className="w-4 h-4" />
                     <span>{t("point", { count: points })}</span>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
 

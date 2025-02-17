@@ -1,12 +1,9 @@
-import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import { EventDataProps } from "@/type/type";
 import { useTranslate } from "@refinedev/core";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AnimatedCard } from "../shared/AnimatedCard";
-import { ProductDetail } from "../product/ProductDetail";
 
 interface EventSectionProps {
   list: EventDataProps[];
@@ -39,43 +36,41 @@ const EventSection = ({
         )}
       </div>
 
-      <div
-        className={cn(
-          "flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5",
-          "scroll-smooth"
-        )}
-      >
-        {list.map((item) => (
-          <motion.div
-            key={item.title}
-            className="flex-shrink-0 w-[360px]"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={() =>
-              // navigate(`${eventCardLink || "/home/show/"}${item.id}`)
-              setSelectedEvent(item)
-            }
-          >
-            <AnimatedCard
-              id={item.id}
-              image={item.image}
-              title={item.title}
-              price={item.price}
-              compareAtPrice={item.compare_at_price}
-              location={item.location}
-              product_variants={item.product_variants}
-              date={
-                item.start_datetime &&
-                item.end_datetime &&
-                `${format(
-                  new Date(item.start_datetime),
-                  "dd-MM-yyyy HH:mm"
-                )} - ${format(new Date(item.end_datetime), "dd-MM-yyyy HH:mm")}`
-              }
-            />
-          </motion.div>
-        ))}
+      <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5 scroll-smooth">
+        {list.map((item) => {
+          const handleSelectedEvent = () => setSelectedEvent(item);
+          return (
+            <motion.div
+              key={item.title}
+              className="flex-shrink-0 w-[360px]"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={handleSelectedEvent}
+            >
+              <AnimatedCard
+                id={item.id}
+                image={item.image}
+                title={item.title}
+                price={item.price}
+                compareAtPrice={item.compare_at_price}
+                location={item.location}
+                product_variants={item.product_variants}
+                date={
+                  item.start_datetime &&
+                  item.end_datetime &&
+                  `${format(
+                    new Date(item.start_datetime),
+                    "dd-MM-yyyy HH:mm"
+                  )} - ${format(
+                    new Date(item.end_datetime),
+                    "dd-MM-yyyy HH:mm"
+                  )}`
+                }
+              />
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );
