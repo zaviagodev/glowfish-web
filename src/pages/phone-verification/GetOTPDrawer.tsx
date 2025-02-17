@@ -57,6 +57,10 @@ const GetOTPDrawer = ({
   const [currentVerificationToken, setCurrentVerificationToken] = useState(initialVerificationToken);
 
   useEffect(() => {
+    setCurrentVerificationToken(initialVerificationToken);
+  }, [initialVerificationToken]);
+
+  useEffect(() => {
     let timer: NodeJS.Timeout;
     if (countdown > 0 && isResendDisabled) {
       timer = setInterval(() => {

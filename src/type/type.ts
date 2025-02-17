@@ -7,12 +7,27 @@ export interface ProductVariant {
     price: number;
     compare_at_price: number | null;
     quantity: number;
+    points_based_price?: number;
     options: Array<{
       name: string;
       value: string;
     }>;
     status: string;
     position: number;
+}
+
+export interface Product {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    product_images?: Array<{
+      id: string;
+      url: string;
+      alt?: string;
+      position: number;
+    }>;
+    product_variants?: ProductVariant[];
 }
 
 export interface ProductDetailProps {
@@ -31,7 +46,7 @@ export interface ProductDetailProps {
     onClose: () => void;
     variant_options?: any[];
     product_variants?: ProductVariant[];
-  }
+}
 
 type EventDataTypes = "small" | "event"
 
@@ -98,4 +113,59 @@ export interface BookedDataCompProps {
 
 export interface RewardProps extends EventDataProps {
     category?: string
+}
+
+export interface Event {
+  order_id: string;
+  customer_id: string;
+  created_at: string;
+  tickets: Ticket[];
+  event: {
+    event_id: string;
+    name: string;
+    start_datetime: string;
+    end_datetime: string;
+    venue_name: string;
+    venue_address: string;
+    organizer_name: string;
+    organizer_contact: string;
+    google_maps_link: string;
+    attendance_points: number;
+    product: {
+      id: string;
+      name: string;
+      description: string;
+      price: number;
+      compare_at_price: number;
+      status: string;
+      images: {
+        id: string;
+        url: string;
+        alt: string;
+        position: number;
+      }[];
+      variants: {
+        id: string;
+        name: string;
+        sku: string;
+        price: number;
+        compare_at_price: number;
+        quantity: number;
+        status: string;
+      }[];
+    };
+  };
+  total_orders: number;
+}
+
+export interface Ticket {
+  id: string;
+  code: string;
+  status: string;
+  metadata: {
+    eventId: string;
+    attendeeName?: string;
+    [key: string]: any;
+  };
+  order_item_id: string;
 }

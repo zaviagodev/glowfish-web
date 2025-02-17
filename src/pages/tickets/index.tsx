@@ -23,8 +23,8 @@ export default function TicketsPage() {
 
   // Sort events by closest start date
   const sortedEvents = [...events].sort((a, b) => {
-    const dateA = new Date(a.start_datetime);
-    const dateB = new Date(b.start_datetime);
+    const dateA = new Date(a.event.start_datetime);
+    const dateB = new Date(b.event.start_datetime);
     const now = new Date();
     return (
       Math.abs(dateA.getTime() - now.getTime()) -
@@ -33,7 +33,7 @@ export default function TicketsPage() {
   });
 
   const filteredTickets = sortedEvents.filter((event) => {
-    const eventDate = new Date(event.end_datetime);
+    const eventDate = new Date(event.event.end_datetime);
     const isUpcoming = eventDate > new Date();
     return activeTab === "upcoming" ? isUpcoming : !isUpcoming;
   });
@@ -116,25 +116,23 @@ export default function TicketsPage() {
                 <div className="px-5 space-y-4">
                   {filteredTickets.map((event, index) => (
                     <motion.div
-                      key={event.event_id}
+                      key={event.event.event_id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
                       <TicketCard
                         ticket={{
-                          id: event.event_id,
-                          eventName: event.event_name,
-                          location: event.venue_name || "TBD",
-                          date: event.start_datetime,
-                          image: event.image_url || "",
+                          id: event.event.event_id,
+                          eventName: event.event.name,
+                          location: event.event.venue_name || "TBD",
+                          date: event.event.start_datetime,
+                          image: event.event.product.images[0]?.url || "",
                           status: activeTab,
                           used: activeTab === "passed",
-                          ticketNumber: event.ticket_details[0]?.code || "",
-                          seat:
-                            event.ticket_details[0]?.metadata?.attendeeName ||
-                            "General Admission",
-                          groupSize: event.ticket_details.length || 1,
+                          ticketNumber: event.tickets[0]?.code || "",
+                          seat: event.tickets[0]?.metadata?.attendeeName || "General Admission",
+                          groupSize: event.tickets.length || 1,
                         }}
                       />
                     </motion.div>

@@ -79,5 +79,5 @@ export const useEvents = (options: UseEventsOptions = {}) => {
     isError: eventsError
   };
 };
-
 export type { Event, PaginatedEvents };
+
