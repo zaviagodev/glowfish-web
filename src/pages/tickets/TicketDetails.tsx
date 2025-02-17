@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Users, QrCode, Ticket, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEvents } from "@/hooks/useEvents";
+import { Event } from "@/services/eventService";
 
 export default function TicketDetails() {
   const t = useTranslate();
@@ -17,7 +18,7 @@ export default function TicketDetails() {
   const [showCheckIn, setShowCheckIn] = useState(false);
   const { id } = useParams();
   const { events, loading, error, refreshEvents } = useEvents();
-  const eventOrder = events.find((e) => e.event.event_id === id);
+  const eventOrder = events.find((e) => e.order_id === id);
 
   if (!eventOrder) {
     return (

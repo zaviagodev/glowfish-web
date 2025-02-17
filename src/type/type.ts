@@ -116,46 +116,19 @@ export interface RewardProps extends EventDataProps {
 }
 
 export interface Event {
-  order_id: string;
-  customer_id: string;
-  created_at: string;
-  tickets: Ticket[];
-  event: {
-    event_id: string;
-    name: string;
-    start_datetime: string;
-    end_datetime: string;
-    venue_name: string;
-    venue_address: string;
-    organizer_name: string;
-    organizer_contact: string;
-    google_maps_link: string;
-    attendance_points: number;
-    product: {
-      id: string;
-      name: string;
-      description: string;
-      price: number;
-      compare_at_price: number;
-      status: string;
-      images: {
-        id: string;
-        url: string;
-        alt: string;
-        position: number;
-      }[];
-      variants: {
-        id: string;
-        name: string;
-        sku: string;
-        price: number;
-        compare_at_price: number;
-        quantity: number;
-        status: string;
-      }[];
-    };
-  };
-  total_orders: number;
+  event_id: string;
+  event_name: string;
+  google_maps_link: string | null;
+  organizer_contact: string;
+  organizer_name: string;
+  start_datetime: string;
+  end_datetime: string;
+  updated_at: string;
+  venue_address: string;
+  venue_name: string;
+  image_url: string;
+  ticket_details: Ticket[];
+  total_count: number;
 }
 
 export interface Ticket {
