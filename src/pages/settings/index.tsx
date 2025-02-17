@@ -7,6 +7,7 @@ import { OrderStatusBar } from "@/components/settings/OrderStatusBar";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { WalletSection } from "@/components/settings/WalletSection";
 import { Crown, Gift, QrCode, Star, User } from "lucide-react";
+import DrawerInfo from "@/components/company-info/DrawerInfo";
 
 const SettingsPage = () => {
   const t = useTranslate();
@@ -99,11 +100,15 @@ const SettingsPage = () => {
           />
         ))}
 
-        {/* Logout Button */}
-        <div className="px-5">
-          <Button className="main-btn w-full" onClick={() => logout()}>
-            {t("Logout")}
-          </Button>
+        <div className="space-y-4">
+          <DrawerInfo />
+
+          {/* Logout Button */}
+          <div className="px-5">
+            <Button className="main-btn w-full" onClick={() => logout()}>
+              {t("Logout")}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
