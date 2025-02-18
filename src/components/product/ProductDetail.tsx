@@ -27,6 +27,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
+import { isPast } from "date-fns";
 
 interface ProductVariantOption {
   name: string;
@@ -53,6 +54,7 @@ export function ProductDetail({
   organizer_contact,
   gallery_link,
   hide_cart,
+  end_datetime,
 }: ProductDetailProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -165,6 +167,8 @@ export function ProductDetail({
       setIsClamped(paragraphRef.current.scrollHeight > maxHeight);
     }
   }, [description, venue_address]);
+
+  const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
 
   return createPortal(
     <div className="fixed inset-0 z-50 max-width-mobile bg-background pointer-events-auto">
@@ -545,67 +549,47 @@ export function ProductDetail({
         </div>
 
         <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background space-y-4 max-width-mobile">
-          {getPriceDisplay() && (
-            <div className="flex items-center gap-2">
-              <div className="flex items-baseline gap-2">
-                <span
-                  className="flex flex-col font-bold tracking-tight text-secondary-foreground"
-                  style={{
-                    willChange: "transform",
-                    transform: "translateZ(0)",
-                  }}
-                >
-                  <span className="text-sm font-normal">start from</span>
-                  <span className="flex items-center gap-2 text-2xl">
-                    {getPriceDisplay()}
-                    {/* {selectedVariant?.compare_at_price && (
-                      <>
-                        <span
-                          // initial={{ opacity: 0, x: -10 }}
-                          // animate={{ opacity: 0.6, x: 0 }}
-                          className="text-sm line-through text-[#999999]"
-                        >
-                          ฿{selectedVariant.compare_at_price.toLocaleString()}
-                        </span>
-                        {/* <div
-                          // initial={{ opacity: 0, scale: 0.9 }}
-                          // animate={{ opacity: 1, scale: 1 }}
-                          className="inline-flex items-center px-2 py-1 text-xs font-medium bg-mainbutton rounded text-primary-foreground"
-                        >
-                          {Math.round(
-                            (1 -
-                              selectedVariant.price /
-                                selectedVariant.compare_at_price) *
-                              100
-                          )}
-                          % OFF
-                        </div>
-                      </>
-                    )} */}
-                  </span>
-                </span>
-              </div>
+          {isEventEnded ? (
+            <div className="p-4 bg-gray-100 rounded-lg">
+              <p className="text-gray-500 font-medium text-center">{t("This event has ended")}</p>
             </div>
+          ) : (
+            <>
+              {getPriceDisplay() && (
+                <div className="flex items-center gap-2">
+                  <div className="flex items-baseline gap-2">
+                    <span
+                      className="flex flex-col font-bold tracking-tight text-secondary-foreground"
+                      style={{
+                        willChange: "transform",
+                        transform: "translateZ(0)",
+                      }}
+                    >
+                      <span className="text-sm font-normal">start from</span>
+                      <span className="flex items-center gap-2 text-2xl">
+                        {getPriceDisplay()}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              )}
+              <Button
+                className="w-full main-btn"
+                onClick={() => {
+                  if (variant_options && variant_options.length > 0) {
+                    setShowVariantDrawer(true);
+                  } else {
+                    handleAddToCart(true);
+                  }
+                }}
+              >
+                {t("Sign Up")}
+              </Button>
+              <p className="text-xs text-center text-muted-foreground">
+                You won't be charged yet
+              </p>
+            </>
           )}
-          <Button
-            className="w-full main-btn"
-            onClick={() => {
-              if (
-                variant_options &&
-                variant_options.length > 0
-                // showVariantDrawer
-              ) {
-                setShowVariantDrawer(true);
-              } else {
-                handleAddToCart(true);
-              }
-            }}
-          >
-            {t("Sign Up")}
-          </Button>
-          <p className="text-xs text-center text-muted-foreground">
-            You won't be charged yet
-          </p>
         </div>
       </div>
 

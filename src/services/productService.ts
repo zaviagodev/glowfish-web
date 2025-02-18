@@ -99,7 +99,6 @@ export const ProductService = {
         `
         )
         .eq('store_name', storeName)
-        .gt('end_datetime', new Date().toISOString())
         .order('created_at', { ascending: false });
 
       if (error) {

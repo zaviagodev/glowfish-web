@@ -50,7 +50,8 @@ export interface ProductDetailProps {
     organizer_contact?: string;
     gallery_link?: string | null;
     hide_cart?: boolean;
-  }
+    end_datetime?: string;
+}
 
 type EventDataTypes = "small" | "event"
 
