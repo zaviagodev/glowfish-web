@@ -98,7 +98,7 @@ export function ReviewDialog({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[85%] p-0 border-0 bg-background rounded-t-[14px]"
+        className="h-[85%] p-0 border-0 bg-background rounded-t-[14px] max-width-mobile"
       >
         <SheetHeader className="px-5 pb-3 pt-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl z-10">
           <motion.div

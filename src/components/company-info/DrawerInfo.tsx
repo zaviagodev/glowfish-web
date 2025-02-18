@@ -40,7 +40,7 @@ const DrawerInfo = () => {
       <Sheet open={openModal}>
         <SheetContent
           side="bottom"
-          className="h-[70%] bg-background rounded-t-xl p-4 pb-8 overflow-auto"
+          className="h-[70%] bg-background rounded-t-xl p-4 pb-8 overflow-auto max-width-mobile"
           hideCloseButton={true}
         >
           <SheetHeader className="py-4 flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-start before:-top-1">
@@ -62,11 +62,7 @@ const DrawerInfo = () => {
               </div>
             </SheetTitle>
           </SheetHeader>
-          {title === "Terms of Service" ? (
-            <TermsAndConditions />
-          ) : (
-            <PrivacyPolicy />
-          )}
+          {title === "Terms of Service" ? <TermsAndConditions /> : <PrivacyPolicy />}
         </SheetContent>
       </Sheet>
     </>

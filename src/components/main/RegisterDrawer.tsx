@@ -12,7 +12,7 @@ const RegisterDrawer = ({
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent
-        className="h-full p-0 border-0 outline-none main-container"
+        className="h-full p-0 border-0 outline-none main-container max-width-mobile"
         side="bottom"
         hideCloseButton={true}
       >

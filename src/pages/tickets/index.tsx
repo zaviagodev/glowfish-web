@@ -22,8 +22,8 @@ export default function TicketsPage() {
 
   // Sort events by closest start date
   const sortedEvents = [...events].sort((a, b) => {
-    const dateA = new Date(a.event.start_datetime);
-    const dateB = new Date(b.event.start_datetime);
+    const dateA = new Date(a.event?.start_datetime);
+    const dateB = new Date(b.event?.start_datetime);
     const now = new Date();
     return (
       Math.abs(dateA.getTime() - now.getTime()) -
@@ -32,10 +32,10 @@ export default function TicketsPage() {
   });
 
   const filteredTickets = sortedEvents.filter((eventOrder) => {
-    if (!eventOrder.event.end_datetime) {
+    if (!eventOrder.event?.end_datetime) {
       return false;
     }
-    const eventDate = new Date(eventOrder.event.end_datetime);
+    const eventDate = new Date(eventOrder.event?.end_datetime);
     if (isNaN(eventDate.getTime())) {
       return false;
     }
@@ -131,7 +131,9 @@ export default function TicketsPage() {
                           eventName: eventOrder.event.name,
                           location:
                             eventOrder.event.venue_name || "To be determined",
-                          date: eventOrder.event.start_datetime,
+                          date:
+                            eventOrder.event.start_datetime ||
+                            "To be determined",
                           image: eventOrder.event.product.images[0]?.url || "",
                           status: activeTab,
                           used: activeTab === "passed",
@@ -147,7 +149,7 @@ export default function TicketsPage() {
                 </div>
 
                 {/* Pagination */}
-                {total && total > ITEMS_PER_PAGE && (
+                {total > ITEMS_PER_PAGE && (
                   <Pagination
                     totalPages={totalPages}
                     handlePageChange={handlePageChange}

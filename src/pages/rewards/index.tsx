@@ -5,7 +5,7 @@ import { useCustomer } from "@/hooks/useCustomer";
 import { useRewards } from "@/hooks/useRewards";
 import type { Customer } from "@/services/customerService";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Gift, MapPin, Package2, Tag } from "lucide-react";
+import { Calendar, Gift, MapPin, Tag } from "lucide-react";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/shared/PageHeader";

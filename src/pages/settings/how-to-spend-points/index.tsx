@@ -1,72 +1,11 @@
 import { useTranslate } from "@refinedev/core";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { motion } from "framer-motion";
-import { Gift, Tag, Truck, Crown, Ticket, Coins } from "lucide-react";
-import { cn } from "@/lib/utils";
+import spendPointsData from "./data";
 
 const HowToSpendPoints = () => {
   const t = useTranslate();
-
-  const pointsValue = {
-    icon: Coins,
-    title: t("Points Value"),
-    description: t("Convert your points to discounts"),
-    value: "100 Points = ฿10",
-    color: "#34C759",
-    bgColor: "rgba(52, 199, 89, 0.1)",
-  };
-
-  const spendingMethods = [
-    {
-      title: t("Discount Vouchers"),
-      description: t("Convert points into store discounts"),
-      value: "500P = ฿50" /* 500 points = ฿50 */,
-      icon: Tag,
-      color: "#007AFF",
-      bgColor: "rgba(0, 122, 255, 0.1)",
-    },
-    {
-      title: t("Free Shipping"),
-      description: t("Redeem points for free delivery"),
-      value: "300P" /* 300 points */,
-      icon: Truck,
-      color: "#FF9500",
-      bgColor: "rgba(255, 149, 0, 0.1)",
-    },
-    {
-      title: t("Event Tickets"),
-      description: t("Get exclusive access to premium events"),
-      value: "1000P" /* 1000 points */,
-      icon: Ticket,
-      color: "#AF52DE",
-      bgColor: "rgba(175, 82, 222, 0.1)",
-    },
-    {
-      title: t("Birthday Bonus"),
-      description: t("Double value during your birthday month"),
-      value: "2x value",
-      icon: Gift,
-      color: "#FF2D55",
-      bgColor: "rgba(255, 45, 85, 0.1)",
-    },
-    {
-      title: t("VIP Rewards"),
-      description: t("Special rewards based on your tier"),
-      value: t("Tier based"),
-      icon: Crown,
-      color: "#5856D6",
-      bgColor: "rgba(88, 86, 214, 0.1)",
-    },
-  ];
-
-  const terms = [
-    t("Points must be redeemed in multiples of 100"),
-    t("Minimum redemption is 100 points (฿10 value)"),
-    t("Points expire 12 months after being earned"),
-    t("Points cannot be redeemed for cash"),
-    t("Redemption cannot be cancelled or reversed"),
-  ];
-
+  const { pointsValue, spendingMethods, spendPointsTerms } = spendPointsData();
   return (
     <div className="bg-background">
       <PageHeader title={t("How to Spend Points")} />
@@ -178,7 +117,7 @@ const HowToSpendPoints = () => {
             transition={{ delay: 0.7 }}
             className="rounded-lg space-y-3 pl-2"
           >
-            {terms.map((term, index) => (
+            {spendPointsTerms.map((term, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: -20 }}

@@ -169,7 +169,7 @@ export default function MyPointsPage() {
                             )}
                         </p>
                         <p className="text-xs text-[#8E8E93]">
-                          {format(new Date(transaction.created_at), "MMM dd")}
+                          {format(new Date(transaction.created_at), "dd MMM")}
                         </p>
                       </div>
                     </div>

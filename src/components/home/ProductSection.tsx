@@ -75,7 +75,7 @@ export const ProductSection = memo(function ProductSection({
                       product.start_datetime &&
                       format(
                         toZonedTime(new Date(product.start_datetime), "UTC"),
-                        "dd/MM/yyyy, hh:mm a"
+                        "dd MMM yyyy, HH:mm"
                       )
                     }
                     hasGallery={false} // product.gallery_link !== null

@@ -18,7 +18,7 @@ const QRCodeSheet = ({ showQR, setShowQR }: QRCodeSheetProps) => {
     <Sheet open={showQR} onOpenChange={setShowQR}>
       <SheetContent
         side="bottom"
-        className="h-[70%] p-0 bg-background rounded-t-[14px]"
+        className="h-[70%] p-0 bg-background rounded-t-[14px] max-width-mobile"
       >
         <SheetHeader className="px-5 pb-3 pt-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl justify-center h-[50px]">
           <SheetTitle className="text-xs">{t("My Profile QR")}</SheetTitle>

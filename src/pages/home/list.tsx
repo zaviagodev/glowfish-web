@@ -127,10 +127,10 @@ export const HomeList = () => {
     selectedProduct?.end_datetime &&
     `${format(
       toZonedTime(new Date(selectedProduct.start_datetime), "UTC"),
-      "dd/MM/yyyy, hh:mm a"
+      "dd MMM yyyy, HH:mm"
     )} - ${format(
       toZonedTime(new Date(selectedProduct.end_datetime), "UTC"),
-      "dd/MM/yyyy, hh:mm a"
+      "dd MMM yyyy, HH:mm"
     )}`;
 
   return (

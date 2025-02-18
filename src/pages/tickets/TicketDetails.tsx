@@ -26,8 +26,8 @@ export default function TicketDetails() {
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
   const [showCheckIn, setShowCheckIn] = useState(false);
   const { id } = useParams();
-  const { events, loading, error, refreshEvents } = useEvents();
-  const eventOrder = events?.find((e) => e.order_id === id);
+  const { events = [], loading, error, refreshEvents } = useEvents();
+  const eventOrder = events.find((e) => e.order_id === id);
 
   if (!eventOrder) {
     return (
@@ -181,7 +181,11 @@ export default function TicketDetails() {
               </div>
               <div className="flex items-center gap-2 text-sm font-light">
                 <Calendar className="w-4 h-4 flex-shrink-0" />
-                <span>{format(eventDate, "dd MMM yyyy, HH:mm")}</span>
+                <span>
+                  {eventOrder.event?.start_datetime
+                    ? format(eventDate, "dd MMM yyyy, HH:mm")
+                    : t("To be determined")}
+                </span>
               </div>
               {eventOrder.tickets.length > 1 && (
                 <div className="flex items-center gap-2 text-sm font-light">

@@ -128,7 +128,7 @@ export default function MyOrdersPage() {
         </Tabs>
 
         {/* Pagination Controls */}
-        {!loading && formattedOrders.length > 0 && (
+        {!loading && formattedOrders.length > 0 && totalPages > 1 && (
           <Pagination
             hasNextPage={hasNextPage}
             hasPreviousPage={hasPreviousPage}

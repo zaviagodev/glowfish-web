@@ -130,7 +130,7 @@ export function VariantDrawer({
     <Sheet open={open} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-fit p-0 bg-background rounded-t-[14px]"
+        className="h-fit p-0 bg-background rounded-t-[14px] max-width-mobile"
       >
         <SheetHeader className="px-5 py-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
           <div className="flex items-center justify-between">
@@ -179,7 +179,7 @@ export function VariantDrawer({
         </div>
 
         {/* Add to Cart Button */}
-        <div className="p-5 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0 space-y-3">
+        <div className="p-5 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0 space-y-3 max-width-mobile">
           {/* Price Display */}
           {currentVariant && (
             <div className="flex flex-col items-center">

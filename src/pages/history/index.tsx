@@ -26,7 +26,7 @@ const HistoryPage = () => {
   const renderAction = (action: any) => {
     const actionTitle =
       action.type === "earn" ? t("Get Point") : t("Spend Point");
-    const formattedDate = format(new Date(action.created_at), "MMM dd");
+    const formattedDate = format(new Date(action.created_at), "dd MMM");
     const Icon = action.type === "earn" ? ArrowUpToLine : ArrowDownToLine;
 
     return (

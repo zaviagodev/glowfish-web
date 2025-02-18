@@ -58,14 +58,16 @@ export function Ticket({ ticket }: TicketProps) {
               {ticket.eventName}
             </h3>
             {/* Countdown Badge */}
-            {ticket.status === "upcoming" && (
-              <div className="mb-2">
+            <div className="mb-2">
+              {ticket.status === "upcoming" ? (
                 <div
                   className={cn(
                     "inline-flex px-2 py-1 rounded-full text-xs font-medium",
                     isToday(new Date(ticket.date))
                       ? "bg-[#FF3B30]/10 text-[#FF3B30]"
-                      : "bg-[#007AFF]/10 text-[#007AFF]"
+                      : isFuture(new Date(ticket.date))
+                      ? "bg-[#007AFF]/10 text-[#007AFF]"
+                      : "bg-[#34C759]/10 text-[#34C759]"
                   )}
                 >
                   {isToday(new Date(ticket.date))
@@ -78,8 +80,12 @@ export function Ticket({ ticket }: TicketProps) {
                       })
                     : t("Event Passed")}
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-[#FF3B30]/10 text-[#FF3B30]">
+                  {t("Ended")}
+                </div>
+              )}
+            </div>
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -88,7 +94,7 @@ export function Ticket({ ticket }: TicketProps) {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 flex-shrink-0" />
-              <span>{format(new Date(ticket.date), "PPp")}</span>
+              <span>{format(new Date(ticket.date), "dd MMM yyyy, HH:mm")}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-primary">
               <Users className="w-4 h-4 flex-shrink-0" />
