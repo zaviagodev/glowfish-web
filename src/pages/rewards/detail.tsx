@@ -124,8 +124,6 @@ const RewardDetail = () => {
         p_shipping: 0,
         p_tax: 0,
         p_total: reward.product_variants[0].price,
-        p_shipping_address_id: customer?.addresses?.[0]?.id,
-        p_billing_address_id: customer?.addresses?.[0]?.id,
         p_notes: JSON.stringify({
           message: "Reward redemption",
           paymentMethod: "points",
@@ -133,7 +131,9 @@ const RewardDetail = () => {
         p_tags: ["reward", "web"],
         p_applied_coupons: [],
         p_loyalty_points_used: pointsRequired,
-        p_items: orderItems,
+        p_shipping_address_id: customer?.addresses?.[0]?.id,
+        p_billing_address_id: customer?.addresses?.[0]?.id,
+        p_items: orderItems
       });
 
       if (error) {

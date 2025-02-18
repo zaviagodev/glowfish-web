@@ -1,7 +1,8 @@
 // src/hooks/useEvents.ts
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { EventService, type Event, type PaginatedEvents } from '@/services/eventService';
+import { EventService, type PaginatedEvents } from '@/services/eventService';
+import { Event } from '@/type/type';
 import { useStore } from '@/hooks/useStore';
 import { useCustomer } from '@/hooks/useCustomer';
 
@@ -12,10 +13,11 @@ const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 interface UseEventsOptions {
   page?: number;
   pageSize?: number;
+  orderId?: string;
 }
 
 export const useEvents = (options: UseEventsOptions = {}) => {
-  const { page = 1, pageSize = 10 } = options;
+  const { page = 1, pageSize = 10, orderId } = options;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { storeName } = useStore();
@@ -23,17 +25,19 @@ export const useEvents = (options: UseEventsOptions = {}) => {
 
   // Use React Query for data fetching and caching
   const { 
-    data: paginatedEvents, 
+    data: eventData, 
     isLoading: eventsLoading, 
     isError: eventsError,
     refetch: refetchData
   } = useQuery({
-    queryKey: ['events', storeName, customer?.id, page, pageSize],
-    queryFn: () => EventService.getEventsByCustomerId(customer?.id || '', storeName, page, pageSize),
+    queryKey: orderId ? ['event', orderId] as const : ['events', storeName, customer?.id, page, pageSize] as const,
+    queryFn: () => orderId 
+      ? EventService.getEventByOrderId(orderId)
+      : EventService.getEventsByCustomerId(customer?.id || '', storeName, page, pageSize),
     staleTime: CACHE_EXPIRY_TIME,
     cacheTime: CACHE_EXPIRY_TIME * 2,
     retry: 2,
-    enabled: !!customer?.id, // Only fetch when customer ID is available
+    enabled: orderId ? true : !!customer?.id,
     onError: (err: any) => {
       console.error('Error fetching events:', err);
       setError(err.message || 'Failed to load events');
@@ -67,6 +71,18 @@ export const useEvents = (options: UseEventsOptions = {}) => {
     }
   };
 
+  if (orderId) {
+    return {
+      event: eventData,
+      loading,
+      error,
+      refreshEvents,
+      isLoading: eventsLoading,
+      isError: eventsError
+    };
+  }
+
+  const paginatedEvents = eventData as PaginatedEvents;
   return { 
     events: paginatedEvents?.data || [], 
     total: paginatedEvents?.total || 0,
@@ -81,3 +97,4 @@ export const useEvents = (options: UseEventsOptions = {}) => {
 };
 
 export type { Event, PaginatedEvents };
+

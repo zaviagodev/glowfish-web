@@ -7,12 +7,27 @@ export interface ProductVariant {
     price: number;
     compare_at_price: number | null;
     quantity: number;
+    points_based_price?: number;
     options: Array<{
       name: string;
       value: string;
     }>;
     status: string;
     position: number;
+}
+
+export interface Product {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    product_images?: Array<{
+      id: string;
+      url: string;
+      alt?: string;
+      position: number;
+    }>;
+    product_variants?: ProductVariant[];
 }
 
 export interface ProductDetailProps {
@@ -31,11 +46,15 @@ export interface ProductDetailProps {
     onClose: () => void;
     variant_options?: any[];
     product_variants?: ProductVariant[];
+<<<<<<< HEAD
     organizer_name?: string;
     organizer_contact?: string;
     gallery_link?: string | null;
     hide_cart?: boolean;
   }
+=======
+}
+>>>>>>> 6c2dfd4037c91932ba6fc0b1fe88a05b9ed7df3c
 
 type EventDataTypes = "small" | "event"
 
@@ -102,6 +121,34 @@ export interface BookedDataCompProps {
 
 export interface RewardProps extends EventDataProps {
     category?: string
+}
+
+export interface Event {
+  event_id: string;
+  event_name: string;
+  google_maps_link: string | null;
+  organizer_contact: string;
+  organizer_name: string;
+  start_datetime: string;
+  end_datetime: string;
+  updated_at: string;
+  venue_address: string;
+  venue_name: string;
+  image_url: string;
+  ticket_details: Ticket[];
+  total_count: number;
+}
+
+export interface Ticket {
+  id: string;
+  code: string;
+  status: string;
+  metadata: {
+    eventId: string;
+    attendeeName?: string;
+    [key: string]: any;
+  };
+  order_item_id: string;
 }
 
 export interface ServiceListProps {

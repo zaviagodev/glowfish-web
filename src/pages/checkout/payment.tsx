@@ -376,6 +376,19 @@ export default function PaymentPage() {
                   className="w-full h-max object-contain rounded-3xl"
                 />
               </motion.div>
+              <motion.div
+                className="flex flex-col items-center gap-1 mb-4"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+              >
+                <p className="text-sm font-medium">
+                  {t("PromptPay ID")}: <span className="text-primary">{paymentOptions.promptpay.id}</span>
+                </p>
+                <p className="text-sm font-medium">
+                  {t("Name")}: <span className="text-primary">{paymentOptions.promptpay.name}</span>
+                </p>
+              </motion.div>
               <motion.p
                 className="text-sm text-center text-muted-foreground mb-4"
                 initial={{ opacity: 0, y: 10 }}

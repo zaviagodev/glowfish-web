@@ -9,6 +9,8 @@ import { useOrder } from "@/hooks/useOrder";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import LoadingSpin from "@/components/loading/LoadingSpin";
+import { useEvents } from "@/hooks/useEvents";
+import { Event } from "@/services/eventService";
 
 // Helper function to format dates
 const formatDate = (date: Date | string | null) => {
@@ -24,9 +26,16 @@ export default function OrderDetailPage() {
   const { id } = useParams();
   const { order, loading, error } = useOrder(id || "");
   const page = location.state?.page || "1";
+  const { event } = useEvents({
+    orderId: id,
+  }) as { event: Event | null };
 
   const handleBack = () => {
     navigate(`/my-orders?page=${page}`);
+  };
+
+  const handleViewTickets = () => {
+    navigate(`/tickets/${id}`);
   };
 
   if (loading) {
@@ -347,17 +356,34 @@ export default function OrderDetailPage() {
       </div>
 
       {/* Footer Actions */}
-      {isPendingAndNoAmount && (
+      {(isPendingAndNoAmount ||
+        (event &&
+          Array.isArray(event.tickets) &&
+          event.tickets.length > 0)) && (
         <div className="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto bg-background/80 backdrop-blur-xl border-t border-border p-5">
           <div className="space-y-3">
-            <Button
-              variant="default"
-              size="lg"
-              className="w-full main-btn"
-              onClick={() => navigate(`/checkout/payment/${order.id}`)}
-            >
-              {t("Pay Now")}
-            </Button>
+            {isPendingAndNoAmount && (
+              <Button
+                variant="default"
+                size="lg"
+                className="w-full main-btn"
+                onClick={() => navigate(`/checkout/payment/${order.id}`)}
+              >
+                {t("Pay Now")}
+              </Button>
+            )}
+            {event &&
+              Array.isArray(event.tickets) &&
+              event.tickets.length > 0 && (
+                <Button
+                  variant="default"
+                  size="lg"
+                  className="w-full"
+                  onClick={handleViewTickets}
+                >
+                  {t("View Tickets")} ({event.tickets.length})
+                </Button>
+              )}
           </div>
         </div>
       )}

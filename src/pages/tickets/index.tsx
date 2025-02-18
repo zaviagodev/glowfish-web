@@ -22,8 +22,8 @@ export default function TicketsPage() {
 
   // Sort events by closest start date
   const sortedEvents = [...events].sort((a, b) => {
-    const dateA = new Date(a.start_datetime);
-    const dateB = new Date(b.start_datetime);
+    const dateA = new Date(a.event.start_datetime);
+    const dateB = new Date(b.event.start_datetime);
     const now = new Date();
     return (
       Math.abs(dateA.getTime() - now.getTime()) -
@@ -31,10 +31,17 @@ export default function TicketsPage() {
     );
   });
 
-  const filteredTickets = sortedEvents.filter((event) => {
-    const eventDate = new Date(event.end_datetime);
+  const filteredTickets = sortedEvents.filter((eventOrder) => {
+    if (!eventOrder.event.end_datetime) {
+      return false;
+    }
+    const eventDate = new Date(eventOrder.event.end_datetime);
+    if (isNaN(eventDate.getTime())) {
+      return false;
+    }
     const isUpcoming = eventDate > new Date();
-    return activeTab === "upcoming" ? isUpcoming : !isUpcoming;
+    const shouldInclude = activeTab === "upcoming" ? isUpcoming : !isUpcoming;
+    return shouldInclude;
   });
 
   // Calculate total pages from the server's total count
@@ -111,27 +118,28 @@ export default function TicketsPage() {
             ) : (
               <>
                 <div className="px-5 space-y-4">
-                  {filteredTickets.map((event, index) => (
+                  {filteredTickets.map((eventOrder, index) => (
                     <motion.div
-                      key={event.event_id}
+                      key={eventOrder.order_id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
                       <TicketCard
                         ticket={{
-                          id: event.event_id,
-                          eventName: event.event_name,
-                          location: event.venue_name || "To be determined",
-                          date: event.start_datetime,
-                          image: event.image_url || "",
+                          id: eventOrder.order_id,
+                          eventName: eventOrder.event.name,
+                          location:
+                            eventOrder.event.venue_name || "To be determined",
+                          date: eventOrder.event.start_datetime,
+                          image: eventOrder.event.product.images[0]?.url || "",
                           status: activeTab,
                           used: activeTab === "passed",
-                          ticketNumber: event.ticket_details[0]?.code || "",
+                          ticketNumber: eventOrder.tickets[0]?.code || "",
                           seat:
-                            event.ticket_details[0]?.metadata?.attendeeName ||
+                            eventOrder.tickets[0]?.metadata?.attendeeName ||
                             "General Admission",
-                          groupSize: event.ticket_details.length || 1,
+                          groupSize: eventOrder.tickets.length || 1,
                         }}
                       />
                     </motion.div>
@@ -139,7 +147,7 @@ export default function TicketsPage() {
                 </div>
 
                 {/* Pagination */}
-                {total > ITEMS_PER_PAGE && (
+                {total && total > ITEMS_PER_PAGE && (
                   <Pagination
                     totalPages={totalPages}
                     handlePageChange={handlePageChange}
