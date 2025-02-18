@@ -18,12 +18,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEvents } from "@/hooks/useEvents";
-<<<<<<< HEAD
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import LoadingSpin from "@/components/loading/LoadingSpin";
-=======
-import { Event } from "@/services/eventService";
->>>>>>> 6c2dfd4037c91932ba6fc0b1fe88a05b9ed7df3c
 
 export default function TicketDetails() {
   const t = useTranslate();
@@ -31,7 +27,7 @@ export default function TicketDetails() {
   const [showCheckIn, setShowCheckIn] = useState(false);
   const { id } = useParams();
   const { events, loading, error, refreshEvents } = useEvents();
-  const eventOrder = events.find((e) => e.order_id === id);
+  const eventOrder = events?.find((e) => e.order_id === id);
 
   if (!eventOrder) {
     return (
@@ -86,7 +82,7 @@ export default function TicketDetails() {
     );
   }
 
-  const eventDate = new Date(eventOrder.event.start_datetime);
+  const eventDate = new Date(eventOrder.event?.start_datetime);
   const isUpcoming = eventDate > new Date();
 
   return (
@@ -104,12 +100,12 @@ export default function TicketDetails() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            {eventOrder.event.product.images[0]?.url ? (
+            {eventOrder.event?.product.images[0]?.url ? (
               <img
-              src={eventOrder.event.product.images[0]?.url}
-              alt={eventOrder.event.name}
-              className="w-full h-full object-cover"
-            />
+                src={eventOrder.event.product.images[0]?.url}
+                alt={eventOrder.event.name}
+                className="w-full h-full object-cover"
+              />
             ) : (
               <div className="flex items-center justify-center w-full h-full overflow-hidden bg-white/20">
                 <GlowfishIcon />
@@ -168,7 +164,7 @@ export default function TicketDetails() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              {eventOrder.event.name}
+              {eventOrder.event?.name}
             </motion.h1>
 
             <motion.div
@@ -179,11 +175,13 @@ export default function TicketDetails() {
             >
               <div className="flex items-center gap-2 text-sm font-light">
                 <MapPin className="w-4 h-4 flex-shrink-0" />
-                <span>{eventOrder.event.venue_name || t("To be determined")}</span>
+                <span>
+                  {eventOrder.event?.venue_name || t("To be determined")}
+                </span>
               </div>
               <div className="flex items-center gap-2 text-sm font-light">
                 <Calendar className="w-4 h-4 flex-shrink-0" />
-                <span>{format(eventDate, "PPp")}</span>
+                <span>{format(eventDate, "dd MMM yyyy, HH:mm")}</span>
               </div>
               {eventOrder.tickets.length > 1 && (
                 <div className="flex items-center gap-2 text-sm font-light">
@@ -213,9 +211,7 @@ export default function TicketDetails() {
                     <div className="w-10 h-10 rounded-lg bg-[#F8F8F81A] flex items-center justify-center">
                       <Ticket className="w-5 h-5 text-primary" />
                     </div>
-                    <h3 className="font-medium">
-                      {ticket.code}
-                    </h3>
+                    <h3 className="font-medium">{ticket.code}</h3>
                   </div>
                   <div
                     className={cn(
@@ -265,16 +261,18 @@ export default function TicketDetails() {
             <div className="bg-darkgray rounded-lg p-4 space-y-3">
               <div className="flex items-center gap-2 text-sm">
                 <MapPin className="w-4 h-4 text-muted-foreground" />
-                <span>{eventOrder.event.venue_address || t("To be determined")}</span>
+                <span>
+                  {eventOrder.event?.venue_address || t("To be determined")}
+                </span>
               </div>
-              {eventOrder.event.google_maps_link && (
+              {eventOrder.event?.google_maps_link && (
                 <Button
                   variant="outline"
                   size="sm"
                   className="w-full"
                   onClick={() =>
-                    eventOrder.event.google_maps_link &&
-                    window.open(eventOrder.event.google_maps_link, "_blank")
+                    eventOrder.event?.google_maps_link &&
+                    window.open(eventOrder.event?.google_maps_link, "_blank")
                   }
                 >
                   {t("Open in Google Maps")}
@@ -294,11 +292,11 @@ export default function TicketDetails() {
             <div className="bg-darkgray rounded-lg p-4 space-y-3">
               <div className="flex items-center gap-2 text-sm">
                 <Contact className="w-4 h-4 text-muted-foreground" />
-                {eventOrder.event.organizer_name || "To be determined"}
+                {eventOrder.event?.organizer_name || "To be determined"}
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Phone className="w-4 h-4 text-muted-foreground" />
-                {eventOrder.event.organizer_contact || "To be determined"}
+                {eventOrder.event?.organizer_contact || "To be determined"}
               </div>
             </div>
           </motion.div>
@@ -311,10 +309,10 @@ export default function TicketDetails() {
             ticket={{
               id: selectedTicket,
               ticketNumber: selectedTicket,
-              eventName: eventOrder.event.name,
+              eventName: eventOrder.event?.name,
               seat: "",
-              date: eventOrder.event.start_datetime,
-              location: eventOrder.event.venue_name,
+              date: eventOrder.event?.start_datetime,
+              location: eventOrder.event?.venue_name,
             }}
             onClose={handleCloseCheckIn}
           />
