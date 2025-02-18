@@ -18,19 +18,16 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEvents } from "@/hooks/useEvents";
-<<<<<<< HEAD
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import LoadingSpin from "@/components/loading/LoadingSpin";
-=======
 import { Event } from "@/services/eventService";
->>>>>>> 6c2dfd4037c91932ba6fc0b1fe88a05b9ed7df3c
 
 export default function TicketDetails() {
   const t = useTranslate();
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
   const [showCheckIn, setShowCheckIn] = useState(false);
   const { id } = useParams();
-  const { events, loading, error, refreshEvents } = useEvents();
+  const { events = [], loading, error, refreshEvents } = useEvents();
   const eventOrder = events.find((e) => e.order_id === id);
 
   if (!eventOrder) {
