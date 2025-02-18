@@ -7,7 +7,6 @@ import {
   X,
   Download,
   Clock,
-  ArrowRight,
   CheckCircle2,
   Sparkles,
   Copy,
@@ -19,10 +18,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import LoadingSpin from "@/components/loading/LoadingSpin";
-
-// Mock QR code image URL - replace with actual QR code generation
-const mockQRCode =
-  "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg";
 
 const shimmer = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;
 
@@ -141,12 +136,6 @@ export default function PaymentPage() {
     });
   };
 
-  const handleCopyAccountNum = () => {
-    navigator.clipboard.writeText(paymentOptions?.promptpay?.id);
-    setIsBankNumCopied(true);
-    setTimeout(() => setIsBankNumCopied(false), 1500);
-  };
-
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -205,6 +194,23 @@ export default function PaymentPage() {
   if (!order || !paymentOptions) {
     return <LoadingSpin />;
   }
+
+  const checkPayment = order.notes?.includes("bank_transfer")
+    ? paymentOptions?.bank_transfer
+    : paymentOptions?.promptpay;
+
+  const paymentInfo = {
+    title: checkPayment ? "Account Number" : "PromptPay ID",
+    name: checkPayment.name || checkPayment.accounts[0].account_name,
+    account_number: checkPayment.id || checkPayment.accounts[0].account_number,
+    image: checkPayment.qr_code || checkPayment.accounts[0].bank.image_url,
+  };
+
+  const handleCopyAccountNum = () => {
+    navigator.clipboard.writeText(paymentInfo.account_number);
+    setIsBankNumCopied(true);
+    setTimeout(() => setIsBankNumCopied(false), 1500);
+  };
 
   return (
     <div className="bg-background">
@@ -324,7 +330,7 @@ export default function PaymentPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          {paymentOptions?.promptpay ? (
+          {checkPayment ? (
             <>
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -336,12 +342,12 @@ export default function PaymentPage() {
                   <h2 className="text-sm text-muted-foreground">
                     Account name
                   </h2>
-                  <p className="text-sm">{paymentOptions.promptpay.name}</p>
+                  <p className="text-sm">{paymentInfo.name}</p>
                 </div>
                 <div className="flex items-center justify-between w-full">
                   <h2 className="text-sm text-muted-foreground">Bank number</h2>
                   <div className="flex items-center gap-2 relative">
-                    <p className="text-sm">{paymentOptions.promptpay.id}</p>
+                    <p className="text-sm">{paymentInfo.account_number}</p>
                     <Copy onClick={handleCopyAccountNum} className="w-4 h-4" />
                     {isBankNumCopied && (
                       <motion.span
@@ -371,8 +377,8 @@ export default function PaymentPage() {
                 }}
               >
                 <img
-                  src={paymentOptions.promptpay.qr_code}
-                  alt="PromptPay QR Code"
+                  src={paymentInfo.image}
+                  alt={checkPayment.name}
                   className="w-full h-max object-contain rounded-3xl"
                 />
               </motion.div>
@@ -383,35 +389,43 @@ export default function PaymentPage() {
                 transition={{ delay: 0.9 }}
               >
                 <p className="text-sm font-medium">
-                  {t("PromptPay ID")}: <span className="text-primary">{paymentOptions.promptpay.id}</span>
+                  {t(paymentInfo.title)}:{" "}
+                  <span className="text-primary">
+                    {paymentInfo.account_number}
+                  </span>
                 </p>
                 <p className="text-sm font-medium">
-                  {t("Name")}: <span className="text-primary">{paymentOptions.promptpay.name}</span>
+                  {t("Name")}:{" "}
+                  <span className="text-primary">{paymentInfo.name}</span>
                 </p>
               </motion.div>
-              <motion.p
-                className="text-sm text-center text-muted-foreground mb-4"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
-              >
-                {t("Scan with any mobile banking app")}
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2 }}
-              >
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-9 px-4 rounded-full border-[#E5E5E5]"
-                  onClick={handleDownloadQR}
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  {t("Save QR Code")}
-                </Button>
-              </motion.div>
+              {!order.notes?.includes("bank_transfer") && (
+                <>
+                  <motion.p
+                    className="text-sm text-center text-muted-foreground mb-4"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1 }}
+                  >
+                    {t("Scan with any mobile banking app")}
+                  </motion.p>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2 }}
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-9 px-4 rounded-full border-[#E5E5E5]"
+                      onClick={handleDownloadQR}
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      {t("Save QR Code")}
+                    </Button>
+                  </motion.div>
+                </>
+              )}
             </>
           ) : (
             <div className="text-center text-muted-foreground">
@@ -534,13 +548,9 @@ export default function PaymentPage() {
             </AnimatePresence>
 
             {/* Helper text */}
-            <div className="mt-4 text-center">
-              <p className="text-sm text-muted-foreground">
-                {t(
-                  "Make sure your slip is clear and shows the full payment details"
-                )}
-              </p>
-            </div>
+            <p className="text-sm text-muted-foreground mt-4 text-center">
+              {t("Make sure your slip is clear and shows the full payment details")}
+            </p>
           </motion.div>
         </div>
       </div>
