@@ -13,7 +13,7 @@ import {
 import { useState, useEffect } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import { supabase } from "@/lib/supabase";
-import { format } from "date-fns";
+import { format, isPast } from "date-fns";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 
 interface Variant {
@@ -48,6 +48,8 @@ export const HomeShow = () => {
   const product = products.find((p) => p.id === id);
   const variantOptions: VariantOption[] = product?.variant_options || [];
   const hasVariants = variantOptions.length > 0;
+  const isEventEnded = product?.end_datetime ? isPast(new Date(product.end_datetime)) : false;
+
 
   // Fetch variants when sheet opens
   const fetchVariants = async () => {
@@ -190,91 +192,103 @@ export const HomeShow = () => {
           <p className="text-xs">{product.venue_address}</p>
         </div>
       </section>
-      <footer className="btn-footer flex flex-col gap-7 z-[51]">
-        <div className="space-y-1">
-          <p className="text-xs">{t("Start from")}</p>
-          <h2 className="font-semibold">
-            {hasVariants
-              ? selectedVariant
-                ? `฿${selectedVariant.price}`
-                : `฿${product.price}`
-              : `฿${product.price}`}
-          </h2>
-        </div>
-        <Sheet
-          open={isConfirming}
-          onOpenChange={(open) => {
-            setIsConfirming(open);
-            if (open) {
-              fetchVariants();
-            }
-          }}
-        >
-          <SheetOverlay className="backdrop-blur-sm bg-transparent" />
-          <SheetTrigger className="main-btn">{t("Sign up")}</SheetTrigger>
-          <SheetContent
-            className="h-[60%] !p-0 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col"
-            side="bottom"
+      {isEventEnded ? (
+        <footer className="btn-footer flex flex-col items-center justify-center p-5 bg-gray-100 rounded-lg">
+          <p className="text-gray-500 font-medium text-center">{t("This event has ended")}</p>
+        </footer>
+      ) : (
+        <footer className="btn-footer flex flex-col gap-7 z-[51]">
+          <div className="space-y-1">
+            <p className="text-xs">{t("Start from")}</p>
+            <h2 className="font-semibold">
+              {hasVariants
+                ? selectedVariant
+                  ? `฿${selectedVariant.price}`
+                  : `฿${product.price}`
+                : `฿${product.price}`}
+            </h2>
+          </div>
+          <Sheet
+            open={isConfirming}
+            onOpenChange={(open) => {
+              setIsConfirming(open);
+              if (open) {
+                fetchVariants();
+              }
+            }}
           >
-            <section>
-              <header className="flex justify-between p-5 border-b border-b-header">
-                {/* TODO: add GlowfishIcon */}
-                GlowfishIcon
-                <span
-                  className="font-semibold bg-[#FFFFFF1F] rounded-full h-[30px] w-[30px] flex items-center justify-center"
-                  onClick={() => setIsConfirming(false)}
-                >
-                  ✕
-                </span>
-              </header>
-              <main className="p-5 space-y-4">
-                {hasVariants &&
-                  variantOptions.map((option) => (
-                    <div key={option.id} className="space-y-2">
-                      <h3 className="font-semibold">{option.name}</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {option.values.map((value) => (
-                          <Button
-                            key={value}
-                            onClick={() =>
-                              handleAttributeSelect(option.name, value)
-                            }
-                            className={`px-4 py-2 rounded-full${
-                              selectedAttributes[option.name] === value
-                                ? "!bg-mainbutton "
-                                : "bg-darkgray"
-                            }`}
-                          >
-                            {value}
-                          </Button>
-                        ))}
+            <SheetOverlay className="backdrop-blur-sm bg-transparent" />
+            <SheetTrigger className="main-btn">{t("Sign up")}</SheetTrigger>
+            <SheetContent
+              className="h-[60%] !p-0 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col"
+              side="bottom"
+            >
+              <section>
+                <header className="flex justify-between p-5 border-b border-b-header">
+                  {/* TODO: add GlowfishIcon */}
+                  GlowfishIcon
+                  <span
+                    className="font-semibold bg-[#FFFFFF1F] rounded-full h-[30px] w-[30px] flex items-center justify-center"
+                    onClick={() => setIsConfirming(false)}
+                  >
+                    ✕
+                  </span>
+                </header>
+                <main className="p-5 space-y-4">
+                  {hasVariants &&
+                    variantOptions.map((option) => (
+                      <div key={option.id} className="space-y-2">
+                        <h3 className="font-semibold">{option.name}</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {option.values.map((value) => (
+                            <Button
+                              key={value}
+                              onClick={() =>
+                                handleAttributeSelect(option.name, value)
+                              }
+                              className={`px-4 py-2 rounded-full${
+                                selectedAttributes[option.name] === value
+                                  ? "!bg-mainbutton "
+                                  : "bg-darkgray"
+                              }`}
+                            >
+                              {value}
+                            </Button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-              </main>
-            </section>
-            <footer className="space-y-4 px-5 py-10">
-              <div className="text-center">
-                <p className="text-sm">{t("Total cost")}</p>
-                <h2 className="text-2xl font-medium">
-                  {hasVariants
-                    ? selectedVariant
-                      ? `฿${selectedVariant.price}`
-                      : "-"
-                    : `฿${product.price}`}
-                </h2>
-              </div>
-              <Button
-                className="main-btn !bg-mainbutton rounded-full w-full"
-                disabled={hasVariants && !selectedVariant}
-                onClick={handleCheckout}
-              >
-                {t("Continue")}
-              </Button>
-            </footer>
-          </SheetContent>
-        </Sheet>
-      </footer>
+                    ))}
+                </main>
+              </section>
+
+              
+              <footer className="space-y-4 px-5 py-10">
+                <div className="text-center">
+                  <p className="text-sm">{t("Total cost")}</p>
+                  <h2 className="text-2xl font-medium">
+                    {hasVariants
+                      ? selectedVariant
+                        ? `฿${selectedVariant.price}`
+                        : "-"
+                      : `฿${product.price}`}
+                  </h2>
+                </div>
+                <Button
+                  className="main-btn !bg-mainbutton rounded-full w-full"
+                  disabled={hasVariants && !selectedVariant}
+                  onClick={handleCheckout}
+                >
+                  {t("Continue")}
+                </Button>
+              </footer>
+
+
+
+
+            </SheetContent>
+          </Sheet>
+        </footer>
+      )}
     </>
   );
 };

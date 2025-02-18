@@ -46,15 +46,12 @@ export interface ProductDetailProps {
     onClose: () => void;
     variant_options?: any[];
     product_variants?: ProductVariant[];
-<<<<<<< HEAD
     organizer_name?: string;
     organizer_contact?: string;
     gallery_link?: string | null;
     hide_cart?: boolean;
-  }
-=======
+    end_datetime?: string;
 }
->>>>>>> 6c2dfd4037c91932ba6fc0b1fe88a05b9ed7df3c
 
 type EventDataTypes = "small" | "event"
 
