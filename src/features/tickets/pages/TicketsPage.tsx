@@ -1,11 +1,11 @@
 import { useTranslate } from "@refinedev/core";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Ticket as TicketIcon } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Ticket as TicketIcon } from "lucide-react";
-import { Ticket as TicketCard } from "./Ticket";
-import { useEvents } from "@/hooks/useEvents";
+import { Ticket } from "../components/Ticket";
+import { useTickets } from "../hooks/useTickets";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import Pagination from "@/components/pagination/Pagination";
 
@@ -15,15 +15,12 @@ export default function TicketsPage() {
   const t = useTranslate();
   const [activeTab, setActiveTab] = useState<"upcoming" | "passed">("upcoming");
   const [currentPage, setCurrentPage] = useState(1);
-  const { events, total, loading, error } = useEvents({
-    page: currentPage,
-    pageSize: ITEMS_PER_PAGE,
-  });
+  const { tickets, loading, error, refreshTickets } = useTickets();
 
-  // Sort events by closest start date
-  const sortedEvents = [...events].sort((a, b) => {
-    const dateA = new Date(a.event.start_datetime);
-    const dateB = new Date(b.event.start_datetime);
+  // Sort tickets by closest date
+  const sortedTickets = [...tickets].sort((a, b) => {
+    const dateA = new Date(a.metadata.purchaseDate);
+    const dateB = new Date(b.metadata.purchaseDate);
     const now = new Date();
     return (
       Math.abs(dateA.getTime() - now.getTime()) -
@@ -31,11 +28,8 @@ export default function TicketsPage() {
     );
   });
 
-  const filteredTickets = sortedEvents.filter((eventOrder) => {
-    if (!eventOrder.event.end_datetime) {
-      return false;
-    }
-    const eventDate = new Date(eventOrder.event.end_datetime);
+  const filteredTickets = sortedTickets.filter((ticket) => {
+    const eventDate = new Date(ticket.metadata.purchaseDate);
     if (isNaN(eventDate.getTime())) {
       return false;
     }
@@ -44,8 +38,14 @@ export default function TicketsPage() {
     return shouldInclude;
   });
 
-  // Calculate total pages from the server's total count
-  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredTickets.length / ITEMS_PER_PAGE);
+
+  // Get current page tickets
+  const currentTickets = filteredTickets.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -102,7 +102,7 @@ export default function TicketsPage() {
           </div>
 
           <div className="mt-4">
-            {filteredTickets.length === 0 ? (
+            {currentTickets.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -118,28 +118,25 @@ export default function TicketsPage() {
             ) : (
               <>
                 <div className="px-5 space-y-4">
-                  {filteredTickets.map((eventOrder, index) => (
+                  {currentTickets.map((ticket, index) => (
                     <motion.div
-                      key={eventOrder.order_id}
+                      key={ticket.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <TicketCard
+                      <Ticket
                         ticket={{
-                          id: eventOrder.order_id,
-                          eventName: eventOrder.event.name,
-                          location:
-                            eventOrder.event.venue_name || "To be determined",
-                          date: eventOrder.event.start_datetime,
-                          image: eventOrder.event.product.images[0]?.url || "",
+                          id: ticket.id,
+                          eventName: ticket.metadata.eventName,
+                          location: "To be determined", // This should come from event data
+                          date: ticket.metadata.purchaseDate,
+                          image: "", // This should come from event data
                           status: activeTab,
-                          used: activeTab === "passed",
-                          ticketNumber: eventOrder.tickets[0]?.code || "",
-                          seat:
-                            eventOrder.tickets[0]?.metadata?.attendeeName ||
-                            "General Admission",
-                          groupSize: eventOrder.tickets.length || 1,
+                          used: ticket.status === "used",
+                          ticketNumber: ticket.code,
+                          seat: ticket.metadata.attendeeName || "General Admission",
+                          groupSize: 1, // This should be calculated if needed
                         }}
                       />
                     </motion.div>
@@ -147,7 +144,7 @@ export default function TicketsPage() {
                 </div>
 
                 {/* Pagination */}
-                {total && total > ITEMS_PER_PAGE && (
+                {totalPages > 1 && (
                   <Pagination
                     totalPages={totalPages}
                     handlePageChange={handlePageChange}
@@ -163,4 +160,4 @@ export default function TicketsPage() {
       </div>
     </div>
   );
-}
+} 

@@ -7,8 +7,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../ui/command";
-import { Product } from "@/hooks/useProducts";
+} from "@/components/ui/command";
+import { Product } from "@/features/home/hooks/useProducts";
 import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
 

@@ -3,21 +3,15 @@ import { useTranslate } from "@refinedev/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserProfile } from "@/lib/auth";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts } from "@/features/home/hooks/useProducts";
 import { cn } from "@/lib/utils";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
-import { CategoryGrid } from "@/components/home/CategoryGrid";
-import { SearchDialog } from "@/components/home/SearchDialog";
-import { ProductSection } from "@/components/home/ProductSection";
+import { CategoryGrid } from "@/features/home/components/CategoryGrid";
+import { SearchDialog } from "@/features/home/components/SearchDialog";
+import { ProductSection } from "@/features/home/components/ProductSection";
 import { format, toZonedTime } from "date-fns-tz";
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-}
+import { Category } from "@/features/home/types/product.types";
 
 export const HomeList = () => {
   const t = useTranslate();

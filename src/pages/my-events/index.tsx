@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import Header from "@/components/main/Header";
 import EventCard from "@/components/main/EventCard";
-import { useEvents } from "@/hooks/useEvents";
+import { useEvents } from "@/features/home/hooks/useEvents";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 
 const MyEventsPage = () => {

@@ -2,7 +2,7 @@ import EventSection from "@/components/main/EventSection";
 import RegisterDrawer from "@/components/main/RegisterDrawer";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import { Button } from "@/components/ui/button";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts } from "@/features/home/hooks/useProducts";
 import { RegisterDrawerProps } from "@/type/type";
 import { useTranslate } from "@refinedev/core";
 import { useState } from "react";

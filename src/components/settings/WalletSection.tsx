@@ -2,7 +2,7 @@ import { useTranslate } from "@refinedev/core";
 import { useNavigate } from "react-router-dom";
 import { Wallet, Gift, Ticket, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useEvents } from "@/hooks/useEvents";
+import { useEvents } from "@/features/home/hooks/useEvents";
 import { useCustomer } from "@/hooks/useCustomer";
 import { Skeleton } from "../ui/skeleton";
 

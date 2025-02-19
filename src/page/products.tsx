@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts } from "@/features/home/hooks/useProducts";
 import { format } from "date-fns";
 import {
   Sheet,
@@ -23,8 +23,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CategoryGrid } from "@/components/home/CategoryGrid";
-import { Product } from "@/services/productService";
+import { CategoryGrid } from "@/features/home/components/CategoryGrid";
+import { Product } from "@/features/home/services/productService";
 import { cn } from "@/lib/utils";
 
 interface Category {

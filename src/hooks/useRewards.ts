@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ProductService, type Product } from '@/services/productService';
+import { ProductService, type Product } from '@/features/home/services/productService';
 import { useStore } from '@/hooks/useStore';
 
 const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds

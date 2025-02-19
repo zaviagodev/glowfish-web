@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import Header from "@/components/main/Header";
-import { useEvents } from "@/hooks/useEvents";
+import { useEvents } from "@/features/home/hooks/useEvents";
 import Barcode from "react-barcode";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 

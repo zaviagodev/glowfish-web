@@ -20,7 +20,7 @@ import {
 import "./App.css";
 import { authProvider } from "./authProvider";
 import { Layout } from "./components/layout";
-import { HomeCreate, HomeEdit, HomeList, HomeShow } from "./pages/home";
+import { HomeList } from "@/page/home";
 import {
   CategoryCreate,
   CategoryEdit,
@@ -51,8 +51,7 @@ import OrderDetailPage from "./pages/my-orders/detail";
 import MyItemsPage from "./pages/my-items";
 import VoucherDetail from "./pages/my-items/VoucherDetail";
 import MyPointsPage from "./pages/points";
-import TicketsPage from "./pages/tickets";
-import TicketDetails from "./pages/tickets/TicketDetails";
+import TicketsPage from "./page/tickets";
 import CouponsPage from "./pages/checkout/coupons";
 import PointsPage from "./pages/checkout/points";
 import VatInvoicePage from "./pages/checkout/vat-invoice";
@@ -60,7 +59,7 @@ import PaymentPage from "./pages/checkout/payment";
 import CartPage from "./pages/cart";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider, useTheme } from "./hooks/useTheme";
-import ProductsPage from "./pages/products";
+import ProductsPage from "./page/products";
 import PromotionsPage from "./pages/promotions";
 import AddressSelection from "./pages/checkout/address";
 import ThankYouPage from "./pages/checkout/thank-you";
@@ -241,13 +240,10 @@ function App() {
                     element={<VatInvoicePage />}
                   />
                   <Route path="/tickets" element={<TicketsPage />} />
-                  <Route path="/tickets/:id" element={<TicketDetails />} />
+                  <Route path="/tickets/:id" element={<TicketsPage />} />
 
                   <Route path="/home">
                     <Route index element={<HomeList />} />
-                    <Route path="create" element={<HomeCreate />} />
-                    <Route path="edit/:id" element={<HomeEdit />} />
-                    <Route path="show/:id" element={<HomeShow />} />
                   </Route>
                   <Route path="/categories">
                     <Route index element={<CategoryList />} />

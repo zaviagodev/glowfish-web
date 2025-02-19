@@ -9,8 +9,8 @@ import { useOrder } from "@/hooks/useOrder";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import LoadingSpin from "@/components/loading/LoadingSpin";
-import { useEvents } from "@/hooks/useEvents";
-import { Event } from "@/services/eventService";
+import { useEvents } from "@/features/home/hooks/useEvents";
+import { Event } from "@/features/home/services/eventService";
 
 // Helper function to format dates
 const formatDate = (date: Date | string | null) => {

@@ -17,10 +17,10 @@ import {
   Phone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useEvents } from "@/hooks/useEvents";
+import { useEvents } from "@/features/home/hooks/useEvents";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import LoadingSpin from "@/components/loading/LoadingSpin";
-import { Event } from "@/services/eventService";
+import { Event } from "@/features/home/services/eventService";
 
 export default function TicketDetails() {
   const t = useTranslate();

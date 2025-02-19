@@ -6,7 +6,7 @@ import { useCoupons } from "@/lib/coupon";
 import { usePoints } from "@/lib/points";
 import { useCustomer } from "@/hooks/useCustomer";
 import { useOrders } from "@/hooks/useOrders";
-import { useEvents } from "@/hooks/useEvents";
+import { useEvents } from "@/features/home/hooks/useEvents";
 import { useStore } from "@/hooks/useStore";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";

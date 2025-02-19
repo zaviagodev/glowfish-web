@@ -2,16 +2,12 @@ import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useTranslate } from "@refinedev/core";
 import { useState } from "react";
+import { Category as ProductCategory } from "@/features/home/types/product.types";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-}
+type Category = Omit<ProductCategory, 'store_name' | 'created_at' | 'updated_at'>;
 
 interface CategoryGridProps {
   categories: Category[];

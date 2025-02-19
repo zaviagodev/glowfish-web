@@ -1,7 +1,7 @@
 import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
-import { Product } from "@/hooks/useProducts";
+import { Product } from "@/features/home/hooks/useProducts";
 import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -33,6 +33,7 @@ export const ProductSection = memo(function ProductSection({
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">{title}</h2>
         <Link
+          key={`${title}-see-all`}
           to={linkTo}
           className="text-sm text-[#FAFAFACC] hover:text-foreground no-underline"
         >
