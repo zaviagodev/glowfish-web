@@ -16,6 +16,7 @@ type NewCartItem = Omit<CartItem, 'quantity'>;
 
 interface CartStore {
   items: CartItem[];
+  lastUpdated: number | null;
   addItem: (item: NewCartItem) => void;
   removeItem: (variantId: string) => void;
   updateQuantity: (variantId: string, quantity: number) => void;
@@ -24,12 +25,24 @@ interface CartStore {
   getTotalPrice: () => number;
 }
 
+const EXPIRY_TIME = 60 * 60 * 1000; // 1 hour in milliseconds
+
 export const useCart = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      lastUpdated: null,
       
       addItem: (item: NewCartItem) => {
+        const now = Date.now();
+        const lastUpdated = get().lastUpdated;
+        
+        // Clear cart if it's expired
+        if (lastUpdated && now - lastUpdated > EXPIRY_TIME) {
+          set({ items: [], lastUpdated: now });
+          return;
+        }
+        
         set((state) => {
           const existingItemIndex = state.items.findIndex(i => i.variantId === item.variantId);
           
@@ -47,23 +60,43 @@ export const useCart = create<CartStore>()(
               quantity: newQuantity
             };
             
-            return { items: newItems };
+            return { items: newItems, lastUpdated: now };
           }
 
           // Add new item with quantity 1
           return {
-            items: [...state.items, { ...item, quantity: 1 }]
+            items: [...state.items, { ...item, quantity: 1 }],
+            lastUpdated: now
           };
         });
       },
 
       removeItem: (variantId) => {
+        const now = Date.now();
+        const lastUpdated = get().lastUpdated;
+        
+        // Clear cart if it's expired
+        if (lastUpdated && now - lastUpdated > EXPIRY_TIME) {
+          set({ items: [], lastUpdated: now });
+          return;
+        }
+        
         set((state) => ({
-          items: state.items.filter(i => i.variantId !== variantId)
+          items: state.items.filter(i => i.variantId !== variantId),
+          lastUpdated: now
         }));
       },
 
       updateQuantity: (variantId, newQuantity) => {
+        const now = Date.now();
+        const lastUpdated = get().lastUpdated;
+        
+        // Clear cart if it's expired
+        if (lastUpdated && now - lastUpdated > EXPIRY_TIME) {
+          set({ items: [], lastUpdated: now });
+          return;
+        }
+        
         set((state) => {
           const itemIndex = state.items.findIndex(i => i.variantId === variantId);
           if (itemIndex === -1) return state;
@@ -77,28 +110,46 @@ export const useCart = create<CartStore>()(
             quantity: validQuantity
           };
 
-          return { items: newItems };
+          return { items: newItems, lastUpdated: now };
         });
       },
 
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], lastUpdated: null }),
 
       getTotalItems: () => {
+        const now = Date.now();
+        const lastUpdated = get().lastUpdated;
+        
+        // Return 0 if cart is expired
+        if (lastUpdated && now - lastUpdated > EXPIRY_TIME) {
+          set({ items: [], lastUpdated: null });
+          return 0;
+        }
+        
         return get().items.reduce((total, item) => total + item.quantity, 0);
       },
 
       getTotalPrice: () => {
+        const now = Date.now();
+        const lastUpdated = get().lastUpdated;
+        
+        // Return 0 if cart is expired
+        if (lastUpdated && now - lastUpdated > EXPIRY_TIME) {
+          set({ items: [], lastUpdated: null });
+          return 0;
+        }
+        
         return get().items.reduce((total, item) => total + (item.price * item.quantity), 0);
       }
     }),
     {
       name: 'cart-storage',
       storage: createJSONStorage(() => localStorage),
-      version: 4,
+      version: 5,
       migrate: (persistedState: any, version: number) => {
-        if (version < 4) {
-          // Reset cart state for new version
-          return { items: [] };
+        if (version < 5) {
+          // Reset cart state for new version with lastUpdated
+          return { items: [], lastUpdated: null };
         }
         return persistedState;
       }

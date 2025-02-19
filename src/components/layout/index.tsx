@@ -23,21 +23,8 @@ export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
     "/tell-us-about-yourself",
     "/cart",
     "/checkout",
-    "/checkout/coupons",
-    "/checkout/points",
-    "/checkout/address",
-    "/checkout/vat-invoice",
-    "/checkout/payment",
-    "/checkout/thank-you",
-    "/checkout/summary",
-    "/my-orders/1",
-    "/my-orders/2",
-    "/my-orders/3",
-    "/tickets/1",
-    "/tickets/2",
-    "/tickets/3",
-    "/tickets/4",
-  ].includes(location.pathname);
+    "/payment",
+  ].some((path) => location.pathname.startsWith(path));
 
   return (
     <div className="mobile-container">

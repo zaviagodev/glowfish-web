@@ -47,7 +47,10 @@ export function useToast() {
   if (!context) {
     throw new Error("useToast must be used within a ToastProvider");
   }
-  return context;
+  return {
+    ...context,
+    toast: (message: string, type: Toast["type"] = "info") => context.addToast(message, type)
+  };
 }
 
 function ToastContainer() {

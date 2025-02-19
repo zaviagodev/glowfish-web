@@ -59,8 +59,8 @@ export default function TicketsPage() {
       const ticket = foundOrder.tickets.find(t => t.code === qrTicket);
       if (ticket) {
         const currentStatus = await checkTicketStatus(ticket.id);
-        if (currentStatus !== 'used') {
-          await updateTicketStatus(ticket.id, 'used');
+        if (currentStatus == 'used') {
+          await refreshTickets();
         }
       }
     }

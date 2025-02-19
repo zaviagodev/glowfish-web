@@ -58,7 +58,7 @@ export function WalletSection() {
     {
       icon: <Coins className="w-5 h-5" />,
       label: t("My Points"),
-      path: "/settings/points",
+      path: "/points",
       count: customer?.loyalty_points || 0,
       description: t("Available points"),
       color: "#2196F3", // Blue

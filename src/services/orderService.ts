@@ -182,7 +182,7 @@ export const OrderService = {
         order_items: order.order_items.map((item) => ({
           id: item.id,
           quantity: item.quantity,
-          unit_price: item.total,
+          unit_price: item.price,
           variant_id: item.variant_id,
           product_variants: {
             name: item.product_variants?.name || "",
@@ -286,7 +286,7 @@ export const OrderService = {
         order_items: order.order_items.map((item) => ({
           id: item.id,
           quantity: item.quantity,
-          unit_price: item.total,
+          unit_price: item.price,
           variant_id: item.variant_id,
           product_variants: {
             name: item.product_variants?.name,
