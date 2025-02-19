@@ -27,7 +27,6 @@ export const ProductSection = memo(function ProductSection({
   isLoading,
 }: ProductSectionProps) {
   const t = useTranslate();
-
   return (
     <div className="space-y-4 px-5">
       <div className="flex items-center justify-between">
@@ -79,6 +78,7 @@ export const ProductSection = memo(function ProductSection({
                       )
                     }
                     hasGallery={false} // product.gallery_link !== null
+                    end_datetime={product.end_datetime}
                   />
                 </motion.div>
               ))}

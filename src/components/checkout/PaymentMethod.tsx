@@ -1,5 +1,5 @@
 import { useTranslate } from "@refinedev/core";
-import { ScanQrCode, CreditCard, Building2, ChevronRight } from "lucide-react";
+import { ScanQrCode, Building2, ChevronRight } from "lucide-react";
 import { useStore } from "@/hooks/useStore";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -170,25 +170,19 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
             </div>
           )}
 
-          {selectedOption ? (
-            <div>
-              <div className="text-sm font-medium text-muted-foreground">
-                {selectedOption.name}
-              </div>
-              <div className="text-xs text-secondary-foreground">
-                {selectedOption.description}
-              </div>
-              {selectedOption.details?.account_number && (
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  {t("Account")}: {selectedOption.details?.account_number}
-                </div>
-              )}
+          <div>
+            <div className="text-sm font-medium">
+              {selectedOption?.name || t("Payment Method")}
             </div>
-          ) : (
-            <p className="text-sm font-medium">
-              {t("Select a payment method")}
-            </p>
-          )}
+            <div className="text-xs text-muted-foreground mt-0.5">
+              {selectedOption?.description || t("Select a payment method")}
+            </div>
+            {selectedOption?.details?.account_number && (
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {t("Account")}: {selectedOption?.details?.account_number}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -197,7 +191,7 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
           side="bottom"
           className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-width-mobile max-w-[500px] mx-auto flex flex-col gap-0"
         >
-          <SheetHeader className="px-5 pb-3 pt-6 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
+          <SheetHeader className="px-5 pb-3 pt-8 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-title2 font-semibold tracking-tight">
               {t("Choose Payment Method")}
             </SheetTitle>

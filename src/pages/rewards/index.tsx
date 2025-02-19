@@ -10,6 +10,7 @@ import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/shared/PageHeader";
 import LoadingSpin from "@/components/loading/LoadingSpin";
+import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
 
 const Rewards = () => {
   const t = useTranslate();
@@ -90,18 +91,19 @@ const Rewards = () => {
               className="absolute z-0 w-full h-full object-cover opacity-75"
             />
           )}
-          <div className="flex justify-between items-center p-5 z-5 relative">
-            <h3 className="font-semibold text-2xl tracking-[-0.4px]">
+          <div className="flex justify-between items-center px-[30px] py-5 z-5 relative">
+            <h3 className="font-semibold text-xl tracking-[-0.4px]">
               {t("Good After Work")}
             </h3>
-            <h3 className="font-semibold text-2xl">
+            <h3 className="font-semibold text-xl text-right">
               {hasPoints
                 ? t("point", { count: customerData.loyalty_points })
                 : "0 points"}
             </h3>
           </div>
-          <div className="absolute z-[99] right-5 bottom-2 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
-            <GlowfishIcon className="w-[72px]" />| Glowfish
+          <div className="absolute z-[99] right-[30px] bottom-5 flex items-center">
+            {/* <GlowfishIcon className="w-[72px]" />| Glowfish */}
+            <GoodAfterWorkCard />
           </div>
         </div>
 
@@ -119,7 +121,7 @@ const Rewards = () => {
                     className={cn(
                       "relative overflow-hidden max-h-[220px] h-[40vw] w-full",
                       {
-                        "bg-white/10 flex items-center justify-center":
+                        "bg-black flex items-center justify-center":
                           !reward.image,
                       }
                     )}

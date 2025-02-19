@@ -10,7 +10,6 @@ import DrawerInfo from "@/components/company-info/DrawerInfo";
 
 export const Login = () => {
   const t = useTranslate();
-
   const handleLineLogin = () => {
     loginWithLine();
   };
@@ -37,7 +36,7 @@ export const Login = () => {
           <LineIcon className="w-7 h-7 absolute left-4" fill="#06c755" />
           {t("Continue with Line")}
         </Button>
-        <DrawerInfo />
+        <DrawerInfo isLogin={true} />
       </div>
     </section>
   );

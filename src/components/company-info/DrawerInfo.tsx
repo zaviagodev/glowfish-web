@@ -8,8 +8,14 @@ import { useState } from "react";
 import TermsAndConditions from "./TermsAndConditions";
 import PrivacyPolicy from "./PrivacyPolicy";
 import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const DrawerInfo = () => {
+interface DrawerInfoProps {
+  className?: string;
+  isLogin?: boolean;
+}
+
+const DrawerInfo = ({ className, isLogin }: DrawerInfoProps) => {
   const [openModal, setOpenModal] = useState(false);
   const [title, setTitle] = useState("");
 
@@ -20,30 +26,30 @@ const DrawerInfo = () => {
 
   return (
     <>
-      <p className="text-center font-light text-sm px-5">
-        By proceeding, you agree to our{" "}
+      <p className={cn("text-center font-light text-sm px-5", className)}>
+        {isLogin && `By proceeding, you agree to our${" "}`}
         <span
           onClick={() => handleOpenModal("Terms of Service")}
           className="underline"
         >
-          terms of use
+          Terms of Use
         </span>{" "}
         and acknowledge the{" "}
         <span
           onClick={() => handleOpenModal("Privacy Policy")}
           className="underline"
         >
-          privacy statement
+          Privacy Statement
         </span>
       </p>
 
       <Sheet open={openModal}>
         <SheetContent
           side="bottom"
-          className="h-[70%] bg-background rounded-t-xl p-4 pb-8 overflow-auto max-width-mobile"
+          className="h-[70%] bg-background rounded-t-xl p-0 pb-8 overflow-auto max-width-mobile outline-none"
           hideCloseButton={true}
         >
-          <SheetHeader className="py-4 flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center justify-start before:-top-1">
+          <SheetHeader className="p-4 pt-7 rounded-t-xl bg-background backdrop-blur-xl flex flex-row items-center justify-start before:top-3 fixed max-width-mobile w-full -translate-y-[1px]">
             <SheetTitle className="font-semibold tracking-tight flex w-full justify-between">
               <div className="text-left">
                 <h2>
@@ -62,7 +68,13 @@ const DrawerInfo = () => {
               </div>
             </SheetTitle>
           </SheetHeader>
-          {title === "Terms of Service" ? <TermsAndConditions /> : <PrivacyPolicy />}
+          <div className="p-4 pt-[108px]">
+            {title === "Terms of Service" ? (
+              <TermsAndConditions />
+            ) : (
+              <PrivacyPolicy />
+            )}
+          </div>
         </SheetContent>
       </Sheet>
     </>

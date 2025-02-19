@@ -100,7 +100,7 @@ export function ReviewDialog({
         side="bottom"
         className="h-[85%] p-0 border-0 bg-background rounded-t-[14px] max-width-mobile"
       >
-        <SheetHeader className="px-5 pb-3 pt-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl z-10">
+        <SheetHeader className="px-5 pb-3 pt-8 border-b sticky top-0 bg-background/80 backdrop-blur-xl z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

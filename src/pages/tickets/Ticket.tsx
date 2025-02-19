@@ -46,7 +46,7 @@ export function Ticket({ ticket }: TicketProps) {
             className="w-full h-full object-cover aspect-square object-top"
           />
         ) : (
-          <div className="h-full bg-white/20 flex items-center justify-center">
+          <div className="h-full bg-black flex items-center justify-center">
             <GlowfishIcon className="w-20 h-20" />
           </div>
         )}
@@ -62,7 +62,7 @@ export function Ticket({ ticket }: TicketProps) {
               {ticket.status === "upcoming" ? (
                 <div
                   className={cn(
-                    "inline-flex px-2 py-1 rounded-full text-xs font-medium",
+                    "inline-flex px-2 py-1 rounded-full text-xs font-medium whitespace-pre gap-1",
                     isToday(new Date(ticket.date))
                       ? "bg-[#FF3B30]/10 text-[#FF3B30]"
                       : isFuture(new Date(ticket.date))
@@ -78,7 +78,7 @@ export function Ticket({ ticket }: TicketProps) {
                           addSuffix: false,
                         }),
                       })
-                    : t("Event Passed")}
+                    : t("Ongoing")}
                 </div>
               ) : (
                 <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-[#FF3B30]/10 text-[#FF3B30]">

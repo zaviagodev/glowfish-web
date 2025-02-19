@@ -11,6 +11,7 @@ import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { SearchDialog } from "@/components/home/SearchDialog";
 import { ProductSection } from "@/components/home/ProductSection";
 import { format, toZonedTime } from "date-fns-tz";
+import { isPast } from "date-fns";
 
 interface Category {
   id: string;
@@ -217,7 +218,9 @@ export const HomeList = () => {
         <ProductSection
           title={t("Upcoming Events")}
           linkTo="/products"
-          products={products}
+          products={products
+            .filter((product) => isPast(product.end_datetime) === false)
+            .slice(0, 5)}
           onProductSelect={handleProductSelect}
           sliderRef={productSliderRef}
           isLoading={loading}
@@ -227,7 +230,7 @@ export const HomeList = () => {
         <ProductSection
           title={t("Events you might enjoy")}
           linkTo="/products"
-          products={products.slice(0, 4)}
+          products={products.slice(0, 8)}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
           isLoading={loading}

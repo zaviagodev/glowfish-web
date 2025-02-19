@@ -12,12 +12,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import Barcode from "react-barcode";
 import { useRewards } from "@/hooks/useRewards";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -34,6 +28,7 @@ import { useOrders } from "@/hooks/useOrders";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { PageHeader } from "@/components/shared/PageHeader";
 import LoadingSpin from "@/components/loading/LoadingSpin";
+import RewardAccordions from "./rewardAccordions";
 
 const RewardDetail = () => {
   const t = useTranslate();
@@ -133,7 +128,7 @@ const RewardDetail = () => {
         p_loyalty_points_used: pointsRequired,
         p_shipping_address_id: customer?.addresses?.[0]?.id,
         p_billing_address_id: customer?.addresses?.[0]?.id,
-        p_items: orderItems
+        p_items: orderItems,
       });
 
       if (error) {
@@ -175,7 +170,7 @@ const RewardDetail = () => {
           className="w-full h-full aspect-square object-cover"
         />
       ) : (
-        <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20">
+        <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
           <GlowfishIcon />
         </div>
       )}
@@ -207,39 +202,7 @@ const RewardDetail = () => {
           </p>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <Accordion type="single" collapsible>
-            <AccordionItem
-              value="item-1"
-              className="bg-darkgray border-0 text-sm px-5 py-4 rounded-lg"
-            >
-              <AccordionTrigger className="p-0">
-                {t("How to redeem the reward")}
-              </AccordionTrigger>
-              <AccordionContent className="pt-4 pb-0">
-                {t(
-                  "Click the Redeem button below and show the code to our staff to claim your reward."
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          <Accordion type="single" collapsible>
-            <AccordionItem
-              value="item-1"
-              className="bg-darkgray border-0 text-sm px-5 py-4 rounded-lg"
-            >
-              <AccordionTrigger className="p-0">
-                {t("Redemption condition")}
-              </AccordionTrigger>
-              <AccordionContent className="pt-4 pb-0">
-                {t(
-                  "This reward can only be redeemed once and cannot be combined with other promotions."
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
+        <RewardAccordions />
       </section>
 
       {error && (

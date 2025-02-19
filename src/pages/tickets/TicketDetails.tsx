@@ -2,7 +2,13 @@ import { useTranslate } from "@refinedev/core";
 import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { format, formatDistanceToNow, isFuture, isToday } from "date-fns";
+import {
+  format,
+  formatDistanceToNow,
+  isFuture,
+  isPast,
+  isToday,
+} from "date-fns";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { CheckInView } from "./CheckInView";
 import { Button } from "@/components/ui/button";
@@ -107,7 +113,7 @@ export default function TicketDetails() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="flex items-center justify-center w-full h-full overflow-hidden bg-white/20">
+              <div className="flex items-center justify-center w-full h-full overflow-hidden bg-black">
                 <GlowfishIcon />
               </div>
             )}
@@ -120,7 +126,7 @@ export default function TicketDetails() {
                   : "bg-[#34C759]/10 text-[#34C759]"
               )}
             >
-              {!isUpcoming ? t("Ended") : t("Upcoming")}
+              {isUpcoming ? t("Upcoming") : t("Ongoing")}
             </div>
           </motion.div>
         </div>
@@ -242,7 +248,7 @@ export default function TicketDetails() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full mt-2.5"
+                      className="w-full mt-2.5 !bg-orangefocus"
                       onClick={() => handleTicketCheckIn(ticket.code)}
                     >
                       <QrCode className="w-4 h-4 mr-2" />
@@ -271,9 +277,9 @@ export default function TicketDetails() {
               </div>
               {eventOrder.event?.google_maps_link && (
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
-                  className="w-full"
+                  className="w-full !bg-darkgray"
                   onClick={() =>
                     eventOrder.event?.google_maps_link &&
                     window.open(eventOrder.event?.google_maps_link, "_blank")

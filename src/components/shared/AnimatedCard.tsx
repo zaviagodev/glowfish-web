@@ -1,38 +1,12 @@
 import { motion } from "framer-motion";
-import {
-  BookImage,
-  Calendar,
-  Images,
-  Layers2,
-  MapPin,
-  Tag,
-} from "lucide-react";
+import { BookImage, Calendar, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { ProductVariant } from "@/type/type";
+import { AnimatedCardProps } from "@/type/type";
 import GlowfishIcon from "../icons/GlowfishIcon";
 import { Button } from "../ui/button";
-
-interface AnimatedCardProps {
-  id: string | number;
-  image: string;
-  title: string;
-  description?: string;
-  location?: string;
-  date?: string;
-  price?: string | number;
-  compareAtPrice?: string | number;
-  variant_id?: string;
-  product_variants?: ProductVariant[];
-  points?: string | number;
-  type?: "small" | "event";
-  validDate?: string;
-  isSelected?: boolean;
-  hasGallery?: boolean;
-  imageClassName?: string;
-  onClick?: () => void;
-}
+import { isPast } from "date-fns";
 
 const springConfig = {
   type: "spring",
@@ -59,6 +33,7 @@ export function AnimatedCard({
   hasGallery,
   imageClassName,
   onClick,
+  end_datetime,
 }: AnimatedCardProps) {
   const t = useTranslate();
   const [selectedVariantId, setSelectedVariantId] = useState<
@@ -93,6 +68,8 @@ export function AnimatedCard({
     return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
   };
 
+  const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
+
   return (
     <motion.div
       layoutId={`card-${id}`}
@@ -100,6 +77,7 @@ export function AnimatedCard({
       className={cn(
         "relative overflow-hidden rounded-2xl cursor-pointer w-full h-full border border-input",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
+        { "!opacity-60": isEventEnded },
         type === "event" && "flex h-fit"
       )}
       transition={springConfig}
@@ -112,7 +90,7 @@ export function AnimatedCard({
             ? "h-[32vw] w-full"
             : "max-h-[300px] h-[60vw] w-full",
           type === "event" && "w-[125px] min-w-[125px]",
-          { "flex items-center justify-center bg-white/20": !image },
+          { "flex items-center justify-center bg-black": !image },
           imageClassName
         )}
         transition={springConfig}
@@ -145,13 +123,20 @@ export function AnimatedCard({
       >
         <div className="space-y-2">
           <div>
-            <motion.h3
+            <motion.div
               layoutId={`title-${id}`}
-              className="font-semibold text-foreground line-clamp-1 text-base"
+              className="flex items-center justify-between"
               transition={springConfig}
             >
-              {title}
-            </motion.h3>
+              <h3 className="font-semibold text-foreground line-clamp-1 text-base">
+                {title}
+              </h3>
+              {isEventEnded && (
+                <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-[#FF3B30]/10 text-[#FF3B30]">
+                  {t("Ended")}
+                </div>
+              )}
+            </motion.div>
 
             {/* <motion.p
               layoutId={`desc-${id}`}

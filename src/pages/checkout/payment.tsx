@@ -200,7 +200,6 @@ export default function PaymentPage() {
     : paymentOptions?.promptpay;
 
   const paymentInfo = {
-    title: checkPayment ? "Account Number" : "PromptPay ID",
     name: checkPayment.name || checkPayment.accounts[0].account_name,
     account_number: checkPayment.id || checkPayment.accounts[0].account_number,
     image: checkPayment.qr_code || checkPayment.accounts[0].bank.image_url,
@@ -364,7 +363,7 @@ export default function PaymentPage() {
               </motion.div>
               <motion.div
                 className={cn(
-                  "w-64 h-64 bg-background rounded-2xl shadow-lg p-4 mb-4 h-max",
+                  "max-w-80 bg-background rounded-2xl shadow-lg py-4",
                   shimmer
                 )}
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -379,30 +378,13 @@ export default function PaymentPage() {
                 <img
                   src={paymentInfo.image}
                   alt={checkPayment.name}
-                  className="w-full h-max object-contain rounded-3xl"
+                  className="w-full object-contain rounded-3xl"
                 />
-              </motion.div>
-              <motion.div
-                className="flex flex-col items-center gap-1 mb-4"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 }}
-              >
-                <p className="text-sm font-medium">
-                  {t(paymentInfo.title)}:{" "}
-                  <span className="text-primary">
-                    {paymentInfo.account_number}
-                  </span>
-                </p>
-                <p className="text-sm font-medium">
-                  {t("Name")}:{" "}
-                  <span className="text-primary">{paymentInfo.name}</span>
-                </p>
               </motion.div>
               {!order.notes?.includes("bank_transfer") && (
                 <>
                   <motion.p
-                    className="text-sm text-center text-muted-foreground mb-4"
+                    className="text-sm text-center text-muted-foreground my-4"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1 }}
@@ -549,7 +531,9 @@ export default function PaymentPage() {
 
             {/* Helper text */}
             <p className="text-sm text-muted-foreground mt-4 text-center">
-              {t("Make sure your slip is clear and shows the full payment details")}
+              {t(
+                "Make sure your slip is clear and shows the full payment details"
+              )}
             </p>
           </motion.div>
         </div>

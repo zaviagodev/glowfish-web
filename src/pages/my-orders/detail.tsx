@@ -243,7 +243,7 @@ export default function OrderDetailPage() {
                     />
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center w-24 h-24 rounded-lg overflow-hidden bg-white/20">
+                  <div className="flex items-center justify-center w-24 h-24 rounded-lg overflow-hidden bg-black">
                     <GlowfishIcon className="w-14 h-14" />
                   </div>
                 )}

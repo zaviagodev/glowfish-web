@@ -99,10 +99,8 @@ const SettingsPage = () => {
             index={index}
           />
         ))}
-
         <div className="space-y-4">
           <DrawerInfo />
-
           {/* Logout Button */}
           <div className="px-5">
             <Button className="main-btn w-full" onClick={() => logout()}>

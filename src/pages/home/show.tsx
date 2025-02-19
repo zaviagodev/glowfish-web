@@ -48,8 +48,9 @@ export const HomeShow = () => {
   const product = products.find((p) => p.id === id);
   const variantOptions: VariantOption[] = product?.variant_options || [];
   const hasVariants = variantOptions.length > 0;
-  const isEventEnded = product?.end_datetime ? isPast(new Date(product.end_datetime)) : false;
-
+  const isEventEnded = product?.end_datetime
+    ? isPast(new Date(product.end_datetime))
+    : false;
 
   // Fetch variants when sheet opens
   const fetchVariants = async () => {
@@ -194,7 +195,9 @@ export const HomeShow = () => {
       </section>
       {isEventEnded ? (
         <footer className="btn-footer flex flex-col items-center justify-center p-5 bg-gray-100 rounded-lg">
-          <p className="text-gray-500 font-medium text-center">{t("This event has ended")}</p>
+          <p className="text-gray-500 font-medium text-center">
+            {t("This event has ended")}
+          </p>
         </footer>
       ) : (
         <footer className="btn-footer flex flex-col gap-7 z-[51]">
@@ -261,7 +264,6 @@ export const HomeShow = () => {
                 </main>
               </section>
 
-              
               <footer className="space-y-4 px-5 py-10">
                 <div className="text-center">
                   <p className="text-sm">{t("Total cost")}</p>
@@ -281,10 +283,6 @@ export const HomeShow = () => {
                   {t("Continue")}
                 </Button>
               </footer>
-
-
-
-
             </SheetContent>
           </Sheet>
         </footer>

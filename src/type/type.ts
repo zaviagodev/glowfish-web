@@ -53,6 +53,27 @@ export interface ProductDetailProps {
     end_datetime?: string;
 }
 
+export interface AnimatedCardProps {
+    id: string | number;
+    image: string;
+    title: string;
+    description?: string;
+    location?: string;
+    date?: string;
+    price?: string | number;
+    compareAtPrice?: string | number;
+    variant_id?: string;
+    product_variants?: ProductVariant[];
+    points?: string | number;
+    type?: "small" | "event";
+    validDate?: string;
+    isSelected?: boolean;
+    hasGallery?: boolean;
+    imageClassName?: string;
+    onClick?: () => void;
+    end_datetime?: string;
+  }
+
 type EventDataTypes = "small" | "event"
 
 export interface EventDataProps {
