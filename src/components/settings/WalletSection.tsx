@@ -16,6 +16,15 @@ interface WalletItem {
   description?: string;
 }
 
+interface CustomerEvent {
+  event: {
+    start_datetime: string;
+  };
+  tickets: Array<{
+    status: string;
+  }>;
+}
+
 export function WalletSection() {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -23,8 +32,8 @@ export function WalletSection() {
   const { customer, loading: customerLoading } = useCustomer();
 
   // Calculate total active tickets count
-  const activeTicketsCount = events.reduce((total, eventData) => {
-    if (!eventData.event || !eventData.tickets) return total;
+  const activeTicketsCount = (events as CustomerEvent[] | undefined)?.reduce((total: number, eventData: CustomerEvent) => {
+    if (!eventData?.event || !eventData?.tickets) return total;
     const eventDate = new Date(eventData.event.start_datetime);
     // Only count tickets for upcoming events
     if (eventDate > new Date()) {
@@ -34,27 +43,9 @@ export function WalletSection() {
       return total + unusedTickets;
     }
     return total;
-  }, 0);
+  }, 0) || 0;
 
   const walletItems: WalletItem[] = [
-    // {
-    //   icon: <Wallet className="w-5 h-5" />,
-    //   label: t("My Items"),
-    //   path: "/my-items",
-    //   count: 2500,
-    //   description: t("Active items"),
-    //   color: "#4CAF50", // Green
-    //   bgColor: "rgba(76, 175, 80, 0.1)"
-    // },
-    // {
-    //   icon: <Gift className="w-5 h-5" />,
-    //   label: t("My Coupons"),
-    //   path: "/checkout/coupons",
-    //   count: 3,
-    //   description: t("Active coupons"),
-    //   color: "#FF9800", // Orange
-    //   bgColor: "rgba(255, 152, 0, 0.1)"
-    // },
     {
       icon: <Coins className="w-5 h-5" />,
       label: t("My Points"),

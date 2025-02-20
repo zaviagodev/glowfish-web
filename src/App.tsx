@@ -177,14 +177,6 @@ function App() {
                     <Route index element={<MyOrdersPage />} />
                     <Route path=":id" element={<MyOrdersPage />} />
                   </Route>
-                  {/* <Route path="/my-items">
-                    <Route index element={<MyItemsPage />} />
-                    <Route path=":id" element={<VoucherDetail />} />
-                  </Route> */}
-                  {/* <Route path="/my-events">
-                    <Route index element={<MyEventsPage />} />
-                    <Route path="detail/:id" element={<MyEventDetail />} />
-                  </Route> */}
                   <Route path="/tickets" element={<TicketsPage />} />
                   <Route path="/tickets/:id" element={<TicketsPage />} />
 
