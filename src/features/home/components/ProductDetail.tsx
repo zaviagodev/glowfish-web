@@ -125,12 +125,6 @@ export function ProductDetail({
 
   // Get price display
   const getPriceDisplay = () => {
-    if (selectedVariant) {
-      return selectedVariant.price === 0
-        ? t("free")
-        : `฿${selectedVariant.price.toLocaleString()}`;
-    }
-
     if (!product_variants || product_variants.length === 0) {
       return price === 0 ? t("free") : `฿${Number(price).toLocaleString()}`;
     }
