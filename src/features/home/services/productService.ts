@@ -3,13 +3,17 @@ import { Product, Category } from '../types/product.types';
 
 // Transform product data
 const transformProduct = (event: any): Product => {
-  // Get the first valid image URL or use a data URI for a light gray placeholder
-  const imageUrl = event?.product?.product_images?.[0]?.url || ''
-  // The link below is going to be used as the empty state image on the settings page
-    // 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f5f5f5"/%3E%3C/svg%3E';
+  // Get all product images and sort them by position
+  const productImages = event?.product?.product_images || [];
+  const sortedImages = [...productImages].sort((a: any, b: any) => a.position - b.position);
+  
+  // Get the first valid image URL or use empty string
+  const imageUrl = sortedImages[0]?.url || '';
+
+
   return {
     id: event.id,
-    pro_id: event?.product.id,
+    pro_id: event?.product?.id,
     name: event?.product?.name,
     description: event?.product?.description,
     price: event?.product?.price,
@@ -18,13 +22,20 @@ const transformProduct = (event: any): Product => {
     track_quantity: event?.product?.track_quantity || false,
     product_variants: event?.product?.product_variants || [],
     image: imageUrl,
-    location: event.venue_name, // Default location,
-    venue_address: event.venue_address, 
-    organizer_contact: event.organizer_contact, 
-    organizer_name: event.organizer_name, 
-    start_datetime: event.start_datetime, // Current date as default
-    end_datetime: event.end_datetime,
+    images: sortedImages.map((img: any) => ({
+      id: img.id,
+      url: img.url,
+      alt: img.alt || '',
+      position: img.position
+    })),
+    location: event.venue_name || '', // Default location
+    venue_address: event.venue_address || '', 
+    organizer_contact: event.organizer_contact || '', 
+    organizer_name: event.organizer_name || '', 
+    start_datetime: event.start_datetime || '', // Current date as default
+    end_datetime: event.end_datetime || '',
   };
+
 };
 
 export const ProductService = {
@@ -63,7 +74,6 @@ export const ProductService = {
       }
 
       const formattedProducts = data.map(transformProduct);
-
       return formattedProducts;
     } catch (error) {
       console.error('Failed to fetch products:', error);

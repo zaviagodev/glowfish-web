@@ -19,7 +19,7 @@ import { useCart } from "@/lib/cart";
 import { VariantDrawer } from "./VariantDrawer";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
-import { ProductDetailProps } from "@/type/type";
+import { Product, ProductImage, ProductVariant } from "../types/product.types";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import DOMPurify from "dompurify";
 import {
@@ -35,10 +35,21 @@ interface ProductVariantOption {
   value: string;
 }
 
+interface ProductDetailProps extends Partial<Product> {
+  onClose: () => void;
+  hide_cart?: boolean;
+  date?: string;
+  points?: number;
+  variant_id?: string;
+  quantity?: number;
+  gallery_link?: string;
+}
+
 export function ProductDetail({
   id,
   image,
-  name,
+  images = [],
+  name = '',
   description,
   location,
   venue_address,
@@ -67,6 +78,7 @@ export function ProductDetail({
     string | undefined
   >(variant_id);
 
+
   // Find selected variant
   const selectedVariant = product_variants?.find(
     (v) => v.id === selectedVariantId
@@ -84,12 +96,11 @@ export function ProductDetail({
       return price === 0 ? t("free") : `฿${Number(price).toLocaleString()}`;
     }
 
-    const prices = product_variants.map((v) => v.price);
+    const prices = product_variants.map((v: ProductVariant) => v.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
     if (minPrice === maxPrice) {
-      // return `฿${minPrice.toLocaleString()}`;
       return minPrice === 0 ? t("free") : `฿${minPrice.toLocaleString()}`;
     }
 
@@ -101,7 +112,7 @@ export function ProductDetail({
     if (!selectedVariant) {
       return t("Select Options");
     }
-    return selectedVariant.options.map((opt) => opt.value).join(" / ");
+    return selectedVariant.options.map((opt: ProductVariantOption) => opt.value).join(" / ");
   };
 
   const handleVariantSelect = (variantId: string) => {
@@ -128,15 +139,20 @@ export function ProductDetail({
       return;
     }
 
+    if (!id || !name) {
+      addToast(t("Invalid product"), "error");
+      return;
+    }
+
     addItem({
       variantId: selectedVariantId!,
       productId: id.toString(),
       name,
-      image,
+      image: image || '',
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
       variant: selectedVariant?.options?.reduce(
-        (acc, opt) => ({
+        (acc: Record<string, string>, opt: ProductVariantOption) => ({
           ...acc,
           [opt.name]: opt.value,
         }),
@@ -174,21 +190,11 @@ export function ProductDetail({
   return createPortal(
     <div className="fixed inset-0 z-50 max-width-mobile bg-background pointer-events-auto">
       <div
-        // initial={{ opacity: 0 }}
-        // animate={{ opacity: 1 }}
-        // exit={{ opacity: 0 }}
-        // transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
         className="absolute inset-0 bg-black/40 backdrop-blur-[8px]"
         onClick={handleBackdropClick}
       />
 
-      <div
-        // layoutId={`card-${id}`}
-        // transition={{
-        //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
-        // }}
-        className="fixed inset-0 overflow-y-auto bg-background max-width-mobile"
-      >
+      <div className="fixed inset-0 overflow-y-auto bg-background max-width-mobile">
         <Button
           variant="ghost"
           size="icon"
@@ -222,43 +228,52 @@ export function ProductDetail({
               <X className="h-6 w-6" />
             </div>
           )}
-          {image ? (
-            <div
-              // layoutId={`image-container-${id}`}
-              className="w-full aspect-square overflow-hidden"
-              // transition={{
-              //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
-              // }}
-            >
-              {/* <img
-              // layoutId={`image-${id}`}
-              src={image}
-              alt={name}
-              className="w-full h-full object-cover object-top"
-              // transition={{
-              //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
-              // }}
-            /> */}
+          {Array.isArray(images) && images.length > 0 ? (
+            <div className="w-full aspect-square overflow-hidden">
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {images.map((img: ProductImage) => (
+                    <CarouselItem key={img.id} onClick={() => setOpenImageModal(true)}>
+                      <div className="relative w-full aspect-square">
+                        <img
+                          src={img.url}
+                          alt={img.alt || name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {images.length > 1 && (
+                  <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                    {images.map((_, index) => (
+                      <div
+                        key={index}
+                        className="w-2 h-2 rounded-full bg-white/50"
+                      />
+                    ))}
+                  </div>
+                )}
+              </Carousel>
+            </div>
+          ) : image ? (
+            <div className="w-full aspect-square overflow-hidden">
               <Carousel>
                 <CarouselContent>
                   <CarouselItem onClick={() => setOpenImageModal(true)}>
-                    <img
-                      src={image}
-                      alt={name}
-                      className="w-full h-full object-cover object-top aspect-square"
-                    />
+                    <div className="relative w-full aspect-square">
+                      <img
+                        src={image}
+                        alt={name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   </CarouselItem>
                 </CarouselContent>
               </Carousel>
             </div>
           ) : (
-            <div
-              // layoutId={`image-container-${id}`}
-              className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20"
-              // transition={{
-              //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
-              // }}
-            >
+            <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20">
               <GlowfishIcon />
             </div>
           )}
@@ -268,11 +283,7 @@ export function ProductDetail({
           <div className="space-y-4">
             <div className="space-y-2">
               <h2
-                // layoutId={`title-${id}`}
                 className="text-2xl"
-                // transition={{
-                //   layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
-                // }}
               >
                 {name}
               </h2>
@@ -342,17 +353,11 @@ export function ProductDetail({
             {venue_address && (
               <div className="space-y-2">
                 <h2
-                  // initial={{ opacity: 0, y: 20 }}
-                  // animate={{ opacity: 1, y: 0 }}
-                  // transition={{ delay: 0.3 }}
                   className="text-base"
                 >
                   {t("Venue & Location")}
                 </h2>
                 <p
-                  // initial={{ opacity: 0, y: 20 }}
-                  // animate={{ opacity: 1, y: 0 }}
-                  // transition={{ delay: 0.4 }}
                   className="text-sm text-secondary-foreground font-light"
                 >
                   {venue_address}

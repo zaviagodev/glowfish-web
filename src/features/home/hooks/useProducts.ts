@@ -17,7 +17,7 @@ export const useProducts = (): ProductQueryResult => {
     queryKey: ['products', storeName],
     queryFn: async () => {
       const data = await ProductService.getProducts(storeName);
-      return (data || []).map(transformProduct);
+      return data;
     },
     staleTime: CACHE_EXPIRY_TIME,
     cacheTime: CACHE_EXPIRY_TIME * 2,

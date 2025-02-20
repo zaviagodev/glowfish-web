@@ -10,6 +10,13 @@ export interface ProductVariant {
   compare_at_price: number | null;
 }
 
+export interface ProductImage {
+  id: string;
+  url: string;
+  alt: string;
+  position: number;
+}
+
 export interface Product {
   id: string;
   pro_id: string;
@@ -21,6 +28,7 @@ export interface Product {
   track_quantity: boolean;
   product_variants: ProductVariant[];
   image: string;
+  images: ProductImage[];
   location: string;
   venue_address: string;
   organizer_contact: string;
