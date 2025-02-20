@@ -1,6 +1,6 @@
 import EventSection from "@/components/main/EventSection";
 import RegisterDrawer from "@/components/main/RegisterDrawer";
-import { ProductDetail } from "@/components/product/ProductDetail";
+import { ProductDetail } from "@/features/home/components/ProductDetail";
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/features/home/hooks/useProducts";
 import { RegisterDrawerProps } from "@/type/type";

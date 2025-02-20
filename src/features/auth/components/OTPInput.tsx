@@ -65,4 +65,4 @@ export const OTPInput: React.FC<OTPInputProps> = ({ value, onChange }) => {
       )}
     />
   );
-};
+}; 

@@ -25,7 +25,7 @@ import {
 
 import { RegisterDrawerProps } from "@/type/type";
 import { otpSchema } from "../schemas/phoneSchema";
-import { OTPInput } from "@/components/auth/OTPInput";
+import { OTPInput } from "../components/OTPInput";
 import { verifyOTP, setSupabaseSession } from "@/lib/auth";
 
 interface OTPFormProps extends RegisterDrawerProps {

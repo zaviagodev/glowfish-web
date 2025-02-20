@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProductVariant } from "@/type/type";
-import GlowfishIcon from "../icons/GlowfishIcon";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 interface VariantOption {
   id: string;
@@ -208,18 +208,16 @@ export function VariantDrawer({
               {track_quantity ? (
                 currentVariant.quantity > 0 ? (
                   <p className="text-sm text-muted-foreground mt-1">
-                    {t("{{count}} in stock", {
-                      count: currentVariant.quantity,
-                    })}
+                    {currentVariant.quantity} items in stock
                   </p>
                 ) : (
                   <p className="text-sm text-red-500 font-semibold mt-1">
-                    {t("Out of stock")}
+                    Out of stock
                   </p>
                 )
               ) : (
                 <p className="text-sm text-muted-foreground mt-1">
-                  {t("In stock")}
+                  In stock
                 </p>
               )}
             </div>
@@ -236,8 +234,8 @@ export function VariantDrawer({
           >
             {
               track_quantity && currentVariant?.quantity === 0
-                ? t("Out of Stock")
-                : t("Confirm booking") // Original: t("Select Options")}
+                ? "Out of Stock"
+                : "Confirm booking"
             }
           </Button>
         </div>

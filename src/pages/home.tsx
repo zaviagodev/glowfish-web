@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getUserProfile } from "@/lib/auth";
 import { useProducts } from "@/features/home/hooks/useProducts";
 import { cn } from "@/lib/utils";
-import { ProductDetail } from "@/components/product/ProductDetail";
+import { ProductDetail } from "@/features/home/components/ProductDetail";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
 import { SearchDialog } from "@/features/home/components/SearchDialog";

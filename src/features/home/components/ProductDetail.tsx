@@ -20,7 +20,8 @@ import { VariantDrawer } from "./VariantDrawer";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { ProductDetailProps } from "@/type/type";
-import GlowfishIcon from "../icons/GlowfishIcon";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import DOMPurify from "dompurify";
 import {
   Carousel,
   CarouselContent,
@@ -314,34 +315,27 @@ export function ProductDetail({
           <div className="space-y-6">
             {description && (
               <div className="space-y-2">
-                <h2
-                  // initial={{ opacity: 0, y: 20 }}
-                  // animate={{ opacity: 1, y: 0 }}
-                  // transition={{ delay: 0.3 }}
-                  className="text-base"
-                >
+                <h2 className="text-base">
                   {t("Description")}
                 </h2>
-                <p
-                  // initial={{ opacity: 0, y: 20 }}
-                  // animate={{ opacity: 1, y: 0 }}
-                  // transition={{ delay: 0.4 }}
-                  className="text-sm text-secondary-foreground font-light"
+                <div
                   ref={paragraphRef}
-                >
-                  <span className={!expanded ? "line-clamp-5" : ""}>
-                    {description}
-                  </span>
-
-                  {isClamped ? (
-                    <p
-                      className="text-orangefocus text-sm w-fit"
-                      onClick={() => setExpanded(!expanded)}
-                    >
-                      {expanded ? "Read less..." : "Read more..."}
-                    </p>
-                  ) : null}
-                </p>
+                  className={cn(
+                    "text-sm text-secondary-foreground font-light",
+                    !expanded && "line-clamp-5"
+                  )}
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(description || ""),
+                  }}
+                />
+                {isClamped && (
+                  <p
+                    className="text-orangefocus text-sm w-fit cursor-pointer"
+                    onClick={() => setExpanded(!expanded)}
+                  >
+                    {expanded ? t("Read less...") : t("Read more...")}
+                  </p>
+                )}
               </div>
             )}
 

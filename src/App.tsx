@@ -21,25 +21,25 @@ import {
 import "./App.css";
 import { authProvider } from "./authProvider";
 import { Layout } from "./components/layout";
-import { HomeList } from "@/page/home";
-import { AuthPage } from "@/page/auth";
+import { HomeList } from "@/pages/home";
+import { AuthPage } from "@/pages/auth";
 import { TellUsAboutYourself } from "@/features/auth/components/TellUsAboutYourself";
-import SettingsPage from "./page/settings";
-import Rewards from "./page/rewards";
+import SettingsPage from "./pages/settings";
+import Rewards from "./pages/rewards";
 import useConfig, { ConfigProvider } from "./hooks/useConfig";
 import { useEffect } from "react";
-import MyOrdersPage from "./page/orders";
-import MyPointsPage from "./page/points";
-import TicketsPage from "./page/tickets";
+import MyOrdersPage from "./pages/orders";
+import MyPointsPage from "./pages/points";
+import TicketsPage from "./pages/tickets";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider, useTheme } from "./hooks/useTheme";
-import ProductsPage from "./page/products";
+import ProductsPage from "./pages/products";
 import { HowToGetPoints } from "@/features/points";
-import OrdersPage from "@/page/orders";
-import ProfilePage from "@/page/profile";
-import ScanPage from "@/page/scan";
-import InfoPage from "@/page/info";
-import OrderFlow from "@/page/OrderFlow";
+import OrdersPage from "@/pages/orders";
+import ProfilePage from "@/pages/profile";
+import ScanPage from "@/pages/scan";
+import InfoPage from "@/pages/info";
+import OrderFlow from "@/pages/OrderFlow";
 
 function App() {
 

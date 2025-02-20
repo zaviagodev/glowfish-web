@@ -21,7 +21,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ProductDetail } from "@/components/product/ProductDetail";
+import { ProductDetail } from "@/features/home/components/ProductDetail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
 import { Product } from "@/features/home/services/productService";
