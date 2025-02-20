@@ -23,7 +23,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export const ProfileForm = () => {
+interface ProfileFormProps {
+  onComplete?: () => void;
+}
+
+export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
   const { addToast } = useToast();
@@ -137,6 +141,9 @@ export const ProfileForm = () => {
 
       await refreshCustomer();
       addToast(t("Profile updated successfully"), "success");
+      if (onComplete) {
+        onComplete();
+      }
     } catch (error: any) {
       setError(error.message || "Failed to update profile");
       addToast(error.message, "error");

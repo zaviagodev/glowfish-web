@@ -149,8 +149,16 @@ export function CheckoutPage() {
         });
       }
 
-      // Refresh orders list
-      await refreshOrders();
+      // Refresh orders list with proper error handling
+      try {
+        await refreshOrders();
+      } catch (refreshError) {
+        console.error("Failed to refresh orders:", refreshError);
+        // Don't block navigation if refresh fails
+      }
+
+      // Small delay to ensure the refresh has time to complete
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Redirect based on order total
       if (total > 0) {

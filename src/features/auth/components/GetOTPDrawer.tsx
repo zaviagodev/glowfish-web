@@ -23,10 +23,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { RegisterDrawerProps } from "@/type/type";
 import { otpSchema } from "../schemas/phoneSchema";
 import { OTPInput } from "../components/OTPInput";
 import { verifyOTP, setSupabaseSession } from "@/lib/auth";
+
+interface RegisterDrawerProps {
+  setIsOpen: (isOpen: boolean) => void;
+  isOpen: boolean;
+}
 
 interface OTPFormProps extends RegisterDrawerProps {
   initialValues?: {
@@ -87,7 +91,7 @@ export const GetOTPDrawer = ({
         throw new Error(tokenData.error || "Verification failed");
       }
 
-      navigate("/tell-us-about-yourself");
+      navigate("/auth/profile-setup");
     } catch (error) {
       console.error("Verification error:", error);
       setError(error instanceof Error ? error.message : "Verification failed");

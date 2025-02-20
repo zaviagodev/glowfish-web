@@ -1,11 +1,9 @@
-import { useTranslate } from "@refinedev/core";
 import { motion } from "framer-motion";
-import { format, formatDistanceToNow, isFuture, isToday } from "date-fns";
+import { format, formatDistanceToNow, isToday } from "date-fns";
 import { MapPin, Calendar, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
-import { Ticket as TicketType } from '../services/ticketService';
 
 interface TicketProps {
   ticket: {
@@ -13,8 +11,9 @@ interface TicketProps {
     eventName: string;
     location: string;
     date: string;
+    endDate: string;
     image: string;
-    status: "upcoming" | "passed";
+    status: "upcoming" | "ongoing" | "passed";
     used: boolean;
     ticketNumber: string;
     seat: string;
@@ -23,7 +22,6 @@ interface TicketProps {
 }
 
 export function Ticket({ ticket }: TicketProps) {
-  const t = useTranslate();
   const navigate = useNavigate();
 
   return (
@@ -58,29 +56,31 @@ export function Ticket({ ticket }: TicketProps) {
             <h3 className="font-medium mb-2 whitespace-pre overflow-hidden text-ellipsis">
               {ticket.eventName}
             </h3>
-            {/* Countdown Badge */}
-            {ticket.status === "upcoming" && (
-              <div className="mb-2">
-                <div
-                  className={cn(
-                    "inline-flex px-2 py-1 rounded-full text-xs font-medium",
-                    isToday(new Date(ticket.date))
-                      ? "bg-[#FF3B30]/10 text-[#FF3B30]"
-                      : "bg-[#007AFF]/10 text-[#007AFF]"
-                  )}
-                >
-                  {isToday(new Date(ticket.date))
-                    ? t("Today!")
-                    : isFuture(new Date(ticket.date))
-                    ? t("In {{time}}", {
-                        time: formatDistanceToNow(new Date(ticket.date), {
-                          addSuffix: false,
-                        }),
-                      })
-                    : t("Event Passed")}
-                </div>
+            {/* Status Badge */}
+            <div className="mb-2">
+              <div
+                className={cn(
+                  "inline-flex px-2 py-1 rounded-full text-xs font-medium",
+                  ticket.status === "passed"
+                    ? "bg-[#8E8E93]/10 text-[#8E8E93]"
+                    : ticket.status === "ongoing"
+                    ? "bg-[#FF9500]/10 text-[#FF9500]"
+                    : isToday(new Date(ticket.date))
+                    ? "bg-[#FF3B30]/10 text-[#FF3B30]"
+                    : "bg-[#007AFF]/10 text-[#007AFF]"
+                )}
+              >
+                {ticket.status === "passed"
+                  ? "Event Ended"
+                  : ticket.status === "ongoing"
+                  ? "Ongoing"
+                  : isToday(new Date(ticket.date))
+                  ? "Today!"
+                  : `In ${formatDistanceToNow(new Date(ticket.date), {
+                      addSuffix: false,
+                    })}`}
               </div>
-            )}
+            </div>
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -93,7 +93,7 @@ export function Ticket({ ticket }: TicketProps) {
             </div>
             <div className="flex items-center gap-2 text-sm text-primary">
               <Users className="w-4 h-4 flex-shrink-0" />
-              <span>{t("ticket", { count: ticket.groupSize || 0 })}</span>
+              <span>{ticket.groupSize || 0} {ticket.groupSize === 1 ? "ticket" : "tickets"}</span>
             </div>
           </div>
         </div>

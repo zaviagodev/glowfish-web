@@ -42,6 +42,7 @@ export function PaymentPage() {
   const [countdown, setCountdown] = useState(900); // 15 minutes in seconds
   const [isConfirming, setIsConfirming] = useState(false);
   const [isBankNumCopied, setIsBankNumCopied] = useState(false);
+  const [isNameCopied, setIsNameCopied] = useState(false);
 
   useEffect(() => {
     const fetchOrderAndPaymentOptions = async () => {
@@ -135,6 +136,12 @@ export function PaymentPage() {
       },
       replace: true,
     });
+  };
+
+  const handleCopyName = () => {
+    navigator.clipboard.writeText(paymentOptions?.promptpay?.name);
+    setIsNameCopied(true);
+    setTimeout(() => setIsNameCopied(false), 1500);
   };
 
   const handleCopyAccountNum = () => {
@@ -298,6 +305,36 @@ export function PaymentPage() {
               >
                 <AnimatePresence>
                   {isBankNumCopied && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-green-500 text-white text-xs whitespace-nowrap"
+                    >
+                      {t("Copied!")}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <Copy className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          <div className="mt-6 px-6">
+            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+              <div className="text-sm">
+                <div className="text-muted-foreground">PromptPay Name</div>
+                <div className="font-medium">
+                  {paymentOptions?.promptpay?.name || "-"}
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCopyName}
+                className="relative"
+              >
+                <AnimatePresence>
+                  {isNameCopied && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}

@@ -1,5 +1,5 @@
 import { useTranslate } from "@refinedev/core";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
@@ -36,6 +36,11 @@ export default function TicketsPage() {
   const [showCheckIn, setShowCheckIn] = useState(false);
   const { tickets, loading, error, refreshTickets, updateTicketStatus, checkTicketStatus } = useTickets();
 
+  // Refresh tickets on initial page load
+  useEffect(() => {
+    refreshTickets();
+  }, []); // Empty dependency array means this runs once on mount
+
   // If we have an ID, we're in details view
   const isDetailsView = !!id;
   // Find the order and its details
@@ -68,10 +73,20 @@ export default function TicketsPage() {
     setShowCheckIn(false);
   };
 
+  const getEventStatus = (startDate: string, endDate: string) => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    if (now < start) return "upcoming";
+    if (now > end) return "passed";
+    return "ongoing";
+  };
+
   // Sort and filter logic for list view
   const sortedEvents = [...tickets].sort((a, b) => {
-    const dateA = new Date(a.event.start_datetime);
-    const dateB = new Date(b.event.start_datetime);
+    const dateA = new Date(a.event.end_datetime);
+    const dateB = new Date(b.event.end_datetime);
     const now = new Date();
     return (
       Math.abs(dateA.getTime() - now.getTime()) -
@@ -80,13 +95,11 @@ export default function TicketsPage() {
   });
 
   const filteredEvents = sortedEvents.filter((customerEvent) => {
-    const eventDate = new Date(customerEvent.event.start_datetime);
-    if (isNaN(eventDate.getTime())) {
-      return false;
+    const status = getEventStatus(customerEvent.event.start_datetime, customerEvent.event.end_datetime);
+    if (activeTab === "upcoming") {
+      return status === "upcoming" || status === "ongoing";
     }
-    const isUpcoming = eventDate > new Date();
-    const shouldInclude = activeTab === "upcoming" ? isUpcoming : !isUpcoming;
-    return shouldInclude;
+    return status === "passed";
   });
 
   const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE);
@@ -103,7 +116,7 @@ export default function TicketsPage() {
   if (loading) {
     return (
       <div className="bg-background">
-        <PageHeader title={t(isDetailsView ? "Ticket Details" : "My Tickets")} />
+        <PageHeader title={isDetailsView ? "Ticket Details" : "My Tickets"} />
         <LoadingSpin />
       </div>
     );
@@ -112,10 +125,10 @@ export default function TicketsPage() {
   if (error) {
     return (
       <div className="bg-background">
-        <PageHeader title={t(isDetailsView ? "Ticket Details" : "My Tickets")} />
+        <PageHeader title={isDetailsView ? "Ticket Details" : "My Tickets"} />
         <div className="flex items-center justify-center py-12">
           <p className="text-destructive">
-            {t(isDetailsView ? "Failed to load ticket details" : "Failed to load tickets")}
+            {isDetailsView ? "Failed to load ticket details" : "Failed to load tickets"}
           </p>
         </div>
       </div>
@@ -124,13 +137,13 @@ export default function TicketsPage() {
 
   // Details View
   if (isDetailsView && foundOrder) {
-    const eventDate = new Date(foundOrder.event.start_datetime);
-    const isUpcoming = eventDate > new Date();
+    const status = getEventStatus(foundOrder.event.start_datetime, foundOrder.event.end_datetime);
+    const isUpcoming = status === "upcoming" || status === "ongoing";
 
     return (
       <div className="bg-background">
         <PageHeader
-          title={t("Ticket Details")}
+          title="Ticket Details"
           className="bg-background/20 border-transparent"
           onBack={() => navigate("/tickets")}
         />
@@ -158,12 +171,14 @@ export default function TicketsPage() {
               <div
                 className={cn(
                   "absolute top-4 right-4 px-3 py-1.5 rounded-full text-sm font-medium",
-                  !isUpcoming
+                  status === "passed"
                     ? "bg-[#8E8E93]/10 text-[#8E8E93]"
+                    : status === "ongoing"
+                    ? "bg-[#FF9500]/10 text-[#FF9500]"
                     : "bg-[#34C759]/10 text-[#34C759]"
                 )}
               >
-                {!isUpcoming ? t("Ended") : t("Upcoming")}
+                {status === "passed" ? "Ended" : status === "ongoing" ? "Ongoing" : "Upcoming"}
               </div>
             </motion.div>
           </div>
@@ -172,7 +187,7 @@ export default function TicketsPage() {
           <div className="p-6 space-y-6">
             {/* Event Info */}
             <div className="space-y-4">
-              {/* Countdown */}
+              {/* Status Badge */}
               {isUpcoming && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
@@ -182,11 +197,13 @@ export default function TicketsPage() {
                   <div
                     className={cn(
                       "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium",
-                      "bg-[#007AFF]/10 text-[#007AFF]"
+                      status === "ongoing"
+                        ? "bg-[#FF9500]/10 text-[#FF9500]"
+                        : "bg-[#007AFF]/10 text-[#007AFF]"
                     )}
                   >
                     <Clock className="w-4 h-4" />
-                    {t("Upcoming Event")}
+                    {status === "ongoing" ? "Ongoing Event" : "Upcoming Event"}
                   </div>
                 </motion.div>
               )}
@@ -208,15 +225,17 @@ export default function TicketsPage() {
               >
                 <div className="flex items-center gap-2 text-sm font-light">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
-                  <span>{foundOrder.event.venue_name || t("To be determined")}</span>
+                  <span>{foundOrder.event.venue_name || "To be determined"}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm font-light">
                   <Calendar className="w-4 h-4 flex-shrink-0" />
-                  <span>{format(eventDate, "PPp")}</span>
+                  <span>
+                    {format(new Date(foundOrder.event.start_datetime), "PPp")} - {format(new Date(foundOrder.event.end_datetime), "PPp")}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm font-light">
                   <Users className="w-4 h-4 flex-shrink-0" />
-                  <span>{t("{{count}} Tickets", { count: foundOrder.tickets.length })}</span>
+                  <span>{foundOrder.tickets.length} {foundOrder.tickets.length === 1 ? "Ticket" : "Tickets"}</span>
                 </div>
               </motion.div>
             </div>
@@ -304,7 +323,7 @@ export default function TicketsPage() {
   // List View
   return (
     <div className="bg-background">
-      <PageHeader title={t("My Tickets")} />
+      <PageHeader title="My Tickets" />
 
       <div className="pt-14 pb-4">
         <Tabs
@@ -320,13 +339,13 @@ export default function TicketsPage() {
                 value="upcoming"
                 className="text-sm py-2.5 data-[state=active]:bg-background"
               >
-                {t("Upcoming")}
+                Upcoming
               </TabsTrigger>
               <TabsTrigger
                 value="passed"
                 className="text-sm py-2.5 data-[state=active]:bg-background"
               >
-                {t("Ended")}
+                Ended
               </TabsTrigger>
             </TabsList>
           </div>
@@ -341,8 +360,8 @@ export default function TicketsPage() {
                 <TicketIcon className="w-12 h-12 text-muted-foreground/50 mb-4" />
                 <p className="text-muted-foreground text-center">
                   {activeTab === "upcoming"
-                    ? t("No upcoming events")
-                    : t("No ended events")}
+                    ? "No upcoming events"
+                    : "No ended events"}
                 </p>
               </motion.div>
             ) : (
@@ -361,14 +380,15 @@ export default function TicketsPage() {
                         ticket={{
                           id: customerEvent.order_id,
                           eventName: customerEvent.event.name,
-                          location: customerEvent.event.venue_name || t("To be determined"),
+                          location: customerEvent.event.venue_name || "To be determined",
                           date: customerEvent.event.start_datetime,
+                          endDate: customerEvent.event.end_datetime,
                           image: customerEvent.event.product.images[0]?.url || "",
-                          status: activeTab,
+                          status: getEventStatus(customerEvent.event.start_datetime, customerEvent.event.end_datetime),
                           used: customerEvent.tickets[0].status === "used",
                           ticketNumber: customerEvent.tickets[0].code,
-                          seat: customerEvent.tickets[0].metadata.attendeeName || t("General Admission"),
-                          groupSize: customerEvent.tickets.length,
+                          seat: customerEvent.tickets[0].metadata.attendeeName || "General Admission",
+                          groupSize: customerEvent.tickets.length
                         }}
                       />
                     </motion.div>

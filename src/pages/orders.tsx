@@ -77,6 +77,10 @@ const OrdersPage = () => {
     navigate(`/tickets/${id}`);
   };
 
+  const handlePayNow = () => {
+    navigate(`/payment/${id}`);
+  };
+
   const formattedOrders = orders?.map((order) => ({
     id: order.id,
     status: order.status === "shipped" ? "completed" : order.status,
@@ -373,6 +377,18 @@ const OrdersPage = () => {
                 </div>
               </div>
             </div>
+
+            {/* Pay Now Button */}
+            {order.status === "pending" && order.total_amount > 0 && (
+              <div className="px-5 mb-4">
+                <button
+                  onClick={handlePayNow}
+                  className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-3 rounded-lg font-medium transition-colors"
+                >
+                  {t("Pay Now")} (฿{order.total_amount})
+                </button>
+              </div>
+            )}
 
             {/* View Tickets Button */}
             {!eventLoading && event && event.tickets.length > 0 && (
