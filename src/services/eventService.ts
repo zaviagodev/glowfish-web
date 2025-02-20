@@ -18,19 +18,48 @@ interface Ticket {
   order_item_id: string;
 }
 
-export interface Event {
+interface ProductVariant {
+  id: string;
+  sku: string;
+  name: string;
+  price: number;
+  status: string;
+  quantity: number;
+  compare_at_price: number | null;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  images: Array<{ url: string }>;
+  status: string;
+  variants: ProductVariant[];
+  description: string;
+  compare_at_price: number | null;
+}
+
+interface EventDetails {
+  name: string;
+  product: Product;
   event_id: string;
-  event_name: string;
-  google_maps_link: string | null;
-  organizer_contact: string;
+  venue_name: string;
+  end_datetime: string;
+  venue_address: string;
   organizer_name: string;
   start_datetime: string;
-  updated_at: string;
-  venue_address: string;
-  venue_name: string;
-  image_url: string;
-  ticket_details: Ticket[];
-  total_count: number;
+  google_maps_link: string | null;
+  attendance_points: number;
+  organizer_contact: string;
+}
+
+export interface Event {
+  order_id: string;
+  customer_id: string;
+  created_at: string;
+  tickets: Ticket[];
+  event: EventDetails;
+  total_orders: number;
 }
 
 export interface PaginatedEvents {
@@ -65,7 +94,7 @@ export const EventService = {
 
       return {
         data: eventsWithTickets || [],
-        total: eventsWithTickets?.[0]?.total_count || 0,
+        total: eventsWithTickets?.[0]?.total_orders || 0,
         page,
         pageSize
       };

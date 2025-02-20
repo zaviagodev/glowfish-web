@@ -1,5 +1,5 @@
 import { useTranslate } from "@refinedev/core";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,26 +16,55 @@ export default function TicketsPage() {
   const t = useTranslate();
   const [activeTab, setActiveTab] = useState<"upcoming" | "passed">("upcoming");
   const [currentPage, setCurrentPage] = useState(1);
-  const { events, total, loading, error } = useEvents({
+  const { events, total, loading, error, refreshEvents } = useEvents({
     page: currentPage,
     pageSize: ITEMS_PER_PAGE,
   });
 
+  // Refresh events when component mounts
+  useEffect(() => {
+    refreshEvents();
+  }, []);
+
   // Sort events by closest start date
   const sortedEvents = [...events].sort((a, b) => {
-    const dateA = new Date(a.start_datetime);
-    const dateB = new Date(b.start_datetime);
-    const now = new Date();
-    return (
-      Math.abs(dateA.getTime() - now.getTime()) -
-      Math.abs(dateB.getTime() - now.getTime())
-    );
+    try {
+      const dateA = a.event?.start_datetime ? new Date(a.event.start_datetime) : new Date();
+      const dateB = b.event?.start_datetime ? new Date(b.event.start_datetime) : new Date();
+      const now = new Date();
+
+      // Validate dates
+      if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+        return 0; // Keep original order if dates are invalid
+      }
+
+      return (
+        Math.abs(dateA.getTime() - now.getTime()) -
+        Math.abs(dateB.getTime() - now.getTime())
+      );
+    } catch (error) {
+      console.error('Error sorting dates:', error);
+      return 0; // Keep original order if there's an error
+    }
   });
 
-  const filteredTickets = sortedEvents.filter((event) => {
-    const eventDate = new Date(event.end_datetime);
-    const isUpcoming = eventDate > new Date();
-    return activeTab === "upcoming" ? isUpcoming : !isUpcoming;
+  const filteredTickets = sortedEvents.filter((order) => {
+    try {
+      if (!order.event?.start_datetime) return false;
+      
+      const eventDate = new Date(order.event.start_datetime);
+      
+      // Validate date
+      if (isNaN(eventDate.getTime())) {
+        return false; // Filter out events with invalid dates
+      }
+
+      const isUpcoming = eventDate > new Date();
+      return activeTab === "upcoming" ? isUpcoming : !isUpcoming;
+    } catch (error) {
+      console.error('Error filtering dates:', error);
+      return false; // Filter out events with errors
+    }
   });
 
   // Calculate total pages from the server's total count
@@ -114,27 +143,25 @@ export default function TicketsPage() {
             ) : (
               <>
                 <div className="px-5 space-y-4">
-                  {filteredTickets.map((event, index) => (
+                  {filteredTickets.map((order, index) => (
                     <motion.div
-                      key={event.event_id}
+                      key={order.event.event_id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
                       <TicketCard
                         ticket={{
-                          id: event.event_id,
-                          eventName: event.event_name,
-                          location: event.venue_name || "TBD",
-                          date: event.start_datetime,
-                          image: event.image_url || "",
+                          id: order.event.event_id,
+                          eventName: order.event.name,
+                          location: order.event.venue_name || "TBD",
+                          date: order.event.start_datetime,
+                          image: order.event.product?.images?.[0]?.url || "",
                           status: activeTab,
                           used: activeTab === "passed",
-                          ticketNumber: event.ticket_details[0]?.code || "",
-                          seat:
-                            event.ticket_details[0]?.metadata?.attendeeName ||
-                            "General Admission",
-                          groupSize: event.ticket_details.length || 1,
+                          ticketNumber: order.tickets?.[0]?.code || "",
+                          seat: order.tickets?.[0]?.metadata?.attendeeName || "General Admission",
+                          groupSize: order.tickets?.length || 1,
                         }}
                       />
                     </motion.div>

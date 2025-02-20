@@ -1,6 +1,6 @@
 import { useTranslate } from "@refinedev/core";
 import { motion } from "framer-motion";
-import { format, formatDistanceToNow, isFuture, isToday } from "date-fns";
+import { format, formatDistanceToNow, isFuture, isToday, parseISO } from "date-fns";
 import { MapPin, Calendar, QrCode, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +23,26 @@ interface TicketProps {
 export function Ticket({ ticket }: TicketProps) {
   const t = useTranslate();
   const navigate = useNavigate();
+
+  // Validate and parse the date
+  const getValidDate = (dateStr: string) => {
+    try {
+      // First try to parse as ISO string
+      const parsedDate = parseISO(dateStr);
+      if (!isNaN(parsedDate.getTime())) {
+        return parsedDate;
+      }
+      
+      // If that fails, try regular Date parsing
+      const date = new Date(dateStr);
+      return isNaN(date.getTime()) ? new Date() : date;
+    } catch (error) {
+      console.error('Invalid date:', error);
+      return new Date();
+    }
+  };
+
+  const eventDate = getValidDate(ticket.date);
 
   return (
     <motion.div
@@ -54,16 +74,16 @@ export function Ticket({ ticket }: TicketProps) {
               <div
                 className={cn(
                   "inline-flex px-2 py-1 rounded-full text-xs font-medium",
-                  isToday(new Date(ticket.date))
+                  isToday(eventDate)
                     ? "bg-[#FF3B30]/10 text-[#FF3B30]"
                     : "bg-[#007AFF]/10 text-[#007AFF]"
                 )}
               >
-                {isToday(new Date(ticket.date))
+                {isToday(eventDate)
                   ? t("Today!")
-                  : isFuture(new Date(ticket.date))
+                  : isFuture(eventDate)
                   ? t("In {{time}}", {
-                      time: formatDistanceToNow(new Date(ticket.date), {
+                      time: formatDistanceToNow(eventDate, {
                         addSuffix: false,
                       }),
                     })
@@ -80,7 +100,7 @@ export function Ticket({ ticket }: TicketProps) {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 flex-shrink-0" />
-              <span>{format(new Date(ticket.date), "PPp")}</span>
+              <span>{format(eventDate, "PPp")}</span>
             </div>
             {ticket.groupSize && ticket.groupSize > 1 && (
               <div className="flex items-center gap-2 text-sm text-primary">

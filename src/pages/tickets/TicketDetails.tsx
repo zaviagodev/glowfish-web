@@ -17,7 +17,10 @@ export default function TicketDetails() {
   const [showCheckIn, setShowCheckIn] = useState(false);
   const { id } = useParams();
   const { events, loading, error } = useEvents();
-  const event = events.find((e) => e.event_id === id);
+
+  // Find the order that contains the event with matching ID
+  const order = events.find((order) => order.event.event_id === id);
+  const event = order?.event;
 
   if (!event) {
     return (
@@ -80,8 +83,8 @@ export default function TicketDetails() {
             animate={{ opacity: 1 }}
           >
             <img
-              src={event.image_url || ""}
-              alt={event.event_name}
+              src={event.product?.images?.[0]?.url || ""}
+              alt={event.name}
               className="w-full h-full object-cover"
             />
             {/* Status Badge */}
@@ -137,7 +140,7 @@ export default function TicketDetails() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              {event.event_name}
+              {event.name}
             </motion.h1>
 
             <motion.div
@@ -154,12 +157,12 @@ export default function TicketDetails() {
                 <Calendar className="w-4 h-4 flex-shrink-0" />
                 <span>{format(eventDate, "PPp")}</span>
               </div>
-              {event.ticket_details.length > 1 && (
+              {order.tickets.length > 1 && (
                 <div className="flex items-center gap-2 text-sm font-light">
                   <Users className="w-4 h-4 flex-shrink-0" />
                   <span>
                     {t("ticket", {
-                      count: event.ticket_details.length,
+                      count: order.tickets.length,
                     })}
                   </span>
                 </div>
@@ -168,7 +171,7 @@ export default function TicketDetails() {
           </div>
 
           {/* Ticket Details */}
-          {event.ticket_details.map((ticket, index) => (
+          {order.tickets.map((ticket, index) => (
             <motion.div
               key={ticket.id}
               className="bg-darkgray rounded-lg p-5 space-y-6"
@@ -183,7 +186,7 @@ export default function TicketDetails() {
                       <Ticket className="w-5 h-5 text-primary" />
                     </div>
                     <h3 className="font-medium">
-                    {ticket.code}
+                      {ticket.code}
                     </h3>
                   </div>
                   <div
@@ -251,36 +254,17 @@ export default function TicketDetails() {
               )}
             </div>
           </motion.div>
-
-          {/* Organizer Details */}
-          <motion.div
-            className="space-y-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-          >
-            <h3 className="font-medium">{t("Organizer")}</h3>
-            <div className="bg-darkgray rounded-lg p-4 space-y-1">
-              <div className="text-sm font-medium">
-                {event.organizer_name || "Organizer TBD"}
-              </div>
-              {event.organizer_contact && (
-                <div className="text-sm text-muted-foreground">
-                  {event.organizer_contact}
-                </div>
-              )}
-            </div>
-          </motion.div>
         </div>
       </div>
 
+      {/* Check-in Modal */}
       <AnimatePresence>
         {showCheckIn && selectedTicket && (
           <CheckInView
             ticket={{
               id: selectedTicket,
               ticketNumber: selectedTicket,
-              eventName: event.event_name,
+              eventName: event.name,
               seat: "",
               date: event.start_datetime,
               location: event.venue_name,
