@@ -224,7 +224,10 @@ export function VariantDrawer({
           )}
           <Button
             className="w-full main-btn"
-            disabled={!currentVariant || currentVariant.quantity === 0}
+            disabled={
+              !currentVariant || 
+              (track_quantity ? currentVariant.quantity === 0 : false)
+            }
             onClick={() => {
               if (selectedVariantId) {
                 onSelect(selectedVariantId);
