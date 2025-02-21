@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslate } from "@refinedev/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { DatePicker } from "@/components/ui/date-picker";
 
 interface ProfileFormProps {
   onComplete?: () => void;
@@ -30,6 +31,8 @@ interface ProfileFormProps {
 export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isProfileSetup = location.pathname === "/auth/profile-setup";
   const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
@@ -53,13 +56,13 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
       form.reset({
         firstName: customer.first_name || "",
         lastName: customer.last_name || "",
-        email: customer.email || "",
+        email: isProfileSetup ? "" : (customer.email || ""),
         company: customer.company || "",
         dateOfBirth: customer.date_of_birth ? new Date(customer.date_of_birth) : undefined,
       });
       setAvatarUrl(customer.avatar_url || "");
     }
-  }, [customer]);
+  }, [customer, isProfileSetup]);
 
   const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -192,13 +195,14 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               htmlFor="firstName"
               className="block text-sm font-medium text-card-foreground"
             >
-              {t("First Name")}
+              {t("First Name")} <span className="text-destructive">*</span>
             </label>
             <Input
               id="firstName"
               {...form.register("firstName")}
               disabled={isLoading}
               className="mt-1 bg-darkgray"
+              required
             />
             {form.formState.errors.firstName && (
               <p className="mt-1 text-sm text-destructive">
@@ -212,13 +216,14 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               htmlFor="lastName"
               className="block text-sm font-medium text-card-foreground"
             >
-              {t("Last Name")}
+              {t("Last Name")} <span className="text-destructive">*</span>
             </label>
             <Input
               id="lastName"
               {...form.register("lastName")}
               disabled={isLoading}
               className="mt-1 bg-darkgray"
+              required
             />
             {form.formState.errors.lastName && (
               <p className="mt-1 text-sm text-destructive">
@@ -232,7 +237,7 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               htmlFor="email"
               className="block text-sm font-medium text-card-foreground"
             >
-              {t("Email")}
+              {t("Email")} <span className="text-destructive">*</span>
             </label>
             <Input
               id="email"
@@ -240,6 +245,8 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               {...form.register("email")}
               disabled={isLoading}
               className="mt-1 bg-darkgray"
+              placeholder={isProfileSetup ? t("Enter your email") : undefined}
+              required
             />
             {form.formState.errors.email && (
               <p className="mt-1 text-sm text-destructive">
@@ -253,13 +260,14 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               htmlFor="company"
               className="block text-sm font-medium text-card-foreground"
             >
-              {t("Company")}
+              {t("Company")} <span className="text-destructive">*</span>
             </label>
             <Input
               id="company"
               {...form.register("company")}
               disabled={isLoading}
               className="mt-1 bg-darkgray"
+              required
             />
             {form.formState.errors.company && (
               <p className="mt-1 text-sm text-destructive">
@@ -273,38 +281,23 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               htmlFor="dateOfBirth"
               className="block text-sm font-medium text-card-foreground"
             >
-              {t("Date of Birth")}
+              {t("Date of Birth")} <span className="text-destructive">*</span>
             </label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  id="dateOfBirth"
-                  disabled={isLoading}
-                  className={cn(
-                    "w-full mt-1 justify-start text-left font-normal bg-darkgray",
-                    !form.getValues("dateOfBirth") && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {form.getValues("dateOfBirth") ? (
-                    format(form.getValues("dateOfBirth")!, "PPP")
-                  ) : (
-                    <span>{t("Pick a date")}</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={form.getValues("dateOfBirth")}
-                  onSelect={(date) => form.setValue("dateOfBirth", date)}
-                  disabled={(date) =>
-                    date > new Date() || date < new Date("1900-01-01")
-                  }
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <DatePicker
+              selected={form.getValues("dateOfBirth")}
+              onSelect={(date) => {
+                if (date) {
+                  form.setValue("dateOfBirth", date);
+                }
+              }}
+              disabled={isLoading}
+              showYearDropdown
+              scrollableYearDropdown
+              yearDropdownItemNumber={100}
+              placeholderText={t("Select your date of birth")}
+              className="w-full"
+              required
+            />
             {form.formState.errors.dateOfBirth && (
               <p className="mt-1 text-sm text-destructive">
                 {form.formState.errors.dateOfBirth.message}
