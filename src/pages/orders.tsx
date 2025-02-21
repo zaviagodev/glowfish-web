@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useTranslate } from "@refinedev/core";
-import { useNavigate, useSearchParams, useParams, useLocation } from "react-router-dom";
+import {
+  useNavigate,
+  useSearchParams,
+  useParams,
+  useLocation,
+} from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { OrdersList } from "@/components/orders/OrdersList";
 import { OrdersSearch } from "@/components/orders/OrdersSearch";
@@ -16,13 +21,7 @@ import { Package2, Truck, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
-
-// Helper function to format dates
-const formatDate = (date: Date | string | null) => {
-  if (!date) return "";
-  const d = new Date(date);
-  return d.toLocaleString();
-};
+import { format } from "date-fns";
 
 // Add LoadingOverlay component at the top of the file
 const LoadingOverlay = () => (
@@ -48,12 +47,33 @@ const OrdersPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const ITEMS_PER_PAGE = 10;
 
-  const { orders, loading: ordersLoading, isFetching: ordersFetching, error, totalPages, hasNextPage, hasPreviousPage } =
-    useOrders(currentPage, ITEMS_PER_PAGE, currentStatus === "all" ? undefined : currentStatus, searchQuery);
+  const {
+    orders,
+    loading: ordersLoading,
+    isFetching: ordersFetching,
+    error,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
+  } = useOrders(
+    currentPage,
+    ITEMS_PER_PAGE,
+    currentStatus === "all" ? undefined : currentStatus,
+    searchQuery
+  );
 
-  const { order, loading: orderLoading, isFetching: orderFetching, error: orderError } = useOrder(id || "");
-  
-  const { event, isLoading: eventLoading, error: eventError } = useEvent(id || "");
+  const {
+    order,
+    loading: orderLoading,
+    isFetching: orderFetching,
+    error: orderError,
+  } = useOrder(id || "");
+
+  const {
+    event,
+    isLoading: eventLoading,
+    error: eventError,
+  } = useEvent(id || "");
 
   const handlePageChange = (newPage: number) => {
     const newParams = new URLSearchParams(searchParams);
@@ -81,25 +101,31 @@ const OrdersPage = () => {
     navigate(`/payment/${id}`);
   };
 
-  const formattedOrders = orders?.map((order) => ({
-    id: order.id,
-    status: order.status === "shipped" ? "completed" : order.status,
-    created_at: order.created_at,
-    order_items: order.order_items,
-    total_amount: order.total_amount,
-  })) || [];
+  const formattedOrders =
+    orders?.map((order) => ({
+      id: order.id,
+      status: order.status === "shipped" ? "completed" : order.status,
+      created_at: order.created_at,
+      order_items: order.order_items,
+      total_amount: order.total_amount,
+    })) || [];
 
   // Show loading overlay during initial load or data fetching
-  const showLoading = id 
-    ? (orderLoading || orderFetching) 
-    : (ordersLoading || (ordersFetching && currentStatus !== "all"));
+  const showLoading = id
+    ? orderLoading || orderFetching
+    : ordersLoading || (ordersFetching && currentStatus !== "all");
 
   // Early return for error states
   if (error || orderError) {
     return (
       <div className="bg-background">
-        <PageHeader title={id ? t("Order Details") : t("Orders")} onBack={id ? handleBack : undefined} />
-        <div className="p-4 text-center text-red-500">{error || orderError}</div>
+        <PageHeader
+          title={id ? t("Order Details") : t("Orders")}
+          onBack={id ? handleBack : undefined}
+        />
+        <div className="p-4 text-center text-red-500">
+          {error || orderError}
+        </div>
       </div>
     );
   }
@@ -117,37 +143,51 @@ const OrdersPage = () => {
   }
 
   // Map status to timeline for order details
-  const timeline = id && order ? [
-    {
-      status: "Order Placed",
-      date: formatDate(order.created_at),
-      description: "Your order has been confirmed",
-      icon: Package2,
-      isActive: order.status === "pending" || order.status === "unpaid",
-      isPending: false,
-    },
-    {
-      status: "Processing",
-      date: order.status === "processing" ? formatDate(new Date()) : "",
-      description: "Your order is processed and payment completed",
-      icon: Package2,
-      isActive: order.status === "processing",
-      isPending: !["processing", "shipped", "delivered", "completed"].includes(
-        order.status
-      ),
-    },
-    {
-      status: "Completed",
-      date: order.status === "shipped" ? formatDate(new Date()) : "",
-      description: "Your order has been completed",
-      icon: Truck,
-      isActive:
-        order.status === "shipped" ||
-        order.status === "delivered" ||
-        order.status === "completed",
-      isPending: !["shipped", "delivered", "completed"].includes(order.status),
-    },
-  ] : [];
+  const timeline =
+    id && order
+      ? [
+          {
+            status: "Order Placed",
+            date: format(order.created_at, "dd MMM yyyy HH:mm"),
+            description: "Your order has been confirmed",
+            icon: Package2,
+            isActive: order.status === "pending" || order.status === "unpaid",
+            isPending: false,
+          },
+          {
+            status: "Processing",
+            date:
+              order.status === "processing"
+                ? format(new Date(), "dd MMM yyyy HH:mm")
+                : "",
+            description: "Your order is processed and payment completed",
+            icon: Package2,
+            isActive: order.status === "processing",
+            isPending: ![
+              "processing",
+              "shipped",
+              "delivered",
+              "completed",
+            ].includes(order.status),
+          },
+          {
+            status: "Completed",
+            date:
+              order.status === "shipped"
+                ? format(new Date(), "dd MMM yyyy HH:mm")
+                : "",
+            description: "Your order has been completed",
+            icon: Truck,
+            isActive:
+              order.status === "shipped" ||
+              order.status === "delivered" ||
+              order.status === "completed",
+            isPending: !["shipped", "delivered", "completed"].includes(
+              order.status
+            ),
+          },
+        ]
+      : [];
 
   return (
     <>
@@ -158,7 +198,12 @@ const OrdersPage = () => {
       {id && order ? (
         <div className="bg-background">
           <PageHeader title={t("Order Details")} onBack={handleBack} />
-          <div className={cn("pt-14", { "pb-10": order.status === "pending" && order.total_amount > 0 })}>
+          <div
+            className={cn(
+              "pt-14"
+              // {"pb-10": order.status === "pending" && order.total_amount > 0}
+            )}
+          >
             {/* Order Status Header */}
             <div className="px-5 py-3">
               <div className="flex items-center justify-between mb-2">
@@ -171,7 +216,7 @@ const OrdersPage = () => {
                 <OrderStatusBadge status={order.status} />
               </div>
               <div className="text-sm text-muted-foreground">
-                {formatDate(order.created_at)}
+                {format(order.created_at, "dd MMM yyyy HH:mm")}
               </div>
             </div>
 
@@ -223,7 +268,10 @@ const OrdersPage = () => {
 
                     {/* Content */}
                     <div
-                      className={cn("relative", event.isActive && "animate-pulse")}
+                      className={cn(
+                        "relative",
+                        event.isActive && "animate-pulse"
+                      )}
                     >
                       <div className="flex items-center justify-between mb-1.5">
                         <h3
@@ -291,7 +339,7 @@ const OrdersPage = () => {
                         />
                       </div>
                     ) : (
-                      <div className="flex items-center justify-center w-24 h-24 rounded-lg overflow-hidden bg-white/20">
+                      <div className="flex items-center justify-center w-24 h-24 rounded-lg overflow-hidden bg-black">
                         <GlowfishIcon className="w-14 h-14" />
                       </div>
                     )}
@@ -304,21 +352,24 @@ const OrdersPage = () => {
                           {t("Quantity")}: {item.quantity}
                         </p>
                         <p>
-                          {t("Unit Price")}: ฿{item.unit_price}
+                          {t("Unit Price")}: ฿{item.unit_price.toLocaleString()}
                         </p>
                         <p className="font-medium text-card-foreground">
-                          {t("Total")}: ฿{item.unit_price * item.quantity}
+                          {t("Total")}: ฿
+                          {(item.unit_price * item.quantity).toLocaleString()}
                         </p>
                         {item.product_variants.options?.length > 0 && (
                           <div className="flex flex-wrap gap-1">
-                            {item.product_variants.options.map((option, index) => (
-                              <span
-                                key={index}
-                                className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20"
-                              >
-                                {option.name}: {option.value}
-                              </span>
-                            ))}
+                            {item.product_variants.options.map(
+                              (option, index) => (
+                                <span
+                                  key={index}
+                                  className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20"
+                                >
+                                  {option.name}: {option.value}
+                                </span>
+                              )
+                            )}
                           </div>
                         )}
                       </div>
@@ -333,58 +384,72 @@ const OrdersPage = () => {
               <h2 className="text-sm font-medium tracking-wide">
                 {t("Order Summary")}
               </h2>
-              <div className="bg-darkgray rounded-lg p-5">
-                <div className="space-y-3">
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">{t("Subtotal")}</span>
+                  <span className="text-card-foreground">
+                    ฿{order.subtotal.toLocaleString()}
+                  </span>
+                </div>
+                {order.shipping > 0 && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">{t("Subtotal")}</span>
-                    <span className="text-card-foreground">฿{order.subtotal}</span>
+                    <span className="text-muted-foreground">
+                      {t("Shipping")}
+                    </span>
+                    <span className="text-card-foreground">
+                      ฿{order.shipping.toLocaleString()}
+                    </span>
                   </div>
-                  {order.shipping > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{t("Shipping")}</span>
-                      <span className="text-card-foreground">฿{order.shipping}</span>
-                    </div>
-                  )}
-                  {order.tax > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{t("Tax")}</span>
-                      <span className="text-card-foreground">฿{order.tax}</span>
-                    </div>
-                  )}
-                  {order.discount > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{t("Discount")}</span>
-                      <span className="text-destructive">-฿{order.discount}</span>
-                    </div>
-                  )}
-                  {order.points_discount > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{t("Points Discount")}</span>
-                      <span className="text-destructive">-฿{order.points_discount}</span>
-                    </div>
-                  )}
-                  <div className="pt-3 border-t border-border">
-                    <div className="flex justify-between">
-                      <span className="font-medium">{t("Total")}</span>
-                      <span className="font-medium">฿{order.total_amount}</span>
-                    </div>
-                    {order.loyalty_points_used > 0 && (
-                      <div className="mt-2 text-sm text-muted-foreground">
-                        {t("Points Used")}: {order.loyalty_points_used}
-                      </div>
-                    )}
+                )}
+                {order.tax > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{t("Tax")}</span>
+                    <span className="text-card-foreground">
+                      ฿{order.tax.toLocaleString()}
+                    </span>
                   </div>
+                )}
+                {order.discount > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {t("Discount")}
+                    </span>
+                    <span className="text-destructive">
+                      -฿{order.discount.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+                {order.points_discount > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {t("Points Discount")}
+                    </span>
+                    <span className="text-destructive">
+                      -฿{order.points_discount.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+                <div className="pt-3 border-t border-border">
+                  <div className="flex justify-between">
+                    <span className="font-medium">{t("Total")}</span>
+                    <span className="font-medium">
+                      ฿{order.total_amount.toLocaleString()}
+                    </span>
+                  </div>
+                  {order.loyalty_points_used > 0 && (
+                    <div className="mt-2 text-sm text-muted-foreground">
+                      {t("Points Used")}:{" "}
+                      {order.loyalty_points_used.toLocaleString()}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Pay Now Button */}
             {order.status === "pending" && order.total_amount > 0 && (
-              <div className="px-5 mb-4">
-                <button
-                  onClick={handlePayNow}
-                  className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-3 rounded-lg font-medium transition-colors"
-                >
+              <div className="px-5">
+                <button onClick={handlePayNow} className="w-full main-btn">
                   {t("Pay Now")} (฿{order.total_amount})
                 </button>
               </div>
@@ -393,10 +458,7 @@ const OrdersPage = () => {
             {/* View Tickets Button */}
             {!eventLoading && event && event.tickets.length > 0 && (
               <div className="px-5">
-                <button
-                  onClick={handleViewTickets}
-                  className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-3 rounded-lg font-medium transition-colors"
-                >
+                <button onClick={handleViewTickets} className="w-full main-btn">
                   <Calendar className="w-4 h-4" />
                   {t("View Tickets")} ({event.tickets.length})
                 </button>
@@ -406,7 +468,10 @@ const OrdersPage = () => {
         </div>
       ) : (
         <div className="bg-background">
-          <PageHeader title={t("Orders")} onBack={() => navigate("/settings")} />
+          <PageHeader
+            title={t("Orders")}
+            onBack={() => navigate("/settings")}
+          />
           <div className="pt-14 pb-4">
             <OrdersSearch value={searchQuery} onChange={setSearchQuery} />
 
@@ -441,7 +506,7 @@ const OrdersPage = () => {
             </Tabs>
 
             {/* Pagination Controls */}
-            {formattedOrders.length > 0 && (
+            {formattedOrders.length > 0 && totalPages > 1 && (
               <Pagination
                 hasNextPage={hasNextPage}
                 hasPreviousPage={hasPreviousPage}
@@ -457,4 +522,4 @@ const OrdersPage = () => {
   );
 };
 
-export default OrdersPage; 
+export default OrdersPage;

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Button } from "../ui/button";
 import GlowfishIcon from "../icons/GlowfishIcon";
+import { format } from "date-fns";
 
 interface OrderItem {
   id: string;
@@ -49,16 +50,6 @@ export function OrderCard({ order, index }: OrderCardProps) {
     });
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -76,7 +67,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 : `${t("Order")} #${order.id?.substring(0, 8) || ""}`}
             </div>
             <div className="text-muted-foreground">
-              {formatDate(order.created_at)}
+              {format(order.created_at, "dd MMM yyyy HH:mm")}
             </div>
           </div>
         </div>
@@ -120,8 +111,11 @@ export function OrderCard({ order, index }: OrderCardProps) {
       {/* Order Footer */}
       <div className="p-4">
         <div className="flex flex-col gap-2">
-          <div className="text-sm text-muted-foreground">
-            {t("items", { count: order.order_items.length })}
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-muted-foreground">{t("Items")}</div>
+            <div className="text-sm font-semibold">
+              {order.order_items.length}
+            </div>
           </div>
           <div className="flex items-center justify-between">
             <div className="text-sm text-muted-foreground">{t("Total")}</div>
