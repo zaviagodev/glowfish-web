@@ -8,7 +8,6 @@ import DrawerInfo from "@/components/company-info/DrawerInfo";
 
 export const Login = () => {
   const t = useTranslate();
-
   const handleLineLogin = () => {
     loginWithLine();
   };
@@ -27,7 +26,6 @@ export const Login = () => {
           {t("Sign in to see all the event happening.")}
         </h1>
       </div>
-
       <div className="flex flex-col gap-5">
         <Button
           className="main-btn relative font-semibold"
@@ -36,8 +34,7 @@ export const Login = () => {
           <LineIcon className="w-7 h-7 absolute left-4" fill="#06c755" />
           {t("Continue with Line")}
         </Button>
-
-        <DrawerInfo />
+        <DrawerInfo isLogin={true} />
       </div>
     </section>
   );

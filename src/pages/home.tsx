@@ -11,6 +11,7 @@ import { CategoryGrid } from "@/features/home/components/CategoryGrid";
 import { SearchDialog } from "@/features/home/components/SearchDialog";
 import { ProductSection } from "@/features/home/components/ProductSection";
 import { format, toZonedTime } from "date-fns-tz";
+import { isPast } from "date-fns";
 import { Category } from "@/features/home/types/product.types";
 
 export const HomeList = () => {
@@ -121,10 +122,10 @@ export const HomeList = () => {
     selectedProduct?.end_datetime &&
     `${format(
       toZonedTime(new Date(selectedProduct.start_datetime), "UTC"),
-      "dd/MM/yyyy, hh:mm a"
+      "dd MMM yyyy, HH:mm"
     )} - ${format(
       toZonedTime(new Date(selectedProduct.end_datetime), "UTC"),
-      "dd/MM/yyyy, hh:mm a"
+      "dd MMM yyyy, HH:mm"
     )}`;
 
   return (
@@ -211,7 +212,9 @@ export const HomeList = () => {
         <ProductSection
           title={t("Upcoming Events")}
           linkTo="/products"
-          products={products}
+          products={products
+            .filter((product) => isPast(product.end_datetime) === false)
+            .slice(0, 5)}
           onProductSelect={handleProductSelect}
           sliderRef={productSliderRef}
           isLoading={loading}
@@ -221,7 +224,7 @@ export const HomeList = () => {
         <ProductSection
           title={t("Events you might enjoy")}
           linkTo="/products"
-          products={products.slice(0, 4)}
+          products={products.slice(0, 8)}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
           isLoading={loading}

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { useProducts } from "@/features/home/hooks/useProducts";
-import { format } from "date-fns";
+import { format, isPast } from "date-fns";
 import {
   Sheet,
   SheetContent,
@@ -110,8 +110,8 @@ export default function ProductsPage() {
       product?.end_datetime &&
       `${format(
         new Date(product.start_datetime),
-        "dd-MM-yyyy HH:mm"
-      )} - ${format(new Date(product.end_datetime), "dd-MM-yyyy HH:mm")}`
+        "dd MMM yyyy HH:mm"
+      )} - ${format(new Date(product.end_datetime), "dd MMM yyyy HH:mm")}`
     );
   };
 
@@ -132,7 +132,7 @@ export default function ProductsPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="text-white h-12"
+            className="text-white h-12 !bg-transparent"
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />
@@ -213,6 +213,7 @@ export default function ProductsPage() {
                           setSelectedProduct(product);
                         }
                       }}
+                      end_datetime={product.end_datetime}
                     />
                   </motion.div>
                 ))}
@@ -239,7 +240,7 @@ export default function ProductsPage() {
       {/* Filter Drawer */}
       <Sheet open={showFilterDrawer} onOpenChange={setShowFilterDrawer}>
         <SheetContent side="bottom" className="h-[70%] p-0">
-          <SheetHeader className="px-5 pb-3 pt-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
+          <SheetHeader className="px-5 pb-3 pt-8 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Filter Products")}
             </SheetTitle>
@@ -336,7 +337,7 @@ export default function ProductsPage() {
       {/* Sort Drawer */}
       <Sheet open={showSortDrawer} onOpenChange={setShowSortDrawer}>
         <SheetContent side="bottom" className="h-fit p-0">
-          <SheetHeader className="px-5 pb-3 pt-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
+          <SheetHeader className="px-5 pb-3 pt-8 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Sort By")}
             </SheetTitle>

@@ -1,5 +1,5 @@
 import { useTranslate } from "@refinedev/core";
-import { ScanQrCode, CreditCard, Building2, ChevronDown } from "lucide-react";
+import { ScanQrCode, Building2, ChevronRight } from "lucide-react";
 import { useStore } from "@/hooks/useStore";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -9,8 +9,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import LoadingSpin from "../loading/LoadingSpin";
 
 interface PaymentMethodProps {
   value: string;
@@ -135,59 +135,51 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
   const selectedOption = paymentOptions.find((option) => option.id === value);
 
   if (loading) {
-    return (
-      <div className="bg-darkgray rounded-lg animate-pulse">
-        <div className="px-3 py-4">
-          <div className="h-5 w-32 bg-gray-200 rounded mb-3" />
-          <div className="h-16 bg-gray-200 rounded" />
-        </div>
-      </div>
-    );
+    return <LoadingSpin />;
   }
 
   return (
     <>
-      <div className="bg-darkgray rounded-lg">
-        <div className="px-3 py-4">
-          <h2 className="text-sm font-medium mb-3">{t("Payment Method")}</h2>
+      <div
+        className="bg-darkgray rounded-lg px-3 py-4"
+        onClick={() => setShowOptions(true)}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-medium">{t("Payment Method")}</h2>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </div>
 
-          <div
-            className="bg-[rgba(23,23,23,0.05)] rounded-lg p-3 cursor-pointer"
-            onClick={() => setShowOptions(true)}
-          >
-            {selectedOption ? (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
-                    {selectedOption.details?.bank?.image_url ? (
-                      <img
-                        src={selectedOption.details.bank.image_url}
-                        alt={selectedOption.details.bank.bank_name}
-                        className="w-5 h-5 object-contain"
-                      />
-                    ) : (
-                      selectedOption.icon
-                    )}
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium text-muted-foreground">
-                      {selectedOption.name}
-                    </div>
-                    <div className="text-xs text-secondary-foreground">
-                      {selectedOption.description}
-                    </div>
-                    {selectedOption.details?.account_number && (
-                      <div className="text-xs text-muted-foreground">
-                        {t("Account")}: {selectedOption.details.account_number}
-                      </div>
-                    )}
-                  </div>
+        <div className="flex items-center gap-3">
+          {selectedOption ? (
+            <>
+              {selectedOption.details?.bank?.image_url ? (
+                <img
+                  src={selectedOption.details.bank.image_url}
+                  alt={selectedOption.details.bank.bank_name}
+                  className="w-8 h-8 object-contain"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
+                  {selectedOption.icon}
                 </div>
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              </div>
-            ) : (
-              <div className="text-sm text-muted-foreground text-center">
-                {t("Select a payment method")}
+              )}
+            </>
+          ) : (
+            <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
+              <ScanQrCode className="h-4 w-4 text-icon-green-foreground" />
+            </div>
+          )}
+
+          <div>
+            <div className="text-sm font-medium">
+              {selectedOption?.name || t("Payment Method")}
+            </div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              {selectedOption?.description || t("Select a payment method")}
+            </div>
+            {selectedOption?.details?.account_number && (
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {t("Account")}: {selectedOption?.details?.account_number}
               </div>
             )}
           </div>
@@ -197,22 +189,20 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
       <Sheet open={showOptions} onOpenChange={setShowOptions}>
         <SheetContent
           side="bottom"
-          className="h-[70%] bg-background rounded-t-xl p-4"
+          className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-width-mobile max-w-[500px] mx-auto flex flex-col gap-0"
         >
-          <SheetHeader className="mb-4">
-            <SheetTitle className="text-lg font-semibold">
+          <SheetHeader className="px-5 pb-3 pt-8 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
+            <SheetTitle className="text-title2 font-semibold tracking-tight">
               {t("Choose Payment Method")}
             </SheetTitle>
           </SheetHeader>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {paymentOptions.map((option) => (
               <button
                 key={option.id}
                 className={cn(
-                  "w-full text-left p-3 rounded-lg transition-all",
-                  option.id === value
-                    ? "bg-[rgba(23,23,23,0.05)] border border-[#E0E0E0]"
-                    : "bg-tertiary hover:bg-[#F2F2F2]"
+                  "w-full text-left p-5 rounded-lg transition-all",
+                  option.id === value ? "bg-background" : ""
                 )}
                 onClick={() => {
                   onChange(option.id);
@@ -220,17 +210,17 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
                 }}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
-                    {option.details?.bank?.image_url ? (
-                      <img
-                        src={option.details.bank.image_url}
-                        alt={option.details.bank.bank_name}
-                        className="w-5 h-5 object-contain"
-                      />
-                    ) : (
-                      option.icon
-                    )}
-                  </div>
+                  {option.details?.bank?.image_url ? (
+                    <img
+                      src={option.details.bank.image_url}
+                      alt={option.details.bank.bank_name}
+                      className="w-5 h-5 object-contain"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
+                      {option.icon}
+                    </div>
+                  )}
                   <div>
                     <div className="text-sm font-medium">{option.name}</div>
                     <div className="text-xs text-secondary-foreground">

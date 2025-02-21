@@ -80,7 +80,7 @@ export function CartPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20">
+                      <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
                         <GlowfishIcon className="h-10 w-10" />
                       </div>
                     )}

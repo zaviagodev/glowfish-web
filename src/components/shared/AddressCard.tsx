@@ -1,7 +1,6 @@
 import { MapPin, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 interface AddressCardProps {
   title: string;
@@ -21,7 +20,6 @@ export function AddressCard({
   isDefault,
 }: AddressCardProps) {
   const navigate = useNavigate();
-
   return (
     <div
       className={cn("bg-darkgray rounded-lg px-3 py-4", className)}
@@ -39,9 +37,7 @@ export function AddressCard({
         </div>
         {isDefault ? (
           <div>
-            <p className="text-sm font-medium">
-              {name} | {phone}
-            </p>
+            <p className="text-sm font-medium">{name} | {phone}</p>
             <p className="text-xs text-muted-foreground mt-0.5">{address}</p>
           </div>
         ) : (
