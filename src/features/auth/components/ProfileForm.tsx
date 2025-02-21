@@ -56,15 +56,19 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
       form.reset({
         firstName: customer.first_name || "",
         lastName: customer.last_name || "",
-        email: isProfileSetup ? "" : (customer.email || ""),
+        email: isProfileSetup ? "" : customer.email || "",
         company: customer.company || "",
-        dateOfBirth: customer.date_of_birth ? new Date(customer.date_of_birth) : undefined,
+        dateOfBirth: customer.date_of_birth
+          ? new Date(customer.date_of_birth)
+          : undefined,
       });
       setAvatarUrl(customer.avatar_url || "");
     }
   }, [customer, isProfileSetup]);
 
-  const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     try {
       const file = event.target.files?.[0];
       if (!file) return;
@@ -72,7 +76,9 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
       setIsLoading(true);
       setError("");
 
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
 
       const fileExt = file.name.split(".").pop();
@@ -84,9 +90,9 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from("product-images")
-        .getPublicUrl(filePath);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("product-images").getPublicUrl(filePath);
 
       const timestamp = new Date().getTime();
       const urlWithTimestamp = `${publicUrl}?t=${timestamp}`;
@@ -114,7 +120,9 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
       setIsLoading(true);
       setError("");
 
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
 
       const { error } = await supabase.auth.updateUser({
@@ -177,15 +185,15 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               accept="image/*"
               id="avatar"
               className="hidden"
-              onChange={handleAvatarChange}
+              // onChange={handleAvatarChange}
               disabled={isLoading}
             />
-            <label
+            {/* <label
               htmlFor="avatar"
               className="text-primary cursor-pointer text-sm hover:text-primary/90"
             >
               {t("Change Profile Picture")}
-            </label>
+            </label> */}
           </div>
         </div>
 
@@ -307,11 +315,15 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
         </div>
 
         <div className="flex">
-          <Button type="submit" disabled={isLoading} className="w-full">
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full main-btn"
+          >
             {isLoading ? t("Saving...") : t("Save Changes")}
           </Button>
         </div>
       </form>
     </Form>
   );
-}; 
+};

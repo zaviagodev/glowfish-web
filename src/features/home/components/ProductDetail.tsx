@@ -48,7 +48,7 @@ export function ProductDetail({
   id,
   image,
   images = [],
-  name = '',
+  name = "",
   description,
   location,
   venue_address,
@@ -83,7 +83,7 @@ export function ProductDetail({
   // Sync thumbnail carousel
   useEffect(() => {
     if (thumbnailApi) {
-      thumbnailApi.on('select', () => {
+      thumbnailApi.on("select", () => {
         const index = thumbnailApi.selectedScrollSnap();
         setCurrentSlide(index);
       });
@@ -93,7 +93,7 @@ export function ProductDetail({
   // Sync modal carousel
   useEffect(() => {
     if (modalApi) {
-      modalApi.on('select', () => {
+      modalApi.on("select", () => {
         const index = modalApi.selectedScrollSnap();
         setCurrentSlide(index);
       });
@@ -144,7 +144,9 @@ export function ProductDetail({
     if (!selectedVariant) {
       return t("Select Options");
     }
-    return selectedVariant.options.map((opt: ProductVariantOption) => opt.value).join(" / ");
+    return selectedVariant.options
+      .map((opt: ProductVariantOption) => opt.value)
+      .join(" / ");
   };
 
   const handleVariantSelect = (variantId: string) => {
@@ -180,7 +182,7 @@ export function ProductDetail({
       variantId: selectedVariantId!,
       productId: id.toString(),
       name,
-      image: image || '',
+      image: image || "",
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
       variant: selectedVariant?.options?.reduce(
@@ -262,10 +264,7 @@ export function ProductDetail({
               </div>
               {Array.isArray(images) && images.length > 0 ? (
                 <div className="w-full h-full flex items-center justify-center p-4">
-                  <Carousel 
-                    className="w-full"
-                    setApi={setModalApi}
-                  >
+                  <Carousel className="w-full" setApi={setModalApi}>
                     <CarouselContent>
                       {images.map((img: ProductImage) => (
                         <CarouselItem key={img.id}>
@@ -287,7 +286,9 @@ export function ProductDetail({
                             onClick={() => setCurrentSlide(index)}
                             className={cn(
                               "w-2 h-2 rounded-full transition-all duration-200 cursor-pointer",
-                              index === currentSlide ? "bg-white" : "bg-white/50 hover:bg-white/75"
+                              index === currentSlide
+                                ? "bg-white"
+                                : "bg-white/50 hover:bg-white/75"
                             )}
                           />
                         ))}
@@ -312,18 +313,18 @@ export function ProductDetail({
             <>
               {Array.isArray(images) && images.length > 0 ? (
                 <div className="w-full aspect-square overflow-hidden">
-                  <Carousel 
-                    className="w-full"
-                    setApi={setThumbnailApi}
-                  >
+                  <Carousel className="w-full" setApi={setThumbnailApi}>
                     <CarouselContent>
                       {images.map((img: ProductImage) => (
-                        <CarouselItem key={img.id} onClick={() => setOpenImageModal(true)}>
+                        <CarouselItem
+                          key={img.id}
+                          onClick={() => setOpenImageModal(true)}
+                        >
                           <div className="relative w-full aspect-square">
                             <img
                               src={img.url}
                               alt={img.alt || name}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover object-top"
                             />
                           </div>
                         </CarouselItem>
@@ -337,7 +338,9 @@ export function ProductDetail({
                             onClick={() => setCurrentSlide(index)}
                             className={cn(
                               "w-2 h-2 rounded-full transition-all duration-200 cursor-pointer",
-                              index === currentSlide ? "bg-white" : "bg-white/50 hover:bg-white/75"
+                              index === currentSlide
+                                ? "bg-white"
+                                : "bg-white/50 hover:bg-white/75"
                             )}
                           />
                         ))}
@@ -362,7 +365,7 @@ export function ProductDetail({
                   </Carousel>
                 </div>
               ) : (
-                <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20">
+                <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
                   <GlowfishIcon />
                 </div>
               )}
@@ -373,11 +376,7 @@ export function ProductDetail({
         <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-20 -top-20">
           <div className="space-y-4">
             <div className="space-y-2">
-              <h2
-                className="text-2xl"
-              >
-                {name}
-              </h2>
+              <h2 className="text-2xl">{name}</h2>
 
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2 text-sm font-light">
@@ -417,9 +416,7 @@ export function ProductDetail({
           <div className="space-y-6">
             {description && (
               <div className="space-y-2">
-                <h2 className="text-base">
-                  {t("Description")}
-                </h2>
+                <h2 className="text-base">{t("Description")}</h2>
                 <div
                   ref={paragraphRef}
                   className={cn(
@@ -443,14 +440,8 @@ export function ProductDetail({
 
             {venue_address && (
               <div className="space-y-2">
-                <h2
-                  className="text-base"
-                >
-                  {t("Venue & Location")}
-                </h2>
-                <p
-                  className="text-sm text-secondary-foreground font-light"
-                >
+                <h2 className="text-base">{t("Venue & Location")}</h2>
+                <p className="text-sm text-secondary-foreground font-light">
                   {venue_address}
                 </p>
               </div>

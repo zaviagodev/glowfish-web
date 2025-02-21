@@ -10,16 +10,11 @@ const ProfilePage = () => {
   return (
     <div className="bg-background">
       <PageHeader title={t("Profile")} onBack={() => navigate("/settings")} />
-      
-      <div className="max-w-2xl mx-auto pt-14 px-4 sm:px-6 lg:px-8">
-        <div className="bg-tertiary rounded-lg shadow">
-          <div className="px-4 py-5 sm:p-6">
-            <ProfileForm />
-          </div>
-        </div>
+      <div className="max-width-mobile pt-20 px-5">
+        <ProfileForm />
       </div>
     </div>
   );
 };
 
-export default ProfilePage; 
+export default ProfilePage;

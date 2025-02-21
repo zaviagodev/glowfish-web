@@ -10,7 +10,7 @@ function Slot(props: SlotProps) {
         "border-input border-y border-r first:border-l first:rounded-l-md last:rounded-r-md",
         "group-hover:border-accent-foreground/20 group-focus-within:border-accent-foreground/20",
         "outline outline-0 outline-accent-foreground/20",
-        { "outline-1 outline-orangefocus": props.isActive }
+        { "outline-1 outline-mainbutton": props.isActive }
       )}
     >
       {props.char !== null && <div>{props.char}</div>}
@@ -65,4 +65,4 @@ export const OTPInput: React.FC<OTPInputProps> = ({ value, onChange }) => {
       )}
     />
   );
-}; 
+};
