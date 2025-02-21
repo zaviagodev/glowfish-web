@@ -1,12 +1,4 @@
-import {
-  Home,
-  Calendar,
-  Gift,
-  User,
-  History,
-  Ticket,
-  Piano,
-} from "lucide-react";
+import { Home, Calendar, Gift, User, Ticket, Piano } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";

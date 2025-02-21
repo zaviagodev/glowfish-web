@@ -25,7 +25,7 @@ const Pagination = ({
         size="sm"
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={!hasPreviousPage}
-        className="border-0"
+        className="border-0 !bg-transparent"
       >
         <ChevronLeft className="w-4 h-4 mr-1" />
         {t("Previous")}
@@ -38,7 +38,7 @@ const Pagination = ({
         size="sm"
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={!hasNextPage}
-        className="border-0"
+        className="border-0 !bg-transparent"
       >
         {t("Next")}
         <ChevronRight className="w-4 h-4 ml-1" />
