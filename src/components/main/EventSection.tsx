@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { format } from "date-fns";
+import { format, isPast } from "date-fns";
 import { EventDataProps } from "@/type/type";
 import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
@@ -37,16 +37,15 @@ const EventSection = ({
       </div>
 
       <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5 scroll-smooth">
-        {list.map((item) => {
-          const handleSelectedEvent = () => setSelectedEvent(item);
-          return (
+        {list
+          .filter((item) => isPast(item.end_datetime as string) === false)
+          .map((item) => (
             <motion.div
               key={item.title}
               className="flex-shrink-0 w-[360px]"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
-              onClick={handleSelectedEvent}
             >
               <AnimatedCard
                 id={item.id}
@@ -61,16 +60,16 @@ const EventSection = ({
                   item.end_datetime &&
                   `${format(
                     new Date(item.start_datetime),
-                    "dd-MM-yyyy HH:mm"
+                    "dd MMM yyyy HH:mm"
                   )} - ${format(
                     new Date(item.end_datetime),
-                    "dd-MM-yyyy HH:mm"
+                    "dd MMM yyyy HH:mm"
                   )}`
                 }
+                end_datetime={item.end_datetime}
               />
             </motion.div>
-          );
-        })}
+          ))}
       </div>
     </section>
   );

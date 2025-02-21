@@ -17,10 +17,10 @@ export default function TicketsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const { tickets, loading, error, refreshTickets } = useTickets();
 
-  // Sort tickets by closest date
+  // Sort events by closest start date
   const sortedTickets = [...tickets].sort((a, b) => {
-    const dateA = new Date(a.metadata.purchaseDate);
-    const dateB = new Date(b.metadata.purchaseDate);
+    const dateA = new Date(a.event?.start_datetime || "");
+    const dateB = new Date(b.event?.start_datetime || "");
     const now = new Date();
     return (
       Math.abs(dateA.getTime() - now.getTime()) -
@@ -29,7 +29,10 @@ export default function TicketsPage() {
   });
 
   const filteredTickets = sortedTickets.filter((ticket) => {
-    const eventDate = new Date(ticket.metadata.purchaseDate);
+    if (!ticket.event?.end_datetime) {
+      return false;
+    }
+    const eventDate = new Date(ticket.event.end_datetime);
     if (isNaN(eventDate.getTime())) {
       return false;
     }
@@ -118,32 +121,32 @@ export default function TicketsPage() {
             ) : (
               <>
                 <div className="px-5 space-y-4">
-                  {currentTickets.map((ticket, index) => (
+                  {currentTickets.map((customerEvent, index) => (
                     <motion.div
-                      key={ticket.id}
+                      key={customerEvent.order_id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
                       <Ticket
                         ticket={{
-                          id: ticket.id,
-                          eventName: ticket.metadata.eventName,
-                          location: "To be determined", // This should come from event data
-                          date: ticket.metadata.purchaseDate,
-                          image: "", // This should come from event data
+                          id: customerEvent.order_id,
+                          eventName: customerEvent.event?.name || "",
+                          location: customerEvent.event?.venue_name || "To be determined",
+                          date: customerEvent.event?.start_datetime || "",
+                          endDate: customerEvent.event?.end_datetime || "",
+                          image: customerEvent.event?.product?.images?.[0]?.url || "",
                           status: activeTab,
-                          used: ticket.status === "used",
-                          ticketNumber: ticket.code,
-                          seat: ticket.metadata.attendeeName || "General Admission",
-                          groupSize: 1, // This should be calculated if needed
+                          used: customerEvent.tickets?.[0]?.status === "used",
+                          ticketNumber: customerEvent.tickets?.[0]?.code || "",
+                          seat: customerEvent.tickets?.[0]?.metadata?.attendeeName || "General Admission",
+                          groupSize: 1,
                         }}
                       />
                     </motion.div>
                   ))}
                 </div>
 
-                {/* Pagination */}
                 {totalPages > 1 && (
                   <Pagination
                     totalPages={totalPages}

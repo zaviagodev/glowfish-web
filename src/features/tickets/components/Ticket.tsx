@@ -45,7 +45,7 @@ export function Ticket({ ticket }: TicketProps) {
             className="w-full h-full object-cover aspect-square object-top"
           />
         ) : (
-          <div className="h-full bg-white/20 flex items-center justify-center">
+          <div className="h-full bg-black flex items-center justify-center">
             <GlowfishIcon className="w-20 h-20" />
           </div>
         )}
@@ -60,7 +60,7 @@ export function Ticket({ ticket }: TicketProps) {
             <div className="mb-2">
               <div
                 className={cn(
-                  "inline-flex px-2 py-1 rounded-full text-xs font-medium",
+                  "inline-flex px-2 py-1 rounded-full text-xs font-medium whitespace-pre gap-1",
                   ticket.status === "passed"
                     ? "bg-[#8E8E93]/10 text-[#8E8E93]"
                     : ticket.status === "ongoing"
@@ -89,7 +89,7 @@ export function Ticket({ ticket }: TicketProps) {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 flex-shrink-0" />
-              <span>{format(new Date(ticket.date), "PPp")}</span>
+              <span>{format(new Date(ticket.date), "dd MMM yyyy, HH:mm")}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-primary">
               <Users className="w-4 h-4 flex-shrink-0" />

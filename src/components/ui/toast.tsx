@@ -1,6 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, AlertCircle, CheckCircle2, Info } from "lucide-react";
-import { useEffect, useState, createContext, useContext, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  createContext,
+  useContext,
+  useCallback,
+} from "react";
 import { createPortal } from "react-dom";
 
 interface Toast {
@@ -20,18 +26,21 @@ const ToastContext = createContext<ToastContextType | null>(null);
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const addToast = useCallback((message: string, type: Toast["type"] = "info") => {
-    const id = Math.random().toString(36).substring(7);
-    setToasts(prev => [...prev, { id, message, type }]);
+  const addToast = useCallback(
+    (message: string, type: Toast["type"] = "info") => {
+      const id = Math.random().toString(36).substring(7);
+      setToasts((prev) => [...prev, { id, message, type }]);
 
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-      removeToast(id);
-    }, 3000);
-  }, []);
+      // Auto remove after 1 seconds
+      setTimeout(() => {
+        removeToast(id);
+      }, 1000);
+    },
+    []
+  );
 
   const removeToast = useCallback((id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
   return (
@@ -59,7 +68,7 @@ function ToastContainer() {
   return createPortal(
     <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none">
       <AnimatePresence>
-        {toasts.map(toast => (
+        {toasts.map((toast) => (
           <motion.div
             key={toast.id}
             initial={{ opacity: 0, x: 100 }}
@@ -67,15 +76,19 @@ function ToastContainer() {
             exit={{ opacity: 0, x: 100 }}
             className={`
               pointer-events-auto min-w-[320px] p-4 rounded-lg shadow-lg flex items-start gap-3
-              ${toast.type === 'error' ? 'bg-red-500 text-white' : 
-                toast.type === 'success' ? 'bg-green-500 text-white' : 
-                'bg-blue-500 text-white'}
+              ${
+                toast.type === "error"
+                  ? "bg-red-500 text-white"
+                  : toast.type === "success"
+                  ? "bg-green-500 text-white"
+                  : "bg-blue-500 text-white"
+              }
             `}
           >
             <div className="flex-shrink-0">
-              {toast.type === 'error' ? (
+              {toast.type === "error" ? (
                 <AlertCircle className="w-5 h-5 text-white" />
-              ) : toast.type === 'success' ? (
+              ) : toast.type === "success" ? (
                 <CheckCircle2 className="w-5 h-5 text-white" />
               ) : (
                 <Info className="w-5 h-5 text-white" />
@@ -94,4 +107,4 @@ function ToastContainer() {
     </div>,
     document.body
   );
-} 
+}

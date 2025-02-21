@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import {
   MapPin,
   Calendar,
-  Tag,
   ChevronLeft,
   ShoppingCart,
   Contact,
@@ -27,8 +26,8 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { cn } from "@/lib/utils";
 import { isPast } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface ProductVariantOption {
   name: string;
@@ -371,7 +370,7 @@ export function ProductDetail({
           )}
         </div>
 
-        <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-48 -top-20">
+        <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-20 -top-20">
           <div className="space-y-4">
             <div className="space-y-2">
               <h2
@@ -640,52 +639,44 @@ export function ProductDetail({
         </div>
 
         <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background space-y-4 max-width-mobile">
-          {isEventEnded ? (
-            <div className="p-4 bg-gray-100 rounded-lg">
-              <p className="text-gray-500 font-medium text-center">{t("This event has ended")}</p>
+          {getPriceDisplay() && (
+            <div className="flex items-center gap-2">
+              <div className="flex items-baseline gap-2">
+                <span
+                  className="flex flex-col font-bold tracking-tight text-secondary-foreground"
+                  style={{
+                    willChange: "transform",
+                    transform: "translateZ(0)",
+                  }}
+                >
+                  <span className="text-sm font-normal">start from</span>
+                  <span className="flex items-center gap-2 text-2xl">
+                    {getPriceDisplay()}
+                  </span>
+                </span>
+              </div>
             </div>
-          ) : (
-            <>
-              {getPriceDisplay() && (
-                <div className="flex items-center gap-2">
-                  <div className="flex items-baseline gap-2">
-                    <span
-                      className="flex flex-col font-bold tracking-tight text-secondary-foreground"
-                      style={{
-                        willChange: "transform",
-                        transform: "translateZ(0)",
-                      }}
-                    >
-                      <span className="text-sm font-normal">start from</span>
-                      <span className="flex items-center gap-2 text-2xl">
-                        {getPriceDisplay()}
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              )}
-              <Button
-                className="w-full main-btn"
-                onClick={() => {
-                  if (variant_options && variant_options.length > 0) {
-                    setShowVariantDrawer(true);
-                  } else {
-                    handleAddToCart(true);
-                  }
-                }}
-              >
-                {t("Sign Up")}
-              </Button>
-              <p className="text-xs text-center text-muted-foreground">
-                You won't be charged yet
-              </p>
-            </>
           )}
+          <Button
+            className="w-full main-btn"
+            disabled={isEventEnded}
+            onClick={() => {
+              if (variant_options && variant_options.length > 0) {
+                setShowVariantDrawer(true);
+              } else {
+                handleAddToCart(true);
+              }
+            }}
+          >
+            {isEventEnded ? t("This event has ended") : t("Sign Up")}
+          </Button>
+          <p className="text-xs text-center text-muted-foreground">
+            You won't be charged yet
+          </p>
         </div>
       </div>
 
       {/* Variant Selection Drawer */}
-
       {variant_options && variant_options.length > 0 && showVariantDrawer && (
         <VariantDrawer
           open={showVariantDrawer}

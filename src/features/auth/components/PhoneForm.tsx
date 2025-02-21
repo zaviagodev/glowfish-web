@@ -18,13 +18,13 @@ import { supabase } from "@/lib/supabase";
 
 type PhoneFormProps = {
   initialValues?: {
-    phone_verification: number;
+    phone_verification: number | null;
   };
 };
 
 export const PhoneForm = ({
   initialValues = {
-    phone_verification: 0,
+    phone_verification: null,
   },
 }: PhoneFormProps) => {
   const t = useTranslate();
