@@ -8,7 +8,14 @@ import { useLocation } from "react-router-dom";
 const InfoPage = () => {
   const t = useTranslate();
   const location = useLocation();
-  const { pointRules, earnMethods, spendingMethods, memberLevels, terms } = usePointsInfo();
+  const {
+    pointRules,
+    earnMethods,
+    spendingMethods,
+    memberLevels,
+    getPointTerms,
+    spendPointTerms,
+  } = usePointsInfo();
 
   // Determine which section to show based on the URL
   const path = location.pathname;
@@ -18,22 +25,24 @@ const InfoPage = () => {
 
   return (
     <div className="bg-background">
-      <PageHeader 
+      <PageHeader
         title={t(
-          showEarnPoints 
-            ? "How to Get Points" 
-            : showSpendPoints 
-            ? "How to Spend Points" 
+          showEarnPoints
+            ? "How to Get Points"
+            : showSpendPoints
+            ? "How to Spend Points"
             : "Member Level"
-        )} 
+        )}
       />
 
-      <div className="pt-14 pb-10 px-5 space-y-8">
+      <div className="pt-14 pb-10 px-5 space-y-8 mt-5">
         {/* Point Rules - Show only on earn points page */}
         {showEarnPoints && (
           <>
             <div className="space-y-4">
-              <h2 className="text-sm font-medium tracking-wide">{t("Point Rules")}</h2>
+              <h2 className="text-sm font-medium tracking-wide">
+                {t("Point Rules")}
+              </h2>
               {pointRules.map((rule) => (
                 <motion.div
                   key={rule.type}
@@ -66,7 +75,9 @@ const InfoPage = () => {
 
             {/* Earn Methods */}
             <div className="space-y-4">
-              <h2 className="text-sm font-medium tracking-wide">{t("Ways to Earn")}</h2>
+              <h2 className="text-sm font-medium tracking-wide">
+                {t("Ways to Earn Points")}
+              </h2>
               {earnMethods.map((method, index) => (
                 <motion.div
                   key={method.title}
@@ -106,6 +117,31 @@ const InfoPage = () => {
                 </motion.div>
               ))}
             </div>
+
+            <div className="space-y-4">
+              <motion.h2
+                className="text-sm font-medium tracking-wide mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+              >
+                {t("Terms & Conditions")}
+              </motion.h2>
+              {getPointTerms.map((term, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 + index * 0.1 }}
+                  className="flex items-start gap-3"
+                >
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {term}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </>
         )}
 
@@ -113,7 +149,9 @@ const InfoPage = () => {
         {showSpendPoints && (
           <>
             <div className="space-y-4">
-              <h2 className="text-sm font-medium tracking-wide">{t("Ways to Spend")}</h2>
+              <h2 className="text-sm font-medium tracking-wide">
+                {t("Ways to Spend")}
+              </h2>
               {spendingMethods.map((method, index) => (
                 <motion.div
                   key={method.title}
@@ -156,21 +194,28 @@ const InfoPage = () => {
 
             {/* Terms */}
             <div className="space-y-4">
-              <h2 className="text-sm font-medium tracking-wide">{t("Terms")}</h2>
-              <motion.div
+              <motion.h2
+                className="text-sm font-medium tracking-wide mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-darkgray rounded-lg p-4"
+                transition={{ delay: 0.7 }}
               >
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {terms.map((term, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-primary">•</span>
-                      <span>{term}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
+                {t("Terms & Conditions")}
+              </motion.h2>
+              {spendPointTerms.map((term, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 + index * 0.1 }}
+                  className="flex items-start gap-3"
+                >
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {term}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </>
         )}
@@ -178,7 +223,9 @@ const InfoPage = () => {
         {/* Member Levels - Show only on member level page */}
         {showMemberLevel && (
           <div className="space-y-4">
-            <h2 className="text-sm font-medium tracking-wide">{t("Member Levels")}</h2>
+            <h2 className="text-sm font-medium tracking-wide">
+              {t("Member Levels")}
+            </h2>
             {memberLevels.map((level, index) => (
               <motion.div
                 key={level.name}
@@ -266,4 +313,4 @@ const InfoPage = () => {
   );
 };
 
-export default InfoPage; 
+export default InfoPage;

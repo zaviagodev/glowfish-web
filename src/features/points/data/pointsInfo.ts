@@ -148,7 +148,7 @@ export const usePointsInfo = () => {
     },
   ];
 
-  const terms = [
+  const spendPointTerms = [
     t("Points must be redeemed in multiples of 100"),
     t("Minimum redemption is 100 points (฿10 value)"),
     t("Points expire 12 months after being earned"),
@@ -156,11 +156,19 @@ export const usePointsInfo = () => {
     t("Redemption cannot be cancelled or reversed"),
   ];
 
+  const getPointTerms = [
+    t("Points are valid for 12 months from the date of issue"),
+    t("Points cannot be transferred or exchanged for cash"),
+    t("Points can only be earned on paid purchases"),
+    t("Points are calculated based on the final paid amount after discounts"),
+  ]
+
   return {
     pointRules,
     earnMethods,
     spendingMethods,
     memberLevels,
-    terms,
+    getPointTerms,
+    spendPointTerms
   };
 }; 
