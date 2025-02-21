@@ -71,7 +71,7 @@ export function Ticket({ ticket }: TicketProps) {
                 )}
               >
                 {ticket.status === "passed"
-                  ? "Event Ended"
+                  ? "Ended"
                   : ticket.status === "ongoing"
                   ? "Ongoing"
                   : isToday(new Date(ticket.date))
@@ -85,19 +85,28 @@ export function Ticket({ ticket }: TicketProps) {
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="w-4 h-4 flex-shrink-0" />
-              <span className="line-clamp-1">{ticket.location}</span>
+              <span className="line-clamp-1">
+                {ticket.location || "To be determined"}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 flex-shrink-0" />
-              <span>{format(new Date(ticket.date), "dd MMM yyyy, HH:mm")}</span>
+              <span>
+                {ticket.date
+                  ? format(new Date(ticket.date), "dd MMM yyyy, HH:mm")
+                  : "To be determined"}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-sm text-primary">
               <Users className="w-4 h-4 flex-shrink-0" />
-              <span>{ticket.groupSize || 0} {ticket.groupSize === 1 ? "ticket" : "tickets"}</span>
+              <span>
+                {ticket.groupSize || 0}{" "}
+                {ticket.groupSize === 1 ? "ticket" : "tickets"}
+              </span>
             </div>
           </div>
         </div>
       </div>
     </motion.div>
   );
-} 
+}
