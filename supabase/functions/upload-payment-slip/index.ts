@@ -2,8 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { corsHeaders } from "../_shared/cors.ts";
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL')
-const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 serve(async (req) => {
   // Handle CORS
@@ -19,7 +19,7 @@ serve(async (req) => {
     const paymentType = formData.get("paymentType") as
       | "bank_transfer"
       | "promptpay";
-    const bankName = formData.get("bankName") as string;
+    const paymentMethod = formData.get("paymentMethod") as string;
     const transferReference = formData.get("transferReference") as string;
     const slipFile = formData.get("slipFile") as File;
 
@@ -111,14 +111,38 @@ serve(async (req) => {
       .from(Deno.env.get("STORAGE_BUCKET")!)
       .getPublicUrl(filePath);
 
+    const { data: paymentSettings } = await supabase
+      .from("payment_settings")
+      .select("*")
+      .eq("store_name", storeName)
+      .single();
+
+    let paymentDetails;
+    if (paymentType === "promptpay") {
+      paymentDetails = {
+        promptpay_name: paymentSettings?.promptpay_name!,
+        promptpay_id: paymentSettings?.promptpay_id!,
+        promptpay_qr_code: paymentSettings?.promptpay_qr_code_url!,
+      };
+    } else {
+      const bankAccount = paymentSettings?.bank_accounts.find(
+        (account) => account.id === paymentMethod,
+      );
+      paymentDetails = {
+        bank_name: bankAccount?.bankName,
+        account_name: bankAccount?.accountName,
+        account_number: bankAccount?.accountNumber,
+        branch: bankAccount?.branch,
+      };
+    }
+
     // Update order payment details
     const { error: updateError } = await supabase
       .from("orders")
       .update({
         payment_details: {
+          ...paymentDetails,
           type: paymentType,
-          bank_name: bankName,
-          qr_code: paymentType === "promptpay" ? publicUrl : null,
           slip_image: publicUrl,
           uploaded_at: new Date().toISOString(),
           transfer_reference: transferReference,
