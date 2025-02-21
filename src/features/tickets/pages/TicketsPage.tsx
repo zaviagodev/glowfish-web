@@ -1,0 +1,163 @@
+import { useTranslate } from "@refinedev/core";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Ticket as TicketIcon } from "lucide-react";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Ticket } from "../components/Ticket";
+import { useTickets } from "../hooks/useTickets";
+import LoadingSpin from "@/components/loading/LoadingSpin";
+import Pagination from "@/components/pagination/Pagination";
+
+const ITEMS_PER_PAGE = 10;
+
+export default function TicketsPage() {
+  const t = useTranslate();
+  const [activeTab, setActiveTab] = useState<"upcoming" | "passed">("upcoming");
+  const [currentPage, setCurrentPage] = useState(1);
+  const { tickets, loading, error, refreshTickets } = useTickets();
+
+  // Sort tickets by closest date
+  const sortedTickets = [...tickets].sort((a, b) => {
+    const dateA = new Date(a.metadata.purchaseDate);
+    const dateB = new Date(b.metadata.purchaseDate);
+    const now = new Date();
+    return (
+      Math.abs(dateA.getTime() - now.getTime()) -
+      Math.abs(dateB.getTime() - now.getTime())
+    );
+  });
+
+  const filteredTickets = sortedTickets.filter((ticket) => {
+    const eventDate = new Date(ticket.metadata.purchaseDate);
+    if (isNaN(eventDate.getTime())) {
+      return false;
+    }
+    const isUpcoming = eventDate > new Date();
+    const shouldInclude = activeTab === "upcoming" ? isUpcoming : !isUpcoming;
+    return shouldInclude;
+  });
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredTickets.length / ITEMS_PER_PAGE);
+
+  // Get current page tickets
+  const currentTickets = filteredTickets.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-background">
+        <PageHeader title={t("My Tickets")} />
+        <LoadingSpin />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-background">
+        <PageHeader title={t("My Tickets")} />
+        <div className="flex items-center justify-center py-12">
+          <p className="text-destructive">{t("Failed to load tickets")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-background">
+      <PageHeader title={t("My Tickets")} />
+
+      <div className="pt-14 pb-4">
+        <Tabs
+          defaultValue="upcoming"
+          onValueChange={(value) => {
+            setActiveTab(value as "upcoming" | "passed");
+            setCurrentPage(1); // Reset to first page when changing tabs
+          }}
+        >
+          <div className="px-4">
+            <TabsList className="w-full h-auto p-1 bg-tertiary grid grid-cols-2 gap-1">
+              <TabsTrigger
+                value="upcoming"
+                className="text-sm py-2.5 data-[state=active]:bg-background"
+              >
+                {t("Upcoming")}
+              </TabsTrigger>
+              <TabsTrigger
+                value="passed"
+                className="text-sm py-2.5 data-[state=active]:bg-background"
+              >
+                {t("Ended")}
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          <div className="mt-4">
+            {currentTickets.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center justify-center py-12 px-5"
+              >
+                <TicketIcon className="w-12 h-12 text-muted-foreground/50 mb-4" />
+                <p className="text-muted-foreground text-center">
+                  {activeTab === "upcoming"
+                    ? t("No upcoming events")
+                    : t("No ended events")}
+                </p>
+              </motion.div>
+            ) : (
+              <>
+                <div className="px-5 space-y-4">
+                  {currentTickets.map((ticket, index) => (
+                    <motion.div
+                      key={ticket.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <Ticket
+                        ticket={{
+                          id: ticket.id,
+                          eventName: ticket.metadata.eventName,
+                          location: "To be determined", // This should come from event data
+                          date: ticket.metadata.purchaseDate,
+                          image: "", // This should come from event data
+                          status: activeTab,
+                          used: ticket.status === "used",
+                          ticketNumber: ticket.code,
+                          seat: ticket.metadata.attendeeName || "General Admission",
+                          groupSize: 1, // This should be calculated if needed
+                        }}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <Pagination
+                    totalPages={totalPages}
+                    handlePageChange={handlePageChange}
+                    currentPage={currentPage}
+                    hasNextPage={currentPage !== totalPages}
+                    hasPreviousPage={currentPage !== 1}
+                  />
+                )}
+              </>
+            )}
+          </div>
+        </Tabs>
+      </div>
+    </div>
+  );
+} 
