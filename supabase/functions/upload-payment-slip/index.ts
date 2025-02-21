@@ -24,7 +24,7 @@ serve(async (req) => {
     const slipFile = formData.get("slipFile") as File;
 
     // Validate required fields
-    if (!orderId || !storeName || !paymentType || !slipFile) {
+    if (!orderId || !storeName || !paymentType || !paymentMethod || !slipFile) {
       return new Response(
         JSON.stringify({
           error: "Missing required fields",
