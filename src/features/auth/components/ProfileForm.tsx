@@ -256,11 +256,11 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               disabled={isLoading}
               className="bg-darkgray"
             />
-            {form.formState.errors.company && (
+            {/* {form.formState.errors.company && (
               <p className="text-sm text-red-500">
                 {form.formState.errors.company.message}
               </p>
-            )}
+            )} */}
           </div>
 
           <div className="space-y-1">
