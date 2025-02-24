@@ -1,7 +1,7 @@
 import Header from "@/components/main/Header";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { RegisterMainDrawerProps } from "@/type/type";
+import { RegisterMainDrawerProps } from "@/type/type 2";
 
 const RegisterDrawer = ({
   setIsOpen,

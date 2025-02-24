@@ -4,7 +4,6 @@ import { LineCallback } from "@/features/auth/components/LineCallback";
 import { PhoneVerification } from "@/features/auth/components/PhoneVerification";
 import { TellUsAboutYourself } from "@/features/auth/components/TellUsAboutYourself";
 import { ProfileSetup } from "@/features/auth/components/ProfileSetup";
-import { Register } from "@/features/auth/components/RegisterPageOld";
 
 export const AuthPage = () => {
   return (
@@ -14,7 +13,6 @@ export const AuthPage = () => {
       <Route path="phone-verification" element={<PhoneVerification />} />
       <Route path="profile-setup" element={<ProfileSetup />} />
       <Route path="tell-us-about-yourself" element={<TellUsAboutYourself />} />
-      <Route path="register" element={<Register />} />
     </Routes>
   );
 };
