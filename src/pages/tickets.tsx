@@ -1,6 +1,11 @@
 import { useTranslate } from "@refinedev/core";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -13,7 +18,6 @@ import {
   QrCode,
   Ticket as TicketIcon,
   Clock,
-  ArrowLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTickets } from "@/features/tickets/hooks/useTickets";
@@ -32,8 +36,8 @@ export default function TicketsPage() {
   const location = useLocation();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<"upcoming" | "passed">(() => 
-    (searchParams.get("tab") as "upcoming" | "passed") || "upcoming"
+  const [activeTab, setActiveTab] = useState<"upcoming" | "passed">(
+    () => (searchParams.get("tab") as "upcoming" | "passed") || "upcoming"
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [qrTicket, setQrTicket] = useState<string | null>(null);
@@ -316,7 +320,7 @@ export default function TicketsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full mt-2.5 !bg-orange-600 rounded-full"
+                        className="w-full mt-2.5 !bg-mainbutton rounded-full !text-black"
                         onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
                           handleTicketCheckIn(ticket);
