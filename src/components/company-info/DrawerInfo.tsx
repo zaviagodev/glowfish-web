@@ -27,14 +27,14 @@ const DrawerInfo = ({ className, isLogin }: DrawerInfoProps) => {
   return (
     <>
       <p className={cn("text-center font-light text-sm px-5", className)}>
-        {isLogin && `By proceeding, you agree to our${" "}`}
+        {isLogin && `By proceeding, you agree to our `}
         <span
           onClick={() => handleOpenModal("Terms of Service")}
           className="underline"
         >
           Terms of Use
         </span>{" "}
-        and acknowledge the{" "}
+        {isLogin ? "and acknowledge the " : "• "}
         <span
           onClick={() => handleOpenModal("Privacy Policy")}
           className="underline"
