@@ -260,20 +260,14 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               htmlFor="company"
               className="block text-sm font-medium text-card-foreground"
             >
-              {t("Company")} <span className="text-destructive">*</span>
+              {t("Company")}
             </label>
             <Input
               id="company"
               {...form.register("company")}
               disabled={isLoading}
               className="mt-1 bg-darkgray"
-              required
             />
-            {form.formState.errors.company && (
-              <p className="mt-1 text-sm text-destructive">
-                {form.formState.errors.company.message}
-              </p>
-            )}
           </div>
 
           <div>
