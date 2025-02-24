@@ -284,7 +284,7 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
               {t("Date of Birth")} <span className="text-destructive">*</span>
             </label>
             <DatePicker
-              selected={form.getValues("dateOfBirth")}
+              selected={form.watch("dateOfBirth")}
               onSelect={(date) => {
                 if (date) {
                   form.setValue("dateOfBirth", date);
