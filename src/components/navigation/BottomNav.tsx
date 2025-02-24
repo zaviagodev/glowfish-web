@@ -30,7 +30,7 @@ const BottomNav = () => {
           const active = isActive(path);
           return (
             <Link
-              key={path}
+              key={label}
               to={path}
               className="flex flex-col items-center gap-0.5 w-[20%] no-underline"
               aria-label={label}
