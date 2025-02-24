@@ -27,9 +27,6 @@ export const useTickets = (): UseTicketsResult => {
   } = useQuery({
     queryKey: ['tickets', customer?.id],
     queryFn: async () => {
-      if (!customer?.id) {
-        throw new Error('Customer not found');
-      }
       return await ticketService.getTickets(customer.id);
     },
     staleTime: CACHE_EXPIRY_TIME,

@@ -1,6 +1,6 @@
 import { useTranslate } from "@refinedev/core";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -29,8 +29,12 @@ const ITEMS_PER_PAGE = 10;
 export default function TicketsPage() {
   const t = useTranslate();
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState<"upcoming" | "passed">("upcoming");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<"upcoming" | "passed">(() => 
+    (searchParams.get("tab") as "upcoming" | "passed") || "upcoming"
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [qrTicket, setQrTicket] = useState<string | null>(null);
   const [showCheckIn, setShowCheckIn] = useState(false);
@@ -42,6 +46,14 @@ export default function TicketsPage() {
     updateTicketStatus,
     checkTicketStatus,
   } = useTickets();
+
+  // Update search params when tab changes
+  useEffect(() => {
+    const currentTab = searchParams.get("tab");
+    if (currentTab !== activeTab) {
+      setSearchParams({ tab: activeTab }, { replace: true });
+    }
+  }, [activeTab, searchParams, setSearchParams]);
 
   // Refresh tickets on initial page load
   useEffect(() => {
@@ -63,7 +75,8 @@ export default function TicketsPage() {
   };
 
   const handleTicketClick = (orderId: string) => {
-    navigate(`/tickets/${orderId}`);
+    // Preserve the current search params when navigating to details
+    navigate(`/tickets/${orderId}${location.search}`);
   };
 
   const handleCloseCheckIn = async () => {
@@ -159,7 +172,10 @@ export default function TicketsPage() {
         <PageHeader
           title="Ticket Details"
           className="bg-background/20 border-transparent"
-          onBack={() => navigate("/tickets")}
+          onBack={() => {
+            // Navigate directly to tickets page with current search params
+            navigate(`/tickets${location.search}`, { replace: true });
+          }}
         />
 
         <div className="pt-14 pb-20">
@@ -346,9 +362,12 @@ export default function TicketsPage() {
 
       <div className="pt-14 pb-4">
         <Tabs
-          defaultValue="upcoming"
+          value={activeTab}
+          defaultValue={activeTab}
           onValueChange={(value) => {
-            setActiveTab(value as "upcoming" | "passed");
+            const newTab = value as "upcoming" | "passed";
+            setActiveTab(newTab);
+            setSearchParams({ tab: newTab });
             setCurrentPage(1);
           }}
         >
