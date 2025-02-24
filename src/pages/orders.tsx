@@ -17,7 +17,7 @@ import { useEvent } from "@/features/orders/hooks/useEvent";
 import { defaultOrderStatuses } from "@/components/settings/OrderStatusBar";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import Pagination from "@/components/pagination/Pagination";
-import { Package2, Truck, Calendar } from "lucide-react";
+import { Package2, Truck, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
@@ -45,7 +45,7 @@ const OrdersPage = () => {
   const currentPage = parseInt(searchParams.get("page") || "1");
   const currentStatus = searchParams.get("status") || "all";
   const [searchQuery, setSearchQuery] = useState("");
-  const ITEMS_PER_PAGE = 10;
+  const ITEMS_PER_PAGE = 5;
 
   const {
     orders,
@@ -276,10 +276,8 @@ const OrdersPage = () => {
                       <div className="flex items-center justify-between mb-1.5">
                         <h3
                           className={cn(
-                            "text-[15px] font-semibold leading-none tracking-tight",
-                            event.isPending
-                              ? "text-muted-foreground"
-                              : "text-card-foreground"
+                            "text-[15px] font-semibold leading-none tracking-tight text-muted-foreground",
+                            { "text-card-foreground": event.isActive }
                           )}
                         >
                           {t(event.status)}
@@ -305,7 +303,7 @@ const OrdersPage = () => {
                 {t("Customer Information")}
               </h2>
               <div className="bg-darkgray rounded-lg p-5">
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {(order.customer.first_name || order.customer.last_name) && (
                     <h3 className="text-base font-medium text-card-foreground">
                       {[order.customer.first_name, order.customer.last_name]
@@ -314,7 +312,7 @@ const OrdersPage = () => {
                     </h3>
                   )}
                   {order.customer.email && (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground text-ellipsis overflow-hidden">
                       {order.customer.email}
                     </p>
                   )}
@@ -327,11 +325,11 @@ const OrdersPage = () => {
               <h2 className="text-sm font-medium tracking-wide">
                 {t("Order Items")}
               </h2>
-              <div className="space-y-6 bg-darkgray p-5 rounded-lg">
+              <div className="space-y-6">
                 {order.order_items.map((item) => (
                   <div key={item.id} className="flex gap-5">
                     {item.product_variants.product.image ? (
-                      <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
                         <img
                           src={item.product_variants.product.image}
                           alt={item.product_variants.product.name}
@@ -339,7 +337,7 @@ const OrdersPage = () => {
                         />
                       </div>
                     ) : (
-                      <div className="flex items-center justify-center w-24 h-24 rounded-lg overflow-hidden bg-black">
+                      <div className="flex items-center justify-center w-20 h-20 rounded-lg overflow-hidden bg-black">
                         <GlowfishIcon className="w-14 h-14" />
                       </div>
                     )}
@@ -348,12 +346,15 @@ const OrdersPage = () => {
                         {item.product_variants.product.name}
                       </h3>
                       <div className="text-sm text-muted-foreground space-y-1">
-                        <p>
-                          {t("Quantity")}: {item.quantity}
-                        </p>
-                        <p>
-                          {t("Unit Price")}: ฿{item.unit_price.toLocaleString()}
-                        </p>
+                        <div className="flex items-center justify-between gap-2">
+                          <p>
+                            {t("Unit Price")}: ฿
+                            {item.unit_price.toLocaleString()}
+                          </p>
+                          <p className="whitespace-pre">
+                            {t("Quantity")}: {item.quantity}
+                          </p>
+                        </div>
                         <p className="font-medium text-card-foreground">
                           {t("Total")}: ฿
                           {(item.unit_price * item.quantity).toLocaleString()}
@@ -410,23 +411,21 @@ const OrdersPage = () => {
                   </div>
                 )}
                 {order.discount > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      {t("Discount")}
-                    </span>
-                    <span className="text-destructive">
-                      -฿{order.discount.toLocaleString()}
-                    </span>
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>{t("Discount")}</span>
+                    <span>-฿{order.discount.toLocaleString()}</span>
                   </div>
                 )}
                 {order.points_discount > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      {t("Points Discount")}
-                    </span>
-                    <span className="text-destructive">
-                      -฿{order.points_discount.toLocaleString()}
-                    </span>
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>{t("Points Discount")}</span>
+                    <span>-฿{order.points_discount.toLocaleString()}</span>
+                  </div>
+                )}
+                {order.loyalty_points_used > 0 && (
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>{t("Used Points")}</span>
+                    <span>{order.loyalty_points_used.toLocaleString()}</span>
                   </div>
                 )}
                 <div className="pt-3 border-t border-border">
@@ -436,12 +435,6 @@ const OrdersPage = () => {
                       ฿{order.total_amount.toLocaleString()}
                     </span>
                   </div>
-                  {order.loyalty_points_used > 0 && (
-                    <div className="mt-2 text-sm text-muted-foreground">
-                      {t("Points Used")}:{" "}
-                      {order.loyalty_points_used.toLocaleString()}
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -450,7 +443,7 @@ const OrdersPage = () => {
             {order.status === "pending" && order.total_amount > 0 && (
               <div className="px-5">
                 <button onClick={handlePayNow} className="w-full main-btn">
-                  {t("Pay Now")} (฿{order.total_amount})
+                  {t("Pay Now")} (฿{order.total_amount.toLocaleString()})
                 </button>
               </div>
             )}
@@ -459,7 +452,7 @@ const OrdersPage = () => {
             {!eventLoading && event && event.tickets.length > 0 && (
               <div className="px-5">
                 <button onClick={handleViewTickets} className="w-full main-btn">
-                  <Calendar className="w-4 h-4" />
+                  <Ticket className="w-4 h-4 mr-2" />
                   {t("View Tickets")} ({event.tickets.length})
                 </button>
               </div>

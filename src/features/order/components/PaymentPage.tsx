@@ -8,13 +8,11 @@ import {
   Download,
   Clock,
   ArrowRight,
-  CheckCircle2,
   Sparkles,
   Copy,
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
@@ -43,7 +41,6 @@ export function PaymentPage() {
   const [countdown, setCountdown] = useState(900); // 15 minutes in seconds
   const [isConfirming, setIsConfirming] = useState(false);
   const [isBankNumCopied, setIsBankNumCopied] = useState(false);
-  const [isNameCopied, setIsNameCopied] = useState(false);
 
   useEffect(() => {
     const fetchOrderAndPaymentOptions = async () => {
@@ -139,12 +136,6 @@ export function PaymentPage() {
     });
   };
 
-  const handleCopyName = () => {
-    navigator.clipboard.writeText(paymentOptions?.promptpay?.name);
-    setIsNameCopied(true);
-    setTimeout(() => setIsNameCopied(false), 1500);
-  };
-
   const handleCopyAccountNum = () => {
     navigator.clipboard.writeText(paymentOptions?.promptpay?.id);
     setIsBankNumCopied(true);
@@ -212,16 +203,14 @@ export function PaymentPage() {
 
   const promptPayInfo = [
     {
-      title: t("PromptPay ID"),
+      title: t("Account Name"),
+      value: paymentOptions?.promptpay?.name || "-",
+    },
+    {
+      title: t("Account Number"),
       value: paymentOptions?.promptpay?.id || "-",
       isCopied: isBankNumCopied,
       onCopy: handleCopyAccountNum,
-    },
-    {
-      title: t("PromptPay Name"),
-      value: paymentOptions?.promptpay?.name || "-",
-      isCopied: isNameCopied,
-      onCopy: handleCopyName,
     },
   ];
 
@@ -345,15 +334,6 @@ export function PaymentPage() {
           </motion.p>
         </motion.div>
 
-        {/* <div className="space-y-3">
-            <h2 className="text-3xl font-bold">
-              ฿{order.total.toLocaleString()}
-            </h2>
-            <p className="text-muted-foreground">
-              {t("Order")} #{order.id}
-            </p>
-          </div> */}
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -371,26 +351,28 @@ export function PaymentPage() {
                   <div className="text-sm flex items-center gap-2">
                     <div className="font-medium">{info.value || "-"}</div>
 
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={info.onCopy}
-                      className="relative !bg-transparent h-fit w-fit"
-                    >
-                      <AnimatePresence>
-                        {info.isCopied && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0 }}
-                            className="absolute -top-8 px-2 py-1 rounded bg-green-500 text-white text-xs whitespace-nowrap"
-                          >
-                            {t("Copied!")}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                      <Copy className="w-4 h-4" />
-                    </Button>
+                    {info.onCopy && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={info.onCopy}
+                        className="relative !bg-transparent h-fit w-fit"
+                      >
+                        <AnimatePresence>
+                          {info.isCopied && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              exit={{ scale: 0 }}
+                              className="absolute -top-8 px-2 py-1 bg-green-500 text-white text-xs whitespace-nowrap rounded-full"
+                            >
+                              {t("Copied!")}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -427,67 +409,72 @@ export function PaymentPage() {
 
         {/* Upload Slip */}
         <div className="px-6 py-8">
-          <h3 className="text-lg font-semibold mb-4">
-            {t("Upload Payment Slip")}
-          </h3>
+          <div className="bg-darkgray p-5 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">
+              {t("Upload Payment Slip")}
+            </h3>
 
-          {slipImage ? (
-            <div className="relative rounded-lg overflow-hidden mb-6">
-              <img
-                src={slipImage}
-                alt="Payment slip"
-                className="w-full object-cover"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white"
-                onClick={() => setSlipImage(null)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-          ) : (
-            <label className="block">
-              <div className="relative">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  disabled={isUploading}
+            {slipImage ? (
+              <div className="relative rounded-lg overflow-hidden mb-6">
+                <img
+                  src={slipImage}
+                  alt="Payment slip"
+                  className="w-full object-cover"
                 />
-                <div
-                  className={cn(
-                    "h-32 rounded-lg border-2 border-dashed border-muted-foreground/25",
-                    "flex flex-col items-center justify-center gap-2",
-                    "cursor-pointer hover:border-primary/50 transition-colors",
-                    shimmer
-                  )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white"
+                  onClick={() => setSlipImage(null)}
                 >
-                  {isUploading ? (
-                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
-                  ) : (
-                    <>
-                      <Upload className="w-6 h-6 text-muted-foreground" />
-                      <div className="text-sm text-muted-foreground">
-                        {t("Click to upload slip")}
-                      </div>
-                    </>
-                  )}
-                </div>
+                  <X className="w-4 h-4" />
+                </Button>
               </div>
-            </label>
-          )}
+            ) : (
+              <label className="block">
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    disabled={isUploading}
+                  />
+                  <div
+                    className={cn(
+                      "h-48 rounded-lg border-2 border-dashed border-muted-foreground/25",
+                      "flex flex-col items-center justify-center gap-2",
+                      "cursor-pointer hover:border-primary/50 transition-colors",
+                      shimmer
+                    )}
+                  >
+                    {isUploading ? (
+                      <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
+                    ) : (
+                      <>
+                        <Upload className="w-6 h-6 text-muted-foreground" />
+                        <div className="text-sm text-muted-foreground">
+                          {t("Click to upload slip")}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </label>
+            )}
+          </div>
 
-          <div className="fixed bottom-0 bg-background w-full p-5 left-0 flex flex-col items-center">
+          <div className="fixed bottom-0 bg-background w-full p-5 left-0 flex flex-col items-center max-width-mobile left-[50%] -translate-x-[50%]">
             <Button
               className="main-btn w-full"
               disabled={!slipImage || isConfirming}
               onClick={handleConfirmPayment}
             >
               {isConfirming ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-background border-t-transparent mr-2" />
+                  {t("Confirming")}
+                </>
               ) : (
                 <>
                   {t("Confirm Payment")}

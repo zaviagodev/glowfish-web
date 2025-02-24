@@ -1,11 +1,12 @@
 import { useTranslate } from "@refinedev/core";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CheckCircle2, Package2, Clock, ChevronRight } from "lucide-react";
+import { CheckCircle2, Package2, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlowingEdges } from "@/components/ui/glowing-edges";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 export function ThankYouPage() {
   const t = useTranslate();
@@ -24,16 +25,8 @@ export function ThankYouPage() {
 
   const { orderNumber, amount, date } = location.state;
 
-  const formattedDate = new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
   return (
-    <div className="bg-background relative isolate">
+    <div className="bg-background relative isolate pb-24">
       {/* Glowing Edge Indicator */}
       <GlowingEdges />
 
@@ -118,7 +111,9 @@ export function ThankYouPage() {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">{t("Date")}</span>
-              <span className="text-sm font-medium">{formattedDate}</span>
+              <span className="text-sm font-medium">
+                {format(date, "dd MMM yyyy HH:mm")}
+              </span>
             </div>
           </div>
         </motion.div>
@@ -167,11 +162,19 @@ export function ThankYouPage() {
             <span>{t("Go to my order")}</span>
             <ChevronRight className="w-4 h-4" />
           </Button>
-          <Button className="w-full main-btn" onClick={() => navigate("/home")}>
-            {t("Continue Shopping")}
-          </Button>
         </motion.div>
       </div>
+
+      <motion.div
+        className="fixed bottom-0 bg-background p-5 max-width-mobile w-full"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+      >
+        <Button className="w-full main-btn" onClick={() => navigate("/home")}>
+          {t("Continue Shopping")}
+        </Button>
+      </motion.div>
     </div>
   );
-} 
+}
