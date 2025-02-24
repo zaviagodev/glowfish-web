@@ -10,11 +10,8 @@ import {
   Info,
   ArrowUpToLine,
   ArrowDownToLine,
-  ChevronLeft,
-  ChevronRightIcon,
 } from "lucide-react";
 import React from "react";
-
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -22,14 +19,18 @@ import LoadingSpin from "@/components/loading/LoadingSpin";
 import { useCustomer } from "@/hooks/useCustomer";
 import { usePoints } from "@/features/points/hooks/usePoints";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Pagination from "@/components/pagination/Pagination";
 
 const PointsPage = () => {
   const t = useTranslate();
   const navigate = useNavigate();
-  const [showQR, setShowQR] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  
-  const { customer, loading: customerLoading, error: customerError } = useCustomer();
+
+  const {
+    customer,
+    loading: customerLoading,
+    error: customerError,
+  } = useCustomer();
   const {
     points,
     loading: pointsLoading,
@@ -39,7 +40,7 @@ const PointsPage = () => {
     type,
     setType,
     totalPages,
-  } = usePoints();
+  } = usePoints(1, 5);
 
   // Set isInitialLoad to false after first load
   React.useEffect(() => {
@@ -97,16 +98,19 @@ const PointsPage = () => {
 
   const renderTransaction = (transaction: any) => {
     const Icon = transaction.type === "earn" ? ArrowUpToLine : ArrowDownToLine;
-    const formattedDate = format(new Date(transaction.created_at), "MMM dd");
+    const formattedDate = format(
+      new Date(transaction.created_at),
+      "dd MMM yyyy"
+    );
 
     return (
       <motion.div
         key={transaction.id}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="px-5 py-4"
+        className="py-4"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-3">
             <div
               className={cn(
@@ -134,93 +138,20 @@ const PointsPage = () => {
                       : "Points Redeemed"
                   )}
               </p>
-              <p className="text-xs text-[#8E8E93]">
-                {formattedDate}
-              </p>
+              <p className="text-xs text-[#8E8E93]">{formattedDate}</p>
             </div>
           </div>
           <div
             className={cn(
               "text-sm font-semibold",
-              transaction.type === "earn"
-                ? "text-[#34C759]"
-                : "text-[#FF3B30]"
+              transaction.type === "earn" ? "text-[#34C759]" : "text-[#FF3B30]"
             )}
           >
             {transaction.type === "earn" ? "+" : "-"}
-            {transaction.points}
+            {transaction.points?.toLocaleString()}
           </div>
         </div>
       </motion.div>
-    );
-  };
-
-  const renderPagination = () => {
-    if (totalPages <= 1) return null;
-
-    const delta = 2; // Number of pages to show before and after current page
-    const pages: (number | string)[] = [];
-
-    // Always show first page
-    pages.push(1);
-
-    // Calculate range around current page
-    const rangeStart = Math.max(2, page - delta);
-    const rangeEnd = Math.min(totalPages - 1, page + delta);
-
-    // Add ellipsis after first page if needed
-    if (rangeStart > 2) {
-      pages.push("...");
-    }
-
-    // Add pages in range
-    for (let i = rangeStart; i <= rangeEnd; i++) {
-      pages.push(i);
-    }
-
-    // Add ellipsis before last page if needed
-    if (rangeEnd < totalPages - 1) {
-      pages.push("...");
-    }
-
-    // Always show last page if there is more than one page
-    if (totalPages > 1) {
-      pages.push(totalPages);
-    }
-
-    return (
-      <div className="flex justify-center items-center gap-2 mt-6 px-5">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        {pages.map((pageNum, index) => (
-          <Button
-            key={index}
-            variant={page === pageNum ? "default" : "outline"}
-            className={cn("h-8 w-8", {
-              "pointer-events-none": pageNum === "...",
-            })}
-            onClick={() => typeof pageNum === "number" && setPage(pageNum)}
-          >
-            {pageNum}
-          </Button>
-        ))}
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => setPage(page + 1)}
-          disabled={page === totalPages}
-        >
-          <ChevronRightIcon className="h-4 w-4" />
-        </Button>
-      </div>
     );
   };
 
@@ -259,7 +190,7 @@ const PointsPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
           >
             <Button
               variant="outline"
@@ -283,7 +214,12 @@ const PointsPage = () => {
         </div>
 
         {/* Points History */}
-        <div className="mt-8">
+        <motion.div
+          className="mt-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
           <div className="px-5 mb-4">
             <h3 className="text-sm font-medium tracking-wide">
               {t("Points History")}
@@ -310,21 +246,29 @@ const PointsPage = () => {
                         <LoadingSpin />
                       </div>
                     ) : pointsTransactions.length > 0 ? (
-                      <>
-                        {pointsTransactions.map(renderTransaction)}
-                        {renderPagination()}
-                      </>
+                      <>{pointsTransactions.map(renderTransaction)}</>
                     ) : (
                       <div className="text-center text-muted-foreground py-8">
                         {t("No transactions found")}
                       </div>
                     )}
                   </div>
+                  <div className="-mx-5">
+                    {pointsTransactions.length > 0 && totalPages > 1 && (
+                      <Pagination
+                        currentPage={page}
+                        handlePageChange={setPage}
+                        totalPages={totalPages}
+                        hasNextPage={page !== totalPages}
+                        hasPreviousPage={page !== 1}
+                      />
+                    )}
+                  </div>
                 </TabsContent>
               ))}
             </Tabs>
           </section>
-        </div>
+        </motion.div>
 
         {/* Info Box */}
         <motion.div
@@ -348,9 +292,8 @@ const PointsPage = () => {
           </div>
         </motion.div>
       </div>
-
     </div>
   );
 };
 
-export default PointsPage; 
+export default PointsPage;
