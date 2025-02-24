@@ -16,7 +16,7 @@ export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
       ? ""
       : "main-container";
 
-  const showBottomNav = ![
+  const showBottomNav: boolean = ![
     "/login",
     "/register",
     "/phone-verification",
@@ -24,7 +24,8 @@ export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
     "/cart",
     "/checkout",
     "/payment",
-  ].some((path) => location.pathname.startsWith(path));
+    "/profile-setup",
+  ].some((path) => location.pathname.includes(path));
 
   return (
     <div className="mobile-container">
