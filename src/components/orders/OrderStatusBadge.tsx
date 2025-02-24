@@ -4,7 +4,7 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  AlertCircle,
+  Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslate } from "@refinedev/core";
@@ -21,6 +21,12 @@ export const statusConfig = {
     color: "#2196f3",
     bgColor: "rgba(33, 150, 243, 0.1)",
     badge: "bg-red-50 text-red-600",
+  },
+  completed: {
+    icon: Check,
+    color: "#4CAF50",
+    bgColor: "rgba(76, 175, 80, 0.1)",
+    badge: "bg-green-50 text-green-600",
   },
   shipped: {
     icon: Truck,
