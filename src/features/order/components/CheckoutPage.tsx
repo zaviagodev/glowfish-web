@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslate } from "@refinedev/core";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CartItem as CartItemType, useCart } from "@/lib/cart";
@@ -60,10 +60,58 @@ export function CheckoutPage() {
   const addresses = customer?.addresses || [];
   const selectedAddress = location.state?.selectedAddress || addresses.find((addr) => addr.is_default) || addresses[0];
 
+  // Check if all items are events
+  const [hasPhysicalProducts, setHasPhysicalProducts] = useState(false);
+  const [isCheckingProducts, setIsCheckingProducts] = useState(true);
+
+  // Function to check if a product is an event
+  const checkForPhysicalProducts = async () => {
+    setIsCheckingProducts(true);
+    try {
+      for (const item of items) {
+        const { data: variant } = await supabase
+          .from('product_variants')
+          .select('product_id')
+          .eq('id', item.variantId)
+          .single();
+
+        if (variant) {
+          // Check if this product is NOT an event
+          const { data: event } = await supabase
+            .from('events')
+            .select('id')
+            .eq('product_id', variant.product_id)
+            .single();
+
+          if (!event) {
+            // If there's no event entry, it's a physical product
+            setHasPhysicalProducts(true);
+            break;
+          }
+        }
+      }
+    } catch (error: unknown) {
+      console.error('Error checking for physical products:', error instanceof Error ? error.message : 'Unknown error');
+      // If there's an error, assume there are physical products to be safe
+      setHasPhysicalProducts(true);
+    } finally {
+      setIsCheckingProducts(false);
+    }
+  };
+
+  // Check for physical products when items change
+  useEffect(() => {
+    checkForPhysicalProducts();
+  }, [items]);
+
   // Redirect to cart if accessed directly without selected items
   if (!location.state?.selectedItems) {
     navigate("/cart", { replace: true });
     return null;
+  }
+
+  if (isCheckingProducts || customerLoading) {
+    return <LoadingSpin />;
   }
 
   // Calculate order summary
@@ -83,8 +131,8 @@ export function CheckoutPage() {
         throw new Error("Cart is empty");
       }
 
-      // Validate delivery address
-      if (!selectedAddress) {
+      // Validate delivery address for physical products
+      if (hasPhysicalProducts && !selectedAddress) {
         throw new Error("Please select a delivery address");
       }
 
@@ -111,8 +159,8 @@ export function CheckoutPage() {
         p_shipping: 0,
         p_tax: 0,
         p_total: total,
-        p_shipping_address_id: selectedAddress.id,
-        p_billing_address_id: selectedAddress.id, // Using same address for billing
+        p_shipping_address_id: hasPhysicalProducts ? selectedAddress.id : null,
+        p_billing_address_id: hasPhysicalProducts ? selectedAddress.id : null,
         p_applied_coupons: [], // Add actual coupon codes if available
         p_loyalty_points_used: 0, // Add actual points used if available
         p_notes: JSON.stringify({
@@ -135,30 +183,14 @@ export function CheckoutPage() {
 
       // Clear the ordered items from cart
       const orderedVariantIds = orderItems.map((item: { variant_id: string }) => item.variant_id);
-      const remainingItems = allItems.filter(item => !orderedVariantIds.includes(item.variantId));
-      clearCart(); // First clear the entire cart
-      if (remainingItems.length > 0) {
-        // If there are remaining items, add them back to cart
-        remainingItems.forEach((item: CartItem) => {
-          const { quantity, ...newItem } = item;
-          addItem(newItem);
-          // Add the item multiple times if quantity > 1
-          for (let i = 1; i < quantity; i++) {
-            addItem(newItem);
-          }
-        });
-      }
+      const remainingItems = allItems.filter(
+        (item: CartItem) => !orderedVariantIds.includes(item.variantId)
+      );
+      clearCart();
+      remainingItems.forEach((item: CartItem) => addItem(item));
 
-      // Refresh orders list with proper error handling
-      try {
-        await refreshOrders();
-      } catch (refreshError) {
-        console.error("Failed to refresh orders:", refreshError);
-        // Don't block navigation if refresh fails
-      }
-
-      // Small delay to ensure the refresh has time to complete
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Refresh orders list
+      await refreshOrders();
 
       // Redirect based on order total
       if (total > 0) {
@@ -172,23 +204,13 @@ export function CheckoutPage() {
           },
         });
       }
-    } catch (error) {
-      console.error("Error creating order:", error);
-      alert(
-        t(
-          error instanceof Error
-            ? error.message
-            : "Failed to process order. Please try again."
-        )
-      );
+    } catch (error: unknown) {
+      console.error("Error creating order:", error instanceof Error ? error.message : 'Unknown error');
+      alert(error instanceof Error ? error.message : "Failed to create order");
     } finally {
       setIsProcessing(false);
     }
   };
-
-  if (customerLoading) {
-    return <LoadingSpin />;
-  }
 
   return (
     <div className="bg-background">
@@ -197,21 +219,23 @@ export function CheckoutPage() {
       <div className="pt-14 pb-32">
         <div className="p-5 space-y-6">
           <ProductList items={items} />
-          <div onClick={() => navigate("/checkout/address", { state: { selectedItems: items } })}>
-            <AddressCard
-              title={t("Delivery Address")}
-              name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
-              phone={selectedAddress?.phone}
-              address={`${selectedAddress?.address1}${
-                selectedAddress?.address2 ? `, ${selectedAddress?.address2}` : ""
-              }, ${selectedAddress?.city}, ${selectedAddress?.state} ${
-                selectedAddress?.postal_code
-              }`}
-              isDefault={!!selectedAddress}
-            />
-          </div>
-
-          {/* <PointsCoupons subtotal={subtotal} /> */}
+          
+          {/* Only show address selection for physical products */}
+          {hasPhysicalProducts && (
+            <div onClick={() => navigate("/checkout/address", { state: { selectedItems: items } })}>
+              <AddressCard
+                title={t("Delivery Address")}
+                name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
+                phone={selectedAddress?.phone}
+                address={`${selectedAddress?.address1}${
+                  selectedAddress?.address2 ? `, ${selectedAddress?.address2}` : ""
+                }, ${selectedAddress?.city}, ${selectedAddress?.state} ${
+                  selectedAddress?.postal_code
+                }`}
+                isDefault={!!selectedAddress}
+              />
+            </div>
+          )}
 
           <PaymentMethod value={paymentMethod} onChange={setPaymentMethod} />
 
@@ -228,7 +252,7 @@ export function CheckoutPage() {
       <CheckoutFooter
         total={total}
         isProcessing={isProcessing}
-        disabled={addresses.length === 0}
+        disabled={hasPhysicalProducts && addresses.length === 0}
         onPlaceOrder={handleCreateOrder}
         storeMessage={storeMessage}
         vatInvoiceData={vatInvoiceData}

@@ -101,7 +101,7 @@ BEGIN
   -- Get customer details using auth.uid()
   SELECT id INTO v_customer_id
   FROM customers
-  WHERE auth_id = auth.uid()
+  WHERE auth_id = v_campaign_id
   AND store_name = v_store_name
   FOR UPDATE;
 
