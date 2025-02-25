@@ -140,7 +140,21 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
 
       if (error) throw error;
 
-      // Update customer record
+      // Get current customer data to preserve existing meta
+      const { data: currentCustomer } = await supabase
+        .from("customers")
+        .select("meta")
+        .eq("auth_id", user.id)
+        .single();
+
+      // Merge existing meta with new values
+      const updatedMeta = {
+        ...(currentCustomer?.meta || {}),
+        profile_setup_completed: true,
+        profile_setup_completed_at: new Date().toISOString(),
+      };
+
+      // Update customer record with merged meta
       const { error: customerError } = await supabase
         .from("customers")
         .update({
@@ -150,6 +164,7 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
           company: data.company,
           date_of_birth: data.dateOfBirth?.toISOString(),
           updated_at: new Date().toISOString(),
+          meta: updatedMeta,
         })
         .eq("auth_id", user.id);
 

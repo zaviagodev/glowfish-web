@@ -1,14 +1,17 @@
 import Header from "@/components/main/Header";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ProfileForm } from "./ProfileForm";
 
 export const ProfileSetup = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.returnTo || "/auth/tell-us-about-yourself";
+
   return (
     <div className="max-width-mobile pt-14">
       <Header />
       <div className="p-5">
-        <ProfileForm onComplete={() => navigate("/auth/tell-us-about-yourself")} />
+        <ProfileForm onComplete={() => navigate(returnTo)} />
       </div>
     </div>
   );

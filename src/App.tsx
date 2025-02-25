@@ -40,6 +40,7 @@ import ProfilePage from "@/pages/profile";
 import ScanPage from "@/pages/scan";
 import InfoPage from "@/pages/info";
 import OrderFlow from "@/pages/OrderFlow";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 function App() {
 
@@ -134,16 +135,7 @@ function App() {
                 />
 
                 {/* Protected Routes */}
-                <Route
-                  element={
-                    <Authenticated
-                      key="authenticated-routes"
-                      fallback={<CatchAllNavigate to="/auth/login" />}
-                    >
-                      <Outlet />
-                    </Authenticated>
-                  }
-                >
+                <Route element={<ProtectedRoute />}>
                   <Route index element={<HomeList />} />
                   {/* Order Flow Routes */}
                   <Route path="/cart" element={<OrderFlow />} />
