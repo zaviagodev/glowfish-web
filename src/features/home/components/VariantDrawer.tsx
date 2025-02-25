@@ -11,7 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ProductVariant } from "@/type/type";
+import { ProductVariant } from "@/type/type 2";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 interface VariantOption {
@@ -216,16 +216,14 @@ export function VariantDrawer({
                   </p>
                 )
               ) : (
-                <p className="text-sm text-muted-foreground mt-1">
-                  In stock
-                </p>
+                <p className="text-sm text-muted-foreground mt-1">In stock</p>
               )}
             </div>
           )}
           <Button
             className="w-full main-btn"
             disabled={
-              !currentVariant || 
+              !currentVariant ||
               (track_quantity ? currentVariant.quantity === 0 : false)
             }
             onClick={() => {
@@ -235,11 +233,9 @@ export function VariantDrawer({
               }
             }}
           >
-            {
-              track_quantity && currentVariant?.quantity === 0
-                ? "Out of Stock"
-                : "Confirm booking"
-            }
+            {track_quantity && currentVariant?.quantity === 0
+              ? "Out of Stock"
+              : "Confirm booking"}
           </Button>
         </div>
       </SheetContent>

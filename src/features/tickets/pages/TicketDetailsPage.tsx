@@ -6,14 +6,7 @@ import { format } from "date-fns";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { CheckInView } from "../components/CheckInView";
 import { Button } from "@/components/ui/button";
-import {
-  MapPin,
-  Calendar,
-  Users,
-  QrCode,
-  Ticket,
-  Clock,
-} from "lucide-react";
+import { MapPin, Calendar, Users, QrCode, Ticket, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTickets } from "../hooks/useTickets";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
@@ -94,24 +87,11 @@ export default function TicketDetailsPage() {
         {/* Hero Section */}
         <div className="relative">
           <motion.div
-            className="relative w-full aspect-[4/3] overflow-hidden"
+            className="relative w-full aspect-[4/3] overflow-hidden flex items-center justify-center w-full h-full overflow-hidden bg-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <div className="flex items-center justify-center w-full h-full overflow-hidden bg-white/20">
-              <GlowfishIcon />
-            </div>
-            {/* Status Badge */}
-            <div
-              className={cn(
-                "absolute top-4 right-4 px-3 py-1.5 rounded-full text-sm font-medium",
-                !isUpcoming
-                  ? "bg-[#8E8E93]/10 text-[#8E8E93]"
-                  : "bg-[#34C759]/10 text-[#34C759]"
-              )}
-            >
-              {!isUpcoming ? t("Ended") : t("Upcoming")}
-            </div>
+            <GlowfishIcon />
           </motion.div>
         </div>
 
@@ -159,7 +139,7 @@ export default function TicketDetailsPage() {
               </div>
               <div className="flex items-center gap-2 text-sm font-light">
                 <Calendar className="w-4 h-4 flex-shrink-0" />
-                <span>{format(eventDate, "PPp")}</span>
+                <span>{format(eventDate, "dd MMM yyyy HH:mm")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm font-light">
                 <Users className="w-4 h-4 flex-shrink-0" />
@@ -181,9 +161,7 @@ export default function TicketDetailsPage() {
                   <div className="w-10 h-10 rounded-lg bg-[#F8F8F81A] flex items-center justify-center">
                     <Ticket className="w-5 h-5 text-primary" />
                   </div>
-                  <h3 className="font-medium">
-                    {ticket.code}
-                  </h3>
+                  <h3 className="font-medium">{ticket.code}</h3>
                 </div>
                 <div
                   className={cn(
@@ -240,4 +218,4 @@ export default function TicketDetailsPage() {
       </AnimatePresence>
     </div>
   );
-} 
+}

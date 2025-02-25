@@ -15,4 +15,4 @@ export const AuthPage = () => {
       <Route path="tell-us-about-yourself" element={<TellUsAboutYourself />} />
     </Routes>
   );
-}; 
+};

@@ -1,4 +1,4 @@
-import { ServiceListProps } from "@/type/type";
+import { ServiceListProps } from "@/type/type 2";
 
 const TermsAndConditions = () => {
   const serviceList: ServiceListProps[] = [

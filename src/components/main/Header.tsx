@@ -1,6 +1,6 @@
 import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { HeaderProps } from "@/type/type";
+import { HeaderProps } from "@/type/type 2";
 import { useBack } from "@refinedev/core";
 
 const Header = ({

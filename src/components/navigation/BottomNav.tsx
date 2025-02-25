@@ -17,6 +17,7 @@ const BottomNav = () => {
   const navItems = [
     { icon: Home, label: "Home", path: "/home" },
     { icon: Piano, label: "Events", path: "/products" },
+    { icon: Calendar, label: "Products", path: "/products" },
     { icon: Ticket, label: "Tickets", path: "/tickets" },
     { icon: Gift, label: "Rewards", path: "/rewards" },
     { icon: User, label: "Me", path: "/settings" },
@@ -29,7 +30,7 @@ const BottomNav = () => {
           const active = isActive(path);
           return (
             <Link
-              key={path}
+              key={label}
               to={path}
               className="flex flex-col items-center gap-0.5 w-[20%] no-underline"
               aria-label={label}

@@ -6,12 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -41,6 +35,8 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import cardReward from "@/img/my-card.svg";
+import RewardAccordions from "@/features/rewards/components/RewardAccordions";
+import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -93,7 +89,8 @@ const RewardsPage = () => {
     ? `${customerData.first_name} ${customerData.last_name}`.trim()
     : "User";
 
-  const hasPoints = customerData?.loyalty_points && customerData.loyalty_points > 0;
+  const hasPoints =
+    customerData?.loyalty_points && customerData.loyalty_points > 0;
 
   const hasRewards = rewards && rewards.length > 0;
 
@@ -111,7 +108,8 @@ const RewardsPage = () => {
   const handleRedeem = async () => {
     if (!selectedReward || !selectedReward.product_variants?.[0]) return;
 
-    const pointsRequired = selectedReward.product_variants[0].points_based_price;
+    const pointsRequired =
+      selectedReward.product_variants[0].points_based_price;
     if (customerData.loyalty_points < pointsRequired) {
       setError(t("You don't have enough points to redeem this reward"));
       return;
@@ -190,7 +188,7 @@ const RewardsPage = () => {
             className="w-full h-full aspect-square object-cover"
           />
         ) : (
-          <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-white/20">
+          <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
             <GlowfishIcon />
           </div>
         )}
@@ -202,16 +200,21 @@ const RewardsPage = () => {
 
           <div className="grid grid-cols-2">
             <div className="flex flex-col gap-1 pr-7 border-r border-r-[#FFFFFF1A]">
-              <p className="text-sm text-muted-foreground">{t("Required Points")}</p>
+              <p className="text-sm text-muted-foreground">
+                {t("Required Points")}
+              </p>
               <h2 className="text-orangefocus text-xl font-semibold">
                 {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
                 {t("points")}
               </h2>
             </div>
             <div className="flex flex-col gap-1 pl-7">
-              <p className="text-sm text-muted-foreground">{t("Your Points")}</p>
+              <p className="text-sm text-muted-foreground">
+                {t("Your Points")}
+              </p>
               <h2 className="page-title">
-                {customerData?.loyalty_points?.toLocaleString()}
+                {customerData?.loyalty_points?.toLocaleString()}{" "}
+                {customerData?.loyalty_points === 1 ? "point" : "points"}
               </h2>
             </div>
           </div>
@@ -223,39 +226,7 @@ const RewardsPage = () => {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <Accordion type="single" collapsible>
-              <AccordionItem
-                value="item-1"
-                className="bg-darkgray border-0 text-sm px-5 py-4 rounded-lg"
-              >
-                <AccordionTrigger className="p-0">
-                  {t("How to redeem the reward")}
-                </AccordionTrigger>
-                <AccordionContent className="pt-4 pb-0">
-                  {t(
-                    "Click the Redeem button below and show the code to our staff to claim your reward."
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-
-            <Accordion type="single" collapsible>
-              <AccordionItem
-                value="item-1"
-                className="bg-darkgray border-0 text-sm px-5 py-4 rounded-lg"
-              >
-                <AccordionTrigger className="p-0">
-                  {t("Redemption condition")}
-                </AccordionTrigger>
-                <AccordionContent className="pt-4 pb-0">
-                  {t(
-                    "This reward can only be redeemed once and cannot be combined with other promotions."
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+          <RewardAccordions />
         </section>
 
         {error && (
@@ -268,12 +239,16 @@ const RewardsPage = () => {
         )}
 
         <footer className="btn-footer flex flex-col gap-7 z-[50]">
-          <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+          <Dialog
+            open={isConfirmDialogOpen}
+            onOpenChange={setIsConfirmDialogOpen}
+          >
             <Button
               disabled={
                 isProcessing ||
                 customerData.loyalty_points <
-                  (selectedReward.product_variants?.[0]?.points_based_price || 0)
+                  (selectedReward.product_variants?.[0]?.points_based_price ||
+                    0)
               }
               onClick={() => setIsConfirmDialogOpen(true)}
               className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
@@ -336,7 +311,10 @@ const RewardsPage = () => {
                       {t("Code")}
                     </TabsTrigger>
                   </TabsList>
-                  <TabsContent value="barcode" className="mt-10 flex justify-center">
+                  <TabsContent
+                    value="barcode"
+                    className="mt-10 flex justify-center"
+                  >
                     <Barcode value={selectedReward.id} width={2.5} />
                   </TabsContent>
                   <TabsContent value="qrcode" className="mt-10 text-center">
@@ -394,18 +372,21 @@ const RewardsPage = () => {
               className="absolute z-0 w-full h-full object-cover opacity-75"
             />
           )}
-          <div className="flex justify-between items-center p-5 z-5 relative">
-            <h3 className="font-semibold text-2xl tracking-[-0.4px]">
+          <div className="flex justify-between items-center py-5 px-[30px] z-5 relative">
+            <h3 className="font-semibold text-xl tracking-[-0.4px]">
               {t("Good After Work")}
             </h3>
-            <h3 className="font-semibold text-2xl">
+            <h3 className="font-semibold text-xl">
               {hasPoints
-                ? customerData.loyalty_points
+                ? `${customerData.loyalty_points.toLocaleString()} ${
+                    customerData.loyalty_points === 1 ? "point" : "points"
+                  }`
                 : "0 points"}
             </h3>
           </div>
-          <div className="absolute z-[99] right-5 bottom-2 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
-            <GlowfishIcon className="w-[72px]" />| Glowfish
+          <div className="absolute z-[99] right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
+            {/* <GlowfishIcon className="w-[72px]" />| Glowfish */}
+            <GoodAfterWorkCard />
           </div>
         </div>
 
@@ -423,7 +404,8 @@ const RewardsPage = () => {
                     className={cn(
                       "relative overflow-hidden max-h-[220px] h-[40vw] w-full",
                       {
-                        "bg-white/10 flex items-center justify-center": !reward.image,
+                        "bg-white/10 flex items-center justify-center":
+                          !reward.image,
                       }
                     )}
                   >
@@ -460,7 +442,9 @@ const RewardsPage = () => {
                       <Tag className="w-4 h-4 stroke-[2.5]" />
                       <span>
                         {reward.points
-                          ? reward.points
+                          ? `${reward.points} ${
+                              reward.points === 1 ? "point" : "points"
+                            }`
                           : t("Free")}
                       </span>
                     </div>
@@ -482,4 +466,4 @@ const RewardsPage = () => {
   );
 };
 
-export default RewardsPage; 
+export default RewardsPage;

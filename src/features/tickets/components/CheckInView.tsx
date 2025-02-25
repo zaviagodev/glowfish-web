@@ -198,15 +198,15 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
               {ticket.date && (
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  <span>{format(new Date(ticket.date), "PPp")}</span>
+                  <span>
+                    {format(new Date(ticket.date), "dd MMM yyyy HH:mm")}
+                  </span>
                 </div>
               )}
             </div>
           </div>
         </div>
       </motion.div>
-
-  
     </motion.div>
   );
 }

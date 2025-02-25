@@ -58,7 +58,9 @@ export const GetOTPDrawer = ({
   const [error, setError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(60);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
-  const [currentVerificationToken, setCurrentVerificationToken] = useState(initialVerificationToken);
+  const [currentVerificationToken, setCurrentVerificationToken] = useState(
+    initialVerificationToken
+  );
 
   useEffect(() => {
     setCurrentVerificationToken(initialVerificationToken);
@@ -86,7 +88,12 @@ export const GetOTPDrawer = ({
       setIsSubmitting(true);
       setError(null);
 
-      const tokenData = await verifyOTP(data.otp, phone, currentVerificationToken, storeName);
+      const tokenData = await verifyOTP(
+        data.otp,
+        phone,
+        currentVerificationToken,
+        storeName
+      );
       if (!tokenData.success) {
         throw new Error(tokenData.error || "Verification failed");
       }
@@ -109,12 +116,12 @@ export const GetOTPDrawer = ({
       const { data: otpData, error } = await supabase.functions.invoke(
         "send-otp",
         {
-          body: { phone, ref_code:ref_no },
+          body: { phone, ref_code: ref_no },
         }
       );
 
       if (error) throw error;
-      
+
       if (otpData?.token) {
         setCurrentVerificationToken(otpData.token);
       }
@@ -137,7 +144,10 @@ export const GetOTPDrawer = ({
       </SheetHeader>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleVerification)} className="mt-6 flex flex-col items-center">
+        <form
+          onSubmit={form.handleSubmit(handleVerification)}
+          className="mt-6 flex flex-col items-center"
+        >
           <FormField
             control={form.control}
             name="otp"
@@ -158,33 +168,37 @@ export const GetOTPDrawer = ({
             <p className="text-red-500 text-sm mt-2 font-semibold">{error}</p>
           )}
 
-          <div className="flex flex-col items-center w-full gap-8 mt-8">
-            <Button
-              className="main-btn w-full max-w-[300px]"
-              type="submit"
-              disabled={!form.formState.isValid || isSubmitting}
-            >
-              {isSubmitting ? t("Verifying...") : t("Confirm OTP")}
-            </Button>
-                    
+          <div className="flex flex-col items-center w-full gap-8 mt-8 w-full">
             <div className="flex flex-col items-center justify-center w-full">
               <p className="text-muted-foreground text-sm text-center">
                 {t("Didn't receive the OTP?")}
                 <button
                   type="button"
-                  className={`ml-1 ${isResendDisabled ? 'text-gray-500' : 'text-mainbutton underline'}`}
+                  className={`ml-1 ${
+                    isResendDisabled
+                      ? "text-gray-500"
+                      : "text-mainbutton underline"
+                  }`}
                   onClick={handleResendOTP}
                   disabled={isResendDisabled}
                 >
-                  {isResendDisabled 
+                  {isResendDisabled
                     ? `${t("Resend OTP")} (${countdown}s)`
                     : t("Resend OTP")}
                 </button>
               </p>
             </div>
+
+            <Button
+              className="main-btn w-full"
+              type="submit"
+              disabled={!form.formState.isValid || isSubmitting}
+            >
+              {isSubmitting ? t("Verifying...") : t("Confirm OTP")}
+            </Button>
           </div>
         </form>
       </Form>
     </RegisterDrawer>
   );
-}; 
+};

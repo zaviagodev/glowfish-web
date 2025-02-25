@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Button } from "../ui/button";
 import GlowfishIcon from "../icons/GlowfishIcon";
+import { format } from "date-fns";
+import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface OrderItem {
   id: string;
@@ -36,11 +39,17 @@ interface OrderCardProps {
   index: number;
 }
 
+const LIMITED_ORDERS: number = 1;
+
 export function OrderCard({ order, index }: OrderCardProps) {
   const t = useTranslate();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const currentPage = searchParams.get("page") || "1";
+  const [showAllItems, setShowAllItems] = useState(false);
+  const visibleItems = showAllItems
+    ? order.order_items
+    : order.order_items.slice(0, LIMITED_ORDERS);
 
   const handleClick = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -49,15 +58,11 @@ export function OrderCard({ order, index }: OrderCardProps) {
     });
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  const ChevronIcon = showAllItems ? (
+    <ChevronUp className="h-4 w-4" />
+  ) : (
+    <ChevronDown className="h-4 w-4" />
+  );
 
   return (
     <motion.div
@@ -76,7 +81,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 : `${t("Order")} #${order.id?.substring(0, 8) || ""}`}
             </div>
             <div className="text-muted-foreground">
-              {formatDate(order.created_at)}
+              {format(order.created_at, "dd MMM yyyy HH:mm")}
             </div>
           </div>
         </div>
@@ -84,44 +89,59 @@ export function OrderCard({ order, index }: OrderCardProps) {
       </div>
 
       {/* Order Items */}
-      {order.order_items.map((item) => (
-        <div key={item.id} className="p-4 pb-0 flex gap-4">
-          <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-            {item.product_variants.product.image ? (
-              <img
-                src={item.product_variants.product.image}
-                alt={item.product_variants.product.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                <GlowfishIcon className="h-10 w-10" />
-              </div>
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium line-clamp-2">
-              {item.product_variants.product.name}
-            </h3>
-            <div className="mt-1 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
-                  x{item.quantity}
+      {visibleItems.map((item) => {
+        return (
+          <div key={item.id} className="p-4 pb-0 flex gap-4">
+            <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+              {item.product_variants.product.image ? (
+                <img
+                  src={item.product_variants.product.image}
+                  alt={item.product_variants.product.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
+                  <GlowfishIcon className="h-10 w-10" />
                 </div>
-                <div className="text-sm font-medium">
-                  ฿{item.unit_price.toLocaleString()}
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-medium line-clamp-2">
+                {item.product_variants.product.name}
+              </h3>
+              <div className="mt-1 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground">
+                    x{item.quantity}
+                  </div>
+                  <div className="text-sm font-medium">
+                    ฿{item.unit_price.toLocaleString()}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
+
+      {order.order_items.length > LIMITED_ORDERS && (
+        <button
+          onClick={() => setShowAllItems(!showAllItems)}
+          className="w-fit flex items-center gap-1 text-sm mx-auto text-muted-foreground mt-2"
+        >
+          <span>{showAllItems ? "Show less" : "Show more"}</span>
+          {ChevronIcon}
+        </button>
+      )}
 
       {/* Order Footer */}
       <div className="p-4">
         <div className="flex flex-col gap-2">
-          <div className="text-sm text-muted-foreground">
-            {t("items", { count: order.order_items.length })}
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-muted-foreground">{t("Items")}</div>
+            <div className="text-sm font-semibold">
+              {order.order_items.length}
+            </div>
           </div>
           <div className="flex items-center justify-between">
             <div className="text-sm text-muted-foreground">{t("Total")}</div>

@@ -3,7 +3,7 @@ import { BookImage, Calendar, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { AnimatedCardProps } from "@/type/type";
+import { AnimatedCardProps } from "@/type/type 2";
 import GlowfishIcon from "../icons/GlowfishIcon";
 import { Button } from "../ui/button";
 import { isPast } from "date-fns";
@@ -109,7 +109,7 @@ export function AnimatedCard({
 
         {/* This button is not clickable, it is used to identify that there is a gallery in this product card, but there will be a 'view gallery' button to click to another link on the single product page */}
         {hasGallery && (
-          <Button className="main-btn w-8 h-8 p-0 absolute right-4 top-4">
+          <Button className="main-btn w-8 max-h-8 p-0 absolute right-4 top-4">
             <BookImage className="w-4 h-4" />
           </Button>
         )}

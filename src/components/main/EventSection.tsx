@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { format, isPast } from "date-fns";
-import { EventDataProps } from "@/type/type";
+import { EventDataProps } from "@/type/type 2";
 import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
 import { AnimatedCard } from "../shared/AnimatedCard";
@@ -9,17 +9,9 @@ interface EventSectionProps {
   list: EventDataProps[];
   title?: string;
   seeAllLink?: string;
-  selectedEvent: any;
-  setSelectedEvent: (val: any) => void;
 }
 
-const EventSection = ({
-  list,
-  title,
-  seeAllLink,
-  selectedEvent,
-  setSelectedEvent,
-}: EventSectionProps) => {
+const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
   const t = useTranslate();
 
   return (

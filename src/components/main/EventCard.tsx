@@ -1,6 +1,6 @@
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
-import { EventCardProps } from "@/type/type";
+import { EventCardProps } from "@/type/type 2";
 import { Calendar, MapPin, Tag } from "lucide-react";
 
 const EventCard = ({
