@@ -3,9 +3,7 @@ import * as yup from "yup";
 export const phoneSchema = yup.object().shape({
   phone_verification: yup
     .string()
-    .matches(/^[0-9]+$/, "Must be only digits")
-    .min(10, "Must be exactly 10 digits")
-    .max(10, "Must be exactly 10 digits")
+    .matches(/^0[0-9]{9}$/, "Must start with 0 and be exactly 10 digits")
     .required("Phone number is required"),
 });
 

@@ -68,13 +68,24 @@ export const RateForm = ({ onSubmit }: RateFormProps) => {
       } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
+      // First get existing meta data
+      const { data: customerData } = await supabase
+        .from("customers")
+        .select("meta")
+        .eq("auth_id", user.id)
+        .single();
+
+      // Merge existing meta with new interests
+      const updatedMeta = {
+        ...customerData?.meta,
+        interests: data,
+      };
+
       // Update customer meta data
       const { error } = await supabase
         .from("customers")
         .update({
-          meta: {
-            interests: data,
-          },
+          meta: updatedMeta,
         })
         .eq("auth_id", user.id);
 

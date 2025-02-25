@@ -135,7 +135,10 @@ serve(async (req) => {
         avatar_url: profileData.pictureUrl,
         tags: ['line'],
         is_verified: true,
-        auth_id: createdUser.id
+        auth_id: createdUser.id,
+        meta: {
+          line_username: profileData.displayName
+        }
       }, {
         onConflict: 'id'
       });

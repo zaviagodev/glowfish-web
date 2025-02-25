@@ -7,6 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "@refinedev/react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { GetOTPDrawer } from "./GetOTPDrawer";
@@ -16,15 +17,17 @@ import { phoneSchema } from "../schemas/phoneSchema";
 import { useTranslate } from "@refinedev/core";
 import { supabase } from "@/lib/supabase";
 
+type PhoneFormValues = {
+  phone_verification: string;
+};
+
 type PhoneFormProps = {
-  initialValues?: {
-    phone_verification: number | null;
-  };
+  initialValues?: PhoneFormValues;
 };
 
 export const PhoneForm = ({
   initialValues = {
-    phone_verification: null,
+    phone_verification: "",
   },
 }: PhoneFormProps) => {
   const t = useTranslate();
@@ -32,13 +35,17 @@ export const PhoneForm = ({
   const [phone, setPhone] = useState("");
   const [verificationToken, setVerificationToken] = useState("");
   const [refNo, setRefNo] = useState("");
-  const form = useForm({
+  
+  const form = useForm<PhoneFormValues>({
     resolver: yupResolver(phoneSchema),
     defaultValues: initialValues,
+    mode: "onChange",
   });
 
-  const handleSubmit = async (data: { phone_verification: number }) => {
-    const phoneNumber = `+66${data.phone_verification}`;
+  const handleSubmit: SubmitHandler<PhoneFormValues> = async (data) => {
+    // Remove leading zero and add +66 prefix
+    const phoneWithoutZero = data.phone_verification.substring(1);
+    const phoneNumber = `+66${phoneWithoutZero}`;
     setPhone(phoneNumber);
 
     try {
@@ -104,6 +111,10 @@ export const PhoneForm = ({
                       type="tel"
                       className="font-semibold"
                       {...field}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9]/g, '');
+                        field.onChange(value);
+                      }}
                     />
                   </FormControl>
                 </div>

@@ -59,8 +59,8 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
   useEffect(() => {
     if (customer) {
       form.reset({
-        firstName: customer.first_name || "",
-        lastName: customer.last_name || "",
+        firstName: isProfileSetup ? "" : customer.first_name || "",
+        lastName: isProfileSetup ? "" : customer.last_name || "",
         email: isProfileSetup ? "" : customer.email || "",
         company: customer.company || "",
         dateOfBirth: customer.date_of_birth
