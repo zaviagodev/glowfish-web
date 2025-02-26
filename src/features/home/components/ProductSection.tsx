@@ -54,6 +54,7 @@ export const ProductSection = memo(function ProductSection({
                 "scroll-smooth"
               )}
             >
+
               {products.map((product) => (
                 <motion.div
                   key={product.name}
@@ -71,6 +72,7 @@ export const ProductSection = memo(function ProductSection({
                     compareAtPrice={product.compare_at_price}
                     location={product.location}
                     product_variants={product.product_variants}
+                    gallery_link={product.gallery_link}
                     date={
                       product.start_datetime &&
                       format(
