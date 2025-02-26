@@ -26,19 +26,21 @@ import { DatePicker } from "@/components/ui/date-picker";
 
 interface ProfileFormProps {
   onComplete?: () => void;
+  mode?: 'setup' | 'edit';
 }
 
-export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
+export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const isProfileSetup = location.pathname === "/auth/profile-setup";
+  const isProfileSetup = mode === 'setup';
   const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [error, setError] = useState<string>("");
   const { storeName } = useStore();
   const { customer, refreshCustomer } = useCustomer();
+  const isEditMode = !isProfileSetup && Boolean(customer?.date_of_birth);
   const labelClassName = cn(
     "block text-sm font-medium",
     "text-card-foreground",
@@ -308,7 +310,7 @@ export const ProfileForm = ({ onComplete }: ProfileFormProps) => {
                   form.setValue("dateOfBirth", date);
                 }
               }}
-              disabled={isLoading}
+              disabled={isLoading || isEditMode}
               showYearDropdown
               scrollableYearDropdown
               yearDropdownItemNumber={100}

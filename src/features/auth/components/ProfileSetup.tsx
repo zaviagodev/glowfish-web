@@ -11,7 +11,7 @@ export const ProfileSetup = () => {
     <div className="max-width-mobile pt-14">
       <Header />
       <div className="p-5">
-        <ProfileForm onComplete={() => navigate(returnTo)} />
+        <ProfileForm mode="setup" onComplete={() => navigate(returnTo)} />
       </div>
     </div>
   );

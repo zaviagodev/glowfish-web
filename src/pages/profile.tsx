@@ -11,7 +11,7 @@ const ProfilePage = () => {
     <div className="bg-background">
       <PageHeader title={t("Profile")} onBack={() => navigate("/settings")} />
       <div className="max-width-mobile pt-20 px-5">
-        <ProfileForm />
+        <ProfileForm mode="edit" />
       </div>
     </div>
   );
