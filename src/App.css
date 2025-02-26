@@ -541,3 +541,21 @@
 .max-width-mobile {
   @apply max-w-[500px] mx-auto
 }
+
+/* Style date picker */
+
+.react-datepicker__day-names {
+  @apply bg-darkgray
+}
+
+.react-datepicker-popper[data-placement^=top] .react-datepicker__triangle {
+  @apply !text-darkgray !fill-darkgray !stroke-darkgray
+}
+
+.react-datepicker__day--selected {
+  @apply !bg-gray-700
+}
+
+.react-datepicker__day--keyboard-selected {
+  @apply !bg-gray-500
+}
