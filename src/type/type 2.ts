@@ -82,6 +82,7 @@ export interface EventDataProps {
     title: string;
     description: string;
     location?: string;
+    compare_at_price?: string | number;
     date?: string;
     start_datetime?: string;
     end_datetime?: string;
