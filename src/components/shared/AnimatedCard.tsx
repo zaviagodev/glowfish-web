@@ -30,7 +30,7 @@ export function AnimatedCard({
   type,
   validDate,
   isSelected = false,
-  hasGallery,
+  gallery_link,
   imageClassName,
   onClick,
   end_datetime,
@@ -108,7 +108,7 @@ export function AnimatedCard({
         )}
 
         {/* This button is not clickable, it is used to identify that there is a gallery in this product card, but there will be a 'view gallery' button to click to another link on the single product page */}
-        {hasGallery && (
+        {gallery_link && (
           <Button className="main-btn w-8 max-h-8 p-0 absolute right-4 top-4">
             <BookImage className="w-4 h-4" />
           </Button>

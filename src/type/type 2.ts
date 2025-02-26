@@ -72,7 +72,8 @@ export interface AnimatedCardProps {
     imageClassName?: string;
     onClick?: () => void;
     end_datetime?: string;
-  }
+    gallery_link?: string;
+}
 
 type EventDataTypes = "small" | "event"
 
