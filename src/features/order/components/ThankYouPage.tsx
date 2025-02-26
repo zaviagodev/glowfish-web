@@ -166,7 +166,7 @@ export function ThankYouPage() {
       </div>
 
       <motion.div
-        className="fixed bottom-0 bg-background p-5 max-width-mobile w-full"
+        className="fixed bottom-0 bg-background p-5 max-width-mobile w-full z-[99]"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
