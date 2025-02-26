@@ -27,6 +27,7 @@ export interface Product {
   variant_options: any[];
   track_quantity: boolean;
   product_variants: ProductVariant[];
+  gallery_link?: string;
   image: string;
   images: ProductImage[];
   location: string;

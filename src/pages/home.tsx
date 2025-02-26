@@ -231,8 +231,6 @@ export const HomeList = () => {
         />
       </section>
 
-
-
       {/* Product Detail */}
       {selectedProduct && (
         <ProductDetail

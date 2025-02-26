@@ -21,6 +21,7 @@ const transformProduct = (event: any): Product => {
     variant_options: event?.product?.variant_options || [],
     track_quantity: event?.product?.track_quantity || false,
     product_variants: event?.product?.product_variants || [],
+    gallery_link: event?.gallery_link || '',
     image: imageUrl,
     images: sortedImages.map((img: any) => ({
       id: img.id,

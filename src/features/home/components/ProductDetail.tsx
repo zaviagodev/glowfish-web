@@ -401,7 +401,7 @@ export function ProductDetail({
             */}
             {gallery_link && (
               <button
-                onClick={() => (window.location.href = gallery_link)}
+                onClick={() => window.open(gallery_link, '_blank', 'noopener,noreferrer')}
                 className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
               >
                 <div className="flex items-center gap-3">
