@@ -19,7 +19,7 @@ import {
   Ticket as TicketIcon,
   Clock,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useTickets } from "@/features/tickets/hooks/useTickets";
 import { Ticket } from "@/features/tickets/components/Ticket";
 import { CheckInView } from "@/features/tickets/components/CheckInView";
@@ -259,12 +259,12 @@ export default function TicketsPage() {
                   <span>
                     {format(
                       new Date(foundOrder.event?.start_datetime),
-                      "dd MMM yyyy HH:mm"
+                      formattedDateAndTime
                     )}{" "}
                     -{" "}
                     {format(
                       new Date(foundOrder.event?.end_datetime),
-                      "dd MMM yyyy HH:mm"
+                      formattedDateAndTime
                     )}
                   </span>
                 </div>

@@ -18,7 +18,7 @@ import { defaultOrderStatuses } from "@/components/settings/OrderStatusBar";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import Pagination from "@/components/pagination/Pagination";
 import { Package2, Truck, Ticket } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { format } from "date-fns";
@@ -148,7 +148,7 @@ const OrdersPage = () => {
       ? [
           {
             status: "Order Placed",
-            date: format(order.created_at, "dd MMM yyyy HH:mm"),
+            date: format(order.created_at, formattedDateAndTime),
             description: "Your order has been confirmed",
             icon: Package2,
             isActive: order.status === "pending" || order.status === "unpaid",
@@ -158,7 +158,7 @@ const OrdersPage = () => {
             status: "Processing",
             date:
               order.status === "processing"
-                ? format(new Date(), "dd MMM yyyy HH:mm")
+                ? format(new Date(), formattedDateAndTime)
                 : "",
             description: "Your order is processed and payment completed",
             icon: Package2,
@@ -174,7 +174,7 @@ const OrdersPage = () => {
             status: "Completed",
             date:
               order.status === "shipped"
-                ? format(new Date(), "dd MMM yyyy HH:mm")
+                ? format(new Date(), formattedDateAndTime)
                 : "",
             description: "Your order has been completed",
             icon: Truck,
@@ -216,7 +216,7 @@ const OrdersPage = () => {
                 <OrderStatusBadge status={order.status} />
               </div>
               <div className="text-sm text-muted-foreground">
-                {format(order.created_at, "dd MMM yyyy HH:mm")}
+                {format(order.created_at, formattedDateAndTime)}
               </div>
             </div>
 

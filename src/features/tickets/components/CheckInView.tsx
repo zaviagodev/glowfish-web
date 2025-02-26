@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { QrCode, Barcode, Hash, Calendar, MapPin, X } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { QRCodeCanvas } from "qrcode.react";
 import Barcode1D from "react-barcode";
 import { format } from "date-fns";
@@ -199,7 +199,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   <span>
-                    {format(new Date(ticket.date), "dd MMM yyyy HH:mm")}
+                    {format(new Date(ticket.date), formattedDateAndTime)}
                   </span>
                 </div>
               )}

@@ -25,7 +25,7 @@ import { ProductDetail } from "@/features/home/components/ProductDetail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
 import { Product } from "@/features/home/services/productService";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 
 interface Category {
   id: string;
@@ -110,8 +110,8 @@ export default function ProductsPage() {
       product?.end_datetime &&
       `${format(
         new Date(product.start_datetime),
-        "dd MMM yyyy HH:mm"
-      )} - ${format(new Date(product.end_datetime), "dd MMM yyyy HH:mm")}`
+        formattedDateAndTime
+      )} - ${format(new Date(product.end_datetime), formattedDateAndTime)}`
     );
   };
 

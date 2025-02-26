@@ -5,7 +5,7 @@ import { CheckCircle2, Package2, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlowingEdges } from "@/components/ui/glowing-edges";
 import { useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { format } from "date-fns";
 
 export function ThankYouPage() {
@@ -112,7 +112,7 @@ export function ThankYouPage() {
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">{t("Date")}</span>
               <span className="text-sm font-medium">
-                {format(date, "dd MMM yyyy HH:mm")}
+                {format(date, formattedDateAndTime)}
               </span>
             </div>
           </div>
