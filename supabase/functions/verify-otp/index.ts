@@ -137,7 +137,7 @@ serve(async (req) => {
         is_verified: true,
         auth_id: createdUser.id,
         meta: {
-          line_username: profileData.displayName
+          line_account_name: profileData.displayName
         }
       }, {
         onConflict: 'id'
