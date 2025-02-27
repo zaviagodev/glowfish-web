@@ -69,7 +69,6 @@ export const ProductSection = memo(function ProductSection({
                     image={product.image}
                     title={product.name}
                     price={product.price}
-                    compareAtPrice={product.compare_at_price}
                     location={product.location}
                     product_variants={product.product_variants}
                     gallery_link={product.gallery_link}
