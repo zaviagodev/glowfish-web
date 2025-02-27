@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { CheckInView } from "../components/CheckInView";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Users, QrCode, Ticket, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useTickets } from "../hooks/useTickets";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import LoadingSpin from "@/components/loading/LoadingSpin";
@@ -139,7 +139,7 @@ export default function TicketDetailsPage() {
               </div>
               <div className="flex items-center gap-2 text-sm font-light">
                 <Calendar className="w-4 h-4 flex-shrink-0" />
-                <span>{format(eventDate, "dd MMM yyyy HH:mm")}</span>
+                <span>{format(eventDate, formattedDateAndTime)}</span>
               </div>
               <div className="flex items-center gap-2 text-sm font-light">
                 <Users className="w-4 h-4 flex-shrink-0" />

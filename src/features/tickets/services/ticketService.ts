@@ -60,12 +60,15 @@ export interface Ticket {
 }
 
 export interface CustomerEvent {
+  id: string;
   order_id: string;
   customer_id: string;
   created_at: string;
   tickets: Ticket[];
   event: Event;
   total_orders: number;
+  code: string;
+  status: string;
 }
 
 export interface TicketService {

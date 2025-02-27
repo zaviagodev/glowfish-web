@@ -9,6 +9,7 @@ import {
   BookImage,
   ChevronRight,
   X,
+  Map,
 } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ interface ProductDetailProps extends Partial<Product> {
   points?: number;
   variant_id?: string;
   quantity?: number;
+  google_maps_link: string;
   gallery_link?: string;
 }
 
@@ -63,6 +65,7 @@ export function ProductDetail({
   product_variants,
   organizer_name,
   organizer_contact,
+  google_maps_link,
   gallery_link,
   hide_cart,
   end_datetime,
@@ -396,12 +399,11 @@ export function ProductDetail({
               </div>
             </div>
 
-            {/* TODO: link to gallery page if the gallery is available
-              e.g. product.gallery_link = "https://google.com"
-            */}
             {gallery_link && (
               <button
-                onClick={() => window.open(gallery_link, '_blank', 'noopener,noreferrer')}
+                onClick={() =>
+                  window.open(gallery_link, "_blank", "noopener,noreferrer")
+                }
                 className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
               >
                 <div className="flex items-center gap-3">
@@ -441,6 +443,24 @@ export function ProductDetail({
             {venue_address && (
               <div className="space-y-2">
                 <h2 className="text-base">{t("Venue & Location")}</h2>
+                {google_maps_link && (
+                  <button
+                    onClick={() =>
+                      window.open(
+                        google_maps_link,
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
+                    className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Map className="w-5 h-5 text-white" />
+                      {t("View map")}
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                  </button>
+                )}
                 <p className="text-sm text-secondary-foreground font-light">
                   {venue_address}
                 </p>

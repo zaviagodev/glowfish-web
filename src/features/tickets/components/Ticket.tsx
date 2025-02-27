@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { format, formatDistanceToNow, isToday } from "date-fns";
 import { MapPin, Calendar, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
@@ -93,7 +93,7 @@ export function Ticket({ ticket }: TicketProps) {
               <Calendar className="w-4 h-4 flex-shrink-0" />
               <span>
                 {ticket.date
-                  ? format(new Date(ticket.date), "dd MMM yyyy, HH:mm")
+                  ? format(new Date(ticket.date), formattedDateAndTime)
                   : "To be determined"}
               </span>
             </div>

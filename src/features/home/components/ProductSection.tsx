@@ -79,7 +79,10 @@ export const ProductSection = memo(function ProductSection({
                         "dd MMM yyyy, HH:mm"
                       )
                     }
-                    hasGallery={false} // product.gallery_link !== null
+                    hasGallery={
+                      product.gallery_link !== "" &&
+                      product.gallery_link !== null
+                    }
                     end_datetime={product.end_datetime}
                   />
                 </motion.div>

@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserProfile } from "@/lib/auth";
 import { useProducts } from "@/features/home/hooks/useProducts";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { ProductDetail } from "@/features/home/components/ProductDetail";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
@@ -122,10 +122,10 @@ export const HomeList = () => {
     selectedProduct?.end_datetime &&
     `${format(
       toZonedTime(new Date(selectedProduct.start_datetime), "UTC"),
-      "dd MMM yyyy, HH:mm"
+      formattedDateAndTime
     )} - ${format(
       toZonedTime(new Date(selectedProduct.end_datetime), "UTC"),
-      "dd MMM yyyy, HH:mm"
+      formattedDateAndTime
     )}`;
 
   return (

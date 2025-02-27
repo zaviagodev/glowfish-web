@@ -58,7 +58,10 @@ export function CheckoutPage() {
 
   // Get customer addresses and selected or default address
   const addresses = customer?.addresses || [];
-  const selectedAddress = location.state?.selectedAddress || addresses.find((addr) => addr.is_default) || addresses[0];
+  const selectedAddress =
+    location.state?.selectedAddress ||
+    addresses.find((addr) => addr.is_default) ||
+    addresses[0];
 
   // Check if all items are events
   const [hasPhysicalProducts, setHasPhysicalProducts] = useState(false);
@@ -70,17 +73,17 @@ export function CheckoutPage() {
     try {
       for (const item of items) {
         const { data: variant } = await supabase
-          .from('product_variants')
-          .select('product_id')
-          .eq('id', item.variantId)
+          .from("product_variants")
+          .select("product_id")
+          .eq("id", item.variantId)
           .single();
 
         if (variant) {
           // Check if this product is NOT an event
           const { data: event } = await supabase
-            .from('events')
-            .select('id')
-            .eq('product_id', variant.product_id)
+            .from("events")
+            .select("id")
+            .eq("product_id", variant.product_id)
             .single();
 
           if (!event) {
@@ -91,7 +94,10 @@ export function CheckoutPage() {
         }
       }
     } catch (error: unknown) {
-      console.error('Error checking for physical products:', error instanceof Error ? error.message : 'Unknown error');
+      console.error(
+        "Error checking for physical products:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
       // If there's an error, assume there are physical products to be safe
       setHasPhysicalProducts(true);
     } finally {
@@ -182,7 +188,9 @@ export function CheckoutPage() {
       }
 
       // Clear the ordered items from cart
-      const orderedVariantIds = orderItems.map((item: { variant_id: string }) => item.variant_id);
+      const orderedVariantIds = orderItems.map(
+        (item: { variant_id: string }) => item.variant_id
+      );
       const remainingItems = allItems.filter(
         (item: CartItem) => !orderedVariantIds.includes(item.variantId)
       );
@@ -205,7 +213,10 @@ export function CheckoutPage() {
         });
       }
     } catch (error: unknown) {
-      console.error("Error creating order:", error instanceof Error ? error.message : 'Unknown error');
+      console.error(
+        "Error creating order:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
       alert(error instanceof Error ? error.message : "Failed to create order");
     } finally {
       setIsProcessing(false);
@@ -219,16 +230,24 @@ export function CheckoutPage() {
       <div className="pt-14 pb-32">
         <div className="p-5 space-y-6">
           <ProductList items={items} />
-          
+
           {/* Only show address selection for physical products */}
           {hasPhysicalProducts && (
-            <div onClick={() => navigate("/checkout/address", { state: { selectedItems: items } })}>
+            <div
+              onClick={() =>
+                navigate("/checkout/address", {
+                  state: { selectedItems: items },
+                })
+              }
+            >
               <AddressCard
                 title={t("Delivery Address")}
                 name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
                 phone={selectedAddress?.phone}
                 address={`${selectedAddress?.address1}${
-                  selectedAddress?.address2 ? `, ${selectedAddress?.address2}` : ""
+                  selectedAddress?.address2
+                    ? `, ${selectedAddress?.address2}`
+                    : ""
                 }, ${selectedAddress?.city}, ${selectedAddress?.state} ${
                   selectedAddress?.postal_code
                 }`}
@@ -252,7 +271,10 @@ export function CheckoutPage() {
       <CheckoutFooter
         total={total}
         isProcessing={isProcessing}
-        disabled={hasPhysicalProducts && addresses.length === 0}
+        disabled={
+          (hasPhysicalProducts && addresses.length === 0) ||
+          paymentMethod === "cash"
+        }
         onPlaceOrder={handleCreateOrder}
         storeMessage={storeMessage}
         vatInvoiceData={vatInvoiceData}
@@ -270,4 +292,4 @@ export function CheckoutPage() {
       />
     </div>
   );
-} 
+}

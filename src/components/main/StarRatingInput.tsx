@@ -15,12 +15,14 @@ const StarsSection = ({
 }: StarsSectionProps) => {
   return (
     <section className="space-y-2">
-      <FormLabel className="text-[#CFCFCF] text-base font-semibold">
+      <FormLabel className="text-[#CFCFCF] text-base font-semibold flex items-center gap-2">
         {title}
       </FormLabel>
       <span className="flex justify-between items-center text-4xl">
         {Array.from({ length: 10 }, (_, index) => {
-          const handleChange = () => onChange(index + 1);
+          const handleChange = () => {
+            onChange(value === 1 ? 0 : index + 1);
+          };
           return (
             <svg
               key={index}
