@@ -132,15 +132,6 @@ export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => 
       } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
 
-      const { error } = await supabase.auth.updateUser({
-        email: data.email,
-        data: {
-          first_name: data.firstName,
-          last_name: data.lastName,
-        },
-      });
-
-      if (error) throw error;
 
       // Get current customer data to preserve existing meta
       const { data: currentCustomer } = await supabase
