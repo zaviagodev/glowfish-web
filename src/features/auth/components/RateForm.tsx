@@ -12,7 +12,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 
 type RatingProps = {
   title: string;
@@ -26,7 +27,7 @@ type RateFormProps = {
 
 export const RateForm = ({ onSubmit }: RateFormProps) => {
   const t = useTranslate();
-  const navigate = useNavigate();
+  const [hasError, setHasError] = useState(true);
   const ratings: RatingProps[] = [
     { title: t("Music and Live Show"), key: "music", activeColor: "#DE473C" },
     { title: t("Art and Creativity"), key: "art", activeColor: "#F5853B" },
@@ -107,21 +108,30 @@ export const RateForm = ({ onSubmit }: RateFormProps) => {
               key={rating.key}
               control={form.control}
               name={rating.key}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <StarsSection
-                      title={rating.title}
-                      activeColor={rating.activeColor}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormControl>
+                      <StarsSection
+                        title={rating.title}
+                        activeColor={rating.activeColor}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
           ))}
         </section>
+
+        <Dialog open={hasError} onOpenChange={setHasError}>
+          <DialogContent className="w-[90%] max-width-mobile rounded-lg">
+            <DialogTitle>Required</DialogTitle>
+            The field of ... is required
+          </DialogContent>
+        </Dialog>
 
         <footer className="btn-footer">
           <Button className="main-btn w-full" type="submit">
@@ -131,4 +141,4 @@ export const RateForm = ({ onSubmit }: RateFormProps) => {
       </form>
     </Form>
   );
-}; 
+};

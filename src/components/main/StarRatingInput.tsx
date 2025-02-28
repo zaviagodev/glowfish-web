@@ -4,6 +4,7 @@ interface StarsSectionProps {
   value: number;
   title: string;
   activeColor: string;
+  isError?: boolean;
   onChange: (value: number) => void;
 }
 
@@ -11,6 +12,7 @@ const StarsSection = ({
   value = 0,
   title,
   activeColor,
+  isError,
   onChange,
 }: StarsSectionProps) => {
   return (
@@ -20,9 +22,7 @@ const StarsSection = ({
       </FormLabel>
       <span className="flex justify-between items-center text-4xl">
         {Array.from({ length: 10 }, (_, index) => {
-          const handleChange = () => {
-            onChange(value === 1 ? 0 : index + 1);
-          };
+          const handleChange = () => onChange(index + 1);
           return (
             <svg
               key={index}
