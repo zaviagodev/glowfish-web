@@ -13,8 +13,9 @@ import { cn } from "@/lib/utils";
 import LoadingSpin from "../loading/LoadingSpin";
 
 interface PaymentMethodProps {
-  value: string;
+  value: string | null;
   onChange: (value: string) => void;
+  required?: boolean;
 }
 
 interface PaymentOption {
@@ -66,7 +67,7 @@ interface PaymentOptionsResponse {
   };
 }
 
-export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
+export function PaymentMethod({ value, onChange, required = false }: PaymentMethodProps) {
   const t = useTranslate();
   const { storeName } = useStore();
   const [paymentOptions, setPaymentOptions] = useState<PaymentOption[]>([]);
@@ -117,11 +118,6 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
         }
 
         setPaymentOptions(options);
-
-        // Set default payment method if none selected
-        if (!value && options.length > 0) {
-          onChange(options[0].id);
-        }
       } catch (error) {
         console.error("Error fetching payment options:", error);
       } finally {
@@ -130,9 +126,9 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
     };
 
     fetchPaymentOptions();
-  }, [storeName, t, value, onChange]);
+  }, [storeName, t]);
 
-  const selectedOption = paymentOptions.find((option) => option.id === value);
+  const selectedOption = value ? paymentOptions.find((option) => option.id === value) : null;
 
   if (loading) {
     return <LoadingSpin />;
@@ -141,11 +137,17 @@ export function PaymentMethod({ value, onChange }: PaymentMethodProps) {
   return (
     <>
       <div
-        className="bg-darkgray rounded-lg px-3 py-4"
+        className={cn(
+          "bg-darkgray rounded-lg px-3 py-4",
+          required && !value ? "border border-destructive" : ""
+        )}
         onClick={() => setShowOptions(true)}
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-medium">{t("Payment Method")}</h2>
+          <h2 className="text-sm font-medium">
+            {t("Payment Method")}
+            {required && <span className="text-destructive ml-1">*</span>}
+          </h2>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </div>
 
