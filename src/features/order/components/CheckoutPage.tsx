@@ -42,7 +42,7 @@ export function CheckoutPage() {
   const { storeName } = useStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [storeMessage, setStoreMessage] = useState("");
   const [showMessageDialog, setShowMessageDialog] = useState(false);
   const [vatInvoiceData, setVatInvoiceData] = useState({
@@ -52,6 +52,7 @@ export function CheckoutPage() {
     branch: "",
     address: "",
   });
+  const [isPaymentMethodRequired, setIsPaymentMethodRequired] = useState(false);
 
   // Get selected items from location state, fallback to all items if accessed directly
   const items = location.state?.selectedItems || allItems;
@@ -67,34 +68,69 @@ export function CheckoutPage() {
   // Function to check if a product is an event
   const checkForPhysicalProducts = async () => {
     setIsCheckingProducts(true);
+    let hasPhysical = false;
+    let totalEventPrice = 0;
+
+    console.group('Checkout Product Check');
+    console.log('Total Items:', items);
+
     try {
       for (const item of items) {
-        const { data: variant } = await supabase
+        console.log('Checking item:', item);
+
+        const { data: variant, error: variantError } = await supabase
           .from('product_variants')
-          .select('product_id')
+          .select('product_id, price')
           .eq('id', item.variantId)
           .single();
 
+        console.log('Variant Data:', variant);
+        console.log('Variant Error:', variantError);
+
+        if (variantError) {
+          continue;
+        }
+
         if (variant) {
-          // Check if this product is NOT an event
-          const { data: event } = await supabase
+          // Check if this product is an event
+          const { data: event, error: eventError } = await supabase
             .from('events')
             .select('id')
             .eq('product_id', variant.product_id)
             .single();
 
+          console.log('Event Data:', event);
+          console.log('Event Error:', eventError);
+
           if (!event) {
             // If there's no event entry, it's a physical product
-            setHasPhysicalProducts(true);
-            break;
+            hasPhysical = true;
+            console.log('Physical Product Detected');
+          } else {
+            // If it's an event, add its price
+            totalEventPrice += variant.price * item.quantity;
+            console.log('Event Price Added:', totalEventPrice);
           }
         }
       }
+      
+      console.log('Final Checks:', {
+        hasPhysical,
+        totalEventPrice,
+        isPaymentMethodRequired: totalEventPrice > 0
+      });
+
+      setHasPhysicalProducts(hasPhysical);
+      setIsPaymentMethodRequired(totalEventPrice > 0);
     } catch (error: unknown) {
-      console.error('Error checking for physical products:', error instanceof Error ? error.message : 'Unknown error');
-      // If there's an error, assume there are physical products to be safe
+      console.error('Error in checkForPhysicalProducts:', error);
+      
+      // If there's an error, assume there are physical products and paid events to be safe
       setHasPhysicalProducts(true);
+      setIsPaymentMethodRequired(true);
     } finally {
+      console.log('Checking Products Complete');
+      console.groupEnd();
       setIsCheckingProducts(false);
     }
   };
@@ -123,17 +159,56 @@ export function CheckoutPage() {
   const pointsDiscount = getDiscountAmount();
   const total = subtotal - discount - pointsDiscount;
 
-  const handleCreateOrder = async () => {
-    setIsProcessing(true);
-    try {
-      // Validate cart is not empty
-      if (items.length === 0) {
-        throw new Error("Cart is empty");
+  const handleCreateOrder = async (event?: React.MouseEvent) => {
+    // Prevent default behavior
+    event?.preventDefault();
+    
+    // Validation function
+    const validateOrderCreation = () => {
+      // Check if there are any paid events
+      const paidEvents = items.filter((item: CartItem) => item.price > 0);
+
+      // Validation checks
+      if (isPaymentMethodRequired) {
+        if (paidEvents.length > 0) {
+          // Explicitly check for payment method
+          if (!paymentMethod) {
+            alert(t("Please select a payment method for paid events"));
+            return false;
+          }
+        }
       }
 
       // Validate delivery address for physical products
       if (hasPhysicalProducts && !selectedAddress) {
-        throw new Error("Please select a delivery address");
+        alert(t("Please select a delivery address"));
+        return false;
+      }
+
+      // Additional price validation
+      const totalEventPrice = items.reduce((total: number, item: CartItem) => {
+        return total + (item.price * item.quantity);
+      }, 0);
+
+      if (totalEventPrice > 0 && !paymentMethod) {
+        alert(t("Payment method is required for events with a price"));
+        return false;
+      }
+
+      return true;
+    };
+
+    // Perform validation
+    if (!validateOrderCreation()) {
+      return;
+    }
+
+    // Rest of the existing order creation logic
+    setIsProcessing(true);
+    try {
+      // Existing validation checks
+      if (items.length === 0) {
+        throw new Error("Cart is empty");
       }
 
       // Get current user
@@ -173,7 +248,6 @@ export function CheckoutPage() {
       });
 
       if (error) {
-        console.error("Order creation error:", error);
         throw new Error(error.message || "Failed to create order");
       }
 
@@ -205,8 +279,8 @@ export function CheckoutPage() {
         });
       }
     } catch (error: unknown) {
-      console.error("Error creating order:", error instanceof Error ? error.message : 'Unknown error');
-      alert(error instanceof Error ? error.message : "Failed to create order");
+      alert(error instanceof Error ? error.message : "Cannot place order");
+      setIsProcessing(false);
     } finally {
       setIsProcessing(false);
     }
@@ -237,7 +311,13 @@ export function CheckoutPage() {
             </div>
           )}
 
-          <PaymentMethod value={paymentMethod} onChange={setPaymentMethod} />
+          {(isPaymentMethodRequired || hasPhysicalProducts) && (
+            <PaymentMethod 
+              value={paymentMethod} 
+              onChange={setPaymentMethod} 
+              required={isPaymentMethodRequired}
+            />
+          )}
 
           <OrderSummary
             subtotal={subtotal}
@@ -252,7 +332,10 @@ export function CheckoutPage() {
       <CheckoutFooter
         total={total}
         isProcessing={isProcessing}
-        disabled={hasPhysicalProducts && addresses.length === 0}
+        disabled={
+          (hasPhysicalProducts && addresses.length === 0) || 
+          (isPaymentMethodRequired && !paymentMethod)
+        }
         onPlaceOrder={handleCreateOrder}
         storeMessage={storeMessage}
         vatInvoiceData={vatInvoiceData}

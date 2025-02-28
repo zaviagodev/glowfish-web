@@ -6,7 +6,7 @@ interface CheckoutFooterProps {
   total: number;
   isProcessing: boolean;
   disabled?: boolean;
-  onPlaceOrder: () => void;
+  onPlaceOrder: (event?: React.MouseEvent) => void;
   storeMessage?: string;
   vatInvoiceData?: {
     enabled: boolean;
@@ -42,7 +42,7 @@ export function CheckoutFooter({
       <Button
         className="w-full main-btn h-12"
         disabled={isProcessing || disabled}
-        onClick={onPlaceOrder}
+        onClick={(e) => disabled ? undefined : onPlaceOrder(e)}
       >
         {isProcessing ? t("Processing...") : t("Place Order")}
       </Button>

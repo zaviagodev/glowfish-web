@@ -28,6 +28,19 @@ interface Order {
   status: string;
 }
 
+interface BankTransferDetails {
+  selectedAccount?: {
+    id: string;
+    bank: {
+      bank_code: string;
+      bank_name: string;
+      image_url: string;
+    };
+    account_name: string;
+    account_number: string;
+  };
+}
+
 export function PaymentPage() {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -41,40 +54,137 @@ export function PaymentPage() {
   const [countdown, setCountdown] = useState(900); // 15 minutes in seconds
   const [isConfirming, setIsConfirming] = useState(false);
   const [isBankNumCopied, setIsBankNumCopied] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  const [bankTransferDetails, setBankTransferDetails] = useState<BankTransferDetails>({});
+  const [selectedBankAccount, setSelectedBankAccount] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Debug logging for component lifecycle
+  useEffect(() => {
+    console.group('PaymentPage Debug');
+    console.log('Component mounted');
+    console.log('Order ID:', orderId);
+    console.log('Store Name:', storeName);
+    
+    return () => {
+      console.log('Component unmounted');
+      console.groupEnd();
+    };
+  }, []);
 
   useEffect(() => {
-    const fetchOrderAndPaymentOptions = async () => {
+    const checkSupabaseAndFetchData = async () => {
+      console.group('Fetch Order and Payment Options');
       try {
-        // Fetch order
+        // Extensive logging
+        console.log('Starting fetch process');
+        console.log('Supabase client:', !!supabase);
+
+        // Check Supabase client
+        if (!supabase) {
+          throw new Error("Supabase client not initialized");
+        }
+
+        // Check authentication
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        console.log('User authentication:', !!user);
+        if (authError) {
+          console.error('Authentication error:', authError);
+        }
+
+        if (authError || !user) {
+          console.warn('Redirecting to login due to authentication');
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        // Validate orderId and storeName
+        if (!orderId || !storeName) {
+          console.warn('Missing orderId or storeName', { orderId, storeName });
+          navigate("/cart", { replace: true });
+          return;
+        }
+
+        console.log('Fetching order with ID:', orderId);
+        console.log('Store name:', storeName);
+
+        // Fetch order with more detailed error handling
         const { data: orderData, error: orderError } = await supabase
           .from("orders")
           .select("*")
           .eq("id", orderId)
           .single();
 
-        if (orderError) throw orderError;
+        console.log('Order fetch result:', {
+          orderData: !!orderData, 
+          orderError: orderError ? orderError.message : null
+        });
+
+        if (orderError) {
+          console.error('Order fetch error details:', orderError);
+          setError(orderError.message || "Failed to fetch order");
+          navigate("/cart", { replace: true });
+          return;
+        }
         if (!orderData) {
+          console.warn('No order data found');
           navigate("/cart", { replace: true });
           return;
         }
 
+        // Set the full order details
         setOrder(orderData);
 
+        // Extract payment method from order notes
+        const orderNotes = JSON.parse(orderData.notes || '{}');
+        const storedPaymentMethod = orderNotes.paymentMethod;
+        console.log('Stored payment method:', storedPaymentMethod);
+        setPaymentMethod(storedPaymentMethod);
+
         // Fetch payment options
+        console.log('Fetching payment options for store:', storeName);
         const { data: paymentData, error: paymentError } = await supabase.rpc(
           "get_payment_options",
           { store: storeName }
         );
 
-        if (paymentError) throw paymentError;
+        console.log('Payment options fetch result:', {
+          paymentData: !!paymentData, 
+          paymentError: paymentError ? paymentError.message : null
+        });
+
+        if (paymentError) {
+          console.error('Payment options fetch error details:', paymentError);
+          setError(paymentError.message || "Failed to fetch payment options");
+          navigate("/cart", { replace: true });
+          return;
+        }
         setPaymentOptions(paymentData);
+
+        // If bank transfer, pre-select the first account
+        if (storedPaymentMethod?.startsWith('bank_transfer') && paymentData.bank_transfer?.accounts) {
+          setSelectedBankAccount(paymentData.bank_transfer.accounts[0]);
+        }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Comprehensive catch block error:', error);
+        
+        // More detailed error handling
+        if (error instanceof Error) {
+          setError(error.message);
+          alert(`Error: ${error.message}`);
+        }
+        
         navigate("/cart", { replace: true });
+      } finally {
+        console.log('Fetch process completed');
+        console.groupEnd();
+        setIsLoading(false);
       }
     };
 
-    fetchOrderAndPaymentOptions();
+    checkSupabaseAndFetchData();
   }, [orderId, navigate, storeName]);
 
   useEffect(() => {
@@ -142,20 +252,76 @@ export function PaymentPage() {
     setTimeout(() => setIsBankNumCopied(false), 1500);
   };
 
+  const handleBankAccountSelect = (account: any) => {
+    setSelectedBankAccount(account);
+  };
+
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     try {
       const file = event.target.files?.[0];
       if (!file) return;
+
+      // File validation
+      const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+      const maxFileSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        alert(t("Invalid file type. Please upload JPG, PNG, or PDF."));
+        return;
+      }
+
+      if (file.size > maxFileSize) {
+        alert(t("File is too large. Maximum file size is 5MB."));
+        return;
+      }
+
       setIsUploading(true);
 
       // Create form data
       const formData = new FormData();
       formData.append("orderId", orderId!);
       formData.append("storeName", storeName);
-      formData.append("paymentType", "promptpay");
+      
+      // Determine payment type and method
+      const paymentTypeToSend = paymentMethod === 'promptpay' 
+        ? 'promptpay' 
+        : 'bank_transfer';
+      
+      formData.append("paymentType", paymentTypeToSend);
+      
+      // Handle payment method for bank transfer
+      if (paymentMethod?.startsWith('bank_transfer')) {
+        if (!selectedBankAccount) {
+          alert(t("Please select a bank account first."));
+          setIsUploading(false);
+          return;
+        }
+        formData.append("paymentMethod", selectedBankAccount.id);
+      } else {
+        // For PromptPay, use a default method
+        formData.append("paymentMethod", "promptpay");
+      }
+
+      // Optional: Add transfer reference (you can enhance this later)
+      formData.append("transferReference", "");
+
       formData.append("slipFile", file);
+
+      // Detailed logging for debugging
+      console.group('Payment Slip Upload');
+      console.log('Order ID:', orderId);
+      console.log('Store Name:', storeName);
+      console.log('Payment Type:', paymentTypeToSend);
+      console.log('Payment Method:', 
+        paymentMethod?.startsWith('bank_transfer') 
+          ? selectedBankAccount?.id 
+          : 'promptpay'
+      );
+      console.log('File Type:', file.type);
+      console.log('File Size:', file.size);
+      console.groupEnd();
 
       // Call the Edge Function
       const response = await fetch(
@@ -172,13 +338,34 @@ export function PaymentPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to upload payment slip");
+        // More detailed error handling
+        const errorMessage = result.error 
+          || result.details 
+          || t("Failed to upload payment slip");
+        
+        console.error('Upload Error:', result);
+        alert(errorMessage);
+        throw new Error(errorMessage);
       }
 
+      // Success handling
       setSlipImage(result.data.slip_url);
+      
+      // Optional: Show success toast or message
+      alert(t("Payment slip uploaded successfully"));
     } catch (error: any) {
-      console.error("Error uploading slip:", error);
-      alert(t(error.message || "Failed to upload payment slip"));
+      console.error("Comprehensive upload error:", error);
+      
+      // Differentiated error handling
+      if (error.message.includes('Missing required fields')) {
+        alert(t("Please provide all required information"));
+      } else if (error.message.includes('Order not found')) {
+        alert(t("Order details are invalid. Please try again."));
+      } else if (error.message.includes('Order is not in pending status')) {
+        alert(t("This order cannot accept payment at the moment."));
+      } else {
+        alert(t("An unexpected error occurred during upload"));
+      }
     } finally {
       setIsUploading(false);
     }
@@ -196,6 +383,63 @@ export function PaymentPage() {
     link.click();
     document.body.removeChild(link);
   };
+
+  const renderBankTransferSelection = () => {
+    if (!paymentOptions?.bank_transfer?.accounts) return null;
+
+    return (
+      <div className="p-4 space-y-4">
+        <h2 className="text-lg font-semibold">{t("Select Bank Account")}</h2>
+        {paymentOptions.bank_transfer.accounts.map((account: any) => (
+          <div 
+            key={account.id} 
+            className={cn(
+              "flex items-center p-3 border rounded-lg cursor-pointer",
+              selectedBankAccount?.id === account.id ? "border-primary bg-primary/10" : "border-gray-200"
+            )}
+            onClick={() => handleBankAccountSelect(account)}
+          >
+            <div className="flex-grow">
+              <div className="font-medium">{account.bank.bank_name}</div>
+              <div className="text-sm text-muted-foreground">
+                {t("Account")}: {formatBankAccountNumber(account.account_number)}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {account.account_name}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const formatBankAccountNumber = (accountNumber: string) => {
+    // For 10-digit Bangkok Bank account, use a specific format
+    if (accountNumber.length === 10) {
+      return `${accountNumber.slice(0, 3)} ${accountNumber.slice(3, 7)} ${accountNumber.slice(7)}`;
+    }
+    // Fallback to groups of 4 for other account numbers
+    const groups = accountNumber.match(/.{1,4}/g) || [accountNumber];
+    return groups.join(' ');
+  };
+
+  // If loading, show loading spinner
+  if (isLoading) {
+    return <LoadingSpin />;
+  }
+
+  // If there's an error, show error message
+  if (error) {
+    return (
+      <div className="p-4 text-center text-destructive">
+        <p>{error}</p>
+        <Button onClick={() => navigate("/cart")} className="mt-4">
+          {t("Back to Cart")}
+        </Button>
+      </div>
+    );
+  }
 
   if (!order || !paymentOptions) {
     return <LoadingSpin />;
@@ -216,9 +460,16 @@ export function PaymentPage() {
 
   return (
     <div className="bg-background">
-      <PageHeader title={t("PromptPay QR")} />
+      <PageHeader title={
+        paymentMethod === 'promptpay' 
+          ? t("PromptPay QR") 
+          : paymentMethod?.startsWith('bank_transfer') 
+            ? t("Bank Transfer") 
+            : t("Payment")
+      } />
 
       <div className="pt-14 pb-[120px]">
+        {/* Payment Method Timer and Total */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -243,6 +494,7 @@ export function PaymentPage() {
             />
           </div>
 
+          {/* Countdown Timer */}
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -334,163 +586,179 @@ export function PaymentPage() {
           </motion.p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="px-6 pt-8 text-center"
-        >
-          <div className="space-y-4">
-            {/* PromptPay Info */}
-            {promptPayInfo.map((info) => (
-              <div key={info.title}>
-                <div className="flex items-center justify-between">
-                  <div className="text-muted-foreground text-sm">
-                    {info.title}
-                  </div>
-                  <div className="text-sm flex items-center gap-2">
-                    <div className="font-medium">{info.value || "-"}</div>
-
-                    {info.onCopy && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={info.onCopy}
-                        className="relative !bg-transparent h-fit w-fit"
-                      >
-                        <AnimatePresence>
-                          {info.isCopied && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              exit={{ scale: 0 }}
-                              className="absolute -top-8 px-2 py-1 bg-green-500 text-white text-xs whitespace-nowrap rounded-full"
-                            >
-                              {t("Copied!")}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                        <Copy className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          {/* QR Code */}
-          <div className="mt-8 mb-6 relative mx-auto w-64 h-64 bg-white p-4 rounded-xl shadow-lg">
-            {paymentOptions?.promptpay?.qr_code ? (
-              <img
-                src={paymentOptions.promptpay.qr_code}
-                alt="PromptPay QR"
-                className="w-full h-full object-contain"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <p className="text-muted-foreground text-sm">
-                  {t("QR code not available")}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Download QR Button */}
-          <Button
-            variant="ghost"
-            onClick={handleDownloadQR}
-            className="gap-2 relative !bg-transparent"
-            disabled={!paymentOptions?.promptpay?.qr_code}
+        {/* Conditionally render only the selected payment method */}
+        {paymentMethod === 'promptpay' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="px-6 pt-8 text-center"
           >
-            <Download className="w-4 h-4" />
-            {t("Save QR Code")}
-          </Button>
-        </motion.div>
+            <div className="space-y-4">
+              {/* PromptPay Info */}
+              {promptPayInfo.map((info) => (
+                <div key={info.title}>
+                  <div className="flex items-center justify-between">
+                    <div className="text-muted-foreground text-sm">
+                      {info.title}
+                    </div>
+                    <div className="text-sm flex items-center gap-2">
+                      <div className="font-medium">{info.value || "-"}</div>
 
-        {/* Upload Slip */}
-        <div className="px-6 py-8">
-          <div className="bg-darkgray p-5 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">
-              {t("Upload Payment Slip")}
-            </h3>
-
-            {slipImage ? (
-              <div className="relative rounded-lg overflow-hidden mb-6">
-                <img
-                  src={slipImage}
-                  alt="Payment slip"
-                  className="w-full object-cover"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white"
-                  onClick={() => setSlipImage(null)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            ) : (
-              <label className="block">
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    disabled={isUploading}
-                  />
-                  <div
-                    className={cn(
-                      "h-48 rounded-lg border-2 border-dashed border-muted-foreground/25",
-                      "flex flex-col items-center justify-center gap-2",
-                      "cursor-pointer hover:border-primary/50 transition-colors",
-                      shimmer
-                    )}
-                  >
-                    {isUploading ? (
-                      <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
-                    ) : (
-                      <>
-                        <Upload className="w-6 h-6 text-muted-foreground" />
-                        <div className="text-sm text-muted-foreground">
-                          {t("Click to upload slip")}
-                        </div>
-                      </>
-                    )}
+                      {info.onCopy && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={info.onCopy}
+                          className="relative !bg-transparent h-fit w-fit"
+                        >
+                          <AnimatePresence>
+                            {info.isCopied && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0 }}
+                                className="absolute -top-8 px-2 py-1 bg-green-500 text-white text-xs whitespace-nowrap rounded-full"
+                              >
+                                {t("Copied!")}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                          <Copy className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </label>
-            )}
-          </div>
-
-          <div className="fixed bottom-0 bg-background w-full p-5 left-0 flex flex-col items-center max-width-mobile left-[50%] -translate-x-[50%]">
-            <Button
-              className="main-btn w-full"
-              disabled={!slipImage || isConfirming}
-              onClick={handleConfirmPayment}
-            >
-              {isConfirming ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-background border-t-transparent mr-2" />
-                  {t("Confirming")}
-                </>
+              ))}
+            </div>
+            {/* QR Code */}
+            <div className="mt-8 mb-6 relative mx-auto w-64 h-64 bg-white p-4 rounded-xl shadow-lg">
+              {paymentOptions?.promptpay?.qr_code ? (
+                <img
+                  src={paymentOptions.promptpay.qr_code}
+                  alt="PromptPay QR"
+                  className="w-full h-full object-contain"
+                />
               ) : (
-                <>
-                  {t("Confirm Payment")}
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </>
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-muted-foreground text-sm">
+                    {t("QR code not available")}
+                  </p>
+                </div>
               )}
-            </Button>
+            </div>
+
+            {/* Download QR Button */}
             <Button
               variant="ghost"
-              className="w-fit text-muted-foreground"
-              onClick={handlePayLater}
+              onClick={handleDownloadQR}
+              className="gap-2 relative !bg-transparent"
+              disabled={!paymentOptions?.promptpay?.qr_code}
             >
-              <Clock className="w-4 h-4 mr-2" />
-              {t("Pay Later")}
+              <Download className="w-4 h-4" />
+              {t("Save QR Code")}
             </Button>
+          </motion.div>
+        )}
+
+        {/* Bank Transfer Section */}
+        {paymentMethod?.startsWith('bank_transfer') && (
+          <>
+            {renderBankTransferSelection()}
+            
+            {selectedBankAccount && (
+              <div className="p-4">
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 space-y-4">
+                  <div className="flex flex-col">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                      {selectedBankAccount.bank.bank_name}
+                    </h3>
+                    <div className="space-y-1">
+                      <div className="text-sm text-gray-600">
+                        {t("Account")}
+                      </div>
+                      <div className="text-base font-medium text-gray-900 tracking-wider">
+                        {formatBankAccountNumber(selectedBankAccount.account_number)}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-4 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">{t("Account Name")}</span>
+                      <span className="text-sm font-semibold text-gray-800">
+                        {selectedBankAccount.account_name}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">{t("Branch")}</span>
+                      <span className="text-sm font-semibold text-gray-800">
+                        {selectedBankAccount.branch}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* File Upload Section */}
+        <div className="p-4">
+          <div className="border-2 border-dashed rounded-lg p-6 text-center">
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleFileUpload} 
+              className="hidden" 
+              id="payment-slip-upload" 
+              disabled={isUploading || (!selectedBankAccount && paymentMethod?.startsWith('bank_transfer'))}
+            />
+            <label 
+              htmlFor="payment-slip-upload" 
+              className={cn(
+                "cursor-pointer flex flex-col items-center",
+                (isUploading || (!selectedBankAccount && paymentMethod?.startsWith('bank_transfer'))) && "opacity-50 cursor-not-allowed"
+              )}
+            >
+              <Upload className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-sm text-muted-foreground">
+                {t("Upload Payment Slip")}
+              </p>
+              <p className="text-xs text-secondary-foreground mt-2">
+                {t("JPG, PNG, or PDF (max 5MB)")}
+              </p>
+            </label>
           </div>
+
+          {/* Uploaded Slip Preview */}
+          {slipImage && (
+            <div className="mt-4 relative">
+              <img 
+                src={slipImage} 
+                alt="Payment Slip" 
+                className="w-full rounded-lg" 
+              />
+              <button 
+                onClick={() => setSlipImage(null)} 
+                className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-full"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Confirm Payment Button */}
+        <div className="p-4">
+          <Button 
+            className="w-full" 
+            disabled={!slipImage || isConfirming}
+            onClick={handleConfirmPayment}
+          >
+            {isConfirming ? t("Confirming...") : t("Confirm Payment")}
+          </Button>
         </div>
       </div>
 
