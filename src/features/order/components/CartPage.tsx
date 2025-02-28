@@ -14,7 +14,8 @@ export function CartPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const debounceTimeout = useRef<NodeJS.Timeout>();
-  const { items, updateQuantity, removeItem, getTotalItems, getTotalPrice } = useCart();
+  const { items, updateQuantity, removeItem, getTotalItems, getTotalPrice } =
+    useCart();
   const { getTotalDiscount } = useCoupons();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
@@ -77,7 +78,7 @@ export function CartPage() {
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover object-top"
                       />
                     ) : (
                       <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
@@ -231,4 +232,4 @@ export function CartPage() {
       </div>
     </div>
   );
-} 
+}

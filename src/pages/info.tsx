@@ -118,7 +118,7 @@ const InfoPage = () => {
               ))}
             </div>
 
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <motion.h2
                 className="text-sm font-medium tracking-wide mb-4"
                 initial={{ opacity: 0, y: 20 }}
@@ -141,7 +141,7 @@ const InfoPage = () => {
                   </p>
                 </motion.div>
               ))}
-            </div>
+            </div> */}
           </>
         )}
 

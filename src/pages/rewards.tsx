@@ -22,9 +22,9 @@ import {
   Tag,
   Ticket,
   AlertCircle,
+  ChevronRight,
 } from "lucide-react";
 import Barcode from "react-barcode";
-
 import { useCustomer } from "@/hooks/useCustomer";
 import { useStore } from "@/hooks/useStore";
 import { useOrders } from "@/features/orders";
@@ -388,6 +388,21 @@ const RewardsPage = () => {
             {/* <GlowfishIcon className="w-[72px]" />| Glowfish */}
             <GoodAfterWorkCard />
           </div>
+        </div>
+
+        <div className="px-5 pb-5">
+          <button
+            onClick={() => navigate("/scan")}
+            className="w-full bg-darkgray rounded-lg p-4 transition-colors flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3 w-full">
+              <div className="w-12 h-12 rounded-lg bg-[#2196F31A] flex items-center justify-center">
+                <QrCode className="h-5 w-5 text-[#2196F3]" />
+              </div>
+              <div className="text-left text-sm">{t("Scan to Redeem")}</div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          </button>
         </div>
 
         <div className="px-5 pb-7">

@@ -18,6 +18,7 @@ import {
   QrCode,
   Ticket as TicketIcon,
   Clock,
+  X,
 } from "lucide-react";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useTickets } from "@/features/tickets/hooks/useTickets";
@@ -27,6 +28,12 @@ import LoadingSpin from "@/components/loading/LoadingSpin";
 import Pagination from "@/components/pagination/Pagination";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import type { Ticket as TicketType } from "@/features/tickets/services/ticketService";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import { ProductImage } from "@/features/home/types/product.types";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -40,6 +47,10 @@ export default function TicketsPage() {
     () => (searchParams.get("tab") as "upcoming" | "passed") || "upcoming"
   );
   const [currentPage, setCurrentPage] = useState(1);
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [thumbnailApi, setThumbnailApi] = useState<any>(null);
+  const [modalApi, setModalApi] = useState<any>(null);
   const [qrTicket, setQrTicket] = useState<string | null>(null);
   const [showCheckIn, setShowCheckIn] = useState(false);
   const {
@@ -50,6 +61,43 @@ export default function TicketsPage() {
     updateTicketStatus,
     checkTicketStatus,
   } = useTickets();
+
+  // Sync thumbnail carousel
+  useEffect(() => {
+    if (thumbnailApi) {
+      thumbnailApi.on("select", () => {
+        const index = thumbnailApi.selectedScrollSnap();
+        setCurrentSlide(index);
+      });
+    }
+  }, [thumbnailApi]);
+
+  // Sync modal carousel
+  useEffect(() => {
+    if (modalApi) {
+      modalApi.on("select", () => {
+        const index = modalApi.selectedScrollSnap();
+        setCurrentSlide(index);
+      });
+    }
+  }, [modalApi]);
+
+  // Sync both carousels when current slide changes
+  useEffect(() => {
+    if (thumbnailApi) {
+      thumbnailApi.scrollTo(currentSlide);
+    }
+    if (modalApi) {
+      modalApi.scrollTo(currentSlide);
+    }
+  }, [currentSlide, thumbnailApi, modalApi]);
+
+  // When opening modal, ensure it shows the same slide as thumbnail
+  useEffect(() => {
+    if (openImageModal && modalApi) {
+      modalApi.scrollTo(currentSlide);
+    }
+  }, [openImageModal, modalApi, currentSlide]);
 
   // Update search params when tab changes
   useEffect(() => {
@@ -171,6 +219,8 @@ export default function TicketsPage() {
       foundOrder.event?.end_datetime
     );
 
+    const images = foundOrder.event?.product.images;
+
     return (
       <div className="bg-background">
         <PageHeader
@@ -186,26 +236,158 @@ export default function TicketsPage() {
           {/* Hero Section */}
           <div className="relative">
             <motion.div
-              className="relative w-full aspect-[4/3] overflow-hidden"
+              className="relative w-full aspect-square overflow-hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              {foundOrder.event?.product.images[0]?.url ? (
+              {/* {foundOrder.event?.product.images[0]?.url ? (
                 <img
                   src={foundOrder.event?.product.images[0].url}
                   alt={foundOrder.event?.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
+                  onClick={() => setOpenImageModal(true)}
                 />
               ) : (
                 <div className="flex items-center justify-center w-full h-full overflow-hidden bg-black">
                   <GlowfishIcon />
                 </div>
-              )}
+              )} */}
+              <div
+                className={cn(
+                  openImageModal
+                    ? "fixed inset-0 z-[999] bg-background flex flex-col justify-center items-center w-full"
+                    : ""
+                )}
+              >
+                {openImageModal && (
+                  <>
+                    <div
+                      className="absolute right-5 top-5 h-10 w-10 bg-black/20 rounded-full flex items-center justify-center cursor-pointer"
+                      onClick={() => setOpenImageModal(false)}
+                    >
+                      <X className="h-6 w-6" />
+                    </div>
+                    {Array.isArray(images) && images.length > 0 ? (
+                      <div className="w-full h-full flex items-center justify-center p-4">
+                        <Carousel className="w-full" setApi={setModalApi}>
+                          <CarouselContent>
+                            {images.map((img: ProductImage) => (
+                              <CarouselItem key={img.id}>
+                                <div className="relative w-full h-full flex items-center justify-center">
+                                  <img
+                                    src={img.url}
+                                    alt={
+                                      img.alt || foundOrder.event?.product.name
+                                    }
+                                    className="max-w-full max-h-[80vh] w-auto h-auto object-contain"
+                                  />
+                                </div>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          {images.length > 1 && (
+                            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                              {images.map((_, index) => (
+                                <div
+                                  key={index}
+                                  onClick={() => setCurrentSlide(index)}
+                                  className={cn(
+                                    "w-2 h-2 rounded-full transition-all duration-200 cursor-pointer",
+                                    index === currentSlide
+                                      ? "bg-white"
+                                      : "bg-white/50 hover:bg-white/75"
+                                  )}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </Carousel>
+                      </div>
+                    ) : foundOrder.event?.product.images[0].url ? (
+                      <div className="w-full h-full flex items-center justify-center p-4">
+                        <img
+                          src={foundOrder.event?.product.images[0].url}
+                          alt={foundOrder.event?.product.name}
+                          className="max-w-full max-h-[80vh] w-auto h-auto object-contain"
+                        />
+                      </div>
+                    ) : null}
+                  </>
+                )}
+
+                {/* Thumbnail view (when modal is closed) */}
+                {!openImageModal && (
+                  <>
+                    {Array.isArray(images) && images.length > 0 ? (
+                      <div className="w-full aspect-square overflow-hidden">
+                        <Carousel className="w-full" setApi={setThumbnailApi}>
+                          <CarouselContent>
+                            {images.map((img: ProductImage) => (
+                              <CarouselItem
+                                key={img.id}
+                                onClick={() => setOpenImageModal(true)}
+                              >
+                                <div className="relative w-full aspect-square">
+                                  <img
+                                    src={img.url}
+                                    alt={
+                                      img.alt || foundOrder.event?.product.name
+                                    }
+                                    className="w-full h-full object-cover object-top"
+                                  />
+                                </div>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          {images.length > 1 && (
+                            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                              {images.map((_, index) => (
+                                <div
+                                  key={index}
+                                  onClick={() => setCurrentSlide(index)}
+                                  className={cn(
+                                    "w-2 h-2 rounded-full transition-all duration-200 cursor-pointer",
+                                    index === currentSlide
+                                      ? "bg-white"
+                                      : "bg-white/50 hover:bg-white/75"
+                                  )}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </Carousel>
+                      </div>
+                    ) : foundOrder.event?.product.images[0].url ? (
+                      <div className="w-full aspect-square overflow-hidden">
+                        <Carousel>
+                          <CarouselContent>
+                            <CarouselItem
+                              onClick={() => setOpenImageModal(true)}
+                            >
+                              <div className="relative w-full aspect-square">
+                                <img
+                                  src={foundOrder.event?.product.images[0].url}
+                                  alt={foundOrder.event?.product.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            </CarouselItem>
+                          </CarouselContent>
+                        </Carousel>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
+                        <GlowfishIcon />
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             </motion.div>
           </div>
 
           {/* Content */}
-          <div className="p-6 space-y-6">
+          <div className="p-5 space-y-6">
             {/* Event Info */}
             <div className="space-y-4">
               {/* Status Badge */}

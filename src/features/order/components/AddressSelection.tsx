@@ -1,15 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
-import {
-  Plus,
-  MapPin,
-  Home,
-  Building2,
-  Pencil,
-  Trash2,
-  Package2,
-} from "lucide-react";
+import { Home, Building2, Pencil } from "lucide-react";
 import { useCustomer } from "@/hooks/useCustomer";
 import { supabase } from "@/lib/supabase";
 import type { Address } from "@/services/customerService";
@@ -49,13 +41,13 @@ export default function AddressSelection() {
 
   const handleAddressSelect = (addressId: string) => {
     setSelectedAddress(addressId);
-    const selectedAddress = addresses.find(addr => addr.id === addressId);
-    navigate("/checkout", { 
-      state: { 
+    const selectedAddress = addresses.find((addr) => addr.id === addressId);
+    navigate("/checkout", {
+      state: {
         selectedAddressId: addressId,
         selectedAddress: selectedAddress,
-        ...(location.state || {}) // Preserve other state values if they exist
-      } 
+        ...(location.state || {}), // Preserve other state values if they exist
+      },
     });
   };
 
@@ -237,4 +229,4 @@ export default function AddressSelection() {
       </AlertDialog>
     </div>
   );
-} 
+}

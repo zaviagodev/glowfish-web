@@ -26,14 +26,17 @@ import { DatePicker } from "@/components/ui/date-picker";
 
 interface ProfileFormProps {
   onComplete?: () => void;
-  mode?: 'setup' | 'edit';
+  mode?: "setup" | "edit";
 }
 
-export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => {
+export const ProfileForm = ({
+  onComplete,
+  mode = "edit",
+}: ProfileFormProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const isProfileSetup = mode === 'setup';
+  const isProfileSetup = mode === "setup";
   const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
@@ -132,7 +135,6 @@ export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => 
       } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
 
-
       // Get current customer data to preserve existing meta
       const { data: currentCustomer } = await supabase
         .from("customers")
@@ -227,7 +229,7 @@ export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => 
               {...form.register("firstName")}
               disabled={isLoading}
               className="bg-darkgray"
-              placeholder={t("Enter your first name")}
+              placeholder="John"
             />
             {form.formState.errors.firstName && (
               <p className="text-sm text-red-500">
@@ -246,6 +248,7 @@ export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => 
               {...form.register("lastName")}
               disabled={isLoading}
               className="bg-darkgray"
+              placeholder="Doe"
             />
             {form.formState.errors.lastName && (
               <p className="text-sm text-red-500">
@@ -263,6 +266,7 @@ export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => 
               {...form.register("company")}
               disabled={isLoading}
               className="bg-darkgray"
+              placeholder="Your company name"
             />
             {/* {form.formState.errors.company && (
               <p className="text-sm text-red-500">
@@ -281,7 +285,9 @@ export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => 
               {...form.register("email")}
               disabled={isLoading}
               className="bg-darkgray"
-              placeholder={isProfileSetup ? t("Enter your email") : undefined}
+              placeholder={
+                isProfileSetup ? t("Enter your email") : "youremail@gmail.com"
+              }
             />
             {form.formState.errors.email && (
               <p className="text-sm text-red-500">
@@ -305,7 +311,7 @@ export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => 
               showYearDropdown
               scrollableYearDropdown
               yearDropdownItemNumber={100}
-              placeholderText={t("Select your date of birth")}
+              placeholderText={t("DD MM YYYY")}
               className="w-full"
               required
             />
@@ -323,7 +329,9 @@ export const ProfileForm = ({ onComplete, mode = 'edit' }: ProfileFormProps) => 
             disabled={isLoading}
             className="w-full main-btn"
           >
-            {isLoading ? t("Saving...") : t("Save Changes")}
+            {isLoading
+              ? t("Saving...")
+              : t(isProfileSetup ? "Next" : "Save Changes")}
           </Button>
         </div>
       </form>
