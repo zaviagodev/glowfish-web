@@ -7,6 +7,7 @@ import GlowfishIcon from "../icons/GlowfishIcon";
 import { format } from "date-fns";
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { formattedDateAndTime } from "@/lib/utils";
 
 interface OrderItem {
   id: string;
@@ -81,7 +82,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 : `${t("Order")} #${order.id?.substring(0, 8) || ""}`}
             </div>
             <div className="text-muted-foreground">
-              {format(order.created_at, "dd MMM yyyy HH:mm")}
+              {format(order.created_at, formattedDateAndTime)}
             </div>
           </div>
         </div>
@@ -89,9 +90,15 @@ export function OrderCard({ order, index }: OrderCardProps) {
       </div>
 
       {/* Order Items */}
-      {visibleItems.map((item) => {
+      {visibleItems.map((item, index) => {
         return (
-          <div key={item.id} className="p-4 pb-0 flex gap-4">
+          <motion.div
+            key={item.id}
+            className="p-4 pb-0 flex gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+          >
             <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
               {item.product_variants.product.image ? (
                 <img
@@ -120,7 +127,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         );
       })}
 
