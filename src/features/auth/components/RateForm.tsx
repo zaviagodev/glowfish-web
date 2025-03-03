@@ -12,8 +12,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useToast } from "@/components/ui/toast";
 
 type RatingProps = {
   title: string;
@@ -27,7 +26,7 @@ type RateFormProps = {
 
 export const RateForm = ({ onSubmit }: RateFormProps) => {
   const t = useTranslate();
-  const [hasError, setHasError] = useState(true);
+  const { toast } = useToast();
   const ratings: RatingProps[] = [
     { title: t("Music and Live Show"), key: "music", activeColor: "#DE473C" },
     { title: t("Art and Creativity"), key: "art", activeColor: "#F5853B" },
@@ -63,6 +62,20 @@ export const RateForm = ({ onSubmit }: RateFormProps) => {
 
   const handleSubmit = async (data: any) => {
     try {
+      // Check if any field is 0 (not rated)
+      const emptyFields = Object.entries(data)
+        .filter(([_, value]) => value === 0)
+        .map(([key]) => {
+          const rating = ratings.find((r) => r.key === key);
+          return rating ? rating.title : key;
+        });
+
+      if (emptyFields.length > 0) {
+        // Show toast for required fields
+        toast(`Please fill all rating fields`, "error");
+        return;
+      }
+
       // Get current user
       const {
         data: { user },
@@ -96,6 +109,7 @@ export const RateForm = ({ onSubmit }: RateFormProps) => {
       onSubmit(data);
     } catch (error) {
       console.error("Error saving preferences:", error);
+      toast("Error saving preferences", "error");
     }
   };
 
@@ -125,13 +139,6 @@ export const RateForm = ({ onSubmit }: RateFormProps) => {
             />
           ))}
         </section>
-
-        <Dialog open={hasError} onOpenChange={setHasError}>
-          <DialogContent className="w-[90%] max-width-mobile rounded-lg">
-            <DialogTitle>Required</DialogTitle>
-            The field of ... is required
-          </DialogContent>
-        </Dialog>
 
         <footer className="btn-footer">
           <Button className="main-btn w-full" type="submit">

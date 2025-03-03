@@ -67,7 +67,11 @@ interface PaymentOptionsResponse {
   };
 }
 
-export function PaymentMethod({ value, onChange, required = false }: PaymentMethodProps) {
+export function PaymentMethod({
+  value,
+  onChange,
+  required = false,
+}: PaymentMethodProps) {
   const t = useTranslate();
   const { storeName } = useStore();
   const [paymentOptions, setPaymentOptions] = useState<PaymentOption[]>([]);
@@ -128,7 +132,9 @@ export function PaymentMethod({ value, onChange, required = false }: PaymentMeth
     fetchPaymentOptions();
   }, [storeName, t]);
 
-  const selectedOption = value ? paymentOptions.find((option) => option.id === value) : null;
+  const selectedOption = value
+    ? paymentOptions.find((option) => option.id === value)
+    : null;
 
   if (loading) {
     return <LoadingSpin />;
@@ -194,7 +200,7 @@ export function PaymentMethod({ value, onChange, required = false }: PaymentMeth
           className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-width-mobile max-w-[500px] mx-auto flex flex-col gap-0"
         >
           <SheetHeader className="px-5 pb-3 pt-8 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
-            <SheetTitle className="text-title2 font-semibold tracking-tight">
+            <SheetTitle className="text-base font-semibold tracking-tight">
               {t("Choose Payment Method")}
             </SheetTitle>
           </SheetHeader>
