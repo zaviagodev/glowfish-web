@@ -2,7 +2,7 @@
     admin 0.0.0.0:2019
 
     # Add DNS challenge configuration
-    acme_dns cloudflare "<CLOUDFLARE_API_TOKEN>"
+    # acme_dns cloudflare "<CLOUDFLARE_API_TOKEN>"
 
     # Configure storage for config persistence
     storage file_system {
