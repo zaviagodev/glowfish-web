@@ -183,27 +183,13 @@ export function VariantDrawer({
           {/* Price Display */}
           {currentVariant && (
             <div className="flex flex-col items-center">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">
-                  ฿{currentVariant.price.toLocaleString()}
-                </span>
-                {/* {currentVariant.compare_at_price && (
-                  <>
-                    <span className="text-sm line-through text-muted-foreground">
-                      ฿{currentVariant.compare_at_price.toLocaleString()}
-                    </span>
-                    <span className="text-xs font-medium px-2 py-1 rounded-full bg-mainbutton rounded-full/10 text-primary-foreground">
-                      {Math.round(
-                        (1 -
-                          currentVariant.price /
-                            currentVariant.compare_at_price) *
-                          100
-                      )}
-                      % OFF
-                    </span>
-                  </>
-                )} */}
-              </div>
+              {/* TODO: set the condition of sales_price dynamically */}
+              <span className="text-sm text-muted-foreground line-through">
+                {currentVariant.sales_price || "฿0"}
+              </span>
+              <span className="text-2xl font-bold">
+                ฿{currentVariant.price.toLocaleString()}
+              </span>
 
               {track_quantity ? (
                 currentVariant.quantity > 0 ? (

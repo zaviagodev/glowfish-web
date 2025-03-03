@@ -5,6 +5,7 @@ export interface ProductVariant {
     name: string;
     sku: string;
     price: number;
+    sales_price?: number;
     compare_at_price: number | null;
     quantity: number;
     points_based_price?: number;
@@ -61,6 +62,7 @@ export interface AnimatedCardProps {
     location?: string;
     date?: string;
     price?: string | number;
+    sales_price?: string | number;
     compareAtPrice?: string | number;
     variant_id?: string;
     product_variants?: ProductVariant[];
