@@ -58,6 +58,8 @@ build/Release
 # Dependency directories
 node_modules/
 
+caddy-config/
+
 # Optional npm cache directory
 .npm
 
