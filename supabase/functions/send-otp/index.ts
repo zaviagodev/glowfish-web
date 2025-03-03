@@ -31,7 +31,7 @@ serve(async (req) => {
 
   const payload = {
     recipient: phone,
-    sender_name: 'ZAVIAGO',
+    sender_name: 'AFTERWORK',
     digit : 6
   };
 
