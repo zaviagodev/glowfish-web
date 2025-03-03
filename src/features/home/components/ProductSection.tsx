@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { Product } from "@/features/home/hooks/useProducts";
 import { memo } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { Package2, StickyNote } from "lucide-react";
+import { StickyNote } from "lucide-react";
 
 interface ProductSectionProps {
   title: string;
@@ -54,7 +54,6 @@ export const ProductSection = memo(function ProductSection({
                 "scroll-smooth"
               )}
             >
-
               {products.map((product) => (
                 <motion.div
                   key={product.name}
@@ -76,7 +75,7 @@ export const ProductSection = memo(function ProductSection({
                       product.start_datetime &&
                       format(
                         toZonedTime(new Date(product.start_datetime), "UTC"),
-                        "dd MMM yyyy, HH:mm"
+                        formattedDateAndTime
                       )
                     }
                     hasGallery={

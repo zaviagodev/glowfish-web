@@ -186,7 +186,7 @@ const PointsPage = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="px-5 space-y-4">
+        {/* <div className="px-5 space-y-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -211,7 +211,7 @@ const PointsPage = () => {
               <ChevronRight className="w-5 h-5 text-[#8E8E93] group-hover:text-[#1A1A1A] transition-colors" />
             </Button>
           </motion.div>
-        </div>
+        </div> */}
 
         {/* Points History */}
         <motion.div

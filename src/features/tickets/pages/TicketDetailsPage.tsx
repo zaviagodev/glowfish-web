@@ -87,7 +87,7 @@ export default function TicketDetailsPage() {
         {/* Hero Section */}
         <div className="relative">
           <motion.div
-            className="relative w-full aspect-[4/3] overflow-hidden flex items-center justify-center w-full h-full overflow-hidden bg-black"
+            className="relative w-full aspect-square overflow-hidden flex items-center justify-center w-full h-full overflow-hidden bg-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
@@ -96,7 +96,7 @@ export default function TicketDetailsPage() {
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-5 space-y-6">
           {/* Event Info */}
           <div className="space-y-4">
             {/* Countdown */}

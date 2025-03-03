@@ -55,31 +55,32 @@ export function PaymentPage() {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isBankNumCopied, setIsBankNumCopied] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
-  const [bankTransferDetails, setBankTransferDetails] = useState<BankTransferDetails>({});
+  const [bankTransferDetails, setBankTransferDetails] =
+    useState<BankTransferDetails>({});
   const [selectedBankAccount, setSelectedBankAccount] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Debug logging for component lifecycle
   useEffect(() => {
-    console.group('PaymentPage Debug');
-    console.log('Component mounted');
-    console.log('Order ID:', orderId);
-    console.log('Store Name:', storeName);
-    
+    console.group("PaymentPage Debug");
+    console.log("Component mounted");
+    console.log("Order ID:", orderId);
+    console.log("Store Name:", storeName);
+
     return () => {
-      console.log('Component unmounted');
+      console.log("Component unmounted");
       console.groupEnd();
     };
   }, []);
 
   useEffect(() => {
     const checkSupabaseAndFetchData = async () => {
-      console.group('Fetch Order and Payment Options');
+      console.group("Fetch Order and Payment Options");
       try {
         // Extensive logging
-        console.log('Starting fetch process');
-        console.log('Supabase client:', !!supabase);
+        console.log("Starting fetch process");
+        console.log("Supabase client:", !!supabase);
 
         // Check Supabase client
         if (!supabase) {
@@ -87,28 +88,31 @@ export function PaymentPage() {
         }
 
         // Check authentication
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-        
-        console.log('User authentication:', !!user);
+        const {
+          data: { user },
+          error: authError,
+        } = await supabase.auth.getUser();
+
+        console.log("User authentication:", !!user);
         if (authError) {
-          console.error('Authentication error:', authError);
+          console.error("Authentication error:", authError);
         }
 
         if (authError || !user) {
-          console.warn('Redirecting to login due to authentication');
+          console.warn("Redirecting to login due to authentication");
           navigate("/login", { replace: true });
           return;
         }
 
         // Validate orderId and storeName
         if (!orderId || !storeName) {
-          console.warn('Missing orderId or storeName', { orderId, storeName });
+          console.warn("Missing orderId or storeName", { orderId, storeName });
           navigate("/cart", { replace: true });
           return;
         }
 
-        console.log('Fetching order with ID:', orderId);
-        console.log('Store name:', storeName);
+        console.log("Fetching order with ID:", orderId);
+        console.log("Store name:", storeName);
 
         // Fetch order with more detailed error handling
         const { data: orderData, error: orderError } = await supabase
@@ -117,19 +121,19 @@ export function PaymentPage() {
           .eq("id", orderId)
           .single();
 
-        console.log('Order fetch result:', {
-          orderData: !!orderData, 
-          orderError: orderError ? orderError.message : null
+        console.log("Order fetch result:", {
+          orderData: !!orderData,
+          orderError: orderError ? orderError.message : null,
         });
 
         if (orderError) {
-          console.error('Order fetch error details:', orderError);
+          console.error("Order fetch error details:", orderError);
           setError(orderError.message || "Failed to fetch order");
           navigate("/cart", { replace: true });
           return;
         }
         if (!orderData) {
-          console.warn('No order data found');
+          console.warn("No order data found");
           navigate("/cart", { replace: true });
           return;
         }
@@ -138,25 +142,25 @@ export function PaymentPage() {
         setOrder(orderData);
 
         // Extract payment method from order notes
-        const orderNotes = JSON.parse(orderData.notes || '{}');
+        const orderNotes = JSON.parse(orderData.notes || "{}");
         const storedPaymentMethod = orderNotes.paymentMethod;
-        console.log('Stored payment method:', storedPaymentMethod);
+        console.log("Stored payment method:", storedPaymentMethod);
         setPaymentMethod(storedPaymentMethod);
 
         // Fetch payment options
-        console.log('Fetching payment options for store:', storeName);
+        console.log("Fetching payment options for store:", storeName);
         const { data: paymentData, error: paymentError } = await supabase.rpc(
           "get_payment_options",
           { store: storeName }
         );
 
-        console.log('Payment options fetch result:', {
-          paymentData: !!paymentData, 
-          paymentError: paymentError ? paymentError.message : null
+        console.log("Payment options fetch result:", {
+          paymentData: !!paymentData,
+          paymentError: paymentError ? paymentError.message : null,
         });
 
         if (paymentError) {
-          console.error('Payment options fetch error details:', paymentError);
+          console.error("Payment options fetch error details:", paymentError);
           setError(paymentError.message || "Failed to fetch payment options");
           navigate("/cart", { replace: true });
           return;
@@ -164,21 +168,24 @@ export function PaymentPage() {
         setPaymentOptions(paymentData);
 
         // If bank transfer, pre-select the first account
-        if (storedPaymentMethod?.startsWith('bank_transfer') && paymentData.bank_transfer?.accounts) {
+        if (
+          storedPaymentMethod?.startsWith("bank_transfer") &&
+          paymentData.bank_transfer?.accounts
+        ) {
           setSelectedBankAccount(paymentData.bank_transfer.accounts[0]);
         }
       } catch (error) {
-        console.error('Comprehensive catch block error:', error);
-        
+        console.error("Comprehensive catch block error:", error);
+
         // More detailed error handling
         if (error instanceof Error) {
           setError(error.message);
           alert(`Error: ${error.message}`);
         }
-        
+
         navigate("/cart", { replace: true });
       } finally {
-        console.log('Fetch process completed');
+        console.log("Fetch process completed");
         console.groupEnd();
         setIsLoading(false);
       }
@@ -264,7 +271,7 @@ export function PaymentPage() {
       if (!file) return;
 
       // File validation
-      const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+      const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
       const maxFileSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
@@ -283,16 +290,15 @@ export function PaymentPage() {
       const formData = new FormData();
       formData.append("orderId", orderId!);
       formData.append("storeName", storeName);
-      
+
       // Determine payment type and method
-      const paymentTypeToSend = paymentMethod === 'promptpay' 
-        ? 'promptpay' 
-        : 'bank_transfer';
-      
+      const paymentTypeToSend =
+        paymentMethod === "promptpay" ? "promptpay" : "bank_transfer";
+
       formData.append("paymentType", paymentTypeToSend);
-      
+
       // Handle payment method for bank transfer
-      if (paymentMethod?.startsWith('bank_transfer')) {
+      if (paymentMethod?.startsWith("bank_transfer")) {
         if (!selectedBankAccount) {
           alert(t("Please select a bank account first."));
           setIsUploading(false);
@@ -310,17 +316,18 @@ export function PaymentPage() {
       formData.append("slipFile", file);
 
       // Detailed logging for debugging
-      console.group('Payment Slip Upload');
-      console.log('Order ID:', orderId);
-      console.log('Store Name:', storeName);
-      console.log('Payment Type:', paymentTypeToSend);
-      console.log('Payment Method:', 
-        paymentMethod?.startsWith('bank_transfer') 
-          ? selectedBankAccount?.id 
-          : 'promptpay'
+      console.group("Payment Slip Upload");
+      console.log("Order ID:", orderId);
+      console.log("Store Name:", storeName);
+      console.log("Payment Type:", paymentTypeToSend);
+      console.log(
+        "Payment Method:",
+        paymentMethod?.startsWith("bank_transfer")
+          ? selectedBankAccount?.id
+          : "promptpay"
       );
-      console.log('File Type:', file.type);
-      console.log('File Size:', file.size);
+      console.log("File Type:", file.type);
+      console.log("File Size:", file.size);
       console.groupEnd();
 
       // Call the Edge Function
@@ -339,29 +346,28 @@ export function PaymentPage() {
 
       if (!response.ok) {
         // More detailed error handling
-        const errorMessage = result.error 
-          || result.details 
-          || t("Failed to upload payment slip");
-        
-        console.error('Upload Error:', result);
+        const errorMessage =
+          result.error || result.details || t("Failed to upload payment slip");
+
+        console.error("Upload Error:", result);
         alert(errorMessage);
         throw new Error(errorMessage);
       }
 
       // Success handling
       setSlipImage(result.data.slip_url);
-      
+
       // Optional: Show success toast or message
       alert(t("Payment slip uploaded successfully"));
     } catch (error: any) {
       console.error("Comprehensive upload error:", error);
-      
+
       // Differentiated error handling
-      if (error.message.includes('Missing required fields')) {
+      if (error.message.includes("Missing required fields")) {
         alert(t("Please provide all required information"));
-      } else if (error.message.includes('Order not found')) {
+      } else if (error.message.includes("Order not found")) {
         alert(t("Order details are invalid. Please try again."));
-      } else if (error.message.includes('Order is not in pending status')) {
+      } else if (error.message.includes("Order is not in pending status")) {
         alert(t("This order cannot accept payment at the moment."));
       } else {
         alert(t("An unexpected error occurred during upload"));
@@ -391,18 +397,25 @@ export function PaymentPage() {
       <div className="p-4 space-y-4">
         <h2 className="text-lg font-semibold">{t("Select Bank Account")}</h2>
         {paymentOptions.bank_transfer.accounts.map((account: any) => (
-          <div 
-            key={account.id} 
+          <div
+            key={account.id}
             className={cn(
-              "flex items-center p-3 border rounded-lg cursor-pointer",
-              selectedBankAccount?.id === account.id ? "border-primary bg-primary/10" : "border-gray-200"
+              "flex bg-darkgray items-center p-4 border rounded-lg cursor-pointer gap-2.5",
+              selectedBankAccount?.id === account.id ? "border-mainbutton" : ""
             )}
             onClick={() => handleBankAccountSelect(account)}
           >
+            <div
+              className={cn("bg-white w-4 h-4 rounded-full", {
+                "bg-mainbutton border-2 border-black outline outline-1 outline-mainbutton":
+                  selectedBankAccount?.id === account.id,
+              })}
+            />
             <div className="flex-grow">
               <div className="font-medium">{account.bank.bank_name}</div>
               <div className="text-sm text-muted-foreground">
-                {t("Account")}: {formatBankAccountNumber(account.account_number)}
+                {t("Account")}:{" "}
+                {formatBankAccountNumber(account.account_number)}
               </div>
               <div className="text-xs text-muted-foreground">
                 {account.account_name}
@@ -417,11 +430,14 @@ export function PaymentPage() {
   const formatBankAccountNumber = (accountNumber: string) => {
     // For 10-digit Bangkok Bank account, use a specific format
     if (accountNumber.length === 10) {
-      return `${accountNumber.slice(0, 3)} ${accountNumber.slice(3, 7)} ${accountNumber.slice(7)}`;
+      return `${accountNumber.slice(0, 3)} ${accountNumber.slice(
+        3,
+        7
+      )} ${accountNumber.slice(7)}`;
     }
     // Fallback to groups of 4 for other account numbers
     const groups = accountNumber.match(/.{1,4}/g) || [accountNumber];
-    return groups.join(' ');
+    return groups.join(" ");
   };
 
   // If loading, show loading spinner
@@ -460,13 +476,15 @@ export function PaymentPage() {
 
   return (
     <div className="bg-background">
-      <PageHeader title={
-        paymentMethod === 'promptpay' 
-          ? t("PromptPay QR") 
-          : paymentMethod?.startsWith('bank_transfer') 
-            ? t("Bank Transfer") 
+      <PageHeader
+        title={
+          paymentMethod === "promptpay"
+            ? t("PromptPay QR")
+            : paymentMethod?.startsWith("bank_transfer")
+            ? t("Bank Transfer")
             : t("Payment")
-      } />
+        }
+      />
 
       <div className="pt-14 pb-[120px]">
         {/* Payment Method Timer and Total */}
@@ -587,7 +605,7 @@ export function PaymentPage() {
         </motion.div>
 
         {/* Conditionally render only the selected payment method */}
-        {paymentMethod === 'promptpay' && (
+        {paymentMethod === "promptpay" && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -663,37 +681,37 @@ export function PaymentPage() {
         )}
 
         {/* Bank Transfer Section */}
-        {paymentMethod?.startsWith('bank_transfer') && (
+        {paymentMethod?.startsWith("bank_transfer") && (
           <>
             {renderBankTransferSelection()}
-            
+
             {selectedBankAccount && (
               <div className="p-4">
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 space-y-4">
+                <div className="bg-darkgray rounded-xl p-5 space-y-4">
                   <div className="flex flex-col">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    <h3 className="text-xl font-semibold mb-2">
                       {selectedBankAccount.bank.bank_name}
                     </h3>
                     <div className="space-y-1">
-                      <div className="text-sm text-gray-600">
-                        {t("Account")}
-                      </div>
-                      <div className="text-base font-medium text-gray-900 tracking-wider">
-                        {formatBankAccountNumber(selectedBankAccount.account_number)}
+                      <div className="text-sm">{t("Account")}</div>
+                      <div className="text-base font-medium tracking-wider">
+                        {formatBankAccountNumber(
+                          selectedBankAccount.account_number
+                        )}
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border-t border-gray-200 pt-4 space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">{t("Account Name")}</span>
-                      <span className="text-sm font-semibold text-gray-800">
+                      <span className="text-sm">{t("Account Name")}</span>
+                      <span className="text-sm font-semibold">
                         {selectedBankAccount.account_name}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">{t("Branch")}</span>
-                      <span className="text-sm font-semibold text-gray-800">
+                      <span className="text-sm">{t("Branch")}</span>
+                      <span className="text-sm font-semibold">
                         {selectedBankAccount.branch}
                       </span>
                     </div>
@@ -706,58 +724,89 @@ export function PaymentPage() {
 
         {/* File Upload Section */}
         <div className="p-4">
-          <div className="border-2 border-dashed rounded-lg p-6 text-center">
-            <input 
-              type="file" 
-              accept="image/*" 
-              onChange={handleFileUpload} 
-              className="hidden" 
-              id="payment-slip-upload" 
-              disabled={isUploading || (!selectedBankAccount && paymentMethod?.startsWith('bank_transfer'))}
-            />
-            <label 
-              htmlFor="payment-slip-upload" 
-              className={cn(
-                "cursor-pointer flex flex-col items-center",
-                (isUploading || (!selectedBankAccount && paymentMethod?.startsWith('bank_transfer'))) && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              <Upload className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-sm text-muted-foreground">
-                {t("Upload Payment Slip")}
-              </p>
-              <p className="text-xs text-secondary-foreground mt-2">
-                {t("JPG, PNG, or PDF (max 5MB)")}
-              </p>
-            </label>
-          </div>
+          <div className="bg-darkgray p-5 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">
+              {t("Upload Payment Slip")}
+            </h3>
 
-          {/* Uploaded Slip Preview */}
-          {slipImage && (
-            <div className="mt-4 relative">
-              <img 
-                src={slipImage} 
-                alt="Payment Slip" 
-                className="w-full rounded-lg" 
-              />
-              <button 
-                onClick={() => setSlipImage(null)} 
-                className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-full"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+            {/* Uploaded Slip Preview */}
+            {slipImage ? (
+              <div className="mt-4 relative">
+                <img
+                  src={slipImage}
+                  alt="Payment Slip"
+                  className="w-full rounded-lg"
+                />
+                <button
+                  onClick={() => setSlipImage(null)}
+                  className="absolute top-2 right-2 bg-darkgray/50 text-white p-1 rounded-full"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed rounded-lg p-6 text-center border-muted-foreground/25">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  id="payment-slip-upload"
+                  disabled={
+                    isUploading ||
+                    (!selectedBankAccount &&
+                      paymentMethod?.startsWith("bank_transfer"))
+                  }
+                />
+                <label
+                  htmlFor="payment-slip-upload"
+                  className={cn(
+                    "cursor-pointer flex flex-col items-center",
+                    (isUploading ||
+                      (!selectedBankAccount &&
+                        paymentMethod?.startsWith("bank_transfer"))) &&
+                      "opacity-50 cursor-not-allowed"
+                  )}
+                >
+                  <Upload className="w-12 h-12 text-muted-foreground mb-4" />
+                  <p className="text-sm text-muted-foreground">
+                    {t("Upload Payment Slip")}
+                  </p>
+                  <p className="text-xs text-secondary-foreground mt-2">
+                    {t("JPG, PNG, or PDF (max 5MB)")}
+                  </p>
+                </label>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Confirm Payment Button */}
-        <div className="p-4">
-          <Button 
-            className="w-full" 
+        <div className="fixed bottom-0 bg-background w-full p-5 left-0 flex flex-col items-center max-width-mobile left-[50%] -translate-x-[50%]">
+          <Button
+            className="main-btn w-full"
             disabled={!slipImage || isConfirming}
             onClick={handleConfirmPayment}
           >
-            {isConfirming ? t("Confirming...") : t("Confirm Payment")}
+            {isConfirming ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-background border-t-transparent mr-2" />
+                {t("Confirming")}
+              </>
+            ) : (
+              <>
+                {t("Confirm Payment")}
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </>
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-fit text-muted-foreground"
+            onClick={handlePayLater}
+          >
+            <Clock className="w-4 h-4 mr-2" />
+            {t("Pay Later")}
           </Button>
         </div>
       </div>
