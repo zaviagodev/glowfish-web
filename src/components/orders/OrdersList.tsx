@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Package2 } from "lucide-react";
 import { OrderCard } from "./OrderCard";
 import OrdersSkeleton from "./OrdersSkeleton";
+import NoItemsComp from "../ui/no-items";
 
 interface OrdersListProps {
   orders: any[];
@@ -23,19 +24,14 @@ export function OrdersList({
 
   if (orders.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        className="flex flex-col items-center justify-center py-12 px-4"
-      >
-        <Package2 className="w-16 h-16 text-muted-foreground/50 mb-4" />
-        <p className="text-muted-foreground text-center">
-          {searchQuery
-            ? t("No orders found matching your search")
-            : t("No orders found")}
-        </p>
-      </motion.div>
+      <NoItemsComp
+        icon={Package2}
+        text={
+          searchQuery
+            ? "No orders found matching your search"
+            : "No orders found"
+        }
+      />
     );
   }
 

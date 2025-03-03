@@ -8,6 +8,7 @@ import { Ticket } from "../components/Ticket";
 import { useTickets } from "../hooks/useTickets";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import Pagination from "@/components/pagination/Pagination";
+import NoItemsComp from "@/components/ui/no-items";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -106,18 +107,14 @@ export default function TicketsPage() {
 
           <div className="mt-4">
             {currentTickets.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center justify-center py-12 px-5"
-              >
-                <TicketIcon className="w-12 h-12 text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground text-center">
-                  {activeTab === "upcoming"
-                    ? t("No upcoming events")
-                    : t("No ended events")}
-                </p>
-              </motion.div>
+              <NoItemsComp
+                icon={TicketIcon}
+                text={
+                  activeTab === "upcoming"
+                    ? "No upcoming events"
+                    : "No ended events"
+                }
+              />
             ) : (
               <>
                 <div className="px-5 space-y-4">
@@ -132,14 +129,20 @@ export default function TicketsPage() {
                         ticket={{
                           id: customerEvent.order_id,
                           eventName: customerEvent.event?.name || "",
-                          location: customerEvent.event?.venue_name || "To be determined",
+                          location:
+                            customerEvent.event?.venue_name ||
+                            "To be determined",
                           date: customerEvent.event?.start_datetime || "",
                           endDate: customerEvent.event?.end_datetime || "",
-                          image: customerEvent.event?.product?.images?.[0]?.url || "",
+                          image:
+                            customerEvent.event?.product?.images?.[0]?.url ||
+                            "",
                           status: activeTab,
                           used: customerEvent.tickets?.[0]?.status === "used",
                           ticketNumber: customerEvent.tickets?.[0]?.code || "",
-                          seat: customerEvent.tickets?.[0]?.metadata?.attendeeName || "General Admission",
+                          seat:
+                            customerEvent.tickets?.[0]?.metadata
+                              ?.attendeeName || "General Admission",
                           groupSize: 1,
                         }}
                       />
@@ -163,4 +166,4 @@ export default function TicketsPage() {
       </div>
     </div>
   );
-} 
+}

@@ -5,6 +5,8 @@ import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
 import { AnimatedCard } from "../shared/AnimatedCard";
 import { formattedDateAndTime } from "@/lib/utils";
+import { StickyNote } from "lucide-react";
+import NoItemsComp from "../ui/no-items";
 
 interface EventSectionProps {
   list: EventDataProps[];
@@ -14,11 +16,10 @@ interface EventSectionProps {
 
 const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
   const t = useTranslate();
-
   return (
     <section className="flex flex-col gap-4 mt-[30px] px-5">
       <div className="flex items-center justify-between">
-        <h3 className="page-title">{title}</h3>
+        <h3 className="text-xl font-semibold">{title}</h3>
         {seeAllLink && (
           <Link
             to={seeAllLink}
@@ -28,43 +29,52 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
           </Link>
         )}
       </div>
-
       <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-5 px-5 scroll-smooth">
-        {list
-          .filter((item) => isPast(item.end_datetime as string) === false)
-          .map((item) => {
-            const formattedTime =
-              item.start_datetime &&
-              item.end_datetime &&
-              `${format(
-                new Date(item.start_datetime),
-                formattedDateAndTime
-              )} - ${format(
-                new Date(item.end_datetime),
-                formattedDateAndTime
-              )}`;
-            return (
-              <motion.div
-                key={item.title}
-                className="flex-shrink-0 w-[360px]"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <AnimatedCard
-                  id={item.id}
-                  image={item.image}
-                  title={item.title}
-                  price={item.price}
-                  compareAtPrice={item.compare_at_price}
-                  location={item.location}
-                  product_variants={item.product_variants}
-                  date={formattedTime}
-                  end_datetime={item.end_datetime}
-                />
-              </motion.div>
-            );
-          })}
+        {list.length > 0 ? (
+          <>
+            {list
+              .filter((item) => isPast(item.end_datetime as string) === false)
+              .map((item) => {
+                const formattedTime =
+                  item.start_datetime &&
+                  item.end_datetime &&
+                  `${format(
+                    new Date(item.start_datetime),
+                    formattedDateAndTime
+                  )} - ${format(
+                    new Date(item.end_datetime),
+                    formattedDateAndTime
+                  )}`;
+                return (
+                  <motion.div
+                    key={item.title}
+                    className="flex-shrink-0 w-[360px]"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <AnimatedCard
+                      id={item.id}
+                      image={item.image}
+                      title={item.title}
+                      price={item.price}
+                      compareAtPrice={item.compare_at_price}
+                      location={item.location}
+                      product_variants={item.product_variants}
+                      date={formattedTime}
+                      end_datetime={item.end_datetime}
+                    />
+                  </motion.div>
+                );
+              })}
+          </>
+        ) : (
+          <NoItemsComp
+            icon={StickyNote}
+            text="Wait and get ready for fun"
+            className="w-full"
+          />
+        )}
       </div>
     </section>
   );
