@@ -37,7 +37,7 @@ jobs:
           source: .env.compose
           target: /root/glowfish-web
           overwrite: true
-          timeout: 600
+          timeout: 600s
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.2.1
