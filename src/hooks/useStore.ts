@@ -1,5 +1,6 @@
-import { create } from 'zustand';
-import { User } from '@supabase/supabase-js';
+import Cookies from "js-cookie";
+import { create } from "zustand";
+import { User } from "@supabase/supabase-js";
 
 interface StoreState {
   storeName: string;
@@ -9,13 +10,14 @@ interface StoreState {
 }
 
 export const useStore = create<StoreState>((set) => ({
-  storeName: import.meta.env.VITE_DEFAULT_STORE || localStorage.getItem('store') || '',
+  storeName: import.meta.env.VITE_DEFAULT_STORE || Cookies.get("store_name") ||
+    "",
   user: null,
   updateStoreName: (newStoreName) => {
     if (!import.meta.env.VITE_DEFAULT_STORE) {
-      localStorage.setItem('store', newStoreName);
+      Cookies.set("store_name", newStoreName);
       set({ storeName: newStoreName });
     }
   },
   setUser: (user) => set({ user }),
-})); 
+}));

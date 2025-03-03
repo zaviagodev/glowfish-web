@@ -1,5 +1,6 @@
 import { Authenticated, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
+import Cookies from "js-cookie";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { useTranslation } from "react-i18next";
 import routerBindings, {
@@ -61,7 +62,7 @@ function App() {
     useEffect(() => {
       const store = searchParams.get("store");
       if (store) {
-        localStorage.setItem("store", store);
+        Cookies.set("store_name", store);
       }
     }, [searchParams]);
 

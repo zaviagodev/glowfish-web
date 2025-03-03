@@ -11,7 +11,7 @@ export const LINE_USER_KEY = "line-user";
 // Line auth configuration
 const LINE_CONFIG = {
   clientId: import.meta.env.VITE_LINE_CLIENT_ID,
-  redirectUri: `${window.location.origin}/line-callback`,
+  redirectUri: `${window.location.origin}/line-callback?original_domain=${encodeURIComponent(window.location.hostname)}`,
   scope: "profile openid email" 
 };
 
