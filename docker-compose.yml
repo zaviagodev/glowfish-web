@@ -44,7 +44,7 @@ services:
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
-      - caddy_config:/config
+      - ./caddy-config:/config
     command: ["caddy", "run", "--resume", "--config", "/etc/caddy/Caddyfile"]
     networks:
       - app-network
@@ -62,4 +62,3 @@ networks:
 
 volumes:
   caddy_data:
-  caddy_config:
