@@ -253,7 +253,7 @@
 
 /* Mobile container styles */
 .mobile-container {
-  max-width: 600px;
+  max-width: 500px;
   width: 100%;
   margin: 0 auto;
   padding: 0;
@@ -356,7 +356,11 @@
   }
 
   .main-btn {
-    @apply inline-flex items-center justify-center ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 !bg-mainbutton !rounded-full text-primary-foreground px-4 py-2
+    @apply inline-flex items-center justify-center ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 !bg-mainbutton !rounded-full text-primary-foreground px-4 py-2 !text-base !h-12 !font-semibold
+  }
+
+  .secondary-btn {
+    @apply !bg-darkgray text-white !rounded-full !h-12 !font-semibold !text-base
   }
 
   .main-container {
@@ -372,7 +376,7 @@
   }
 
   .btn-footer {
-    @apply fixed bottom-0 w-full max-w-[600px] p-5 left-[50%] translate-x-[-50%] bg-background
+    @apply fixed bottom-0 w-full max-w-[500px] p-5 left-[50%] translate-x-[-50%] bg-background
   }
 
   .page-title {
@@ -497,10 +501,6 @@
   scrollbar-width:none;
 }
 
-.font-sfpro-rounded {
-  font-family:inherit
-}
-
 /* Hide scrollbar for Chrome, Safari and Opera */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
@@ -513,10 +513,49 @@
 }
 
 .member-card {
-  background:radial-gradient(100% 100% at 0% 0%, rgb(0 0 0) 0%, rgb(42 42 42) 100%) padding-box, linear-gradient(169.15deg, rgba(255, 255, 255, 0.9) 0%, rgba(238, 237, 237, 0.45) 35.49%) border-box;
+  background: radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.35) 0%, rgba(171, 171, 171, 0) 100%);
   border-radius:20px;
+  box-shadow: 10px 10px 15px 0 #FFFFFF1A inset, -5px -5px 250px 0 #FFFFFF05 inset, 0 -4px 10px 0 #8886FF1F;
+  background-attachment:local;
+}
+
+.member-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(169.15deg, rgba(255, 255, 255, 0.9) 0%, rgba(238, 237, 237, 0.45) 35.49%);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude; 
+  border-radius: 20px;
+  border:1px solid transparent;
+  border-left:none;
 }
 
 .text-title2 {
   @apply text-base
+}
+
+.max-width-mobile {
+  @apply max-w-[500px] mx-auto
+}
+
+/* Style date picker */
+
+.react-datepicker__day-names {
+  @apply bg-darkgray
+}
+
+.react-datepicker-popper[data-placement^=top] .react-datepicker__triangle {
+  @apply !text-darkgray !fill-darkgray !stroke-darkgray
+}
+
+.react-datepicker__day--selected {
+  @apply !bg-gray-700
+}
+
+.react-datepicker__day--keyboard-selected {
+  @apply !bg-gray-500
 }

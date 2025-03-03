@@ -32,6 +32,9 @@ export interface Customer {
   created_at: string;
   updated_at: string;
   addresses?: Address[];
+  avatar_url?: string;
+  date_of_birth?: string;
+  company?: string;
 }
 
 export const CustomerService = {

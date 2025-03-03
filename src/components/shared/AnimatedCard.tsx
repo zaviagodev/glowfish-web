@@ -1,27 +1,12 @@
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Tag } from "lucide-react";
+import { BookImage, Calendar, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { ProductVariant } from "@/type/type";
-
-interface AnimatedCardProps {
-  id: string | number;
-  image: string;
-  title: string;
-  description: string;
-  location?: string;
-  date?: string;
-  price?: string | number;
-  compareAtPrice?: string | number;
-  variant_id?: string;
-  product_variants?: ProductVariant[];
-  points?: string | number;
-  type?: "small" | "event";
-  validDate?: string;
-  isSelected?: boolean;
-  onClick?: () => void;
-}
+import { AnimatedCardProps } from "@/type/type 2";
+import GlowfishIcon from "../icons/GlowfishIcon";
+import { Button } from "../ui/button";
+import { isPast } from "date-fns";
 
 const springConfig = {
   type: "spring",
@@ -45,10 +30,12 @@ export function AnimatedCard({
   type,
   validDate,
   isSelected = false,
+  gallery_link,
+  imageClassName,
   onClick,
+  end_datetime,
 }: AnimatedCardProps) {
   const t = useTranslate();
-
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
   >(variant_id);
@@ -81,13 +68,16 @@ export function AnimatedCard({
     return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
   };
 
+  const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
+
   return (
     <motion.div
       layoutId={`card-${id}`}
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-lg cursor-pointer w-full bg-card h-full border border-input",
+        "relative overflow-hidden rounded-2xl cursor-pointer w-full h-full border border-input",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
+        { "!opacity-60": isEventEnded },
         type === "event" && "flex h-fit"
       )}
       transition={springConfig}
@@ -96,18 +86,35 @@ export function AnimatedCard({
         layoutId={`image-container-${id}`}
         className={cn(
           "relative overflow-hidden",
-          type === "small" ? "h-[32vw] w-full" : "h-[50vw] w-full",
-          type === "event" && "w-[125px] min-w-[125px]"
+          type === "small"
+            ? "h-[32vw] w-full"
+            : "max-h-[300px] h-[60vw] w-full",
+          type === "event" && "w-[125px] min-w-[125px]",
+          { "flex items-center justify-center bg-black": !image },
+          imageClassName
         )}
         transition={springConfig}
       >
-        <motion.img
-          layoutId={`image-${id}`}
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover object-top"
-          transition={springConfig}
-        />
+        {image ? (
+          <motion.img
+            layoutId={`image-${id}`}
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover object-top"
+            transition={springConfig}
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <GlowfishIcon />
+          </div>
+        )}
+
+        {/* This button is not clickable, it is used to identify that there is a gallery in this product card, but there will be a 'view gallery' button to click to another link on the single product page */}
+        {gallery_link && (
+          <Button className="main-btn w-8 max-h-8 p-0 absolute right-4 bottom-4">
+            <BookImage className="w-4 h-4" />
+          </Button>
+        )}
       </motion.div>
 
       <div
@@ -118,21 +125,28 @@ export function AnimatedCard({
       >
         <div className="space-y-2">
           <div>
-            <motion.h3
+            <motion.div
               layoutId={`title-${id}`}
-              className="font-semibold text-foreground line-clamp-1"
+              className="flex items-center justify-between"
               transition={springConfig}
             >
-              {title}
-            </motion.h3>
+              <h3 className="font-semibold text-foreground line-clamp-1 text-base">
+                {title}
+              </h3>
+              {isEventEnded && (
+                <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-[#FF3B30]/10 text-[#FF3B30]">
+                  {t("Ended")}
+                </div>
+              )}
+            </motion.div>
 
-            <motion.p
+            {/* <motion.p
               layoutId={`desc-${id}`}
               className="text-sm text-muted-foreground line-clamp-1"
               transition={springConfig}
             >
               {description}
-            </motion.p>
+            </motion.p> */}
           </div>
 
           {/* {price ? (
@@ -174,18 +188,18 @@ export function AnimatedCard({
               transition={springConfig}
             >
               <MapPin className="min-w-3.5 w-3.5 h-3.5" />
-              <span className="line-clamp-1">{location || "-"}</span>
+              <span className="line-clamp-1">
+                {location || "To be determined"}
+              </span>
             </motion.div>
-            {date && (
-              <motion.div
-                layoutId={`date-${id}`}
-                className="flex items-center gap-2 text-xs text-muted-foreground"
-                transition={springConfig}
-              >
-                <Calendar className="min-w-3.5 w-3.5 h-3.5" />
-                <span className="line-clamp-1">{date}</span>
-              </motion.div>
-            )}
+            <motion.div
+              layoutId={`date-${id}`}
+              className="flex items-center gap-2 text-xs text-muted-foreground"
+              transition={springConfig}
+            >
+              <Calendar className="min-w-3.5 w-3.5 h-3.5" />
+              <span className="line-clamp-1">{date || "To be determined"}</span>
+            </motion.div>
             {points && (
               <motion.div
                 layoutId={`points-${id}`}

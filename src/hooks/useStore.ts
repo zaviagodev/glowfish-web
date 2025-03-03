@@ -1,30 +1,21 @@
-import { useState, useEffect } from 'react';
+import { create } from 'zustand';
+import { User } from '@supabase/supabase-js';
 
-const STORE_KEY = 'store';
-const DEFAULT_STORE = import.meta.env.VITE_DEFAULT_STORE;
+interface StoreState {
+  storeName: string;
+  user: User | null;
+  updateStoreName: (newStoreName: string) => void;
+  setUser: (user: User | null) => void;
+}
 
-export const useStore = () => {
-  // Prioritize env variable, fallback to localStorage only if env is not set
-  const [storeName, setStoreName] = useState<string>(() => 
-    DEFAULT_STORE || localStorage.getItem(STORE_KEY) || ''
-  );
-
-  useEffect(() => {
-    // Only save to localStorage if env variable is not set
-    if (storeName && !DEFAULT_STORE) {
-      localStorage.setItem(STORE_KEY, storeName);
+export const useStore = create<StoreState>((set) => ({
+  storeName: import.meta.env.VITE_DEFAULT_STORE || localStorage.getItem('store') || '',
+  user: null,
+  updateStoreName: (newStoreName) => {
+    if (!import.meta.env.VITE_DEFAULT_STORE) {
+      localStorage.setItem('store', newStoreName);
+      set({ storeName: newStoreName });
     }
-  }, [storeName]);
-
-  const updateStoreName = (newStoreName: string) => {
-    // Only allow updates if env variable is not set
-    if (!DEFAULT_STORE) {
-      setStoreName(newStoreName);
-    }
-  };
-
-  return {
-    storeName,
-    updateStoreName,
-  };
-}; 
+  },
+  setUser: (user) => set({ user }),
+})); 

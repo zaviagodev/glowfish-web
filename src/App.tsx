@@ -1,4 +1,4 @@
-import { Authenticated, ErrorComponent, Refine } from "@refinedev/core";
+import { Authenticated, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { useTranslation } from "react-i18next";
@@ -16,64 +16,33 @@ import {
   Routes,
   useLocation,
   useSearchParams,
+  Navigate,
 } from "react-router-dom";
 import "./App.css";
 import { authProvider } from "./authProvider";
 import { Layout } from "./components/layout";
-import { HomeCreate, HomeEdit, HomeList, HomeShow } from "./pages/home";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "./pages/categories";
-import { ForgotPassword } from "./pages/forgotPassword";
-import { Login } from "./pages/login";
-import { Register } from "./pages/register";
-import { LineCallback } from "./pages/line-callback";
-import PhoneVerification from "./pages/phone-verification";
-import TellUsAboutYourself from "./pages/tell-us-about-yourself";
-import HistoryPage from "./pages/history";
+import { HomeList } from "@/pages/home";
+import { AuthPage } from "@/pages/auth";
+import { TellUsAboutYourself } from "@/features/auth/components/TellUsAboutYourself";
 import SettingsPage from "./pages/settings";
-import ProfileSettings from "./pages/settings/profile";
-import HowToGetPoints from "./pages/settings/how-to-get-points";
-import HowToSpendPoints from "./pages/settings/how-to-spend-points";
-import MemberLevel from "./pages/settings/member-level";
-import ScanToRedeemPage from "./pages/settings/scan-to-redeem";
-import MyRewards from "./pages/my-rewards";
 import Rewards from "./pages/rewards";
-import RewardDetail from "./pages/rewards/detail";
-import CheckoutPage from "./pages/checkout";
 import useConfig, { ConfigProvider } from "./hooks/useConfig";
 import { useEffect } from "react";
-import MyOrdersPage from "./pages/my-orders";
-import OrderDetailPage from "./pages/my-orders/detail";
-import MyItemsPage from "./pages/my-items";
-import VoucherDetail from "./pages/my-items/VoucherDetail";
+import MyOrdersPage from "./pages/orders";
 import MyPointsPage from "./pages/points";
 import TicketsPage from "./pages/tickets";
-import TicketDetails from "./pages/tickets/TicketDetails";
-import CouponsPage from "./pages/checkout/coupons";
-import PointsPage from "./pages/checkout/points";
-import VatInvoicePage from "./pages/checkout/vat-invoice";
-import PaymentPage from "./pages/checkout/payment";
-import CartPage from "./pages/cart";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider, useTheme } from "./hooks/useTheme";
 import ProductsPage from "./pages/products";
-import PromotionsPage from "./pages/promotions";
-import AddressSelection from "./pages/checkout/address";
-import ThankYouPage from "./pages/checkout/thank-you";
-import MyEventsPage from "./pages/my-events";
-import MyEventDetail from "./pages/my-events/detail";
+import { HowToGetPoints } from "@/features/points";
+import OrdersPage from "@/pages/orders";
+import ProfilePage from "@/pages/profile";
+import ScanPage from "@/pages/scan";
+import InfoPage from "@/pages/info";
+import OrderFlow from "@/pages/OrderFlow";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 function App() {
-  const { t, i18n } = useTranslation();
-  const { config } = useConfig();
-
-  useEffect(() => {
-    i18n.changeLanguage(config.default_language);
-  }, [config]);
 
   const ScrollToTop = () => {
     const { pathname } = useLocation();
@@ -85,14 +54,6 @@ function App() {
     return null;
   };
 
-  const i18nProvider = {
-    translate: (key: string, params: Record<string, string>) => t(key, params),
-    changeLocale: (lang: string) => {
-      localStorage.setItem("locale", lang);
-      return i18n.changeLanguage(lang);
-    },
-    getLocale: () => i18n.language,
-  };
 
   const StoreHandler = () => {
     const [searchParams] = useSearchParams();
@@ -107,6 +68,11 @@ function App() {
     return null;
   };
 
+  const LineCallbackRedirect = () => {
+    const { search } = useLocation();
+    return <Navigate to={`/auth/line-callback${search}`} replace />;
+  };
+
   return (
     <BrowserRouter>
       <RefineKbarProvider>
@@ -118,7 +84,6 @@ function App() {
             dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
             routerProvider={routerBindings}
             authProvider={authProvider}
-            i18nProvider={i18nProvider}
             resources={[
               {
                 name: "home",
@@ -156,105 +121,67 @@ function App() {
                   </Layout>
                 }
               >
-                <Route path="/login" element={<Login />} />
-                <Route path="/line-callback" element={<LineCallback />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route
-                  path="/phone-verification"
-                  element={<PhoneVerification />}
-                />
+                {/* Redirect from old paths to new auth paths */}
+                <Route path="/login" element={<Navigate to="/auth/login" replace />} />
+                <Route path="/line-callback" element={<LineCallbackRedirect />} />
+                <Route path="/phone-verification" element={<Navigate to="/auth/phone-verification" replace />} />
+                <Route path="/tell-us-about-yourself" element={<Navigate to="/auth/tell-us-about-yourself" replace />} />
+                
+                {/* Auth routes */}
+                <Route path="auth/*" element={<AuthPage />} />
                 <Route
                   path="/tell-us-about-yourself"
                   element={<TellUsAboutYourself />}
                 />
 
                 {/* Protected Routes */}
-                <Route
-                  element={
-                    <Authenticated
-                      key="authenticated-routes"
-                      fallback={<CatchAllNavigate to="/login" />}
-                    >
-                      <Outlet />
-                    </Authenticated>
-                  }
-                >
+                <Route element={<ProtectedRoute />}>
                   <Route index element={<HomeList />} />
-                  <Route path="/history" element={<HistoryPage />} />
-                  <Route path="/checkout" element={<CheckoutPage />} />
-                  <Route path="/promotions" element={<PromotionsPage />} />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route path="/my-rewards" element={<MyRewards />} />
+                  {/* Order Flow Routes */}
+                  <Route path="/cart" element={<OrderFlow />} />
+                  <Route path="/checkout/*" element={<OrderFlow />} />
+                  <Route path="/payment/*" element={<OrderFlow />} />
+                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/rewards">
                     <Route index element={<Rewards />} />
-                    <Route path="detail/:id" element={<RewardDetail />} />
+                    <Route path=":id" element={<Rewards />} />
                   </Route>
                   <Route path="/products" element={<ProductsPage />} />
                   <Route path="/settings">
                     <Route index element={<SettingsPage />} />
-                    <Route path="profile" element={<ProfileSettings />} />
-                    <Route
-                      path="how-to-get-points"
-                      element={<HowToGetPoints />}
-                    />
-                    <Route
-                      path="how-to-spend-points"
-                      element={<HowToSpendPoints />}
-                    />
-                    <Route path="member-level" element={<MemberLevel />} />
                     <Route path="points" element={<MyPointsPage />} />
-                    <Route path="scan-to-redeem" element={<ScanToRedeemPage />} />
+                  </Route>
+
+                  <Route path="/scan" element={<ScanPage />} />
+                  <Route path="/info">
+                    <Route index element={<InfoPage />} />
+                    <Route path="how-to-get-points" element={<InfoPage />} />
+                    <Route path="how-to-spend-points" element={<InfoPage />} />
+                    <Route path="member-level" element={<InfoPage />} />
+                  </Route>
+
+                  <Route path="/points">
+                    <Route index element={<MyPointsPage />} />
+                    <Route path="how-to-get-points" element={<HowToGetPoints />} />
                   </Route>
 
                   <Route path="/my-orders">
                     <Route index element={<MyOrdersPage />} />
-                    <Route path=":id" element={<OrderDetailPage />} />
+                    <Route path=":id" element={<MyOrdersPage />} />
                   </Route>
-                  {/* <Route path="/my-items">
-                    <Route index element={<MyItemsPage />} />
-                    <Route path=":id" element={<VoucherDetail />} />
-                  </Route> */}
-                  <Route path="/my-events">
-                    <Route index element={<MyEventsPage />} />
-                    <Route path="detail/:id" element={<MyEventDetail />} />
-                  </Route>
-                  <Route path="/checkout/coupons" element={<CouponsPage />} />
-                  <Route path="/checkout/points" element={<PointsPage />} />
-                  <Route
-                    path="/checkout/address"
-                    element={<AddressSelection />}
-                  />
-                  <Route
-                    path="/checkout/payment/:orderId"
-                    element={<PaymentPage />}
-                  />
-                  <Route
-                    path="/checkout/thank-you"
-                    element={<ThankYouPage />}
-                  />
-                  <Route
-                    path="/checkout/vat-invoice"
-                    element={<VatInvoicePage />}
-                  />
                   <Route path="/tickets" element={<TicketsPage />} />
-                  <Route path="/tickets/:id" element={<TicketDetails />} />
+                  <Route path="/tickets/:id" element={<TicketsPage />} />
 
                   <Route path="/home">
                     <Route index element={<HomeList />} />
-                    <Route path="create" element={<HomeCreate />} />
-                    <Route path="edit/:id" element={<HomeEdit />} />
-                    <Route path="show/:id" element={<HomeShow />} />
                   </Route>
-                  <Route path="/categories">
-                    <Route index element={<CategoryList />} />
-                    <Route path="create" element={<CategoryCreate />} />
-                    <Route path="edit/:id" element={<CategoryEdit />} />
-                    <Route path="show/:id" element={<CategoryShow />} />
+                  <Route path="/orders">
+                    <Route index element={<OrdersPage />} />
+                    <Route path=":id" element={<OrdersPage />} />
                   </Route>
                 </Route>
 
-                <Route path="*" element={<ErrorComponent />} />
+                <Route path="*" element={<div>404</div>} />
               </Route>
             </Routes>
 
