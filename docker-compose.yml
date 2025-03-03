@@ -5,6 +5,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - VITE_LINE_CLIENT_ID=${VITE_LINE_CLIENT_ID}
+        - VITE_ADMIN_URL=${VITE_ADMIN_URL}
+        - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+        - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    environment:
+      - VITE_LINE_CLIENT_ID=${VITE_LINE_CLIENT_ID}
+      - VITE_ADMIN_URL=${VITE_ADMIN_URL}
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
     env_file:
       - .env.compose
     volumes:

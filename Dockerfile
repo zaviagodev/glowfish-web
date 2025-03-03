@@ -16,11 +16,20 @@ RUN \
 
 FROM base as builder
 
-ENV NODE_ENV production
-
 COPY --from=deps /app/refine/node_modules ./node_modules
-
 COPY . .
+
+# Add build-time variables
+ARG VITE_LINE_CLIENT_ID
+ARG VITE_ADMIN_URL
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
+
+# Set them as environment variables
+ENV VITE_LINE_CLIENT_ID=$VITE_LINE_CLIENT_ID
+ENV VITE_ADMIN_URL=$VITE_ADMIN_URL
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 
 RUN npm run build
 
@@ -34,4 +43,10 @@ COPY --from=builder /app/refine/dist ./
 
 USER refine
 
-CMD ["serve"]
+# Pass runtime environment variables
+ENV VITE_LINE_CLIENT_ID=$VITE_LINE_CLIENT_ID
+ENV VITE_ADMIN_URL=$VITE_ADMIN_URL
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+
+CMD ["serve", "-s", ".", "-l", "3000"]
