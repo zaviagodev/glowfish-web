@@ -20,7 +20,7 @@ store.zaviago.com {
     @line_callback path /line/callback
     handle @line_callback {
         # Extract query parameters using placeholders
-        redir https://{query.original_domain}/auth/line/callback?code={query.code}&state={query.state} 302 {
+        redir https://{query.original_domain}/auth/line-callback?code={query.code}&state={query.state} 302 {
             if {query.original_domain} not ""
         }
     }
