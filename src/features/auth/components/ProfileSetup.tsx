@@ -4,8 +4,7 @@ import { ProfileForm } from "./ProfileForm";
 
 export const ProfileSetup = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const returnTo = location.state?.returnTo || "/auth/tell-us-about-yourself";
+  const returnTo = "/auth/tell-us-about-yourself";
 
   return (
     <div className="max-width-mobile pt-14">
