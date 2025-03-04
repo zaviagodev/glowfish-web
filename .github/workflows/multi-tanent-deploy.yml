@@ -3,7 +3,7 @@ name: Deploy to Multi-Tenant (store.zaviago.com)
 on:
   push:
     branches:
-      - feat/multi-tanent
+      - main
 
 jobs:
   deploy:
