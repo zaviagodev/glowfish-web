@@ -253,8 +253,8 @@ export function PaymentPage() {
     });
   };
 
-  const handleCopyAccountNum = () => {
-    navigator.clipboard.writeText(paymentOptions?.promptpay?.id);
+  const handleCopyAccountNum = (id: string) => {
+    navigator.clipboard.writeText(id);
     setIsBankNumCopied(true);
     setTimeout(() => setIsBankNumCopied(false), 1500);
   };
@@ -429,14 +429,14 @@ export function PaymentPage() {
 
   const formatBankAccountNumber = (accountNumber: string) => {
     // For 10-digit Bangkok Bank account, use a specific format
-    if (accountNumber.length === 10) {
+    if (accountNumber?.length === 10) {
       return `${accountNumber.slice(0, 3)} ${accountNumber.slice(
         3,
         7
       )} ${accountNumber.slice(7)}`;
     }
     // Fallback to groups of 4 for other account numbers
-    const groups = accountNumber.match(/.{1,4}/g) || [accountNumber];
+    const groups = accountNumber?.match(/.{1,4}/g) || [accountNumber];
     return groups.join(" ");
   };
 
@@ -470,7 +470,25 @@ export function PaymentPage() {
       title: t("Account Number"),
       value: paymentOptions?.promptpay?.id || "-",
       isCopied: isBankNumCopied,
-      onCopy: handleCopyAccountNum,
+      onCopy: () => handleCopyAccountNum(paymentOptions?.promptpay?.id),
+    },
+  ];
+
+  const bankTransferInfo = [
+    {
+      title: t("Account"),
+      value: selectedBankAccount?.account_name || "-",
+    },
+    {
+      title: t("Account Number"),
+      value:
+        formatBankAccountNumber(selectedBankAccount?.account_number) || "-",
+      isCopied: isBankNumCopied,
+      onCopy: () => handleCopyAccountNum(selectedBankAccount?.account_number),
+    },
+    {
+      title: t("Branch"),
+      value: selectedBankAccount?.branch || "-",
     },
   ];
 
@@ -612,7 +630,8 @@ export function PaymentPage() {
             transition={{ delay: 0.5 }}
             className="px-6 pt-8 text-center"
           >
-            <div className="space-y-4">
+            <h3 className="text-lg font-semibold mb-4 text-left">Promptpay</h3>
+            <div className="space-y-3">
               {/* PromptPay Info */}
               {promptPayInfo.map((info) => (
                 <div key={info.title}>
@@ -623,7 +642,7 @@ export function PaymentPage() {
                     <div className="text-sm flex items-center gap-2">
                       <div className="font-medium">{info.value || "-"}</div>
 
-                      {info.onCopy && (
+                      {info.onCopy && info.value && (
                         <Button
                           variant="ghost"
                           size="icon"
@@ -687,34 +706,43 @@ export function PaymentPage() {
 
             {selectedBankAccount && (
               <div className="p-4">
-                <div className="bg-darkgray rounded-xl p-5 space-y-4">
-                  <div className="flex flex-col">
-                    <h3 className="text-xl font-semibold mb-2">
-                      {selectedBankAccount.bank.bank_name}
-                    </h3>
-                    <div className="space-y-1">
-                      <div className="text-sm">{t("Account")}</div>
-                      <div className="text-base font-medium tracking-wider">
-                        {formatBankAccountNumber(
-                          selectedBankAccount.account_number
-                        )}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">
+                    {selectedBankAccount.bank.bank_name}
+                  </h3>
+                  <div className="space-y-3">
+                    {bankTransferInfo.map((info) => (
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground text-sm">
+                          {info.title}
+                        </span>
+                        <span className="text-sm font-medium flex items-center gap-2">
+                          {info.value}
+                          {info.onCopy && info.value && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={info.onCopy}
+                              className="relative !bg-transparent h-fit w-fit"
+                            >
+                              <AnimatePresence>
+                                {info.isCopied && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    exit={{ scale: 0 }}
+                                    className="absolute -top-8 px-2 py-1 bg-green-500 text-white text-xs whitespace-nowrap rounded-full"
+                                  >
+                                    {t("Copied!")}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                              <Copy className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </span>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-200 pt-4 space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">{t("Account Name")}</span>
-                      <span className="text-sm font-semibold">
-                        {selectedBankAccount.account_name}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">{t("Branch")}</span>
-                      <span className="text-sm font-semibold">
-                        {selectedBankAccount.branch}
-                      </span>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>

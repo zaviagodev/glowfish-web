@@ -160,7 +160,7 @@ export function VariantDrawer({
                         key={value}
                         // variant={isSelected ? "default" : "outline"}
                         className={cn(
-                          "!h-9 px-4 rounded-lg !text-sm font-semibold",
+                          "!h-9 px-4 rounded-lg !text-sm font-semibold relative",
                           !isSelected
                             ? "bg-darkgray border-input text-primary"
                             : "main-btn !rounded-lg",
@@ -169,6 +169,10 @@ export function VariantDrawer({
                         disabled={!isAvailable}
                         onClick={() => handleOptionSelect(option.name, value)}
                       >
+                        {/* TODO: set the condition of this red circle if there is a sales_price */}
+                        <div className="absolute -top-2 -right-2 bg-[#DE473C] text-white rounded-full px-1.5 w-fit text-[10px]">
+                          Sale
+                        </div>
                         {value}
                       </Button>
                     );
@@ -183,27 +187,13 @@ export function VariantDrawer({
           {/* Price Display */}
           {currentVariant && (
             <div className="flex flex-col items-center">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">
-                  ฿{currentVariant.price.toLocaleString()}
-                </span>
-                {/* {currentVariant.compare_at_price && (
-                  <>
-                    <span className="text-sm line-through text-muted-foreground">
-                      ฿{currentVariant.compare_at_price.toLocaleString()}
-                    </span>
-                    <span className="text-xs font-medium px-2 py-1 rounded-full bg-mainbutton rounded-full/10 text-primary-foreground">
-                      {Math.round(
-                        (1 -
-                          currentVariant.price /
-                            currentVariant.compare_at_price) *
-                          100
-                      )}
-                      % OFF
-                    </span>
-                  </>
-                )} */}
-              </div>
+              {/* TODO: set the condition of sales_price dynamically */}
+              <span className="text-sm text-muted-foreground line-through">
+                {currentVariant.sales_price || "฿0"}
+              </span>
+              <span className="text-2xl font-bold">
+                ฿{currentVariant.price.toLocaleString()}
+              </span>
 
               {track_quantity ? (
                 currentVariant.quantity > 0 ? (

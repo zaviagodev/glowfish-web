@@ -26,6 +26,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
 import { Product } from "@/features/home/services/productService";
 import { cn, formattedDateAndTime } from "@/lib/utils";
+import NoItemsComp from "@/components/ui/no-items";
 
 interface Category {
   id: string;
@@ -219,19 +220,15 @@ export default function ProductsPage() {
                 ))}
               </div>
             ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="flex flex-col items-center justify-center py-12 px-4"
-              >
-                <Package2 className="w-16 h-16 text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground text-center">
-                  {searchQuery
-                    ? t("No products found matching your search")
-                    : t("No products found")}
-                </p>
-              </motion.div>
+              <NoItemsComp
+                icon={Package2}
+                className="py-12"
+                text={
+                  searchQuery
+                    ? "No products found matching your search"
+                    : "No products found"
+                }
+              />
             )}
           </>
         )}
@@ -239,7 +236,7 @@ export default function ProductsPage() {
 
       {/* Filter Drawer */}
       <Sheet open={showFilterDrawer} onOpenChange={setShowFilterDrawer}>
-        <SheetContent side="bottom" className="h-[70%] p-0">
+        <SheetContent side="bottom" className="h-[70%] p-0 max-width-mobile">
           <SheetHeader className="px-5 pb-3 pt-8 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Filter Products")}
@@ -323,7 +320,7 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          <div className="p-5 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0">
+          <div className="p-5 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0 max-width-mobile">
             <Button
               className="w-full main-btn"
               onClick={() => setShowFilterDrawer(false)}

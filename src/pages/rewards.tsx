@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,6 +23,7 @@ import {
   Ticket,
   AlertCircle,
   ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 import Barcode from "react-barcode";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -37,6 +38,7 @@ import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import cardReward from "@/img/my-card.svg";
 import RewardAccordions from "@/features/rewards/components/RewardAccordions";
 import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
+import NoItemsComp from "@/components/ui/no-items";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -181,7 +183,16 @@ const RewardsPage = () => {
   if (id && selectedReward) {
     return (
       <div className="pb-10">
-        <PageHeader className="bg-transparent border-0" />
+        <div className="fixed inset-0 overflow-y-auto max-width-mobile">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
+            onClick={() => navigate(-1)}
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+        </div>
         {selectedReward.product_images?.[0]?.url ? (
           <img
             src={selectedReward.product_images[0].url}
@@ -199,24 +210,26 @@ const RewardsPage = () => {
           </div>
 
           <div className="grid grid-cols-2">
-            <div className="flex flex-col gap-1 pr-7 border-r border-r-[#FFFFFF1A]">
+            <div className="flex flex-col gap-1">
+              {" "}
+              {/* pr-7 border-r border-r-[#FFFFFF1A] */}
               <p className="text-sm text-muted-foreground">
                 {t("Required Points")}
               </p>
-              <h2 className="text-orangefocus text-xl font-semibold">
+              <h2 className="text-orangefocus text-2xl font-semibold">
                 {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
                 {t("points")}
               </h2>
             </div>
-            <div className="flex flex-col gap-1 pl-7">
+            {/* <div className="flex flex-col gap-1 pl-7">
               <p className="text-sm text-muted-foreground">
                 {t("Your Points")}
               </p>
-              <h2 className="page-title">
+              <h2 className="text-xl font-semibold">
                 {customerData?.loyalty_points?.toLocaleString()}{" "}
                 {customerData?.loyalty_points === 1 ? "point" : "points"}
               </h2>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex flex-col gap-4">
@@ -256,7 +269,7 @@ const RewardsPage = () => {
               <Gift />
               {isProcessing ? t("Processing...") : t("Redeem Reward")}
             </Button>
-            <DialogContent className="w-[90%] rounded-lg">
+            <DialogContent className="w-[90%] max-width-mobile rounded-lg">
               <DialogHeader>
                 <DialogTitle>{t("Confirm Redemption")}</DialogTitle>
                 <DialogDescription>
@@ -385,7 +398,6 @@ const RewardsPage = () => {
             </h3>
           </div>
           <div className="absolute z-[99] right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
-            {/* <GlowfishIcon className="w-[72px]" />| Glowfish */}
             <GoodAfterWorkCard />
           </div>
         </div>
@@ -406,7 +418,7 @@ const RewardsPage = () => {
         </div>
 
         <div className="px-5 pb-7">
-          <h3 className="page-title mb-4">{t("Rewards")}</h3>
+          <h3 className="text-xl font-semibold mb-4">{t("Rewards")}</h3>
           {hasRewards ? (
             <div className="grid grid-cols-2 gap-4">
               {rewardEvents.map((reward) => (
@@ -419,7 +431,7 @@ const RewardsPage = () => {
                     className={cn(
                       "relative overflow-hidden max-h-[220px] h-[40vw] w-full",
                       {
-                        "bg-white/10 flex items-center justify-center":
+                        "bg-black flex items-center justify-center":
                           !reward.image,
                       }
                     )}
@@ -468,12 +480,10 @@ const RewardsPage = () => {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-8 px-4">
-              <Gift className="w-16 h-16 text-muted-foreground/50 mb-4" />
-              <p className="text-muted-foreground text-center">
-                {t("No rewards available at the moment")}
-              </p>
-            </div>
+            <NoItemsComp
+              icon={Gift}
+              text="No rewards available at the moment"
+            />
           )}
         </div>
       </section>

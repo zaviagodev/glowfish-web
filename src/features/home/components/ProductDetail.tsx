@@ -56,6 +56,7 @@ export function ProductDetail({
   venue_address,
   date,
   price,
+  sales_price,
   points,
   variant_id,
   quantity = 1,
@@ -253,7 +254,7 @@ export function ProductDetail({
         <div
           className={cn(
             openImageModal
-              ? "fixed inset-0 z-[999] bg-background flex flex-col justify-center items-center w-full"
+              ? "fixed inset-0 z-[999] bg-background flex flex-col justify-center items-center w-full max-width-mobile"
               : ""
           )}
         >
@@ -266,7 +267,7 @@ export function ProductDetail({
                 <X className="h-6 w-6" />
               </div>
               {Array.isArray(images) && images.length > 0 ? (
-                <div className="w-full h-full flex items-center justify-center p-4">
+                <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
                   <Carousel className="w-full" setApi={setModalApi}>
                     <CarouselContent>
                       {images.map((img: ProductImage) => (
@@ -300,7 +301,7 @@ export function ProductDetail({
                   </Carousel>
                 </div>
               ) : image ? (
-                <div className="w-full h-full flex items-center justify-center p-4">
+                <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
                   <img
                     src={image}
                     alt={name}
@@ -390,6 +391,12 @@ export function ProductDetail({
                   <Calendar className="w-4 h-4" />
                   <span>{date || "To be determined"}</span>
                 </div>
+                {/* TODO: set the condition of sales_price dynamically */}
+                {!sales_price && (
+                  <div className="bg-[#DE473C] text-white rounded-full px-1.5 py-0.5 w-fit text-xs">
+                    Sale
+                  </div>
+                )}
                 {/* {points && (
                   <div className="flex items-center gap-2 text-sm text-primary font-medium">
                     <Tag className="w-4 h-4" />
@@ -661,8 +668,15 @@ export function ProductDetail({
                   }}
                 >
                   <span className="text-sm font-normal">start from</span>
-                  <span className="flex items-center gap-2 text-2xl">
+                  <span className="flex items-end gap-2 text-2xl">
                     {getPriceDisplay()}
+
+                    {/* TODO: fetch the sales price and set the condition of sales_price dynamically, if there is no sales price, this one will be hidden */}
+                    {!sales_price && (
+                      <span className="text-muted-foreground text-base line-through leading-[26px]">
+                        {getPriceDisplay()}
+                      </span>
+                    )}
                   </span>
                 </span>
               </div>

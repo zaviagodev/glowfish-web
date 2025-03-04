@@ -34,6 +34,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { ProductImage } from "@/features/home/types/product.types";
+import NoItemsComp from "@/components/ui/no-items";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -255,7 +256,7 @@ export default function TicketsPage() {
               <div
                 className={cn(
                   openImageModal
-                    ? "fixed inset-0 z-[999] bg-background flex flex-col justify-center items-center w-full"
+                    ? "fixed inset-0 z-[999] bg-background flex flex-col justify-center items-center w-full max-width-mobile"
                     : ""
                 )}
               >
@@ -268,7 +269,7 @@ export default function TicketsPage() {
                       <X className="h-6 w-6" />
                     </div>
                     {Array.isArray(images) && images.length > 0 ? (
-                      <div className="w-full h-full flex items-center justify-center p-4">
+                      <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
                         <Carousel className="w-full" setApi={setModalApi}>
                           <CarouselContent>
                             {images.map((img: ProductImage) => (
@@ -304,7 +305,7 @@ export default function TicketsPage() {
                         </Carousel>
                       </div>
                     ) : foundOrder.event?.product.images[0].url ? (
-                      <div className="w-full h-full flex items-center justify-center p-4">
+                      <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
                         <img
                           src={foundOrder.event?.product.images[0].url}
                           alt={foundOrder.event?.product.name}
@@ -576,18 +577,14 @@ export default function TicketsPage() {
 
           <div className="mt-4">
             {currentEvents.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center justify-center py-12 px-5"
-              >
-                <TicketIcon className="w-12 h-12 text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground text-center">
-                  {activeTab === "upcoming"
+              <NoItemsComp
+                icon={TicketIcon}
+                text={
+                  activeTab === "upcoming"
                     ? "No upcoming events"
-                    : "No ended events"}
-                </p>
-              </motion.div>
+                    : "No ended events"
+                }
+              />
             ) : (
               <>
                 <div className="px-5 space-y-4">

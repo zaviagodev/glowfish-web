@@ -534,10 +534,6 @@
   border-left:none;
 }
 
-.text-title2 {
-  @apply text-base
-}
-
 .max-width-mobile {
   @apply max-w-[500px] mx-auto
 }

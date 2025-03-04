@@ -23,6 +23,7 @@ export interface Product {
   name: string;
   description?: string;
   price: number;
+  sales_price?: number;
   category_id: string;
   variant_options: any[];
   track_quantity: boolean;

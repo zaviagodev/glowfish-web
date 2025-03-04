@@ -23,6 +23,7 @@ export function AnimatedCard({
   location,
   date,
   price,
+  sales_price,
   compareAtPrice,
   variant_id,
   product_variants,
@@ -65,7 +66,8 @@ export function AnimatedCard({
       return minPrice === 0 ? t("free") : `฿${minPrice.toLocaleString()}`;
     }
 
-    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+    // return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+    return `฿${minPrice.toLocaleString()}`;
   };
 
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
@@ -114,6 +116,13 @@ export function AnimatedCard({
           <Button className="main-btn w-8 max-h-8 p-0 absolute right-4 bottom-4">
             <BookImage className="w-4 h-4" />
           </Button>
+        )}
+
+        {/* TODO: set the condition of sales_price dynamically */}
+        {!sales_price && (
+          <span className="absolute left-2 top-2 bg-[#DE473C] text-white text-sm rounded-full px-2 py-0.5">
+            Sale
+          </span>
         )}
       </motion.div>
 
@@ -221,6 +230,13 @@ export function AnimatedCard({
               >
                 <span className="flex items-baseline gap-2 text-lg font-semibold">
                   {getPriceDisplay()}
+
+                  {/* TODO: fetch the sales price and set the condition of sales_price dynamically, if there is no sales price, this one will be hidden */}
+                  {sales_price && (
+                    <span className="text-muted-foreground text-base line-through leading-[26px]">
+                      {getPriceDisplay() || "฿0"}
+                    </span>
+                  )}
                 </span>
               </motion.p>
             )}

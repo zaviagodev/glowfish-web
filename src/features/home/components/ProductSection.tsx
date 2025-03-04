@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { StickyNote } from "lucide-react";
+import NoItemsComp from "@/components/ui/no-items";
 
 interface ProductSectionProps {
   title: string;
@@ -88,17 +89,7 @@ export const ProductSection = memo(function ProductSection({
               ))}
             </div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="flex flex-col items-center justify-center py-8 px-4"
-            >
-              <StickyNote className="w-16 h-16 text-muted-foreground/50 mb-4" />
-              <p className="text-muted-foreground text-center">
-                {t("No products found")}
-              </p>
-            </motion.div>
+            <NoItemsComp icon={StickyNote} text="No products found" />
           )}
         </>
       )}
