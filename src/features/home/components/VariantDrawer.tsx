@@ -160,7 +160,7 @@ export function VariantDrawer({
                         key={value}
                         // variant={isSelected ? "default" : "outline"}
                         className={cn(
-                          "!h-9 px-4 rounded-lg !text-sm font-semibold",
+                          "!h-9 px-4 rounded-lg !text-sm font-semibold relative",
                           !isSelected
                             ? "bg-darkgray border-input text-primary"
                             : "main-btn !rounded-lg",
@@ -169,6 +169,10 @@ export function VariantDrawer({
                         disabled={!isAvailable}
                         onClick={() => handleOptionSelect(option.name, value)}
                       >
+                        {/* TODO: set the condition of this red circle if there is a sales_price */}
+                        <div className="absolute -top-2 -right-2 bg-[#DE473C] text-white rounded-full px-1.5 w-fit text-[10px]">
+                          Sale
+                        </div>
                         {value}
                       </Button>
                     );
