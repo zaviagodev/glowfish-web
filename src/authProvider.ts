@@ -11,13 +11,13 @@ export const LINE_USER_KEY = "line-user";
 // Line auth configuration
 const LINE_CONFIG = {
   clientId: import.meta.env.VITE_LINE_CLIENT_ID,
-  redirectUri: `https://${
-    import.meta.env.VITE_CALLBACK_DOMAIN || window.location.hostname
-  }/line/callback?original_domain=${
-    encodeURIComponent(window.location.hostname)
-  }`,
+  redirectUri: `${window.location.hostname === 'localhost' ? 'http' : 'https'}://${
+    import.meta.env.VITE_CALLBACK_DOMAIN || window.location.hostname + (window.location.hostname === 'localhost' ? `:${window.location.port}` : '')
+  }/line/callback?original_domain=${encodeURIComponent(window.location.hostname)}`,
   scope: "profile openid email",
 };
+
+console.log(LINE_CONFIG);
 
 const isStorefrontMode = () => import.meta.env.VITE_STOREFRONT_MODE === "1";
 
