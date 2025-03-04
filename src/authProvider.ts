@@ -13,7 +13,7 @@ const LINE_CONFIG = {
   clientId: import.meta.env.VITE_LINE_CLIENT_ID,
   redirectUri: `${window.location.hostname === 'localhost' ? 'http' : 'https'}://${
     import.meta.env.VITE_CALLBACK_DOMAIN || window.location.hostname + (window.location.hostname === 'localhost' ? `:${window.location.port}` : '')
-  }/line/callback?original_domain=${encodeURIComponent(window.location.hostname)}`,
+  }${import.meta.env.VITE_CALLBACK_DOMAIN ? '/line/callback' : '/line-callback'}?original_domain=${encodeURIComponent(window.location.hostname)}`,
   scope: "profile openid email",
 };
 
@@ -25,7 +25,7 @@ const isStorefrontMode = () => import.meta.env.VITE_STOREFRONT_MODE === "1";
 export const createTestSession = async () => {
   try {
     // Create anonymous session with limited permissions
-    const { data: { session }, error } = await supabase.auth.signInWithPassword(
+    const { data: { session = null }, error } = await supabase.auth.signInWithPassword(
       {
         email: import.meta.env.VITE_TEST_EMAIL || "test@example.com",
         password: import.meta.env.VITE_TEST_PASSWORD || "test123",
@@ -38,7 +38,7 @@ export const createTestSession = async () => {
     const { data: customer, error: customerError } = await supabase
       .from("customers")
       .select("*")
-      .eq("email", session.user.email)
+      .eq("email", session?.user?.email)
       .single();
 
     if (customerError && customerError.code !== "PGRST116") {
@@ -51,7 +51,7 @@ export const createTestSession = async () => {
       const { data: newCustomer, error: createError } = await supabase
         .from("customers")
         .insert({
-          email: session.user.email,
+          email: session?.user?.email,
           first_name: "Test",
           last_name: "User",
           store_name: "glowfish",
@@ -68,9 +68,9 @@ export const createTestSession = async () => {
     }
 
     const testSession = {
-      access_token: session.access_token,
-      refresh_token: session.refresh_token,
-      user: session.user,
+      access_token: session?.access_token || "" ,
+      refresh_token: session?.refresh_token || "",
+      user: session?.user || null,
       customer: testCustomer,
     };
     await setSupabaseSession(testSession);
@@ -90,11 +90,8 @@ export const authProvider: AuthProvider = {
     if (isStorefrontMode()) {
       try {
         const testSession = await createTestSession();
-        const sessionSet = await setSupabaseSession(testSession);
-        if (!sessionSet) {
-          throw new Error("Failed to set session");
-        }
-
+        return testSession;
+        
         return {
           success: true,
           redirectTo: "/home",
