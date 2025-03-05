@@ -234,11 +234,16 @@ const OrdersPage = () => {
                     transition={{ delay: index * 0.1 }}
                     className={cn(
                       "relative pl-12 pb-8 last:pb-0",
-                      "before:absolute before:left-[14px] before:top-[30px] before:h-[calc(100%-32px)]",
+                      "before:absolute before:left-[14px]",
                       "before:w-[2px]",
                       event.isActive || event.isPending
                         ? "before:bg-gradient-to-b before:from-primary before:to-muted"
                         : "before:bg-primary",
+                      event.isPending
+                        ? "before:top-[30px] before:h-[calc(100%-24px)]"
+                        : event.isActive
+                        ? "before:top-9 before:h-[calc(100%-30px)]"
+                        : "before:top-[30px] before:h-[calc(100%-30px)]",
                       "last:before:hidden"
                     )}
                   >
