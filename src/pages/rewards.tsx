@@ -39,6 +39,7 @@ import cardReward from "@/img/my-card.svg";
 import RewardAccordions from "@/features/rewards/components/RewardAccordions";
 import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
 import NoItemsComp from "@/components/ui/no-items";
+import ItemCarousel from "@/components/ui/item-carousel";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -192,36 +193,29 @@ const RewardsPage = () => {
           >
             <ChevronLeft className="h-6 w-6" />
           </Button>
-        </div>
-        {selectedReward.product_images?.[0]?.url ? (
-          <img
-            src={selectedReward.product_images[0].url}
-            className="w-full h-full aspect-square object-cover"
+          <ItemCarousel
+            images={selectedReward?.product_images}
+            image={selectedReward?.product_images?.[0]?.url}
           />
-        ) : (
-          <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-            <GlowfishIcon />
-          </div>
-        )}
-        <section className="p-5 bg-background/70 relative backdrop-blur-sm rounded-t-2xl flex flex-col gap-7 -top-20">
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">Reward</p>
-            <h2 className="text-2xl">{selectedReward.name}</h2>
-          </div>
-
-          <div className="grid grid-cols-2">
-            <div className="flex flex-col gap-1">
-              {" "}
-              {/* pr-7 border-r border-r-[#FFFFFF1A] */}
-              <p className="text-sm text-muted-foreground">
-                {t("Required Points")}
-              </p>
-              <h2 className="text-orangefocus text-2xl font-semibold">
-                {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
-                {t("points")}
-              </h2>
+          <section className="p-5 bg-background/70 relative backdrop-blur-sm rounded-t-2xl flex flex-col gap-7 -top-20">
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-muted-foreground">Reward</p>
+              <h2 className="text-2xl">{selectedReward.name}</h2>
             </div>
-            {/* <div className="flex flex-col gap-1 pl-7">
+
+            <div className="grid grid-cols-2">
+              <div className="flex flex-col gap-1">
+                {" "}
+                {/* pr-7 border-r border-r-[#FFFFFF1A] */}
+                <p className="text-sm text-muted-foreground">
+                  {t("Required Points")}
+                </p>
+                <h2 className="text-orangefocus text-2xl font-semibold">
+                  {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
+                  {t("points")}
+                </h2>
+              </div>
+              {/* <div className="flex flex-col gap-1 pl-7">
               <p className="text-sm text-muted-foreground">
                 {t("Your Points")}
               </p>
@@ -230,26 +224,27 @@ const RewardsPage = () => {
                 {customerData?.loyalty_points === 1 ? "point" : "points"}
               </h2>
             </div> */}
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <h2 className="text-base">{t("Description")}</h2>
-            <p className="text-sm text-secondary-foreground font-light">
-              {selectedReward.description}
-            </p>
-          </div>
-
-          <RewardAccordions />
-        </section>
-
-        {error && (
-          <div className="px-5 mb-4">
-            <div className="bg-red-500/10 text-red-500 px-4 py-3 rounded-lg flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" />
-              <p className="text-sm">{error}</p>
             </div>
-          </div>
-        )}
+
+            <div className="flex flex-col gap-4">
+              <h2 className="text-base">{t("Description")}</h2>
+              <p className="text-sm text-secondary-foreground font-light">
+                {selectedReward.description}
+              </p>
+            </div>
+
+            <RewardAccordions />
+
+            {error && (
+              <div className="mb-4">
+                <div className="bg-red-500/10 text-red-500 px-4 py-3 rounded-lg flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  <p className="text-sm">{error}</p>
+                </div>
+              </div>
+            )}
+          </section>
+        </div>
 
         <footer className="btn-footer flex flex-col gap-7 z-[50]">
           <Dialog

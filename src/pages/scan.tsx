@@ -1,11 +1,7 @@
 import { useTranslate } from "@refinedev/core";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  QrCode,
-  X,
-  RefreshCw,
-} from "lucide-react";
+import { QrCode, X, RefreshCw, ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/toast";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -13,6 +9,12 @@ import jsQR from "jsqr";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useRedeemCode } from "@/features/points/hooks/useRedeemCode";
 import { useQRScanner } from "@/features/points/hooks/useQRScanner";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const ScanPage = () => {
   const t = useTranslate();
@@ -22,6 +24,7 @@ const ScanPage = () => {
   const [data, setData] = useState("");
   const [pointsEarned, setPointsEarned] = useState<number | null>(null);
   const [error, setError] = useState<string>("");
+  const [hasError, setHasError] = useState<boolean>(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -43,12 +46,7 @@ const ScanPage = () => {
     },
   });
 
-  const {
-    isScanning,
-    startScanner,
-    stopScanner,
-    resetScanner
-  } = useQRScanner({
+  const { isScanning, startScanner, stopScanner, resetScanner } = useQRScanner({
     videoRef,
     canvasRef,
     onQRCodeScanned: (code: string) => {
@@ -59,6 +57,10 @@ const ScanPage = () => {
       setError(t("Unable to access camera. Please check your permissions."));
     },
   });
+
+  useEffect(() => {
+    setHasError(error ? true : false);
+  }, [error]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -76,6 +78,7 @@ const ScanPage = () => {
     setPointsEarned(null);
     setError("");
     resetScanner();
+    setHasError(false);
   };
 
   return (
@@ -122,7 +125,7 @@ const ScanPage = () => {
           </div>
         )}
 
-        {(data || error) && (
+        {(data || (!hasError && error)) && (
           <div className="px-4 py-4 flex-1 flex">
             <div className="max-w-sm mx-auto w-full animate-in fade-in slide-in-from-bottom-4">
               <div className="bg-red-600 rounded-lg shadow-lg overflow-hidden">
@@ -154,11 +157,7 @@ const ScanPage = () => {
                   ) : error ? (
                     <div className="text-center">
                       <p className="text-sm mb-2">{error}</p>
-                      <Button
-                        onClick={handleReset}
-                        variant="ghost"
-                        className="gap-2 main-btn"
-                      >
+                      <Button onClick={handleReset} className="gap-2 main-btn">
                         <RefreshCw className="h-4 w-4" />
                         {t("Try Again")}
                       </Button>
@@ -178,9 +177,37 @@ const ScanPage = () => {
             </div>
           </div>
         )}
+
+        <Sheet open={hasError}>
+          <SheetContent
+            side="bottom"
+            className="h-[30%] bg-background rounded-t-xl p-0 pb-8 overflow-auto max-width-mobile outline-none"
+            hideCloseButton={true}
+          >
+            <SheetHeader className="p-4 pt-9 rounded-t-xl bg-background backdrop-blur-xl items-center before:top-3 max-width-mobile w-full -translate-y-[1px]">
+              <SheetTitle className="font-semibold tracking-tight w-full text-center">
+                {error}
+              </SheetTitle>
+            </SheetHeader>
+
+            <div className="flex items-center gap-2 px-5">
+              <Button
+                onClick={() => setHasError(false)}
+                className="gap-2 secondary-btn text-white w-full"
+              >
+                <X className="h-4 w-4" />
+                {t("Close")}
+              </Button>
+              <Button onClick={handleReset} className="gap-2 main-btn w-full">
+                <RefreshCw className="h-4 w-4" />
+                {t("Try Again")}
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );
 };
 
-export default ScanPage; 
+export default ScanPage;
