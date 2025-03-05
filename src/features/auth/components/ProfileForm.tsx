@@ -285,9 +285,7 @@ export const ProfileForm = ({
               {...form.register("email")}
               disabled={isLoading}
               className="bg-darkgray"
-              placeholder={
-                isProfileSetup ? t("Enter your email") : "youremail@gmail.com"
-              }
+              placeholder="youremail@gmail.com"
             />
             {form.formState.errors.email && (
               <p className="text-sm text-red-500">
