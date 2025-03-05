@@ -333,7 +333,7 @@ export default function ProductsPage() {
 
       {/* Sort Drawer */}
       <Sheet open={showSortDrawer} onOpenChange={setShowSortDrawer}>
-        <SheetContent side="bottom" className="h-fit p-0">
+        <SheetContent side="bottom" className="h-fit p-0 max-width-mobile">
           <SheetHeader className="px-5 pb-3 pt-8 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Sort By")}
