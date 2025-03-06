@@ -7,6 +7,7 @@ import { cn, formattedDateAndTime } from "@/lib/utils";
 import { QRCodeCanvas } from "qrcode.react";
 import Barcode1D from "react-barcode";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 interface CheckInViewProps {
   ticket: {
@@ -199,7 +200,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   <span>
-                    {format(new Date(ticket.date), formattedDateAndTime)}
+                    {format(toZonedTime(new Date(ticket.date), "UTC"), formattedDateAndTime)}
                   </span>
                 </div>
               )}

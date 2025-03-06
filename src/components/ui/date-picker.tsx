@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { cn } from "@/lib/utils";
 import { Input } from "./input";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DatePickerProps {
@@ -22,12 +23,17 @@ interface DatePickerProps {
 
 export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
   ({ className, required, onSelect, selected, ...props }, ref) => {
+    // Convert selected date to UTC if it exists
+    const utcSelected = selected ? toZonedTime(selected, "UTC") : null;
+
     return (
       <ReactDatePicker
-        selected={selected}
+        selected={utcSelected}
         onChange={(date) => {
           if (onSelect) {
-            onSelect(date);
+            // Convert the selected date to UTC before passing it to the parent
+            const utcDate = date ? toZonedTime(date, "UTC") : null;
+            onSelect(utcDate);
           }
         }}
         {...props}

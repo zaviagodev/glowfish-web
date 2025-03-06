@@ -12,6 +12,13 @@ import {
 import { cn } from "@/lib/utils";
 import LoadingSpin from "../loading/LoadingSpin";
 
+// Add function to generate full image URL
+const getFullImageUrl = (imageUrl: string) => {
+  if (!imageUrl) return "";
+  const supabaseUrl = import.meta.env.VITE_ADMIN_URL;
+  return `${supabaseUrl}/${imageUrl}`;
+};
+
 interface PaymentMethodProps {
   value: string | null;
   onChange: (value: string) => void;
@@ -162,7 +169,7 @@ export function PaymentMethod({
             <>
               {selectedOption.details?.bank?.image_url ? (
                 <img
-                  src={selectedOption.details.bank.image_url}
+                  src={getFullImageUrl(selectedOption.details.bank.image_url)}
                   alt={selectedOption.details.bank.bank_name}
                   className="w-8 h-8 object-contain"
                 />
@@ -220,7 +227,7 @@ export function PaymentMethod({
                 <div className="flex items-center gap-3">
                   {option.details?.bank?.image_url ? (
                     <img
-                      src={option.details.bank.image_url}
+                      src={getFullImageUrl(option.details.bank.image_url)}
                       alt={option.details.bank.bank_name}
                       className="w-5 h-5 object-contain"
                     />

@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { format, isPast } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { EventDataProps } from "@/type/type 2";
 import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
@@ -14,8 +15,20 @@ interface EventSectionProps {
   seeAllLink?: string;
 }
 
+const formattedTime = (event: EventDataProps) => {
+  if (!event.start_datetime || !event.end_datetime) return "";
+  return `${format(
+    toZonedTime(new Date(event.start_datetime), "UTC"),
+    formattedDateAndTime
+  )} - ${format(
+    toZonedTime(new Date(event.end_datetime), "UTC"),
+    formattedDateAndTime
+  )}`;
+};
+
 const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
   const t = useTranslate();
+
   return (
     <section className="flex flex-col gap-4 mt-[30px] px-5">
       <div className="flex items-center justify-between">
@@ -33,18 +46,8 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
         {list.length > 0 ? (
           <>
             {list
-              .filter((item) => isPast(item.end_datetime as string) === false)
+              .filter((item) => isPast(toZonedTime(new Date(item.end_datetime as string), "UTC")) === false)
               .map((item) => {
-                const formattedTime =
-                  item.start_datetime &&
-                  item.end_datetime &&
-                  `${format(
-                    new Date(item.start_datetime),
-                    formattedDateAndTime
-                  )} - ${format(
-                    new Date(item.end_datetime),
-                    formattedDateAndTime
-                  )}`;
                 return (
                   <motion.div
                     key={item.title}
@@ -54,14 +57,13 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
                     transition={{ duration: 0.3 }}
                   >
                     <AnimatedCard
-                      id={item.id}
+                      id={item.id || ""}
                       image={item.image}
                       title={item.title}
                       price={item.price}
                       compareAtPrice={item.compare_at_price}
                       location={item.location}
-                      product_variants={item.product_variants}
-                      date={formattedTime}
+                      date={formattedTime(item)}
                       end_datetime={item.end_datetime}
                     />
                   </motion.div>

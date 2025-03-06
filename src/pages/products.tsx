@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { useProducts } from "@/features/home/hooks/useProducts";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import {
   Sheet,
   SheetContent,
@@ -24,9 +25,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ProductDetail } from "@/features/home/components/ProductDetail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
-import { Product } from "@/features/home/services/productService";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import NoItemsComp from "@/components/ui/no-items";
+import { Product, ProductVariant } from "@/features/home/types/product.types";
 
 interface Category {
   id: string;
@@ -83,7 +84,7 @@ export default function ProductsPage() {
       // Helper function to get the highest price from variants or base price
       const getHighestPrice = (product: Product) => {
         if (!product.product_variants?.length) return product.price;
-        const variantPrices = product.product_variants.map((v) => v.price);
+        const variantPrices = product.product_variants.map((v: ProductVariant) => v.price);
         return Math.max(product.price, ...variantPrices);
       };
 
@@ -110,9 +111,12 @@ export default function ProductsPage() {
       product?.start_datetime &&
       product?.end_datetime &&
       `${format(
-        new Date(product.start_datetime),
+        toZonedTime(new Date(product.start_datetime), "UTC"),
         formattedDateAndTime
-      )} - ${format(new Date(product.end_datetime), formattedDateAndTime)}`
+      )} - ${format(
+        toZonedTime(new Date(product.end_datetime), "UTC"),
+        formattedDateAndTime
+      )}`
     );
   };
 

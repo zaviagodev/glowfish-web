@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -255,12 +256,12 @@ export default function TicketsPage() {
                   <Calendar className="w-4 h-4 flex-shrink-0" />
                   <span>
                     {format(
-                      new Date(foundOrder.event?.start_datetime),
+                      toZonedTime(new Date(foundOrder.event?.start_datetime), "UTC"),
                       formattedDateAndTime
                     )}{" "}
                     -{" "}
                     {format(
-                      new Date(foundOrder.event?.end_datetime),
+                      toZonedTime(new Date(foundOrder.event?.end_datetime), "UTC"),
                       formattedDateAndTime
                     )}
                   </span>

@@ -23,6 +23,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { DatePicker } from "@/components/ui/date-picker";
+import { toZonedTime } from "date-fns-tz";
 
 interface ProfileFormProps {
   onComplete?: () => void;
@@ -148,6 +149,9 @@ export const ProfileForm = ({
         profile_setup_completed: true,
         profile_setup_completed_at: new Date().toISOString(),
       };
+
+      // Convert date of birth to UTC ISO string
+      const dateOfBirth = data.dateOfBirth ? toZonedTime(data.dateOfBirth, "UTC").toISOString() : null;
 
       // Update customer record with merged meta
       const { error: customerError } = await supabase
