@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { useProducts } from "@/features/home/hooks/useProducts";
-import { format, isPast } from "date-fns";
+import { format } from "date-fns";
 import {
   Sheet,
   SheetContent,
@@ -242,7 +242,7 @@ export default function ProductsPage() {
               {t("Filter Products")}
             </SheetTitle>
           </SheetHeader>
-          <div className="p-5 space-y-6 overflow-auto">
+          <div className="p-5 space-y-6 overflow-auto h-[calc(100%_-_160px)]">
             <div className="space-y-4">
               <h3 className="text-base font-medium">{t("Price Range")}</h3>
               <div className="flex items-center gap-4">
@@ -333,7 +333,7 @@ export default function ProductsPage() {
 
       {/* Sort Drawer */}
       <Sheet open={showSortDrawer} onOpenChange={setShowSortDrawer}>
-        <SheetContent side="bottom" className="h-fit p-0">
+        <SheetContent side="bottom" className="h-fit p-0 max-width-mobile">
           <SheetHeader className="px-5 pb-3 pt-8 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Sort By")}
