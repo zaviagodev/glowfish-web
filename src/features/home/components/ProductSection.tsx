@@ -19,6 +19,20 @@ interface ProductSectionProps {
   isLoading?: boolean;
 }
 
+const formattedTime = (product: Product) => {
+  return (
+    product?.start_datetime &&
+    product?.end_datetime &&
+    `${format(
+      toZonedTime(new Date(product.start_datetime), "UTC"),
+      formattedDateAndTime
+    )} - ${format(
+      toZonedTime(new Date(product.end_datetime), "UTC"),
+      formattedDateAndTime
+    )}`
+  );
+};
+
 export const ProductSection = memo(function ProductSection({
   title,
   linkTo,
@@ -72,13 +86,7 @@ export const ProductSection = memo(function ProductSection({
                     location={product.location}
                     product_variants={product.product_variants}
                     gallery_link={product.gallery_link}
-                    date={
-                      product.start_datetime &&
-                      format(
-                        toZonedTime(new Date(product.start_datetime), "UTC"),
-                        formattedDateAndTime
-                      )
-                    }
+                    date={formattedTime(product)}
                     hasGallery={
                       product.gallery_link !== "" &&
                       product.gallery_link !== null
