@@ -19,8 +19,10 @@ import {
   QrCode,
   Ticket as TicketIcon,
   Clock,
+  Map,
+  ChevronRight,
 } from "lucide-react";
-import { cn, formattedDateAndTime } from "@/lib/utils";
+import { cn, formattedDateAndTime, getMapLinks } from "@/lib/utils";
 import { useTickets } from "@/features/tickets/hooks/useTickets";
 import { Ticket } from "@/features/tickets/components/Ticket";
 import { CheckInView } from "@/features/tickets/components/CheckInView";
@@ -166,6 +168,8 @@ export default function TicketsPage() {
     );
   }
 
+  console.log(foundOrder);
+
   // Details View
   if (isDetailsView && foundOrder) {
     const status = getEventStatus(
@@ -256,12 +260,18 @@ export default function TicketsPage() {
                   <Calendar className="w-4 h-4 flex-shrink-0" />
                   <span>
                     {format(
-                      toZonedTime(new Date(foundOrder.event?.start_datetime), "UTC"),
+                      toZonedTime(
+                        new Date(foundOrder.event?.start_datetime),
+                        "UTC"
+                      ),
                       formattedDateAndTime
                     )}{" "}
                     -{" "}
                     {format(
-                      toZonedTime(new Date(foundOrder.event?.end_datetime), "UTC"),
+                      toZonedTime(
+                        new Date(foundOrder.event?.end_datetime),
+                        "UTC"
+                      ),
                       formattedDateAndTime
                     )}
                   </span>
@@ -275,6 +285,61 @@ export default function TicketsPage() {
                 </div>
               </motion.div>
             </div>
+
+            {foundOrder.event?.venue_address && (
+              <div className="space-y-2">
+                <h2 className="text-base">{t("Venue & Location")}</h2>
+                {/* Get processed map links */}
+                {(() => {
+                  const { viewLink, embedLink, isShareLink } = getMapLinks(
+                    foundOrder.event?.google_maps_link
+                  );
+
+                  if (!viewLink) return null;
+
+                  if (isShareLink) {
+                    return (
+                      <button
+                        onClick={() =>
+                          window.open(viewLink, "_blank", "noopener,noreferrer")
+                        }
+                        className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Map className="w-5 h-5 text-white" />
+                          {t("View map")}
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      </button>
+                    );
+                  }
+
+                  if (embedLink) {
+                    return (
+                      <iframe
+                        src={embedLink}
+                        style={{
+                          border: 0,
+                          width: "100%",
+                          borderRadius: "12px",
+                          height: "50vw",
+                          maxHeight: "270px",
+                        }}
+                        allowFullScreen={false}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      ></iframe>
+                    );
+                  }
+
+                  return null;
+                })()}
+
+                <p className="text-sm text-secondary-foreground font-light">
+                  {foundOrder.event?.venue_address}
+                </p>
+              </div>
+            )}
 
             {/* Tickets List */}
             <div className="space-y-4">

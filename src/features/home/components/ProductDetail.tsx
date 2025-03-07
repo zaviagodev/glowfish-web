@@ -21,7 +21,7 @@ import { useToast } from "@/components/ui/toast";
 import { Product, ProductVariant } from "../types/product.types";
 import DOMPurify from "dompurify";
 import { isPast } from "date-fns";
-import { cn, makeTwoDecimals } from "@/lib/utils";
+import { cn, getMapLinks, makeTwoDecimals } from "@/lib/utils";
 import ItemCarousel from "@/components/ui/item-carousel";
 
 interface ProductVariantOption {
@@ -39,48 +39,6 @@ interface ProductDetailProps extends Partial<Product> {
   google_maps_link: string;
   gallery_link?: string;
 }
-
-// Helper function to handle different types of Google Maps links
-const getMapLinks = (mapLink: string) => {
-  if (!mapLink || mapLink.trim() === '') return { viewLink: '', embedLink: '', isShareLink: false };
-  
-  // If it's already an embed link, return as is
-  if (mapLink.includes('google.com/maps/embed')) {
-    return {
-      viewLink: mapLink.replace('/embed', '/place'),
-      embedLink: mapLink,
-      isShareLink: false
-    };
-  }
-
-  // If it's a share link (maps.app.goo.gl or goo.gl)
-  if (mapLink.includes('goo.gl')) {
-    return {
-      viewLink: mapLink,
-      embedLink: '', // Can't convert short links to embed
-      isShareLink: true
-    };
-  }
-
-  // If it's a regular maps link
-  if (mapLink.includes('google.com/maps')) {
-    const embedLink = mapLink.includes('/place/') 
-      ? mapLink.replace('/place/', '/embed/place/') 
-      : mapLink.replace('/maps/', '/maps/embed/');
-    return {
-      viewLink: mapLink,
-      embedLink,
-      isShareLink: false
-    };
-  }
-
-  // If none of the above conditions match, consider it invalid
-  return {
-    viewLink: '',
-    embedLink: '',
-    isShareLink: false
-  };
-};
 
 export function ProductDetail({
   id,
@@ -149,9 +107,9 @@ export function ProductDetail({
     }
 
     const comparePrices = product_variants
-      .filter(v => v.compare_at_price && v.compare_at_price > 0)
-      .map(v => v.compare_at_price!);
-    
+      .filter((v) => v.compare_at_price && v.compare_at_price > 0)
+      .map((v) => v.compare_at_price!);
+
     if (comparePrices.length === 0) return null;
 
     const minComparePrice = Math.min(...comparePrices);
@@ -288,11 +246,15 @@ export function ProductDetail({
                   <Calendar className="w-4 h-4" />
                   <span>{date || "To be determined"}</span>
                 </div>
-                {product_variants && product_variants.some(variant => variant.compare_at_price && variant.compare_at_price > 0) && (
-                  <div className="bg-[#DE473C] text-white rounded-full px-1.5 py-0.5 w-fit text-xs">
-                    Sale
-                  </div>
-                )}
+                {product_variants &&
+                  product_variants.some(
+                    (variant) =>
+                      variant.compare_at_price && variant.compare_at_price > 0
+                  ) && (
+                    <div className="bg-[#DE473C] text-white rounded-full px-1.5 py-0.5 w-fit text-xs">
+                      Sale
+                    </div>
+                  )}
                 {/* {points && (
                   <div className="flex items-center gap-2 text-sm text-primary font-medium">
                     <Tag className="w-4 h-4" />
@@ -348,18 +310,16 @@ export function ProductDetail({
                 <h2 className="text-base">{t("Venue & Location")}</h2>
                 {/* Get processed map links */}
                 {(() => {
-                  const { viewLink, embedLink, isShareLink } = getMapLinks(google_maps_link);
+                  const { viewLink, embedLink, isShareLink } =
+                    getMapLinks(google_maps_link);
+
                   if (!viewLink) return null;
 
                   if (isShareLink) {
                     return (
                       <button
                         onClick={() =>
-                          window.open(
-                            viewLink,
-                            "_blank",
-                            "noopener,noreferrer"
-                          )
+                          window.open(viewLink, "_blank", "noopener,noreferrer")
                         }
                         className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
                       >
@@ -596,11 +556,16 @@ export function ProductDetail({
                   <span className="flex items-end gap-2 text-2xl">
                     {getPriceDisplay()}
 
-                    {product_variants && product_variants.some(variant => variant.compare_at_price && variant.compare_at_price > 0) && (
-                      <span className="text-muted-foreground text-base line-through leading-[26px]">
-                        {getCompareAtPriceDisplay()}
-                      </span>
-                    )}
+                    {product_variants &&
+                      product_variants.some(
+                        (variant) =>
+                          variant.compare_at_price &&
+                          variant.compare_at_price > 0
+                      ) && (
+                        <span className="text-muted-foreground text-base line-through leading-[26px]">
+                          {getCompareAtPriceDisplay()}
+                        </span>
+                      )}
                   </span>
                 </span>
               </div>
