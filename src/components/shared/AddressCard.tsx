@@ -1,6 +1,7 @@
 import { MapPin, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
 
 interface AddressCardProps {
   title: string;
@@ -9,6 +10,7 @@ interface AddressCardProps {
   address: string;
   className?: string;
   isDefault?: boolean;
+  icon: ReactNode;
 }
 
 export function AddressCard({
@@ -18,6 +20,7 @@ export function AddressCard({
   address,
   className,
   isDefault,
+  icon,
 }: AddressCardProps) {
   const navigate = useNavigate();
   return (
@@ -30,19 +33,15 @@ export function AddressCard({
         <ChevronRight className="h-4 w-4 text-muted-foreground" />
       </div>
       <div className="flex items-center gap-3">
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
-            <MapPin className="w-4 h-4 text-icon-blue-foreground" />
-          </div>
+        <div className="flex items-center">{icon}</div>
+        <div>
+          <p className="text-sm font-medium">
+            {isDefault ? `${name} | ${phone}` : title}
+          </p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {isDefault ? address : "Select an address"}
+          </p>
         </div>
-        {isDefault ? (
-          <div>
-            <p className="text-sm font-medium">{name} | {phone}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{address}</p>
-          </div>
-        ) : (
-          <p className="text-sm font-medium">Add Delivery Address</p>
-        )}
       </div>
     </div>
   );

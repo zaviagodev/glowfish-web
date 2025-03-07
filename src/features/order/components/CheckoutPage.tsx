@@ -23,6 +23,7 @@ import type { Address } from "@/services/customerService";
 import { ChevronRight, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoadingSpin from "@/components/loading/LoadingSpin";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CartItem extends CartItemType {
   variantId: string;
@@ -59,11 +60,15 @@ export function CheckoutPage() {
 
   // Get customer addresses and selected or default address
   const addresses = customer?.addresses || [];
-  const selectedAddress = location.state?.selectedAddress || addresses.find((addr) => addr.is_default) || addresses[0];
+  const selectedAddress =
+    location.state?.selectedAddress ||
+    addresses.find((addr) => addr.is_default) ||
+    addresses[0];
 
   // Check if all items are events
   const [hasPhysicalProducts, setHasPhysicalProducts] = useState(false);
   const [isCheckingProducts, setIsCheckingProducts] = useState(true);
+  const [isBillingAddressChecked, setIsBillingAddressChecked] = useState(true);
 
   // Function to check if a product is an event
   const checkForPhysicalProducts = async () => {
@@ -71,21 +76,21 @@ export function CheckoutPage() {
     let hasPhysical = false;
     let totalEventPrice = 0;
 
-    console.group('Checkout Product Check');
-    console.log('Total Items:', items);
+    console.group("Checkout Product Check");
+    console.log("Total Items:", items);
 
     try {
       for (const item of items) {
-        console.log('Checking item:', item);
+        console.log("Checking item:", item);
 
         const { data: variant, error: variantError } = await supabase
-          .from('product_variants')
-          .select('product_id, price')
-          .eq('id', item.variantId)
+          .from("product_variants")
+          .select("product_id, price")
+          .eq("id", item.variantId)
           .single();
 
-        console.log('Variant Data:', variant);
-        console.log('Variant Error:', variantError);
+        console.log("Variant Data:", variant);
+        console.log("Variant Error:", variantError);
 
         if (variantError) {
           continue;
@@ -94,42 +99,42 @@ export function CheckoutPage() {
         if (variant) {
           // Check if this product is an event
           const { data: event, error: eventError } = await supabase
-            .from('events')
-            .select('id')
-            .eq('product_id', variant.product_id)
+            .from("events")
+            .select("id")
+            .eq("product_id", variant.product_id)
             .single();
 
-          console.log('Event Data:', event);
-          console.log('Event Error:', eventError);
+          console.log("Event Data:", event);
+          console.log("Event Error:", eventError);
 
           if (!event) {
             // If there's no event entry, it's a physical product
             hasPhysical = true;
-            console.log('Physical Product Detected');
+            console.log("Physical Product Detected");
           } else {
             // If it's an event, add its price
             totalEventPrice += variant.price * item.quantity;
-            console.log('Event Price Added:', totalEventPrice);
+            console.log("Event Price Added:", totalEventPrice);
           }
         }
       }
-      
-      console.log('Final Checks:', {
+
+      console.log("Final Checks:", {
         hasPhysical,
         totalEventPrice,
-        isPaymentMethodRequired: totalEventPrice > 0
+        isPaymentMethodRequired: totalEventPrice > 0,
       });
 
       setHasPhysicalProducts(hasPhysical);
       setIsPaymentMethodRequired(totalEventPrice > 0);
     } catch (error: unknown) {
-      console.error('Error in checkForPhysicalProducts:', error);
-      
+      console.error("Error in checkForPhysicalProducts:", error);
+
       // If there's an error, assume there are physical products and paid events to be safe
       setHasPhysicalProducts(true);
       setIsPaymentMethodRequired(true);
     } finally {
-      console.log('Checking Products Complete');
+      console.log("Checking Products Complete");
       console.groupEnd();
       setIsCheckingProducts(false);
     }
@@ -162,7 +167,7 @@ export function CheckoutPage() {
   const handleCreateOrder = async (event?: React.MouseEvent) => {
     // Prevent default behavior
     event?.preventDefault();
-    
+
     // Validation function
     const validateOrderCreation = () => {
       // Check if there are any paid events
@@ -187,7 +192,7 @@ export function CheckoutPage() {
 
       // Additional price validation
       const totalEventPrice = items.reduce((total: number, item: CartItem) => {
-        return total + (item.price * item.quantity);
+        return total + item.price * item.quantity;
       }, 0);
 
       if (totalEventPrice > 0 && !paymentMethod) {
@@ -256,7 +261,9 @@ export function CheckoutPage() {
       }
 
       // Clear the ordered items from cart
-      const orderedVariantIds = orderItems.map((item: { variant_id: string }) => item.variant_id);
+      const orderedVariantIds = orderItems.map(
+        (item: { variant_id: string }) => item.variant_id
+      );
       const remainingItems = allItems.filter(
         (item: CartItem) => !orderedVariantIds.includes(item.variantId)
       );
@@ -293,28 +300,86 @@ export function CheckoutPage() {
       <div className="pt-14 pb-32">
         <div className="p-5 space-y-6">
           <ProductList items={items} />
-          
+
           {/* Only show address selection for physical products */}
           {hasPhysicalProducts && (
-            <div onClick={() => navigate("/checkout/address", { state: { selectedItems: items } })}>
+            <div
+              onClick={() =>
+                navigate("/checkout/address", {
+                  state: { selectedItems: items },
+                })
+              }
+            >
               <AddressCard
-                title={t("Delivery Address")}
+                title={t("Shipping Address")}
                 name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
                 phone={selectedAddress?.phone}
                 address={`${selectedAddress?.address1}${
-                  selectedAddress?.address2 ? `, ${selectedAddress?.address2}` : ""
+                  selectedAddress?.address2
+                    ? `, ${selectedAddress?.address2}`
+                    : ""
                 }, ${selectedAddress?.city}, ${selectedAddress?.state} ${
                   selectedAddress?.postal_code
                 }`}
                 isDefault={!!selectedAddress}
+                icon={
+                  <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
+                    <MapPin className="w-4 h-4 text-icon-blue-foreground" />
+                  </div>
+                }
+              />
+            </div>
+          )}
+
+          <div className="flex items-center justify-between">
+            <div>
+              <p>Billing address same as shipping address</p>
+              <p className="text-muted-foreground">
+                Uncheck if you want to change to another address
+              </p>
+            </div>
+            <Checkbox
+              checked={isBillingAddressChecked}
+              onCheckedChange={() =>
+                setIsBillingAddressChecked(!isBillingAddressChecked)
+              }
+            />
+          </div>
+
+          {!isBillingAddressChecked && (
+            <div
+              onClick={() =>
+                navigate("/checkout/address", {
+                  state: { selectedItems: items },
+                })
+              }
+            >
+              {/* TODO: The address info may change based on the difference of billing and shipping address */}
+              <AddressCard
+                title={t("Billing Address")}
+                name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
+                phone={selectedAddress?.phone}
+                address={`${selectedAddress?.address1}${
+                  selectedAddress?.address2
+                    ? `, ${selectedAddress?.address2}`
+                    : ""
+                }, ${selectedAddress?.city}, ${selectedAddress?.state} ${
+                  selectedAddress?.postal_code
+                }`}
+                isDefault={!!selectedAddress}
+                icon={
+                  <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
+                    <MapPin className="w-4 h-4 text-icon-blue-foreground" />
+                  </div>
+                }
               />
             </div>
           )}
 
           {(isPaymentMethodRequired || hasPhysicalProducts) && (
-            <PaymentMethod 
-              value={paymentMethod} 
-              onChange={setPaymentMethod} 
+            <PaymentMethod
+              value={paymentMethod}
+              onChange={setPaymentMethod}
               required={isPaymentMethodRequired}
             />
           )}
@@ -333,7 +398,7 @@ export function CheckoutPage() {
         total={total}
         isProcessing={isProcessing}
         disabled={
-          (hasPhysicalProducts && addresses.length === 0) || 
+          (hasPhysicalProducts && addresses.length === 0) ||
           (isPaymentMethodRequired && !paymentMethod)
         }
         onPlaceOrder={handleCreateOrder}
@@ -353,4 +418,4 @@ export function CheckoutPage() {
       />
     </div>
   );
-} 
+}

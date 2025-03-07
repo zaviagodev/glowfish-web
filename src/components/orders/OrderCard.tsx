@@ -7,7 +7,7 @@ import GlowfishIcon from "../icons/GlowfishIcon";
 import { format } from "date-fns";
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { formattedDateAndTime } from "@/lib/utils";
+import { formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 
 interface OrderItem {
   id: string;
@@ -89,6 +89,17 @@ export function OrderCard({ order, index }: OrderCardProps) {
         <OrderStatusBadge status={order.status} />
       </div>
 
+      <div className="px-4">
+        <div className="bg-[#232323] px-3 py-4 rounded-lg flex flex-col justify-center">
+          {/* TODO: Set the dynamic tracking number */}
+          <p className="text-sm">Tracking Number : TH123456789</p>
+          <p className="text-sm text-muted-foreground">
+            {/* TODO: Set the dynamic shipped date */}
+            Shipped date : 3/25/2024
+          </p>
+        </div>
+      </div>
+
       {/* Order Items */}
       {visibleItems.map((item, index) => {
         return (
@@ -122,7 +133,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                     x{item.quantity}
                   </div>
                   <div className="text-sm font-medium">
-                    ฿{item.unit_price.toLocaleString()}
+                    ฿{makeTwoDecimals(item.unit_price).toLocaleString()}
                   </div>
                 </div>
               </div>
@@ -153,7 +164,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
           <div className="flex items-center justify-between">
             <div className="text-sm text-muted-foreground">{t("Total")}</div>
             <div className="text-lg font-semibold">
-              ฿{order.total_amount.toLocaleString()}
+              ฿{makeTwoDecimals(order.total_amount).toLocaleString()}
             </div>
           </div>
           <Button onClick={handleClick} className="main-btn mt-2">

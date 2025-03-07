@@ -588,7 +588,7 @@ export function PaymentPage() {
                 fontFeatureSettings: "'tnum' on, 'lnum' on",
               }}
             >
-              {order.total.toLocaleString()}
+              {Math.floor(order.total).toLocaleString()}
             </motion.span>
             <motion.span
               className="text-[25px] font-normal mt-2"
@@ -596,7 +596,11 @@ export function PaymentPage() {
               animate={{ x: 0, opacity: 1, color: "rgb(74 222 128)" }}
               transition={{ delay: 0.6 }}
             >
-              .00
+              {Number.isInteger(order.total)
+                ? ".00"
+                : Math.abs(order.total % 1)
+                    .toFixed(2)
+                    .slice(1)}
             </motion.span>
           </motion.div>
 
