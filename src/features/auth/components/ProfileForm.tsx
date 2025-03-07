@@ -169,7 +169,16 @@ export const ProfileForm = ({
         })
         .eq("auth_id", user.id);
 
-      if (customerError) throw customerError;
+      if (customerError) {
+        // Check for duplicate email error
+        if (customerError.code === '23505' && customerError.message.includes('customers_store_name_email_key')) {
+          const duplicateEmailMessage = "This email already exists";
+          form.setError('email', { message: duplicateEmailMessage });
+          addToast(duplicateEmailMessage, "error");
+          return;
+        }
+        throw customerError;
+      }
 
       await refreshCustomer();
       addToast(t("Profile updated successfully"), "success");
@@ -298,9 +307,6 @@ export const ProfileForm = ({
                 {form.formState.errors.email.message}
               </p>
             )}
-
-            {/* TODO: Set the condition of this error when there is already this email in the system */}
-            <p className="text-sm text-red-500">This email already exists.</p>
           </div>
 
           <div className="space-y-1">
