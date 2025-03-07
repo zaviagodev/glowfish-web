@@ -100,6 +100,28 @@ export function ProductDetail({
     ).toLocaleString()}`;
   };
 
+  // Get compare at price display
+  const getCompareAtPriceDisplay = () => {
+    if (!product_variants || product_variants.length === 0) {
+      return null;
+    }
+
+    const comparePrices = product_variants
+      .filter(v => v.compare_at_price && v.compare_at_price > 0)
+      .map(v => v.compare_at_price!);
+    
+    if (comparePrices.length === 0) return null;
+
+    const minComparePrice = Math.min(...comparePrices);
+    const maxComparePrice = Math.max(...comparePrices);
+
+    if (minComparePrice === maxComparePrice) {
+      return `฿${minComparePrice.toLocaleString()}`;
+    }
+
+    return `฿${minComparePrice.toLocaleString()} - ฿${maxComparePrice.toLocaleString()}`;
+  };
+
   // Format variant options for display
   const getSelectedOptionsDisplay = () => {
     if (!selectedVariant) {
@@ -522,10 +544,9 @@ export function ProductDetail({
                   <span className="flex items-end gap-2 text-2xl">
                     {getPriceDisplay()}
 
-                    {/* TODO: fetch the sales price and set the condition of sales_price dynamically, if there is no sales price, this one will be hidden */}
-                    {!sales_price && (
+                    {product_variants && product_variants.some(variant => variant.compare_at_price && variant.compare_at_price > 0) && (
                       <span className="text-muted-foreground text-base line-through leading-[26px]">
-                        {getPriceDisplay()}
+                        {getCompareAtPriceDisplay()}
                       </span>
                     )}
                   </span>
