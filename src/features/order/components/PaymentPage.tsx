@@ -223,13 +223,13 @@ export function PaymentPage() {
 
       setShowCelebration(true);
 
-      // Wait for celebration animation then redirect
+      // Wait for celebration animation then redirect to thank you page
       setTimeout(() => {
         navigate("/checkout/thank-you", {
           state: {
             orderNumber: order.id,
             amount: order.total,
-            date: order.created_at,
+            date: order.created_at
           },
           replace: true,
         });

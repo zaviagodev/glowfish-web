@@ -149,6 +149,7 @@ export const OrderService = {
           loyalty_points_used,
           created_at,
           customer_id,
+          payment_details,
           customer:customers (
             id,
             email,

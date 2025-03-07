@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslate } from "@refinedev/core";
 import {
   useNavigate,
@@ -22,6 +22,7 @@ import { cn, formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { format } from "date-fns";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Add LoadingOverlay component at the top of the file
 const LoadingOverlay = () => (
@@ -41,11 +42,19 @@ const OrdersPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") || "1");
   const currentStatus = searchParams.get("status") || "all";
   const [searchQuery, setSearchQuery] = useState("");
   const ITEMS_PER_PAGE = 5;
+
+  // Refresh order data whenever we visit a single order page
+  useEffect(() => {
+    if (id) {
+      queryClient.invalidateQueries({ queryKey: ["order", id] });
+    }
+  }, [id, queryClient]);
 
   const {
     orders,
@@ -449,7 +458,7 @@ const OrdersPage = () => {
             </div>
 
             {/* Pay Now Button */}
-            {order.status === "pending" && order.total_amount > 0 && (
+            {order.status === "pending" && order.total_amount > 0 && !order.payment_details && (
               <div className="px-5">
                 <button onClick={handlePayNow} className="w-full main-btn">
                   {t("Pay Now")} (฿
