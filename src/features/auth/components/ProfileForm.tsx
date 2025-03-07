@@ -151,7 +151,9 @@ export const ProfileForm = ({
       };
 
       // Convert date of birth to UTC ISO string
-      const dateOfBirth = data.dateOfBirth ? toZonedTime(data.dateOfBirth, "UTC").toISOString() : null;
+      const dateOfBirth = data.dateOfBirth
+        ? toZonedTime(data.dateOfBirth, "UTC").toISOString()
+        : null;
 
       // Update customer record with merged meta
       const { error: customerError } = await supabase
@@ -296,6 +298,9 @@ export const ProfileForm = ({
                 {form.formState.errors.email.message}
               </p>
             )}
+
+            {/* TODO: Set the condition of this error when there is already this email in the system */}
+            <p className="text-sm text-red-500">This email already exists.</p>
           </div>
 
           <div className="space-y-1">
