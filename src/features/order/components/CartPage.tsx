@@ -225,7 +225,9 @@ export function CartPage() {
                   })
                 }
               >
-                {t("Checkout")} ({selectedItems.length})
+                {t("Checkout")} ({items
+                  .filter((item) => selectedItems.includes(item.variantId))
+                  .reduce((total, item) => total + item.quantity, 0)})
               </Button>
             </div>
           </div>
