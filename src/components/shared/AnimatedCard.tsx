@@ -120,8 +120,7 @@ export function AnimatedCard({
           </Button>
         )}
 
-        {/* TODO: set the condition of sales_price dynamically */}
-        {!sales_price && (
+        {product_variants && product_variants.some(variant => variant.compare_at_price && variant.compare_at_price > 0) && (
           <span className="absolute left-2 top-2 bg-[#DE473C] text-white text-sm rounded-full px-2 py-0.5">
             Sale
           </span>

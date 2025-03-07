@@ -111,20 +111,16 @@ export function PaymentMethod({
           });
         }
 
-        if (response.bank_transfer?.accounts) {
-          // Add each bank account as a separate payment option
-          response.bank_transfer.accounts.forEach((account) => {
-            options.push({
-              id: `bank_transfer_${account.id}`,
-              name: t("Bank Transfer"),
-              description: `${account.bank.bank_name} - ${account.account_name}`,
-              icon: <Building2 className="h-4 w-4" />,
-              details: {
-                bank: account.bank,
-                account_name: account.account_name,
-                account_number: account.account_number,
-              },
-            });
+        if (response.bank_transfer && response.bank_transfer.accounts && response.bank_transfer.accounts.length > 0) {
+          // Add a single bank transfer option
+          options.push({
+            id: "bank_transfer",
+            name: t("Bank Transfer"),
+            description: t("Bank Transfer"),
+            icon: <Building2 className="h-4 w-4" />,
+            details: {
+              bank: response.bank_transfer.accounts[0].bank, // Use first bank's icon
+            },
           });
         }
 

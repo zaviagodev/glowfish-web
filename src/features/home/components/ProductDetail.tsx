@@ -246,8 +246,7 @@ export function ProductDetail({
                   <Calendar className="w-4 h-4" />
                   <span>{date || "To be determined"}</span>
                 </div>
-                {/* TODO: set the condition of sales_price dynamically */}
-                {!sales_price && (
+                {product_variants && product_variants.some(variant => variant.compare_at_price && variant.compare_at_price > 0) && (
                   <div className="bg-[#DE473C] text-white rounded-full px-1.5 py-0.5 w-fit text-xs">
                     Sale
                   </div>

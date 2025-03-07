@@ -57,6 +57,7 @@ export const OrderService = {
             loyalty_points_used,
             created_at,
             customer_id,
+            shipping_details,
             customer:customers (
               id,
               email,
@@ -149,6 +150,8 @@ export const OrderService = {
           loyalty_points_used,
           created_at,
           customer_id,
+          payment_details,
+          shipping_details,
           customer:customers (
             id,
             email,

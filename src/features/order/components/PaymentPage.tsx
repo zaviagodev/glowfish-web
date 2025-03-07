@@ -169,7 +169,7 @@ export function PaymentPage() {
 
         // If bank transfer, pre-select the first account
         if (
-          storedPaymentMethod?.startsWith("bank_transfer") &&
+          storedPaymentMethod === "bank_transfer" &&
           paymentData.bank_transfer?.accounts
         ) {
           setSelectedBankAccount(paymentData.bank_transfer.accounts[0]);
@@ -223,13 +223,13 @@ export function PaymentPage() {
 
       setShowCelebration(true);
 
-      // Wait for celebration animation then redirect
+      // Wait for celebration animation then redirect to thank you page
       setTimeout(() => {
         navigate("/checkout/thank-you", {
           state: {
             orderNumber: order.id,
             amount: order.total,
-            date: order.created_at,
+            date: order.created_at
           },
           replace: true,
         });
@@ -298,7 +298,7 @@ export function PaymentPage() {
       formData.append("paymentType", paymentTypeToSend);
 
       // Handle payment method for bank transfer
-      if (paymentMethod?.startsWith("bank_transfer")) {
+      if (paymentMethod === "bank_transfer") {
         if (!selectedBankAccount) {
           alert(t("Please select a bank account first."));
           setIsUploading(false);
@@ -414,8 +414,7 @@ export function PaymentPage() {
             <div className="flex-grow">
               <div className="font-medium">{account.bank.bank_name}</div>
               <div className="text-sm text-muted-foreground">
-                {t("Account")}:{" "}
-                {formatBankAccountNumber(account.account_number)}
+                {t("Account")}: {formatBankAccountNumber(account.account_number)}
               </div>
               <div className="text-xs text-muted-foreground">
                 {account.account_name}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslate } from "@refinedev/core";
 import {
   useNavigate,
@@ -22,6 +22,7 @@ import { cn, formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { format } from "date-fns";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Add LoadingOverlay component at the top of the file
 const LoadingOverlay = () => (
@@ -41,11 +42,19 @@ const OrdersPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") || "1");
   const currentStatus = searchParams.get("status") || "all";
   const [searchQuery, setSearchQuery] = useState("");
   const ITEMS_PER_PAGE = 5;
+
+  // Refresh order data whenever we visit a single order page
+  useEffect(() => {
+    if (id) {
+      queryClient.invalidateQueries({ queryKey: ["order", id] });
+    }
+  }, [id, queryClient]);
 
   const {
     orders,
@@ -108,6 +117,7 @@ const OrdersPage = () => {
       created_at: order.created_at,
       order_items: order.order_items,
       total_amount: order.total_amount,
+      shipping_details: order.shipping_details,
     })) || [];
 
   // Show loading overlay during initial load or data fetching
@@ -325,6 +335,33 @@ const OrdersPage = () => {
               </div>
             </div>
 
+            {/* Shipping Information */}
+            {order.shipping_details && (
+              <div className="p-5 space-y-4">
+                <h2 className="text-sm font-medium tracking-wide">
+                  {t("Shipping Information")}
+                </h2>
+                <div className="bg-darkgray rounded-lg p-5">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">{t("Courier")}</span>
+                      <span className="text-sm font-medium">{order.shipping_details.courier}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">{t("Tracking Number")}</span>
+                      <span className="text-sm font-medium">{order.shipping_details.tracking_number}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">{t("Shipped Date")}</span>
+                      <span className="text-sm font-medium">
+                        {format(order.shipping_details.shipped_at, formattedDateAndTime)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Order Items */}
             <div className="p-5 space-y-5">
               <h2 className="text-sm font-medium tracking-wide">
@@ -449,7 +486,7 @@ const OrdersPage = () => {
             </div>
 
             {/* Pay Now Button */}
-            {order.status === "pending" && order.total_amount > 0 && (
+            {order.status === "pending" && order.total_amount > 0 && !order.payment_details && (
               <div className="px-5">
                 <button onClick={handlePayNow} className="w-full main-btn">
                   {t("Pay Now")} (฿

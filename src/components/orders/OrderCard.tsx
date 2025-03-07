@@ -36,6 +36,11 @@ interface OrderCardProps {
     created_at: string;
     order_items: OrderItem[];
     total_amount: number;
+    shipping_details?: {
+      courier: string;
+      shipped_at: string;
+      tracking_number: string;
+    };
   };
   index: number;
 }
@@ -89,16 +94,21 @@ export function OrderCard({ order, index }: OrderCardProps) {
         <OrderStatusBadge status={order.status} />
       </div>
 
-      <div className="px-4">
-        <div className="bg-[#232323] px-3 py-4 rounded-lg flex flex-col justify-center">
-          {/* TODO: Set the dynamic tracking number */}
-          <p className="text-sm">Tracking Number : TH123456789</p>
-          <p className="text-sm text-muted-foreground">
-            {/* TODO: Set the dynamic shipped date */}
-            Shipped date : 3/25/2024
-          </p>
+      {order.shipping_details && (
+        <div className="px-4">
+          <div className="bg-[#232323] px-3 py-4 rounded-lg flex flex-col justify-center">
+            <p className="text-sm">
+              {t("Tracking Number")}: {order.shipping_details.tracking_number}
+            </p>
+            <p className="text-sm">
+              {t("Courier")}: {order.shipping_details.courier}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {t("Shipped date")}: {format(order.shipping_details.shipped_at, formattedDateAndTime)}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Order Items */}
       {visibleItems.map((item, index) => {
