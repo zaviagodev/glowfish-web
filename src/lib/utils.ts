@@ -62,3 +62,7 @@ export const generateTimeSlots = (): string[] => {
 
   return times;
 };
+
+export const makeTwoDecimals = (val: number) => {
+  return Number.isInteger(val) ? val : val.toFixed(2);
+}

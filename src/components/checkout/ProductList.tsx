@@ -1,6 +1,7 @@
 import { useTranslate } from "@refinedev/core";
 import { CartItem } from "@/lib/cart";
 import GlowfishIcon from "../icons/GlowfishIcon";
+import { makeTwoDecimals } from "@/lib/utils";
 
 interface ProductListProps {
   items: CartItem[];
@@ -40,7 +41,7 @@ export function ProductList({ items }: ProductListProps) {
               </h4>
               <div className="flex items-center justify-between mt-2">
                 <p className="text-sm font-semibold">
-                  ฿{item.price.toLocaleString()}
+                  ฿{makeTwoDecimals(item.price).toLocaleString()}
                 </p>
                 <p className="text-sm text-muted-foreground">
                   x{item.quantity}

@@ -1,6 +1,7 @@
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, MessageCircle, Receipt } from "lucide-react";
+import { makeTwoDecimals } from "@/lib/utils";
 
 interface CheckoutFooterProps {
   total: number;
@@ -36,13 +37,13 @@ export function CheckoutFooter({
       <div className="flex items-center justify-between mb-4 text-sm">
         <span className="text-base">{t("Total Payment")}</span>
         <span className="text-base font-bold text-[#EE4D2D]">
-          ฿{total.toLocaleString()}
+          ฿{makeTwoDecimals(total).toLocaleString()}
         </span>
       </div>
       <Button
         className="w-full main-btn h-12"
         disabled={isProcessing || disabled}
-        onClick={(e) => disabled ? undefined : onPlaceOrder(e)}
+        onClick={(e) => (disabled ? undefined : onPlaceOrder(e))}
       >
         {isProcessing ? t("Processing...") : t("Place Order")}
       </Button>

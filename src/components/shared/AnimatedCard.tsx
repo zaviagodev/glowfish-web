@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { BookImage, Calendar, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
-import { cn } from "@/lib/utils";
+import { cn, makeTwoDecimals } from "@/lib/utils";
 import { useState } from "react";
 import { AnimatedCardProps } from "@/type/type 2";
 import GlowfishIcon from "../icons/GlowfishIcon";
@@ -63,11 +63,13 @@ export function AnimatedCard({
 
     if (minPrice === maxPrice) {
       // return `฿${minPrice.toLocaleString()}`;
-      return minPrice === 0 ? t("free") : `฿${minPrice.toLocaleString()}`;
+      return minPrice === 0
+        ? t("free")
+        : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
     }
 
     // return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
-    return `฿${minPrice.toLocaleString()}`;
+    return `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
   };
 
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;

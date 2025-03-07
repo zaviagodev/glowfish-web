@@ -18,7 +18,7 @@ import { defaultOrderStatuses } from "@/components/settings/OrderStatusBar";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import Pagination from "@/components/pagination/Pagination";
 import { Package2, Truck, Ticket } from "lucide-react";
-import { cn, formattedDateAndTime } from "@/lib/utils";
+import { cn, formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { format } from "date-fns";
@@ -354,7 +354,7 @@ const OrdersPage = () => {
                         <div className="flex items-center justify-between gap-2">
                           <p>
                             {t("Unit Price")}: ฿
-                            {item.unit_price.toLocaleString()}
+                            {makeTwoDecimals(item.unit_price).toLocaleString()}
                           </p>
                           <p className="whitespace-pre">
                             {t("Quantity")}: {item.quantity}
@@ -362,7 +362,9 @@ const OrdersPage = () => {
                         </div>
                         <p className="font-medium text-card-foreground">
                           {t("Total")}: ฿
-                          {(item.unit_price * item.quantity).toLocaleString()}
+                          {makeTwoDecimals(
+                            item.unit_price * item.quantity
+                          ).toLocaleString()}
                         </p>
                         {item.product_variants.options?.length > 0 && (
                           <div className="flex flex-wrap gap-1">
@@ -394,7 +396,7 @@ const OrdersPage = () => {
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("Subtotal")}</span>
                   <span className="text-card-foreground">
-                    ฿{order.subtotal.toLocaleString()}
+                    ฿{makeTwoDecimals(order.subtotal).toLocaleString()}
                   </span>
                 </div>
                 {order.shipping > 0 && (
@@ -403,7 +405,7 @@ const OrdersPage = () => {
                       {t("Shipping")}
                     </span>
                     <span className="text-card-foreground">
-                      ฿{order.shipping.toLocaleString()}
+                      ฿{makeTwoDecimals(order.shipping).toLocaleString()}
                     </span>
                   </div>
                 )}
@@ -411,14 +413,16 @@ const OrdersPage = () => {
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{t("Tax")}</span>
                     <span className="text-card-foreground">
-                      ฿{order.tax.toLocaleString()}
+                      ฿{makeTwoDecimals(order.tax).toLocaleString()}
                     </span>
                   </div>
                 )}
                 {order.discount > 0 && (
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <span>{t("Discount")}</span>
-                    <span>-฿{order.discount.toLocaleString()}</span>
+                    <span>
+                      -฿{makeTwoDecimals(order.discount).toLocaleString()}
+                    </span>
                   </div>
                 )}
                 {order.points_discount > 0 && (
@@ -437,7 +441,7 @@ const OrdersPage = () => {
                   <div className="flex justify-between">
                     <span className="font-medium">{t("Total")}</span>
                     <span className="font-medium">
-                      ฿{order.total_amount.toLocaleString()}
+                      ฿{makeTwoDecimals(order.total_amount).toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -448,7 +452,8 @@ const OrdersPage = () => {
             {order.status === "pending" && order.total_amount > 0 && (
               <div className="px-5">
                 <button onClick={handlePayNow} className="w-full main-btn">
-                  {t("Pay Now")} (฿{order.total_amount.toLocaleString()})
+                  {t("Pay Now")} (฿
+                  {makeTwoDecimals(order.total_amount).toLocaleString()})
                 </button>
               </div>
             )}
