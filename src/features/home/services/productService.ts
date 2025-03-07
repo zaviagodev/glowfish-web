@@ -35,6 +35,7 @@ const transformProduct = (event: any): Product => {
     organizer_name: event.organizer_name || '', 
     start_datetime: event.start_datetime || '', // Current date as default
     end_datetime: event.end_datetime || '',
+    google_maps_link: event.google_maps_link || '',
   };
 
 };

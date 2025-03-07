@@ -304,41 +304,40 @@ export function ProductDetail({
             {venue_address && (
               <div className="space-y-2">
                 <h2 className="text-base">{t("Venue & Location")}</h2>
-                {google_maps_link && (
-                  <button
-                    onClick={() =>
-                      window.open(
-                        google_maps_link,
-                        "_blank",
-                        "noopener,noreferrer"
-                      )
-                    }
-                    className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Map className="w-5 h-5 text-white" />
-                      {t("View map")}
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                  </button>
-                )}
+                {typeof google_maps_link === 'string' && google_maps_link.trim() !== '' && (
+                  <>
+                    <button
+                      onClick={() =>
+                        window.open(
+                          google_maps_link,
+                          "_blank",
+                          "noopener,noreferrer"
+                        )
+                      }
+                      className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Map className="w-5 h-5 text-white" />
+                        {t("View map")}
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                    </button>
 
-                <iframe
-                  src={
-                    google_maps_link ||
-                    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1583.1070777793889!2d100.62458359858884!3d13.741700713608575!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d61c2d1742661%3A0x638960c535dd8ead!2sThe%20Nine%20Center%20Rama%209!5e0!3m2!1sen!2sth!4v1741248484641!5m2!1sen!2sth"
-                  }
-                  style={{
-                    border: 0,
-                    width: "100%",
-                    borderRadius: "12px",
-                    height: "50vw",
-                    maxHeight: "270px",
-                  }}
-                  allowFullScreen={false}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
+                    <iframe
+                      src={google_maps_link}
+                      style={{
+                        border: 0,
+                        width: "100%",
+                        borderRadius: "12px",
+                        height: "50vw",
+                        maxHeight: "270px",
+                      }}
+                      allowFullScreen={false}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                  </>
+                )}
 
                 <p className="text-sm text-secondary-foreground font-light">
                   {venue_address}
