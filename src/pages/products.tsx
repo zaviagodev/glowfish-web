@@ -370,6 +370,9 @@ export default function ProductsPage() {
         </SheetContent>
       </Sheet>
 
+      {console.log(selectedProduct)}
+
+
       {/* Product Detail */}
       {selectedProduct && (
         <ProductDetail
