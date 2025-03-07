@@ -9,6 +9,7 @@ import { useState, useRef, useEffect } from "react";
 import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { makeTwoDecimals } from "@/lib/utils";
 
 export function CartPage() {
   const t = useTranslate();
@@ -110,7 +111,7 @@ export function CartPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-bold text-[#EE4D2D]">
-                          ฿{item.price.toLocaleString()}
+                          ฿{makeTwoDecimals(item.price).toLocaleString()}
                         </p>
                         <Button
                           variant="ghost"
@@ -195,7 +196,7 @@ export function CartPage() {
                 <div className="text-sm font-medium flex items-center gap-1 text-muted-foreground">
                   {t("Total")}:
                   <span className="text-[#EE4D2D] font-bold text-lg">
-                    ฿{total.toLocaleString()}
+                    ฿{makeTwoDecimals(total).toLocaleString()}
                   </span>
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -204,7 +205,7 @@ export function CartPage() {
                       <span className="flex items-center gap-1">
                         {t("Discount")}:
                         <span className="text-[#EE4D2D] font-semibold">
-                          -฿{discount.toLocaleString()}
+                          -฿{makeTwoDecimals(discount).toLocaleString()}
                         </span>
                       </span>
                     </>

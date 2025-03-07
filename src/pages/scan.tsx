@@ -1,7 +1,7 @@
 import { useTranslate } from "@refinedev/core";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { QrCode, X, RefreshCw, ChevronLeft } from "lucide-react";
+import { QrCode, X, RefreshCw, ChevronLeft, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/toast";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -154,14 +154,6 @@ const ScanPage = () => {
                         {t("Redeeming code...")}
                       </p>
                     </div>
-                  ) : error ? (
-                    <div className="text-center">
-                      <p className="text-sm mb-2">{error}</p>
-                      <Button onClick={handleReset} className="gap-2 main-btn">
-                        <RefreshCw className="h-4 w-4" />
-                        {t("Try Again")}
-                      </Button>
-                    </div>
                   ) : pointsEarned ? (
                     <div className="text-center">
                       <p className="text-lg font-semibold text-green-600">
@@ -181,10 +173,11 @@ const ScanPage = () => {
         <Sheet open={hasError}>
           <SheetContent
             side="bottom"
-            className="h-[30%] bg-background rounded-t-xl p-0 pb-8 overflow-auto max-width-mobile outline-none"
+            className="h-[40%] bg-background rounded-t-xl p-0 pb-8 overflow-auto max-width-mobile outline-none"
             hideCloseButton={true}
           >
-            <SheetHeader className="p-4 pt-9 rounded-t-xl bg-background backdrop-blur-xl items-center before:top-3 max-width-mobile w-full -translate-y-[1px]">
+            <SheetHeader className="p-4 pt-9 rounded-t-xl bg-background backdrop-blur-xl items-center before:top-3 max-width-mobile w-full -translate-y-[1px] gap-2">
+              <XCircle className="text-red-500 h-16 w-16" />
               <SheetTitle className="font-semibold tracking-tight w-full text-center">
                 {error}
               </SheetTitle>
@@ -192,7 +185,7 @@ const ScanPage = () => {
 
             <div className="flex items-center gap-2 px-5">
               <Button
-                onClick={() => setHasError(false)}
+                onClick={() => navigate(-1)}
                 className="gap-2 secondary-btn text-white w-full"
               >
                 <X className="h-4 w-4" />

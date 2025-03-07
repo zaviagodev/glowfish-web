@@ -21,7 +21,7 @@ import { useToast } from "@/components/ui/toast";
 import { Product, ProductVariant } from "../types/product.types";
 import DOMPurify from "dompurify";
 import { isPast } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn, makeTwoDecimals } from "@/lib/utils";
 import ItemCarousel from "@/components/ui/item-carousel";
 
 interface ProductVariantOption {
@@ -90,10 +90,14 @@ export function ProductDetail({
     const maxPrice = Math.max(...prices);
 
     if (minPrice === maxPrice) {
-      return minPrice === 0 ? t("free") : `฿${minPrice.toLocaleString()}`;
+      return minPrice === 0
+        ? t("free")
+        : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
     }
 
-    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+    return `฿${makeTwoDecimals(minPrice).toLocaleString()} - ฿${makeTwoDecimals(
+      maxPrice
+    ).toLocaleString()}`;
   };
 
   // Get compare at price display
@@ -319,6 +323,24 @@ export function ProductDetail({
                     <ChevronRight className="w-5 h-5 text-muted-foreground" />
                   </button>
                 )}
+
+                <iframe
+                  src={
+                    google_maps_link ||
+                    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1583.1070777793889!2d100.62458359858884!3d13.741700713608575!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d61c2d1742661%3A0x638960c535dd8ead!2sThe%20Nine%20Center%20Rama%209!5e0!3m2!1sen!2sth!4v1741248484641!5m2!1sen!2sth"
+                  }
+                  style={{
+                    border: 0,
+                    width: "100%",
+                    borderRadius: "12px",
+                    height: "50vw",
+                    maxHeight: "270px",
+                  }}
+                  allowFullScreen={false}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+
                 <p className="text-sm text-secondary-foreground font-light">
                   {venue_address}
                 </p>

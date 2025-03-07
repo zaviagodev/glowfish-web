@@ -1,3 +1,4 @@
+import { makeTwoDecimals } from "@/lib/utils";
 import { useTranslate } from "@refinedev/core";
 import { Receipt } from "lucide-react";
 
@@ -32,7 +33,9 @@ export function OrderSummary({
             <span className="text-body text-muted-foreground">
               {t("Subtotal")}
             </span>
-            <span className="text-body">฿{subtotal.toLocaleString()}</span>
+            <span className="text-body">
+              ฿{makeTwoDecimals(subtotal).toLocaleString()}
+            </span>
           </div>
           {discount > 0 && (
             <div className="flex justify-between">
@@ -40,7 +43,7 @@ export function OrderSummary({
                 {t("Discount")}
               </span>
               <span className="text-body text-secondary-foreground">
-                -฿{discount.toLocaleString()}
+                -฿{makeTwoDecimals(discount).toLocaleString()}
               </span>
             </div>
           )}
@@ -63,7 +66,7 @@ export function OrderSummary({
           <div className="pt-3 mt-1 border-t flex justify-between">
             <span className="font-semibold">{t("Total")}</span>
             <span className="font-bold text-secondary-foreground">
-              ฿{total.toLocaleString()}
+              ฿{makeTwoDecimals(total).toLocaleString()}
             </span>
           </div>
         </div>

@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { useTranslate } from "@refinedev/core";
 import { Category as ProductCategory } from "@/features/home/types/product.types";
 
-type Category = Omit<ProductCategory, 'store_name' | 'created_at' | 'updated_at'>;
+type Category = Omit<
+  ProductCategory,
+  "store_name" | "created_at" | "updated_at"
+>;
 
 interface CategoryGridProps {
   categories: Category[];
@@ -36,19 +39,20 @@ export function CategoryGrid({
       >
         <Button
           onClick={() => handleCategoryClick(null)}
-          className="whitespace-nowrap px-3 py-2 h-9 text-white text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40] outline outline-2 outline-background"
+          className="whitespace-nowrap px-3 py-2 h-9 text-black text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40] outline outline-2 outline-background"
           style={{
-            backgroundColor: "#DE473C",
+            backgroundColor: "#F2E9D6",
             boxShadow: `0 0 0 4px ${
-              selectedCategory === null ? "#DE473C" : "transparent"
+              selectedCategory === null ? "#F2E9D6" : "transparent"
             }`,
+            transition: "box-shadow .1s",
           }}
         >
           {t("All")}
         </Button>
       </motion.div>
       {categories.map((category, index) => {
-        const colors = ["#DE473C", "#F5853B", "#FADB28", "#14A852", "#317ABF"];
+        const colors = ["#F4DC53", "#4578BA", "#CC5244", "#E58B4C", "#4EA65B"];
         return (
           <motion.div
             key={category.id}
@@ -61,12 +65,13 @@ export function CategoryGrid({
               onClick={() => handleCategoryClick(category.id)}
               className="whitespace-nowrap px-3 py-2 h-9 text-white text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40] outline outline-2 outline-background"
               style={{
-                backgroundColor: colors[(index + 1) % colors.length],
+                backgroundColor: colors[index % colors.length],
                 boxShadow: `0 0 0 4px ${
                   selectedCategory === category.id
-                    ? colors[(index + 1) % colors.length]
+                    ? colors[index % colors.length]
                     : "transparent"
                 }`,
+                transition: "box-shadow .1s",
               }}
             >
               {category.name}
