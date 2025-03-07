@@ -108,9 +108,9 @@ function App() {
             ]}
             options={{
               syncWithLocation: true,
-              warnWhenUnsavedChanges: true,
+              warnWhenUnsavedChanges: false,
               useNewQueryKeys: true,
-              projectId: "UtpLjx-1BQtOL-U4jwRn",
+              projectId: "UtpLjx-1BQtOL-U4jwRn"
             }}
           >
             <Routes>
@@ -187,7 +187,6 @@ function App() {
 
             <RefineKbar />
             <UnsavedChangesNotifier />
-            <DocumentTitleHandler />
           </Refine>
           <DevtoolsPanel />
         </DevtoolsProvider>
