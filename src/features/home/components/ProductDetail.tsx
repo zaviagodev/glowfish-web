@@ -40,6 +40,48 @@ interface ProductDetailProps extends Partial<Product> {
   gallery_link?: string;
 }
 
+// Helper function to handle different types of Google Maps links
+const getMapLinks = (mapLink: string) => {
+  if (!mapLink || mapLink.trim() === '') return { viewLink: '', embedLink: '', isShareLink: false };
+  
+  // If it's already an embed link, return as is
+  if (mapLink.includes('google.com/maps/embed')) {
+    return {
+      viewLink: mapLink.replace('/embed', '/place'),
+      embedLink: mapLink,
+      isShareLink: false
+    };
+  }
+
+  // If it's a share link (maps.app.goo.gl or goo.gl)
+  if (mapLink.includes('goo.gl')) {
+    return {
+      viewLink: mapLink,
+      embedLink: '', // Can't convert short links to embed
+      isShareLink: true
+    };
+  }
+
+  // If it's a regular maps link
+  if (mapLink.includes('google.com/maps')) {
+    const embedLink = mapLink.includes('/place/') 
+      ? mapLink.replace('/place/', '/embed/place/') 
+      : mapLink.replace('/maps/', '/maps/embed/');
+    return {
+      viewLink: mapLink,
+      embedLink,
+      isShareLink: false
+    };
+  }
+
+  // If none of the above conditions match, consider it invalid
+  return {
+    viewLink: '',
+    embedLink: '',
+    isShareLink: false
+  };
+};
+
 export function ProductDetail({
   id,
   image,
@@ -304,41 +346,52 @@ export function ProductDetail({
             {venue_address && (
               <div className="space-y-2">
                 <h2 className="text-base">{t("Venue & Location")}</h2>
-                {google_maps_link && (
-                  <button
-                    onClick={() =>
-                      window.open(
-                        google_maps_link,
-                        "_blank",
-                        "noopener,noreferrer"
-                      )
-                    }
-                    className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Map className="w-5 h-5 text-white" />
-                      {t("View map")}
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                  </button>
-                )}
+                {/* Get processed map links */}
+                {(() => {
+                  const { viewLink, embedLink, isShareLink } = getMapLinks(google_maps_link);
+                  if (!viewLink) return null;
 
-                <iframe
-                  src={
-                    google_maps_link ||
-                    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1583.1070777793889!2d100.62458359858884!3d13.741700713608575!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d61c2d1742661%3A0x638960c535dd8ead!2sThe%20Nine%20Center%20Rama%209!5e0!3m2!1sen!2sth!4v1741248484641!5m2!1sen!2sth"
+                  if (isShareLink) {
+                    return (
+                      <button
+                        onClick={() =>
+                          window.open(
+                            viewLink,
+                            "_blank",
+                            "noopener,noreferrer"
+                          )
+                        }
+                        className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Map className="w-5 h-5 text-white" />
+                          {t("View map")}
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      </button>
+                    );
                   }
-                  style={{
-                    border: 0,
-                    width: "100%",
-                    borderRadius: "12px",
-                    height: "50vw",
-                    maxHeight: "270px",
-                  }}
-                  allowFullScreen={false}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
+
+                  if (embedLink) {
+                    return (
+                      <iframe
+                        src={embedLink}
+                        style={{
+                          border: 0,
+                          width: "100%",
+                          borderRadius: "12px",
+                          height: "50vw",
+                          maxHeight: "270px",
+                        }}
+                        allowFullScreen={false}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      ></iframe>
+                    );
+                  }
+
+                  return null;
+                })()}
 
                 <p className="text-sm text-secondary-foreground font-light">
                   {venue_address}

@@ -37,6 +37,7 @@ export interface Product {
   organizer_name: string;
   start_datetime: string;
   end_datetime: string;
+  google_maps_link?: string;
   created_at?: string;
   updated_at?: string;
 }
