@@ -187,10 +187,11 @@ export function VariantDrawer({
           {/* Price Display */}
           {currentVariant && (
             <div className="flex flex-col items-center">
-              {/* TODO: set the condition of sales_price dynamically */}
-              <span className="text-sm text-muted-foreground line-through">
-                {currentVariant.sales_price || "฿0"}
-              </span>
+              {currentVariant.compare_at_price && currentVariant.compare_at_price > 0 && (
+                <span className="text-sm text-muted-foreground line-through">
+                  ฿{currentVariant.compare_at_price.toLocaleString()}
+                </span>
+              )}
               <span className="text-2xl font-bold">
                 ฿{currentVariant.price.toLocaleString()}
               </span>
