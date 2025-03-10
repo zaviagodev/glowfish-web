@@ -29,7 +29,7 @@ interface PaymentOption {
   id: string;
   name: string;
   description: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   details?: {
     bank?: {
       bank_code: string;
@@ -102,12 +102,7 @@ export function PaymentMethod({
           options.push({
             id: "promptpay",
             name: t("PromptPay"),
-            description: response.promptpay.name,
-            icon: <ScanQrCode className="h-4 w-4" />,
-            details: {
-              bank: response.promptpay.bank,
-              account_name: response.promptpay.name,
-            },
+            description: t("Pay via PromptPay")
           });
         }
 
@@ -116,11 +111,7 @@ export function PaymentMethod({
           options.push({
             id: "bank_transfer",
             name: t("Bank Transfer"),
-            description: t("Bank Transfer"),
-            icon: <Building2 className="h-4 w-4" />,
-            details: {
-              bank: response.bank_transfer.accounts[0].bank, // Use first bank's icon
-            },
+            description: t("Pay via Bank Transfer")
           });
         }
 
@@ -163,37 +154,28 @@ export function PaymentMethod({
         <div className="flex items-center gap-3">
           {selectedOption ? (
             <>
-              {selectedOption.details?.bank?.image_url ? (
-                <img
-                  src={getFullImageUrl(selectedOption.details.bank.image_url)}
-                  alt={selectedOption.details.bank.bank_name}
-                  className="w-8 h-8 object-contain"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
-                  {selectedOption.icon}
+              <div>
+                <div className="text-sm font-medium">
+                  {selectedOption?.name || t("Payment Method")}
                 </div>
-              )}
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  {selectedOption?.description || t("Select a payment method")}
+                </div>
+                {selectedOption?.details?.account_number && (
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    {t("Account")}: {selectedOption?.details?.account_number}
+                  </div>
+                )}
+              </div>
             </>
           ) : (
-            <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
-              <ScanQrCode className="h-4 w-4 text-icon-green-foreground" />
+            <div>
+              <div className="text-sm font-medium">{t("Payment Method")}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {t("Select a payment method")}
+              </div>
             </div>
           )}
-
-          <div>
-            <div className="text-sm font-medium">
-              {selectedOption?.name || t("Payment Method")}
-            </div>
-            <div className="text-xs text-muted-foreground mt-0.5">
-              {selectedOption?.description || t("Select a payment method")}
-            </div>
-            {selectedOption?.details?.account_number && (
-              <div className="text-xs text-muted-foreground mt-0.5">
-                {t("Account")}: {selectedOption?.details?.account_number}
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
@@ -220,34 +202,21 @@ export function PaymentMethod({
                   setShowOptions(false);
                 }}
               >
-                <div className="flex items-center gap-3">
-                  {option.details?.bank?.image_url ? (
-                    <img
-                      src={getFullImageUrl(option.details.bank.image_url)}
-                      alt={option.details.bank.bank_name}
-                      className="w-5 h-5 object-contain"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-lg bg-icon-green-background text-icon-green-foreground flex items-center justify-center overflow-hidden">
-                      {option.icon}
+                <div>
+                  <div className="text-sm font-medium">{option.name}</div>
+                  <div className="text-xs text-secondary-foreground">
+                    {option.description}
+                  </div>
+                  {option.details?.bank?.bank_name_thai && (
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {option.details.bank.bank_name_thai}
                     </div>
                   )}
-                  <div>
-                    <div className="text-sm font-medium">{option.name}</div>
-                    <div className="text-xs text-secondary-foreground">
-                      {option.description}
+                  {option.details?.account_number && (
+                    <div className="text-xs text-muted-foreground">
+                      {t("Account")}: {option.details.account_number}
                     </div>
-                    {option.details?.bank?.bank_name_thai && (
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        {option.details.bank.bank_name_thai}
-                      </div>
-                    )}
-                    {option.details?.account_number && (
-                      <div className="text-xs text-muted-foreground">
-                        {t("Account")}: {option.details.account_number}
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
               </button>
             ))}
