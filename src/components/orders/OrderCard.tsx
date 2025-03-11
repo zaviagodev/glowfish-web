@@ -104,7 +104,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
               {t("Courier")}: {order.shipping_details.courier}
             </p>
             <p className="text-sm text-muted-foreground">
-              {t("Shipped date")}: {format(order.shipping_details.shipped_at, formattedDateAndTime)}
+              {t("Shipped Date")}: {format(order.shipping_details.shipped_at, formattedDateAndTime)}
             </p>
           </div>
         </div>
