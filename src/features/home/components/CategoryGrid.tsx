@@ -48,7 +48,7 @@ export function CategoryGrid({
         </Button>
       </motion.div>
       {categories.map((category, index) => {
-        const colors = ["#DE473C", "#F5853B", "#FADB28", "#14A852", "#317ABF"];
+        const colors = ["#FADB28", "#317ABF", "#DE473C", "#F5853B", "#14A852"];
         return (
           <motion.div
             key={category.id}
