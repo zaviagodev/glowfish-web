@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { format, isPast } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { EventDataProps } from "@/type/type 2";
 import { useTranslate } from "@refinedev/core";
 import { Link } from "react-router-dom";
@@ -37,10 +38,10 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
               item.start_datetime &&
               item.end_datetime &&
               `${format(
-                new Date(item.start_datetime),
+                toZonedTime(new Date(item.start_datetime), "UTC"),
                 formattedDateAndTime
               )} - ${format(
-                new Date(item.end_datetime),
+                toZonedTime(new Date(item.end_datetime), "UTC"),
                 formattedDateAndTime
               )}`;
             return (

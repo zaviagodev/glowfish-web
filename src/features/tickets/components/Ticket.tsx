@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { format, formatDistanceToNow, isToday } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { MapPin, Calendar, Users } from "lucide-react";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +66,7 @@ export function Ticket({ ticket }: TicketProps) {
                     ? "bg-[#8E8E93]/10 text-[#8E8E93]"
                     : ticket.status === "ongoing"
                     ? "bg-[#FF9500]/10 text-[#FF9500]"
-                    : isToday(new Date(ticket.date))
+                    : isToday(toZonedTime(new Date(ticket.date), "UTC"))
                     ? "bg-[#FF3B30]/10 text-[#FF3B30]"
                     : "bg-[#007AFF]/10 text-[#007AFF]"
                 )}
@@ -74,9 +75,9 @@ export function Ticket({ ticket }: TicketProps) {
                   ? "Ended"
                   : ticket.status === "ongoing"
                   ? "Ongoing"
-                  : isToday(new Date(ticket.date))
+                  : isToday(toZonedTime(new Date(ticket.date), "UTC"))
                   ? "Today!"
-                  : `In ${formatDistanceToNow(new Date(ticket.date), {
+                  : `In ${formatDistanceToNow(toZonedTime(new Date(ticket.date), "UTC"), {
                       addSuffix: false,
                     })}`}
               </div>
@@ -93,7 +94,7 @@ export function Ticket({ ticket }: TicketProps) {
               <Calendar className="w-4 h-4 flex-shrink-0" />
               <span>
                 {ticket.date
-                  ? format(new Date(ticket.date), formattedDateAndTime)
+                  ? format(toZonedTime(new Date(ticket.date), "UTC"), formattedDateAndTime)
                   : "To be determined"}
               </span>
             </div>

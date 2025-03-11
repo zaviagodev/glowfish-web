@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { CheckInView } from "../components/CheckInView";
 import { Button } from "@/components/ui/button";

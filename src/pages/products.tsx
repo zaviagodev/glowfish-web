@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { useProducts } from "@/features/home/hooks/useProducts";
 import { format, isPast } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import {
   Sheet,
   SheetContent,
@@ -109,9 +110,12 @@ export default function ProductsPage() {
       product?.start_datetime &&
       product?.end_datetime &&
       `${format(
-        new Date(product.start_datetime),
+        toZonedTime(new Date(product.start_datetime), "UTC"),
         formattedDateAndTime
-      )} - ${format(new Date(product.end_datetime), formattedDateAndTime)}`
+      )} - ${format(
+        toZonedTime(new Date(product.end_datetime), "UTC"),
+        formattedDateAndTime
+      )}`
     );
   };
 

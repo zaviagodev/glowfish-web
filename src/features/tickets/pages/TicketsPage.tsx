@@ -8,6 +8,7 @@ import { Ticket } from "../components/Ticket";
 import { useTickets } from "../hooks/useTickets";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import Pagination from "@/components/pagination/Pagination";
+import { toZonedTime } from "date-fns-tz";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -21,7 +22,7 @@ export default function TicketsPage() {
   const sortedTickets = [...tickets].sort((a, b) => {
     const dateA = new Date(a.event?.start_datetime || "");
     const dateB = new Date(b.event?.start_datetime || "");
-    const now = new Date();
+    const now = toZonedTime(new Date(), "UTC");
     return (
       Math.abs(dateA.getTime() - now.getTime()) -
       Math.abs(dateB.getTime() - now.getTime())
@@ -32,11 +33,11 @@ export default function TicketsPage() {
     if (!ticket.event?.end_datetime) {
       return false;
     }
-    const eventDate = new Date(ticket.event.end_datetime);
+    const eventDate = toZonedTime(new Date(ticket.event.end_datetime), "UTC");
     if (isNaN(eventDate.getTime())) {
       return false;
     }
-    const isUpcoming = eventDate > new Date();
+    const isUpcoming = eventDate > toZonedTime(new Date(), "UTC");
     const shouldInclude = activeTab === "upcoming" ? isUpcoming : !isUpcoming;
     return shouldInclude;
   });

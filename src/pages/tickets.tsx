@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -146,9 +147,9 @@ export default function TicketsPage() {
   };
 
   const getEventStatus = (startDate: string, endDate: string) => {
-    const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    const now = toZonedTime(new Date(), "UTC");
+    const start = toZonedTime(new Date(startDate), "UTC");
+    const end = toZonedTime(new Date(endDate), "UTC");
 
     if (now < start) return "upcoming";
     if (now > end) return "passed";
@@ -157,9 +158,9 @@ export default function TicketsPage() {
 
   // Sort and filter logic for list view
   const sortedEvents = [...tickets].sort((a, b) => {
-    const dateA = new Date(a.event?.end_datetime);
-    const dateB = new Date(b.event?.end_datetime);
-    const now = new Date();
+    const dateA = toZonedTime(new Date(a.event?.end_datetime), "UTC");
+    const dateB = toZonedTime(new Date(b.event?.end_datetime), "UTC");
+    const now = toZonedTime(new Date(), "UTC");
     return (
       Math.abs(dateA.getTime() - now.getTime()) -
       Math.abs(dateB.getTime() - now.getTime())
