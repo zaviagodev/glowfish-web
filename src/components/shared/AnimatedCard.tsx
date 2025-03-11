@@ -57,19 +57,48 @@ export function AnimatedCard({
       return price === 0 ? t("free") : `฿${Number(price).toLocaleString()}`;
     }
 
-    const prices = product_variants.map((v) => v.price);
-    const minPrice = Math.min(...prices);
-    const maxPrice = Math.max(...prices);
-
-    if (minPrice === maxPrice) {
-      // return `฿${minPrice.toLocaleString()}`;
-      return minPrice === 0
+    // Find variants with compare_at_price
+    const variantsWithComparePrice = product_variants.filter(v => v.compare_at_price && v.compare_at_price > 0);
+    
+    if (variantsWithComparePrice.length > 0) {
+      // Get the variant with lowest price among those with compare_at_price
+      const lowestPriceVariant = variantsWithComparePrice.reduce((lowest, current) => 
+        current.price < lowest.price ? current : lowest
+      );
+      return lowestPriceVariant.price === 0 
         ? t("free")
-        : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
+        : `฿${makeTwoDecimals(lowestPriceVariant.price).toLocaleString()}`;
     }
 
-    // return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
-    return `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
+    // If no variants with compare price, show the lowest price among all variants
+    const prices = product_variants.map((v) => v.price);
+    const minPrice = Math.min(...prices);
+    return minPrice === 0
+      ? t("free")
+      : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
+  };
+
+  const getCompareAtPriceDisplay = () => {
+    if (selectedVariant && selectedVariant.compare_at_price) {
+      return `฿${selectedVariant.compare_at_price.toLocaleString()}`;
+    }
+
+    if (!product_variants || product_variants.length === 0) {
+      return null;
+    }
+
+    // Find variants with compare_at_price
+    const variantsWithComparePrice = product_variants.filter(v => v.compare_at_price && v.compare_at_price > 0);
+    
+    if (variantsWithComparePrice.length > 0) {
+      // Get the variant with lowest price among those with compare_at_price
+      const lowestPriceVariant = variantsWithComparePrice.reduce((lowest, current) => 
+        current.price < lowest.price ? current : lowest
+      );
+      return `฿${lowestPriceVariant.compare_at_price!.toLocaleString()}`;
+    }
+
+    return null;
   };
 
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
@@ -232,10 +261,9 @@ export function AnimatedCard({
                 <span className="flex items-baseline gap-2 text-lg font-semibold">
                   {getPriceDisplay()}
 
-                  {/* TODO: fetch the sales price and set the condition of sales_price dynamically, if there is no sales price, this one will be hidden */}
-                  {sales_price && (
+                  {getCompareAtPriceDisplay() && (
                     <span className="text-muted-foreground text-base line-through leading-[26px]">
-                      {getPriceDisplay() || "฿0"}
+                      {getCompareAtPriceDisplay()}
                     </span>
                   )}
                 </span>
