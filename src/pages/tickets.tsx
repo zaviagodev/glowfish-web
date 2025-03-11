@@ -73,8 +73,10 @@ export default function TicketsPage() {
   // Find the order and its details
   let foundOrder = null;
   if (isDetailsView) {
-    foundOrder = tickets.find((order) => order.order_id === id);
+    foundOrder = tickets.find((order) => order.event?.event_id === id);
   }
+
+  console.log(foundOrder);
 
   // Handlers for ticket details
   const handleTicketCheckIn = (ticket: TicketType) => {
@@ -82,9 +84,9 @@ export default function TicketsPage() {
     setShowCheckIn(true);
   };
 
-  const handleTicketClick = (orderId: string) => {
+  const handleTicketClick = (eventId: string) => {
     // Preserve the current search params when navigating to details
-    navigate(`/tickets/${orderId}${location.search}`);
+    navigate(`/tickets/${eventId}${location.search}`);
   };
 
   const handleCloseCheckIn = async () => {
@@ -177,7 +179,7 @@ export default function TicketsPage() {
       foundOrder.event?.end_datetime
     );
 
-    const images = foundOrder.event?.product.images;
+    const images = foundOrder.event?.product?.images;
 
     return (
       <div className="bg-background">
@@ -200,8 +202,8 @@ export default function TicketsPage() {
             >
               <ItemCarousel
                 images={images}
-                image={foundOrder.event?.product.images[0].url}
-                name={foundOrder.event?.product.name}
+                image={foundOrder.event?.product?.images?.[0]?.url}
+                name={foundOrder.event?.product?.name}
               />
             </motion.div>
           </div>
@@ -261,7 +263,7 @@ export default function TicketsPage() {
                   <span>
                     {format(
                       toZonedTime(
-                        new Date(foundOrder.event?.start_datetime),
+                        new Date(foundOrder.event?.start_datetime || ""),
                         "UTC"
                       ),
                       formattedDateAndTime
@@ -269,7 +271,7 @@ export default function TicketsPage() {
                     -{" "}
                     {format(
                       toZonedTime(
-                        new Date(foundOrder.event?.end_datetime),
+                        new Date(foundOrder.event?.end_datetime || ""),
                         "UTC"
                       ),
                       formattedDateAndTime
@@ -279,8 +281,8 @@ export default function TicketsPage() {
                 <div className="flex items-center gap-2 text-sm font-light">
                   <Users className="w-4 h-4 flex-shrink-0" />
                   <span>
-                    {foundOrder.tickets.length}{" "}
-                    {foundOrder.tickets.length === 1 ? "ticket" : "tickets"}
+                    {foundOrder.tickets?.length}{" "}
+                    {foundOrder.tickets?.length === 1 ? "ticket" : "tickets"}
                   </span>
                 </div>
               </motion.div>
@@ -292,7 +294,7 @@ export default function TicketsPage() {
                 {/* Get processed map links */}
                 {(() => {
                   const { viewLink, embedLink, isShareLink } = getMapLinks(
-                    foundOrder.event?.google_maps_link
+                    foundOrder.event?.google_maps_link || ""
                   );
 
                   if (!viewLink) return null;
@@ -343,7 +345,7 @@ export default function TicketsPage() {
 
             {/* Tickets List */}
             <div className="space-y-4">
-              {foundOrder.tickets.map((ticket, index) => (
+              {foundOrder.tickets?.map((ticket, index) => (
                 <motion.div
                   key={ticket.id}
                   className="bg-darkgray rounded-lg p-5"
@@ -376,7 +378,7 @@ export default function TicketsPage() {
                         {t("Attendee")}
                       </div>
                       <div className="text-sm font-medium">
-                        {ticket.metadata.attendeeName || t("General Admission")}
+                        {ticket.metadata?.attendeeName || t("General Admission")}
                       </div>
                     </div>
                     <div>
@@ -405,13 +407,13 @@ export default function TicketsPage() {
             <CheckInView
               ticket={{
                 id:
-                  foundOrder.tickets.find((t) => t.code === qrTicket)?.id || "",
+                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.id || "",
                 ticketNumber: qrTicket,
-                eventName: foundOrder.event?.name,
+                eventName: foundOrder.event?.name || "",
                 seat:
-                  foundOrder.tickets.find((t) => t.code === qrTicket)?.metadata
-                    .attendeeName || "",
-                date: foundOrder.event?.start_datetime,
+                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.metadata
+                    ?.attendeeName || "",
+                date: foundOrder.event?.start_datetime || "",
                 location: foundOrder.event?.venue_name || t("To be determined"),
               }}
               onClose={handleCloseCheckIn}
@@ -474,7 +476,7 @@ export default function TicketsPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      onClick={() => handleTicketClick(customerEvent.order_id)}
+                      onClick={() => handleTicketClick(customerEvent.event?.event_id || "")}
                       className="cursor-pointer"
                     >
                       <Ticket
