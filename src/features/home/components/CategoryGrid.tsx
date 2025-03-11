@@ -36,11 +36,11 @@ export function CategoryGrid({
       >
         <Button
           onClick={() => handleCategoryClick(null)}
-          className="whitespace-nowrap px-3 py-2 h-9 text-white text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40] outline outline-2 outline-background"
+          className="whitespace-nowrap px-3 py-2 h-9 text-[#181818] text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40] outline outline-2 outline-background"
           style={{
-            backgroundColor: "#DE473C",
+            backgroundColor: "#F2E9D6",
             boxShadow: `0 0 0 4px ${
-              selectedCategory === null ? "#DE473C" : "transparent"
+              selectedCategory === null ? "#F2E9D6" : "transparent"
             }`,
           }}
         >
@@ -61,10 +61,10 @@ export function CategoryGrid({
               onClick={() => handleCategoryClick(category.id)}
               className="whitespace-nowrap px-3 py-2 h-9 text-white text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40] outline outline-2 outline-background"
               style={{
-                backgroundColor: colors[(index + 1) % colors.length],
+                backgroundColor: colors[index % colors.length],
                 boxShadow: `0 0 0 4px ${
                   selectedCategory === category.id
-                    ? colors[(index + 1) % colors.length]
+                    ? colors[index % colors.length]
                     : "transparent"
                 }`,
               }}
