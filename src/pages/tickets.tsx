@@ -441,12 +441,12 @@ export default function TicketsPage() {
                   <Calendar className="w-4 h-4 flex-shrink-0" />
                   <span>
                     {format(
-                      new Date(foundOrder.event?.start_datetime),
+                      toZonedTime(new Date(foundOrder.event?.start_datetime), "UTC"),
                       formattedDateAndTime
                     )}{" "}
                     -{" "}
                     {format(
-                      new Date(foundOrder.event?.end_datetime),
+                      toZonedTime(new Date(foundOrder.event?.end_datetime), "UTC"),
                       formattedDateAndTime
                     )}
                   </span>
@@ -606,8 +606,14 @@ export default function TicketsPage() {
                           id: customerEvent.order_id,
                           eventName: customerEvent.event?.name,
                           location: customerEvent.event?.venue_name,
-                          date: customerEvent.event?.start_datetime,
-                          endDate: customerEvent.event?.end_datetime,
+                          date: format(
+                            toZonedTime(new Date(customerEvent.event?.start_datetime), "UTC"),
+                            formattedDateAndTime
+                          ),
+                          endDate: format(
+                            toZonedTime(new Date(customerEvent.event?.end_datetime), "UTC"),
+                            formattedDateAndTime
+                          ),
                           image:
                             customerEvent.event?.product.images[0]?.url || "",
                           status: getEventStatus(
