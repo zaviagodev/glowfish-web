@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { StickyNote } from "lucide-react";
 import NoItemsComp from "@/components/ui/no-items";
+import ProductCardSkeleton from "@/components/skeletons/ProductCardSkeletons";
 
 interface ProductSectionProps {
   title: string;
@@ -44,23 +45,23 @@ export const ProductSection = memo(function ProductSection({
   const t = useTranslate();
   return (
     <div className="space-y-4 px-5">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <Link
-          key={`${title}-see-all`}
-          to={linkTo}
-          className="text-sm text-[#FAFAFACC] hover:text-foreground no-underline"
-        >
-          {t("See all")}
-        </Link>
-      </div>
-
       {isLoading ? (
-        <div className="flex items-center justify-center h-40">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="flex gap-4 overflow-x-auto pb-4 -mx-5 px-5">
+          <ProductCardSkeleton />
+          <ProductCardSkeleton />
         </div>
       ) : (
         <>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">{title}</h2>
+            <Link
+              key={`${title}-see-all`}
+              to={linkTo}
+              className="text-sm text-[#FAFAFACC] hover:text-foreground no-underline"
+            >
+              {t("See all")}
+            </Link>
+          </div>
           {products?.length > 0 ? (
             <div
               ref={sliderRef}

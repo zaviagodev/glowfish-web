@@ -116,10 +116,14 @@ export function ProductDetail({
     const maxComparePrice = Math.max(...comparePrices);
 
     if (minComparePrice === maxComparePrice) {
-      return `฿${minComparePrice.toLocaleString()}`;
+      return `฿${makeTwoDecimals(minComparePrice).toLocaleString()}`;
     }
 
-    return `฿${minComparePrice.toLocaleString()} - ฿${maxComparePrice.toLocaleString()}`;
+    return `฿${makeTwoDecimals(
+      minComparePrice
+    ).toLocaleString()} - ฿${makeTwoDecimals(
+      maxComparePrice
+    ).toLocaleString()}`;
   };
 
   // Format variant options for display
@@ -203,6 +207,7 @@ export function ProductDetail({
   }, [description, venue_address]);
 
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
+  const checkIfNoProduct = track_quantity === true && quantity === 0;
 
   return createPortal(
     <div className="fixed inset-0 z-50 max-width-mobile bg-background pointer-events-auto">
@@ -232,7 +237,7 @@ export function ProductDetail({
         )}
         <ItemCarousel images={images} image={image} />
 
-        <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-20 -top-20">
+        <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-[100px] -top-20">
           <div className="space-y-4">
             <div className="space-y-2">
               <h2 className="text-2xl">{name}</h2>
@@ -541,7 +546,7 @@ export function ProductDetail({
           </motion.div> */}
         </div>
 
-        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background space-y-4 max-width-mobile">
+        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background/80 backdrop-blur-lg space-y-4 max-width-mobile border-t border-t-darkgray">
           {getPriceDisplay() && (
             <div className="flex items-center gap-2">
               <div className="flex items-baseline gap-2">
@@ -573,7 +578,7 @@ export function ProductDetail({
           )}
           <Button
             className="w-full main-btn"
-            disabled={isEventEnded}
+            disabled={isEventEnded || checkIfNoProduct}
             onClick={() => {
               if (variant_options && variant_options.length > 0) {
                 setShowVariantDrawer(true);
@@ -582,10 +587,14 @@ export function ProductDetail({
               }
             }}
           >
-            {isEventEnded ? t("This event has ended") : t("Sign Up")}
+            {isEventEnded
+              ? t("This event has ended")
+              : checkIfNoProduct
+              ? t("Sold Out")
+              : t("Sign Up")}
           </Button>
           <p className="text-xs text-center text-muted-foreground">
-            You won't be charged yet
+            Hope you have a great time!
           </p>
         </div>
       </div>

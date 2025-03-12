@@ -33,13 +33,13 @@ import { useRewards, useReward } from "@/features/rewards/hooks/useRewards";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/shared/PageHeader";
-import LoadingSpin from "@/components/loading/LoadingSpin";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import cardReward from "@/img/my-card.svg";
 import RewardAccordions from "@/features/rewards/components/RewardAccordions";
 import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
 import NoItemsComp from "@/components/ui/no-items";
 import ItemCarousel from "@/components/ui/item-carousel";
+import RewardPageSkeletons from "@/components/skeletons/RewardPageSkeletons";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -76,7 +76,7 @@ const RewardsPage = () => {
   const { refreshOrders } = useOrders();
 
   if (customerLoading || rewardsLoading || (id && rewardLoading)) {
-    return <LoadingSpin />;
+    return <RewardPageSkeletons />;
   }
 
   if (customerError || rewardsError || rewardError) {
@@ -211,7 +211,8 @@ const RewardsPage = () => {
                   {t("Required Points")}
                 </p>
                 <h2 className="text-orangefocus text-2xl font-semibold">
-                  {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
+                  {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString() ||
+                    0}{" "}
                   {t("points")}
                 </h2>
               </div>
