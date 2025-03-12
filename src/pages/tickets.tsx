@@ -170,8 +170,6 @@ export default function TicketsPage() {
     );
   }
 
-  console.log(foundOrder);
-
   // Details View
   if (isDetailsView && foundOrder) {
     const status = getEventStatus(
@@ -378,7 +376,8 @@ export default function TicketsPage() {
                         {t("Attendee")}
                       </div>
                       <div className="text-sm font-medium">
-                        {ticket.metadata?.attendeeName || t("General Admission")}
+                        {ticket.metadata?.attendeeName ||
+                          t("General Admission")}
                       </div>
                     </div>
                     <div>
@@ -407,7 +406,8 @@ export default function TicketsPage() {
             <CheckInView
               ticket={{
                 id:
-                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.id || "",
+                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.id ||
+                  "",
                 ticketNumber: qrTicket,
                 eventName: foundOrder.event?.name || "",
                 seat:
@@ -476,7 +476,9 @@ export default function TicketsPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      onClick={() => handleTicketClick(customerEvent.event?.event_id || "")}
+                      onClick={() =>
+                        handleTicketClick(customerEvent.event?.event_id || "")
+                      }
                       className="cursor-pointer"
                     >
                       <Ticket
