@@ -1,5 +1,12 @@
 import { useTranslate } from "@refinedev/core";
-import { ScanQrCode, Building2, ChevronRight } from "lucide-react";
+import {
+  ScanQrCode,
+  Building2,
+  ChevronRight,
+  WalletCards,
+  QrCode,
+  Landmark,
+} from "lucide-react";
 import { useStore } from "@/hooks/useStore";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -102,16 +109,20 @@ export function PaymentMethod({
           options.push({
             id: "promptpay",
             name: t("PromptPay"),
-            description: t("Pay via PromptPay")
+            description: t("Pay via PromptPay"),
           });
         }
 
-        if (response.bank_transfer && response.bank_transfer.accounts && response.bank_transfer.accounts.length > 0) {
+        if (
+          response.bank_transfer &&
+          response.bank_transfer.accounts &&
+          response.bank_transfer.accounts.length > 0
+        ) {
           // Add a single bank transfer option
           options.push({
             id: "bank_transfer",
             name: t("Bank Transfer"),
-            description: t("Pay via Bank Transfer")
+            description: t("Pay via Bank Transfer"),
           });
         }
 
@@ -134,6 +145,36 @@ export function PaymentMethod({
     return <LoadingSpin />;
   }
 
+  const PaymentMethodIcon = ({ name }: { name: string }) => {
+    const checkIfBankTransfer = name === "Bank Transfer";
+    const checkIfPromptPay = name === "PromptPay";
+    return (
+      <div
+        className="w-10 h-10 rounded-lg flex items-center justify-center text-lg"
+        style={{
+          background: checkIfPromptPay
+            ? "#2196F31A"
+            : checkIfBankTransfer
+            ? "#FF98001A"
+            : "#FFFFFF1A",
+          color: checkIfPromptPay
+            ? "#2196F3"
+            : checkIfBankTransfer
+            ? "#FF9800"
+            : "#FFFFFF",
+        }}
+      >
+        {checkIfPromptPay ? (
+          <QrCode className="h-5 w-5" />
+        ) : checkIfBankTransfer ? (
+          <Landmark className="h-5 w-5" />
+        ) : (
+          <WalletCards className="h-5 w-5" />
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <div
@@ -152,30 +193,20 @@ export function PaymentMethod({
         </div>
 
         <div className="flex items-center gap-3">
-          {selectedOption ? (
-            <>
-              <div>
-                <div className="text-sm font-medium">
-                  {selectedOption?.name || t("Payment Method")}
-                </div>
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  {selectedOption?.description || t("Select a payment method")}
-                </div>
-                {selectedOption?.details?.account_number && (
-                  <div className="text-xs text-muted-foreground mt-0.5">
-                    {t("Account")}: {selectedOption?.details?.account_number}
-                  </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <div>
-              <div className="text-sm font-medium">{t("Payment Method")}</div>
-              <div className="text-xs text-muted-foreground mt-0.5">
-                {t("Select a payment method")}
-              </div>
+          <PaymentMethodIcon name={selectedOption?.name || ""} />
+          <div>
+            <div className="text-sm font-medium">
+              {selectedOption?.name || t("Payment Method")}
             </div>
-          )}
+            <div className="text-xs text-muted-foreground mt-0.5">
+              {selectedOption?.description || t("Select a payment method")}
+            </div>
+            {selectedOption?.details?.account_number && (
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {t("Account")}: {selectedOption?.details?.account_number}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -189,34 +220,39 @@ export function PaymentMethod({
               {t("Choose Payment Method")}
             </SheetTitle>
           </SheetHeader>
-          <div className="space-y-1">
+          <div className="space-y-6 p-5">
             {paymentOptions.map((option) => (
               <button
                 key={option.id}
                 className={cn(
-                  "w-full text-left p-5 rounded-lg transition-all",
-                  option.id === value ? "bg-background" : ""
+                  "w-full text-left px-3 py-4 rounded-lg transition-all border bg-darkgray",
+                  option.id === value
+                    ? "border-mainbutton"
+                    : "border-transparent"
                 )}
                 onClick={() => {
                   onChange(option.id);
                   setShowOptions(false);
                 }}
               >
-                <div>
-                  <div className="text-sm font-medium">{option.name}</div>
-                  <div className="text-xs text-secondary-foreground">
-                    {option.description}
-                  </div>
-                  {option.details?.bank?.bank_name_thai && (
-                    <div className="text-xs text-muted-foreground mt-0.5">
-                      {option.details.bank.bank_name_thai}
-                    </div>
-                  )}
-                  {option.details?.account_number && (
+                <div className="flex items-center gap-3">
+                  <PaymentMethodIcon name={option.name} />
+                  <div>
+                    <div className="text-sm font-medium">{option.name}</div>
                     <div className="text-xs text-muted-foreground">
-                      {t("Account")}: {option.details.account_number}
+                      {option.description}
                     </div>
-                  )}
+                    {option.details?.bank?.bank_name_thai && (
+                      <div className="text-xs text-muted-foreground mt-0.5">
+                        {option.details.bank.bank_name_thai}
+                      </div>
+                    )}
+                    {option.details?.account_number && (
+                      <div className="text-xs text-muted-foreground">
+                        {t("Account")}: {option.details.account_number}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </button>
             ))}

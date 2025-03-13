@@ -31,6 +31,7 @@ import Pagination from "@/components/pagination/Pagination";
 import type { Ticket as TicketType } from "@/features/tickets/services/ticketService";
 import NoItemsComp from "@/components/ui/no-items";
 import ItemCarousel from "@/components/ui/item-carousel";
+import TicketsSkeletons from "@/components/skeletons/TicketsSkeletons";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -75,8 +76,6 @@ export default function TicketsPage() {
   if (isDetailsView) {
     foundOrder = tickets.find((order) => order.event?.event_id === id);
   }
-
-  console.log(foundOrder);
 
   // Handlers for ticket details
   const handleTicketCheckIn = (ticket: TicketType) => {
@@ -150,7 +149,7 @@ export default function TicketsPage() {
     return (
       <div className="bg-background">
         <PageHeader title={isDetailsView ? "Ticket Details" : "My Tickets"} />
-        <LoadingSpin />
+        <TicketsSkeletons />
       </div>
     );
   }
@@ -169,8 +168,6 @@ export default function TicketsPage() {
       </div>
     );
   }
-
-  console.log(foundOrder);
 
   // Details View
   if (isDetailsView && foundOrder) {
@@ -378,7 +375,8 @@ export default function TicketsPage() {
                         {t("Attendee")}
                       </div>
                       <div className="text-sm font-medium">
-                        {ticket.metadata?.attendeeName || t("General Admission")}
+                        {ticket.metadata?.attendeeName ||
+                          t("General Admission")}
                       </div>
                     </div>
                     <div>
@@ -407,7 +405,8 @@ export default function TicketsPage() {
             <CheckInView
               ticket={{
                 id:
-                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.id || "",
+                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.id ||
+                  "",
                 ticketNumber: qrTicket,
                 eventName: foundOrder.event?.name || "",
                 seat:
@@ -470,38 +469,46 @@ export default function TicketsPage() {
             ) : (
               <>
                 <div className="px-5 space-y-4">
-                  {currentEvents.map((customerEvent, index) => (
-                    <motion.div
-                      key={customerEvent.order_id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      onClick={() => handleTicketClick(customerEvent.event?.event_id || "")}
-                      className="cursor-pointer"
-                    >
-                      <Ticket
-                        ticket={{
-                          id: customerEvent.order_id,
-                          eventName: customerEvent.event?.name,
-                          location: customerEvent.event?.venue_name,
-                          date: customerEvent.event?.start_datetime,
-                          endDate: customerEvent.event?.end_datetime,
-                          image:
-                            customerEvent.event?.product.images[0]?.url || "",
-                          status: getEventStatus(
-                            customerEvent.event?.start_datetime,
-                            customerEvent.event?.end_datetime
-                          ),
-                          used: customerEvent.tickets[0].status === "used",
-                          ticketNumber: customerEvent.tickets[0].code,
-                          seat:
-                            customerEvent.tickets[0].metadata.attendeeName ||
-                            "General Admission",
-                          groupSize: customerEvent.tickets.length,
-                        }}
-                      />
-                    </motion.div>
-                  ))}
+                  {currentEvents
+                    .sort(
+                      (a, b) =>
+                        new Date(a.event?.start_datetime) -
+                        new Date(b.event?.start_datetime)
+                    )
+                    .map((customerEvent, index) => (
+                      <motion.div
+                        key={customerEvent.order_id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        onClick={() =>
+                          handleTicketClick(customerEvent.event?.event_id || "")
+                        }
+                        className="cursor-pointer"
+                      >
+                        <Ticket
+                          ticket={{
+                            id: customerEvent.order_id,
+                            eventName: customerEvent.event?.name,
+                            location: customerEvent.event?.venue_name,
+                            date: customerEvent.event?.start_datetime,
+                            endDate: customerEvent.event?.end_datetime,
+                            image:
+                              customerEvent.event?.product.images[0]?.url || "",
+                            status: getEventStatus(
+                              customerEvent.event?.start_datetime,
+                              customerEvent.event?.end_datetime
+                            ),
+                            used: customerEvent.tickets[0].status === "used",
+                            ticketNumber: customerEvent.tickets[0].code,
+                            seat:
+                              customerEvent.tickets[0].metadata.attendeeName ||
+                              "General Admission",
+                            groupSize: customerEvent.tickets.length,
+                          }}
+                        />
+                      </motion.div>
+                    ))}
                 </div>
 
                 {totalPages > 1 && (

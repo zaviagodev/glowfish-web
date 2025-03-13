@@ -16,13 +16,13 @@ import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { useCart } from "@/lib/cart";
 import { VariantDrawer } from "./VariantDrawer";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { Product, ProductVariant } from "../types/product.types";
-import DOMPurify from "dompurify";
 import { isPast } from "date-fns";
 import { cn, getMapLinks, makeTwoDecimals } from "@/lib/utils";
 import ItemCarousel from "@/components/ui/item-carousel";
+import LongParagraph from "@/components/ui/long-paragraph";
 
 interface ProductVariantOption {
   name: string;
@@ -116,10 +116,14 @@ export function ProductDetail({
     const maxComparePrice = Math.max(...comparePrices);
 
     if (minComparePrice === maxComparePrice) {
-      return `฿${minComparePrice.toLocaleString()}`;
+      return `฿${makeTwoDecimals(minComparePrice).toLocaleString()}`;
     }
 
-    return `฿${minComparePrice.toLocaleString()} - ฿${maxComparePrice.toLocaleString()}`;
+    return `฿${makeTwoDecimals(
+      minComparePrice
+    ).toLocaleString()} - ฿${makeTwoDecimals(
+      maxComparePrice
+    ).toLocaleString()}`;
   };
 
   // Format variant options for display
@@ -188,21 +192,8 @@ export function ProductDetail({
     }
   };
 
-  const paragraphRef = useRef<HTMLParagraphElement>(null);
-  const [isClamped, setIsClamped] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    if (paragraphRef.current) {
-      const style = window.getComputedStyle(paragraphRef.current);
-      const lineHeight = parseFloat(style.lineHeight);
-      const maxHeight = lineHeight * 3;
-
-      setIsClamped(paragraphRef.current.scrollHeight > maxHeight);
-    }
-  }, [description, venue_address]);
-
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
+  const checkIfNoProduct = track_quantity === true && quantity === 0;
 
   return createPortal(
     <div className="fixed inset-0 z-50 max-width-mobile bg-background pointer-events-auto">
@@ -232,7 +223,7 @@ export function ProductDetail({
         )}
         <ItemCarousel images={images} image={image} />
 
-        <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-20 -top-20">
+        <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-[100px] -top-20">
           <div className="space-y-4">
             <div className="space-y-2">
               <h2 className="text-2xl">{name}</h2>
@@ -284,24 +275,7 @@ export function ProductDetail({
             {description && (
               <div className="space-y-2">
                 <h2 className="text-base">{t("Description")}</h2>
-                <div
-                  ref={paragraphRef}
-                  className={cn(
-                    "text-sm text-secondary-foreground font-light",
-                    !expanded && "line-clamp-5"
-                  )}
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(description || ""),
-                  }}
-                />
-                {isClamped && (
-                  <p
-                    className="text-orangefocus text-sm w-fit cursor-pointer"
-                    onClick={() => setExpanded(!expanded)}
-                  >
-                    {expanded ? t("Read less...") : t("Read more...")}
-                  </p>
-                )}
+                <LongParagraph description={description} />
               </div>
             )}
 
@@ -349,13 +323,9 @@ export function ProductDetail({
                       ></iframe>
                     );
                   }
-
                   return null;
                 })()}
-
-                <p className="text-sm text-secondary-foreground font-light">
-                  {venue_address}
-                </p>
+                <LongParagraph description={venue_address} />
               </div>
             )}
 
@@ -541,7 +511,7 @@ export function ProductDetail({
           </motion.div> */}
         </div>
 
-        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background space-y-4 max-width-mobile">
+        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background/80 backdrop-blur-lg space-y-4 max-width-mobile border-t border-t-darkgray">
           {getPriceDisplay() && (
             <div className="flex items-center gap-2">
               <div className="flex items-baseline gap-2">
@@ -573,7 +543,7 @@ export function ProductDetail({
           )}
           <Button
             className="w-full main-btn"
-            disabled={isEventEnded}
+            disabled={isEventEnded || checkIfNoProduct}
             onClick={() => {
               if (variant_options && variant_options.length > 0) {
                 setShowVariantDrawer(true);
@@ -582,10 +552,14 @@ export function ProductDetail({
               }
             }}
           >
-            {isEventEnded ? t("This event has ended") : t("Sign Up")}
+            {isEventEnded
+              ? t("This event has ended")
+              : checkIfNoProduct
+              ? t("Sold Out")
+              : t("Sign Up")}
           </Button>
           <p className="text-xs text-center text-muted-foreground">
-            You won't be charged yet
+            Hope you have a great time!
           </p>
         </div>
       </div>

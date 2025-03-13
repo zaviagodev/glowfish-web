@@ -33,13 +33,14 @@ import { useRewards, useReward } from "@/features/rewards/hooks/useRewards";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/shared/PageHeader";
-import LoadingSpin from "@/components/loading/LoadingSpin";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import cardReward from "@/img/my-card.svg";
 import RewardAccordions from "@/features/rewards/components/RewardAccordions";
 import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
 import NoItemsComp from "@/components/ui/no-items";
 import ItemCarousel from "@/components/ui/item-carousel";
+import RewardPageSkeletons from "@/components/skeletons/RewardPageSkeletons";
+import LongParagraph from "@/components/ui/long-paragraph";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -76,7 +77,7 @@ const RewardsPage = () => {
   const { refreshOrders } = useOrders();
 
   if (customerLoading || rewardsLoading || (id && rewardLoading)) {
-    return <LoadingSpin />;
+    return <RewardPageSkeletons />;
   }
 
   if (customerError || rewardsError || rewardError) {
@@ -184,7 +185,7 @@ const RewardsPage = () => {
   if (id && selectedReward) {
     return (
       <div className="pb-10">
-        <div className="fixed inset-0 overflow-y-auto max-width-mobile">
+        <div className="fixed inset-0 overflow-y-auto max-width-mobile h-dvh z-[50]">
           <Button
             variant="ghost"
             size="icon"
@@ -211,7 +212,8 @@ const RewardsPage = () => {
                   {t("Required Points")}
                 </p>
                 <h2 className="text-orangefocus text-2xl font-semibold">
-                  {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
+                  {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString() ||
+                    0}{" "}
                   {t("points")}
                 </h2>
               </div>
@@ -228,9 +230,7 @@ const RewardsPage = () => {
 
             <div className="flex flex-col gap-4">
               <h2 className="text-base">{t("Description")}</h2>
-              <p className="text-sm text-secondary-foreground font-light">
-                {selectedReward.description}
-              </p>
+              <LongParagraph description={selectedReward.description} />
             </div>
 
             <RewardAccordions />
@@ -244,110 +244,113 @@ const RewardsPage = () => {
               </div>
             )}
           </section>
-        </div>
 
-        <footer className="btn-footer flex flex-col gap-7 z-[50]">
-          <Dialog
-            open={isConfirmDialogOpen}
-            onOpenChange={setIsConfirmDialogOpen}
-          >
-            <Button
-              disabled={
-                isProcessing ||
-                customerData.loyalty_points <
-                  (selectedReward.product_variants?.[0]?.points_based_price ||
-                    0)
-              }
-              onClick={() => setIsConfirmDialogOpen(true)}
-              className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
+          <footer className="btn-footer flex flex-col gap-7">
+            <Dialog
+              open={isConfirmDialogOpen}
+              onOpenChange={setIsConfirmDialogOpen}
             >
-              <Gift />
-              {isProcessing ? t("Processing...") : t("Redeem Reward")}
-            </Button>
-            <DialogContent className="w-[90%] max-width-mobile rounded-lg">
-              <DialogHeader>
-                <DialogTitle>{t("Confirm Redemption")}</DialogTitle>
-                <DialogDescription>
-                  {t("Are you sure you want to redeem this reward for")}{" "}
-                  {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
-                  {t("points")}?
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex gap-4 mt-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => setIsConfirmDialogOpen(false)}
-                  className="secondary-btn w-full"
-                >
-                  {t("Cancel")}
-                </Button>
-                <Button
-                  onClick={handleRedeem}
-                  disabled={isProcessing}
-                  className="main-btn w-full"
-                >
-                  {isProcessing ? t("Processing...") : t("Confirm")}
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          <Sheet open={isRedeemSheetOpen} onOpenChange={setIsRedeemSheetOpen}>
-            <SheetContent
-              className="h-3/4 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col justify-between"
-              side="bottom"
-            >
-              <div>
-                <h3 className="text-lg font-semibold text-center mb-4">
-                  {t("Redeem Your Reward")}
-                </h3>
-                <p className="text-sm text-[#979797] text-center mb-6">
-                  {t("Show this code to the staff to redeem your reward")}
-                </p>
-                <Tabs defaultValue={codeType} onValueChange={setCodeType}>
-                  <TabsList className="w-full bg-transparent">
-                    <TabsTrigger value="barcode" className={tabsClassName}>
-                      <BarcodeIcon />
-                      {t("Barcode")}
-                    </TabsTrigger>
-                    <TabsTrigger value="qrcode" className={tabsClassName}>
-                      <QrCode />
-                      {t("QR Code")}
-                    </TabsTrigger>
-                    <TabsTrigger value="coupon-code" className={tabsClassName}>
-                      <Ticket />
-                      {t("Code")}
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent
-                    value="barcode"
-                    className="mt-10 flex justify-center"
+              <Button
+                disabled={
+                  isProcessing ||
+                  customerData.loyalty_points <
+                    (selectedReward.product_variants?.[0]?.points_based_price ||
+                      0)
+                }
+                onClick={() => setIsConfirmDialogOpen(true)}
+                className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
+              >
+                <Gift />
+                {isProcessing ? t("Processing...") : t("Redeem Reward")}
+              </Button>
+              <DialogContent className="w-[90%] max-width-mobile rounded-lg">
+                <DialogHeader>
+                  <DialogTitle>{t("Confirm Redemption")}</DialogTitle>
+                  <DialogDescription>
+                    {t("Are you sure you want to redeem this reward for")}{" "}
+                    {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
+                    {t("points")}?
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex gap-4 mt-4">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setIsConfirmDialogOpen(false)}
+                    className="secondary-btn w-full"
                   >
-                    <Barcode value={selectedReward.id} width={2.5} />
-                  </TabsContent>
-                  <TabsContent value="qrcode" className="mt-10 text-center">
-                    {/* TODO: add ScanQRCode */}
-                    QR Code Prototype
-                  </TabsContent>
-                  <TabsContent value="coupon-code" className="mt-10">
-                    <h3 className="text-center text-2xl font-bold tracking-wider">
-                      {selectedReward.id}
-                    </h3>
-                  </TabsContent>
-                </Tabs>
-              </div>
-              <footer className="space-y-4 p-5">
-                <Button className="!bg-transparent w-full flex items-center gap-2">
-                  <Download />
-                  {t("Download Code")}
-                </Button>
-                <p className="text-sm text-[#979797] text-center">
-                  {t("This code is valid for one-time use only")}
-                </p>
-              </footer>
-            </SheetContent>
-          </Sheet>
-        </footer>
+                    {t("Cancel")}
+                  </Button>
+                  <Button
+                    onClick={handleRedeem}
+                    disabled={isProcessing}
+                    className="main-btn w-full"
+                  >
+                    {isProcessing ? t("Processing...") : t("Confirm")}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <Sheet open={isRedeemSheetOpen} onOpenChange={setIsRedeemSheetOpen}>
+              <SheetContent
+                className="h-3/4 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col justify-between"
+                side="bottom"
+              >
+                <div>
+                  <h3 className="text-lg font-semibold text-center mb-4">
+                    {t("Redeem Your Reward")}
+                  </h3>
+                  <p className="text-sm text-[#979797] text-center mb-6">
+                    {t("Show this code to the staff to redeem your reward")}
+                  </p>
+                  <Tabs defaultValue={codeType} onValueChange={setCodeType}>
+                    <TabsList className="w-full bg-transparent">
+                      <TabsTrigger value="barcode" className={tabsClassName}>
+                        <BarcodeIcon />
+                        {t("Barcode")}
+                      </TabsTrigger>
+                      <TabsTrigger value="qrcode" className={tabsClassName}>
+                        <QrCode />
+                        {t("QR Code")}
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="coupon-code"
+                        className={tabsClassName}
+                      >
+                        <Ticket />
+                        {t("Code")}
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent
+                      value="barcode"
+                      className="mt-10 flex justify-center"
+                    >
+                      <Barcode value={selectedReward.id} width={2.5} />
+                    </TabsContent>
+                    <TabsContent value="qrcode" className="mt-10 text-center">
+                      {/* TODO: add ScanQRCode */}
+                      QR Code Prototype
+                    </TabsContent>
+                    <TabsContent value="coupon-code" className="mt-10">
+                      <h3 className="text-center text-2xl font-bold tracking-wider">
+                        {selectedReward.id}
+                      </h3>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+                <footer className="space-y-4 p-5">
+                  <Button className="!bg-transparent w-full flex items-center gap-2">
+                    <Download />
+                    {t("Download Code")}
+                  </Button>
+                  <p className="text-sm text-[#979797] text-center">
+                    {t("This code is valid for one-time use only")}
+                  </p>
+                </footer>
+              </SheetContent>
+            </Sheet>
+          </footer>
+        </div>
       </div>
     );
   }

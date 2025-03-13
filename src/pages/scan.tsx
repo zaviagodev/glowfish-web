@@ -125,65 +125,20 @@ const ScanPage = () => {
           </div>
         )}
 
-        {(data || (!hasError && error)) && (
-          <div className="px-4 py-4 flex-1 flex">
-            <div className="max-w-sm mx-auto w-full animate-in fade-in slide-in-from-bottom-4">
-              <div className="bg-red-600 rounded-lg shadow-lg overflow-hidden">
-                {data && (
-                  <div className="p-4 border-b">
-                    <div className="flex justify-between">
-                      <h3 className="font-semibold">{t("Scanned Code")}</h3>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleReset}
-                        className="h-8 w-8 p-0"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <p className="text-sm mt-1 text-gray-600">{data}</p>
-                  </div>
-                )}
-
-                <div className="p-4">
-                  {isRedeeming ? (
-                    <div className="flex flex-col justify-center py-2">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mb-2" />
-                      <p className="text-sm text-gray-600">
-                        {t("Redeeming code...")}
-                      </p>
-                    </div>
-                  ) : pointsEarned ? (
-                    <div className="text-center">
-                      <p className="text-lg font-semibold text-green-600">
-                        +{pointsEarned} {t("Points")}
-                      </p>
-                      <Button className="mt-2" onClick={handleReset}>
-                        {t("Scan Another Code")}
-                      </Button>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         <Sheet open={hasError}>
           <SheetContent
             side="bottom"
-            className="h-[40%] bg-background rounded-t-xl p-0 pb-8 overflow-auto max-width-mobile outline-none"
+            className="h-max bg-background rounded-t-xl p-0 pb-12 overflow-auto max-width-mobile outline-none"
             hideCloseButton={true}
           >
-            <SheetHeader className="p-4 pt-9 rounded-t-xl bg-background backdrop-blur-xl items-center before:top-3 max-width-mobile w-full -translate-y-[1px] gap-2">
+            <SheetHeader className="p-4 pt-8 rounded-t-xl bg-background backdrop-blur-xl items-center before:top-3 max-width-mobile w-full -translate-y-[1px] gap-2">
               <XCircle className="text-red-500 h-16 w-16" />
               <SheetTitle className="font-semibold tracking-tight w-full text-center">
                 {error}
               </SheetTitle>
             </SheetHeader>
 
-            <div className="flex items-center gap-2 px-5">
+            <div className="flex items-center gap-2 px-5 pt-1">
               <Button
                 onClick={() => navigate(-1)}
                 className="gap-2 secondary-btn text-white w-full"
@@ -195,6 +150,63 @@ const ScanPage = () => {
                 <RefreshCw className="h-4 w-4" />
                 {t("Try Again")}
               </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        <Sheet open={data !== ""}>
+          <SheetContent
+            side="bottom"
+            className="h-max bg-background rounded-t-xl px-5 overflow-auto max-width-mobile outline-none"
+            hideCloseButton={true}
+          >
+            <SheetHeader>
+              <div className="w-full text-left">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold">{t("Scanned Code")}</h3>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleReset}
+                    className="h-8 w-8 rounded-full p-0 bg-white/10"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="space-y-2 pt-6">
+                  <p>Code</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm bg-darkgray w-fit px-2 py-1 rounded-lg">
+                      {data}
+                    </p>
+                    <p className="text-sm bg-green-500/10 text-green-500 w-fit px-2 py-1 rounded-full">
+                      Success
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </SheetHeader>
+
+            <div className="pt-4">
+              {isRedeeming ? (
+                <div className="flex flex-col items-center py-2">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mb-2" />
+                  <p className="text-sm">{t("Redeeming code...")}</p>
+                </div>
+              ) : pointsEarned ? (
+                <div className="text-center">
+                  <p className="flex flex-col">
+                    <span className="text-sm">Get point</span>
+                    <span className="text-xl">{pointsEarned}</span>
+                  </p>
+                  <Button
+                    className="mt-2 w-full main-btn"
+                    onClick={handleReset}
+                  >
+                    {t("Confirm")}
+                  </Button>
+                </div>
+              ) : null}
             </div>
           </SheetContent>
         </Sheet>
