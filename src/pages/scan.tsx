@@ -173,7 +173,7 @@ const ScanPage = () => {
         <Sheet open={hasError}>
           <SheetContent
             side="bottom"
-            className="h-[40%] bg-background rounded-t-xl p-0 pb-8 overflow-auto max-width-mobile outline-none"
+            className="h-max bg-background rounded-t-xl p-0 pb-8 overflow-auto max-width-mobile outline-none"
             hideCloseButton={true}
           >
             <SheetHeader className="p-4 pt-9 rounded-t-xl bg-background backdrop-blur-xl items-center before:top-3 max-width-mobile w-full -translate-y-[1px] gap-2">
