@@ -10,7 +10,7 @@ export function UserProfile({ memberLevel = "Gold Member" }: UserProfileProps) {
   const { customer } = useCustomer();
 
   return (
-    <div className="px-5 py-4">
+    <>
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold tracking-tight">
           {/* {customer?.first_name || customer?.last_name
@@ -24,6 +24,6 @@ export function UserProfile({ memberLevel = "Gold Member" }: UserProfileProps) {
           {/* Member level content */}
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -52,7 +52,7 @@ export function MessageDialog({
           <div className="flex gap-3">
             <Button
               variant="outline"
-              className="main-btn !bg-darkgray w-full !text-white"
+              className="main-btn !bg-darkgray w-full !text-foreground"
               onClick={() => onOpenChange(false)}
             >
               {t("Cancel")}

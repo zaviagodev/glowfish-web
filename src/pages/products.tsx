@@ -84,7 +84,9 @@ export default function ProductsPage() {
       // Helper function to get the highest price from variants or base price
       const getHighestPrice = (product: Product) => {
         if (!product.product_variants?.length) return product.price;
-        const variantPrices = product.product_variants.map((v: ProductVariant) => v.price);
+        const variantPrices = product.product_variants.map(
+          (v: ProductVariant) => v.price
+        );
         return Math.max(product.price, ...variantPrices);
       };
 
@@ -137,7 +139,7 @@ export default function ProductsPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="text-white h-12 !bg-transparent"
+            className="text-foreground h-12 !bg-transparent"
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />
@@ -371,7 +373,6 @@ export default function ProductsPage() {
       </Sheet>
 
       {console.log(selectedProduct)}
-
 
       {/* Product Detail */}
       {selectedProduct && (

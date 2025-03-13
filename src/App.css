@@ -360,7 +360,7 @@
   }
 
   .secondary-btn {
-    @apply !bg-darkgray text-white !rounded-full !h-12 !font-semibold !text-base
+    @apply !bg-darkgray text-foreground !rounded-full !h-12 !font-semibold !text-base
   }
 
   .main-container {

@@ -170,7 +170,7 @@ export function VariantDrawer({
                         onClick={() => handleOptionSelect(option.name, value)}
                       >
                         {/* TODO: set the condition of this red circle if there is a sales_price */}
-                        <div className="absolute -top-2 -right-2 bg-[#DE473C] text-white rounded-full px-1.5 w-fit text-[10px]">
+                        <div className="absolute -top-2 -right-2 bg-[#DE473C] text-foreground rounded-full px-1.5 w-fit text-[10px]">
                           Sale
                         </div>
                         {value}
@@ -187,11 +187,12 @@ export function VariantDrawer({
           {/* Price Display */}
           {currentVariant && (
             <div className="flex flex-col items-center">
-              {currentVariant.compare_at_price && currentVariant.compare_at_price > 0 && (
-                <span className="text-sm text-muted-foreground line-through">
-                  ฿{currentVariant.compare_at_price.toLocaleString()}
-                </span>
-              )}
+              {currentVariant.compare_at_price &&
+                currentVariant.compare_at_price > 0 && (
+                  <span className="text-sm text-muted-foreground line-through">
+                    ฿{currentVariant.compare_at_price.toLocaleString()}
+                  </span>
+                )}
               <span className="text-2xl font-bold">
                 ฿{currentVariant.price.toLocaleString()}
               </span>

@@ -63,7 +63,7 @@ export function CategoryGrid({
             <Button
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
-              className="whitespace-nowrap px-3 py-2 h-9 text-white text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40] outline outline-2 outline-background"
+              className="whitespace-nowrap px-3 py-2 h-9 text-foreground text-base active:shadow-[0px_0px_0px_4px_#FFFFFF40] outline outline-2 outline-background"
               style={{
                 backgroundColor: colors[index % colors.length],
                 boxShadow: `0 0 0 4px ${

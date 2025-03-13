@@ -44,7 +44,6 @@ import OrderFlow from "@/pages/OrderFlow";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 function App() {
-
   const ScrollToTop = () => {
     const { pathname } = useLocation();
 
@@ -54,7 +53,6 @@ function App() {
 
     return null;
   };
-
 
   const StoreHandler = () => {
     const [searchParams] = useSearchParams();
@@ -123,11 +121,25 @@ function App() {
                 }
               >
                 {/* Redirect from old paths to new auth paths */}
-                <Route path="/login" element={<Navigate to="/auth/login" replace />} />
-                <Route path="/line-callback" element={<LineCallbackRedirect />} />
-                <Route path="/phone-verification" element={<Navigate to="/auth/phone-verification" replace />} />
-                <Route path="/tell-us-about-yourself" element={<Navigate to="/auth/tell-us-about-yourself" replace />} />
-                
+                <Route
+                  path="/login"
+                  element={<Navigate to="/auth/login" replace />}
+                />
+                <Route
+                  path="/line-callback"
+                  element={<LineCallbackRedirect />}
+                />
+                <Route
+                  path="/phone-verification"
+                  element={<Navigate to="/auth/phone-verification" replace />}
+                />
+                <Route
+                  path="/tell-us-about-yourself"
+                  element={
+                    <Navigate to="/auth/tell-us-about-yourself" replace />
+                  }
+                />
+
                 {/* Auth routes */}
                 <Route path="auth/*" element={<AuthPage />} />
                 <Route
@@ -163,7 +175,10 @@ function App() {
 
                   <Route path="/points">
                     <Route index element={<MyPointsPage />} />
-                    <Route path="how-to-get-points" element={<HowToGetPoints />} />
+                    <Route
+                      path="how-to-get-points"
+                      element={<HowToGetPoints />}
+                    />
                   </Route>
 
                   <Route path="/my-orders">

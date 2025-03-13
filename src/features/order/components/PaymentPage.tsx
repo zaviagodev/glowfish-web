@@ -229,7 +229,7 @@ export function PaymentPage() {
           state: {
             orderNumber: order.id,
             amount: order.total,
-            date: order.created_at
+            date: order.created_at,
           },
           replace: true,
         });
@@ -414,7 +414,8 @@ export function PaymentPage() {
             <div className="flex-grow">
               <div className="font-medium">{account.bank.bank_name}</div>
               <div className="text-sm text-muted-foreground">
-                {t("Account")}: {formatBankAccountNumber(account.account_number)}
+                {t("Account")}:{" "}
+                {formatBankAccountNumber(account.account_number)}
               </div>
               <div className="text-xs text-muted-foreground">
                 {account.account_name}
@@ -658,7 +659,7 @@ export function PaymentPage() {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 exit={{ scale: 0 }}
-                                className="absolute -top-8 px-2 py-1 bg-green-500 text-white text-xs whitespace-nowrap rounded-full"
+                                className="absolute -top-8 px-2 py-1 bg-green-500 text-foreground text-xs whitespace-nowrap rounded-full"
                               >
                                 {t("Copied!")}
                               </motion.div>
@@ -734,7 +735,7 @@ export function PaymentPage() {
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     exit={{ scale: 0 }}
-                                    className="absolute -top-8 px-2 py-1 bg-green-500 text-white text-xs whitespace-nowrap rounded-full"
+                                    className="absolute -top-8 px-2 py-1 bg-green-500 text-foreground text-xs whitespace-nowrap rounded-full"
                                   >
                                     {t("Copied!")}
                                   </motion.div>
@@ -770,7 +771,7 @@ export function PaymentPage() {
                 />
                 <button
                   onClick={() => setSlipImage(null)}
-                  className="absolute top-2 right-2 bg-darkgray/50 text-white p-1 rounded-full"
+                  className="absolute top-2 right-2 bg-darkgray/50 text-foreground p-1 rounded-full"
                 >
                   <X className="w-4 h-4" />
                 </button>

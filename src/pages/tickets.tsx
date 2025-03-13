@@ -308,7 +308,7 @@ export default function TicketsPage() {
                         className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
                       >
                         <div className="flex items-center gap-3">
-                          <Map className="w-5 h-5 text-white" />
+                          <Map className="w-5 h-5 text-foreground" />
                           {t("View map")}
                         </div>
                         <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -378,14 +378,15 @@ export default function TicketsPage() {
                         {t("Attendee")}
                       </div>
                       <div className="text-sm font-medium">
-                        {ticket.metadata?.attendeeName || t("General Admission")}
+                        {ticket.metadata?.attendeeName ||
+                          t("General Admission")}
                       </div>
                     </div>
                     <div>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full mt-2.5 !bg-mainbutton rounded-full !text-black"
+                        className="w-full mt-2.5 !bg-mainbutton rounded-full !text-background"
                         onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
                           handleTicketCheckIn(ticket);
@@ -407,7 +408,8 @@ export default function TicketsPage() {
             <CheckInView
               ticket={{
                 id:
-                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.id || "",
+                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.id ||
+                  "",
                 ticketNumber: qrTicket,
                 eventName: foundOrder.event?.name || "",
                 seat:
@@ -476,7 +478,9 @@ export default function TicketsPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      onClick={() => handleTicketClick(customerEvent.event?.event_id || "")}
+                      onClick={() =>
+                        handleTicketClick(customerEvent.event?.event_id || "")
+                      }
                       className="cursor-pointer"
                     >
                       <Ticket
