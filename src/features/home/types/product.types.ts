@@ -76,6 +76,7 @@ export interface Category {
 }
 
 export interface ProductQueryResult {
+  events: Product[];
   products: Product[];
   categories: Category[];
   loading: boolean;

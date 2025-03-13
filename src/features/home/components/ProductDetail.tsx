@@ -35,7 +35,12 @@ interface VariantOption {
 interface ProductDetailProps {
   id: string;
   image?: string;
-  images?: ProductImage[];
+  images?: {
+    id: string;
+    url: string;
+    alt: string;
+    position: number;
+  }[];
   name?: string;
   description?: string;
   location?: string;

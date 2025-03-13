@@ -12,7 +12,12 @@ import { SearchDialog } from "@/features/home/components/SearchDialog";
 import { ProductSection } from "@/features/home/components/ProductSection";
 import { format, toZonedTime } from "date-fns-tz";
 import { isPast } from "date-fns";
-import { Category } from "@/features/home/types/product.types";
+import { Category, Product } from "@/features/home/types/product.types";
+
+interface SelectedProduct extends Product {
+  variant_id?: string;
+  quantity?: number;
+}
 
 export const HomeList = () => {
   const t = useTranslate();
@@ -26,28 +31,28 @@ export const HomeList = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<SelectedProduct | null>(null);
   const productSliderRef = useRef<HTMLDivElement>(null);
   const eventSliderRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = selectedCategory
-    ? events.filter((product) => product.category_id === selectedCategory)
+    ? events.filter((product: Product) => product.category_id === selectedCategory)
     : events;
 
   const searchResults = filteredProducts.filter(
-    (product) =>
+    (product: Product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleProductSelect = (product: any) => {
+  const handleProductSelect = (product: Product) => {
     // If product has no variants, just set the product
     if (!product.product_variants || product.product_variants.length === 0) {
       setSelectedProduct({
         ...product,
         track_quantity: product.track_quantity,
         variant_id: undefined,
-        quantity: product.quantity,
+        quantity: product.product_variants?.[0]?.quantity || 0,
       });
       setIsSearchOpen(false);
       return;
@@ -71,12 +76,12 @@ export const HomeList = () => {
       ...product,
       track_quantity: product.track_quantity,
       variant_id: undefined,
-      quantity: product.quantity,
+      quantity: product.product_variants?.[0]?.quantity || 0,
     });
     setIsSearchOpen(false);
   };
 
-  const getPriceDisplay = (product: any) => {
+  const getPriceDisplay = (product: Product) => {
     if (!product.product_variants || product.product_variants.length === 0) {
       return product.price === 0
         ? t("free")
@@ -87,7 +92,7 @@ export const HomeList = () => {
       return `${product.product_variants[0].price.toLocaleString()}`;
     }
 
-    const prices = product.product_variants.map((v: any) => v.price);
+    const prices = product.product_variants.map((v) => v.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
@@ -213,7 +218,7 @@ export const HomeList = () => {
           title={t("Upcoming Events")}
           linkTo="/products"
           products={events
-            .filter((product) => isPast(product.end_datetime) === false)
+            .filter((product: Product) => product.end_datetime && isPast(new Date(product.end_datetime)) === false)
             .slice(0, 5)}
           onProductSelect={handleProductSelect}
           sliderRef={productSliderRef}
