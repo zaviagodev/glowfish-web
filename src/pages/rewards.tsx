@@ -40,6 +40,7 @@ import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
 import NoItemsComp from "@/components/ui/no-items";
 import ItemCarousel from "@/components/ui/item-carousel";
 import RewardPageSkeletons from "@/components/skeletons/RewardPageSkeletons";
+import LongParagraph from "@/components/ui/long-paragraph";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -229,9 +230,7 @@ const RewardsPage = () => {
 
             <div className="flex flex-col gap-4">
               <h2 className="text-base">{t("Description")}</h2>
-              <p className="text-sm text-secondary-foreground font-light">
-                {selectedReward.description}
-              </p>
+              <LongParagraph description={selectedReward.description} />
             </div>
 
             <RewardAccordions />

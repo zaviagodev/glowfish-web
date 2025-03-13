@@ -16,13 +16,13 @@ import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { useCart } from "@/lib/cart";
 import { VariantDrawer } from "./VariantDrawer";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { Product, ProductVariant } from "../types/product.types";
-import DOMPurify from "dompurify";
 import { isPast } from "date-fns";
 import { cn, getMapLinks, makeTwoDecimals } from "@/lib/utils";
 import ItemCarousel from "@/components/ui/item-carousel";
+import LongParagraph from "@/components/ui/long-paragraph";
 
 interface ProductVariantOption {
   name: string;
@@ -192,20 +192,6 @@ export function ProductDetail({
     }
   };
 
-  const paragraphRef = useRef<HTMLParagraphElement>(null);
-  const [isClamped, setIsClamped] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    if (paragraphRef.current) {
-      const style = window.getComputedStyle(paragraphRef.current);
-      const lineHeight = parseFloat(style.lineHeight);
-      const maxHeight = lineHeight * 3;
-
-      setIsClamped(paragraphRef.current.scrollHeight > maxHeight);
-    }
-  }, [description, venue_address]);
-
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
   const checkIfNoProduct = track_quantity === true && quantity === 0;
 
@@ -289,24 +275,7 @@ export function ProductDetail({
             {description && (
               <div className="space-y-2">
                 <h2 className="text-base">{t("Description")}</h2>
-                <div
-                  ref={paragraphRef}
-                  className={cn(
-                    "text-sm text-secondary-foreground font-light",
-                    !expanded && "line-clamp-5"
-                  )}
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(description || ""),
-                  }}
-                />
-                {isClamped && (
-                  <p
-                    className="text-orangefocus text-sm w-fit cursor-pointer"
-                    onClick={() => setExpanded(!expanded)}
-                  >
-                    {expanded ? t("Read less...") : t("Read more...")}
-                  </p>
-                )}
+                <LongParagraph description={description} />
               </div>
             )}
 
@@ -354,13 +323,9 @@ export function ProductDetail({
                       ></iframe>
                     );
                   }
-
                   return null;
                 })()}
-
-                <p className="text-sm text-secondary-foreground font-light">
-                  {venue_address}
-                </p>
+                <LongParagraph description={venue_address} />
               </div>
             )}
 
