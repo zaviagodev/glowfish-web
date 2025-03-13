@@ -400,7 +400,7 @@ const RewardsPage = () => {
         <div className="px-5 pb-5">
           <button
             onClick={() => navigate("/scan")}
-            className="w-full bg-darkgray rounded-lg p-4 transition-colors flex items-center justify-between"
+            className="w-full bg-darkgray rounded-lg p-4 flex items-center justify-between"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="w-12 h-12 rounded-lg bg-[#2196F31A] flex items-center justify-center">
