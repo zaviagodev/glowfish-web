@@ -9,7 +9,6 @@ import {
 type Theme = "dark" | "light";
 
 interface ThemeContextProps {
-  theme: Theme;
   currentTheme: string;
   toggleTheme: () => void;
 }
@@ -33,7 +32,7 @@ const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [currentTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, currentTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{ currentTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
