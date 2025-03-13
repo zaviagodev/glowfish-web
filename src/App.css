@@ -423,6 +423,7 @@
     --chart-5: 27 87% 67%;
     --mainbutton: 0 0% 7%;
     --darkgray: 0 0% 97%;
+    --darkgray-two: 0 0% 92%;
     --radius: 0.5rem;
   }
   .dark {
@@ -453,6 +454,7 @@
     --chart-5: 340 75% 55%;
     --mainbutton: 39 58% 90%;
     --darkgray: 0 0% 19%;
+    --darkgray-two: 0 0% 14%;
   }
 }
 
