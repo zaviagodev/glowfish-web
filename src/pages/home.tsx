@@ -17,7 +17,7 @@ import { Category } from "@/features/home/types/product.types";
 export const HomeList = () => {
   const t = useTranslate();
   const navigate = useNavigate();
-  const { products, loading, error, categories } = useProducts();
+  const { products, events, loading, error, categories } = useProducts();
   const [userProfile, setUserProfile] = useState<{
     id: string;
     full_name: string;
@@ -31,8 +31,8 @@ export const HomeList = () => {
   const eventSliderRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = selectedCategory
-    ? products.filter((product) => product.category_id === selectedCategory)
-    : products;
+    ? events.filter((product) => product.category_id === selectedCategory)
+    : events;
 
   const searchResults = filteredProducts.filter(
     (product) =>
@@ -212,7 +212,7 @@ export const HomeList = () => {
         <ProductSection
           title={t("Upcoming Events")}
           linkTo="/products"
-          products={products
+          products={events
             .filter((product) => isPast(product.end_datetime) === false)
             .slice(0, 5)}
           onProductSelect={handleProductSelect}
@@ -223,6 +223,16 @@ export const HomeList = () => {
         {/* Events you might enjoy Section */}
         <ProductSection
           title={t("Events you might enjoy")}
+          linkTo="/products"
+          products={events.slice(0, 8)}
+          onProductSelect={handleProductSelect}
+          sliderRef={eventSliderRef}
+          isLoading={loading}
+        />
+
+        {/* Events you might enjoy Section */}
+        <ProductSection
+          title={t("Products")}
           linkTo="/products"
           products={products.slice(0, 8)}
           onProductSelect={handleProductSelect}

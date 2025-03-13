@@ -10,6 +10,7 @@ export interface CartItem {
   quantity: number;
   maxQuantity: number;
   variant?: Record<string, string>;
+  isEvent?: boolean;
 }
 
 type NewCartItem = Omit<CartItem, 'quantity'>;
@@ -41,6 +42,22 @@ export const useCart = create<CartStore>()(
         if (lastUpdated && now - lastUpdated > EXPIRY_TIME) {
           set({ items: [], lastUpdated: now });
           return;
+        }
+
+        // Check if the new item is an event
+        const isNewItemEvent = item.isEvent || false;
+        
+        // Check if there are any existing items
+        const existingItems = get().items;
+        
+        // If there are existing items, check if they are of a different type
+        if (existingItems.length > 0) {
+          const existingItemIsEvent = existingItems[0].isEvent || false;
+          
+          // If the new item type is different from existing items, clear the cart
+          if (isNewItemEvent !== existingItemIsEvent) {
+            set({ items: [], lastUpdated: now });
+          }
         }
         
         set((state) => {
