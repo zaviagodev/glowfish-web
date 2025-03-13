@@ -517,14 +517,14 @@ export function PaymentPage() {
             <div
               className={cn(
                 "absolute inset-0",
-                "bg-[radial-gradient(50%_100%_at_50%_100%,rgba(52,211,153,0.15)_0%,rgba(52,211,153,0.05)_30%,transparent_100%)]",
+                "bg-[radial-gradient(50%_100%_at_50%_100%,rgba(250,204,21,0.15)_0%,rgba(250,204,21,0.05)_30%,transparent_100%)]",
                 "animate-pulse"
               )}
             />
             <div
               className={cn(
                 "absolute inset-0",
-                "bg-[radial-gradient(50%_100%_at_50%_100%,rgba(52,211,153,0.1)_0%,rgba(52,211,153,0.02)_40%,transparent_100%)]",
+                "bg-[radial-gradient(50%_100%_at_50%_100%,rgba(250,204,21,0.1)_0%,rgba(250,204,21,0.02)_40%,transparent_100%)]",
                 "animate-[pulse_2s_infinite]"
               )}
             />
@@ -569,7 +569,7 @@ export function PaymentPage() {
             <motion.span
               className="text-[25px] font-normal mt-2"
               initial={{ x: -10, opacity: 0 }}
-              animate={{ x: 0, opacity: 1, color: "rgb(74 222 128)" }}
+              animate={{ x: 0, opacity: 1, color: "rgb(250,204,21)" }}
               transition={{ delay: 0.6 }}
             >
               ฿
@@ -577,7 +577,7 @@ export function PaymentPage() {
             <motion.span
               className="text-[58px] leading-none font-semibold tracking-tight"
               initial={{ color: "#1C1C1E" }}
-              animate={{ color: "rgb(74 222 128)" }}
+              animate={{ color: "rgb(250,204,21)" }}
               transition={{
                 delay: 0.7,
                 duration: 0.8,
@@ -593,7 +593,7 @@ export function PaymentPage() {
             <motion.span
               className="text-[25px] font-normal mt-2"
               initial={{ x: 10, opacity: 0 }}
-              animate={{ x: 0, opacity: 1, color: "rgb(74 222 128)" }}
+              animate={{ x: 0, opacity: 1, color: "rgb(250,204,21)" }}
               transition={{ delay: 0.6 }}
             >
               {Number.isInteger(order.total)
@@ -610,7 +610,7 @@ export function PaymentPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.6, ease: "easeOut" }}
           >
-            <div className="w-[6px] h-[6px] rounded-full bg-[#34C759] animate-[pulse_1.5s_infinite]" />
+            <div className="w-[6px] h-[6px] rounded-full bg-[rgb(250,204,21)] animate-[pulse_1.5s_infinite]" />
             <span className="text-[15px] font-normal text-[#636366]">
               {t("Waiting for payment")}
             </span>

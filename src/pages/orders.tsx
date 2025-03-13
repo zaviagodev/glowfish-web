@@ -230,6 +230,46 @@ const OrdersPage = () => {
               </div>
             </div>
 
+            {/* Shipping Information */}
+            {order.shipping_details && (
+              <div className="p-5 space-y-4">
+                <h2 className="text-sm font-medium tracking-wide">
+                  {t("Shipping Information")}
+                </h2>
+                <div className="bg-darkgray rounded-lg p-5">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">
+                        {t("Courier")}
+                      </span>
+                      <span className="text-sm font-medium">
+                        {order.shipping_details.courier}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">
+                        {t("Tracking Number")}
+                      </span>
+                      <span className="text-sm font-medium">
+                        {order.shipping_details.tracking_number}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">
+                        {t("Shipped Date")}
+                      </span>
+                      <span className="text-sm font-medium">
+                        {format(
+                          order.shipping_details.shipped_at,
+                          formattedDateAndTime
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Timeline */}
             <div className="p-5 space-y-4">
               <h2 className="text-sm font-medium tracking-wide">
@@ -334,33 +374,6 @@ const OrdersPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Shipping Information */}
-            {order.shipping_details && (
-              <div className="p-5 space-y-4">
-                <h2 className="text-sm font-medium tracking-wide">
-                  {t("Shipping Information")}
-                </h2>
-                <div className="bg-darkgray rounded-lg p-5">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">{t("Courier")}</span>
-                      <span className="text-sm font-medium">{order.shipping_details.courier}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">{t("Tracking Number")}</span>
-                      <span className="text-sm font-medium">{order.shipping_details.tracking_number}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">{t("Shipped Date")}</span>
-                      <span className="text-sm font-medium">
-                        {format(order.shipping_details.shipped_at, formattedDateAndTime)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Order Items */}
             <div className="p-5 space-y-5">
@@ -486,14 +499,16 @@ const OrdersPage = () => {
             </div>
 
             {/* Pay Now Button */}
-            {order.status === "pending" && order.total_amount > 0 && !order.payment_details && (
-              <div className="px-5">
-                <button onClick={handlePayNow} className="w-full main-btn">
-                  {t("Pay Now")} (฿
-                  {makeTwoDecimals(order.total_amount).toLocaleString()})
-                </button>
-              </div>
-            )}
+            {order.status === "pending" &&
+              order.total_amount > 0 &&
+              !order.payment_details && (
+                <div className="px-5">
+                  <button onClick={handlePayNow} className="w-full main-btn">
+                    {t("Pay Now")} (฿
+                    {makeTwoDecimals(order.total_amount).toLocaleString()})
+                  </button>
+                </div>
+              )}
 
             {/* View Tickets Button */}
             {!eventLoading && event && event.tickets.length > 0 && (

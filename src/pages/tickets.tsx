@@ -31,6 +31,7 @@ import Pagination from "@/components/pagination/Pagination";
 import type { Ticket as TicketType } from "@/features/tickets/services/ticketService";
 import NoItemsComp from "@/components/ui/no-items";
 import ItemCarousel from "@/components/ui/item-carousel";
+import TicketsSkeletons from "@/components/skeletons/TicketsSkeletons";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -148,7 +149,7 @@ export default function TicketsPage() {
     return (
       <div className="bg-background">
         <PageHeader title={isDetailsView ? "Ticket Details" : "My Tickets"} />
-        <LoadingSpin />
+        <TicketsSkeletons />
       </div>
     );
   }
@@ -167,8 +168,6 @@ export default function TicketsPage() {
       </div>
     );
   }
-
-  console.log(foundOrder);
 
   // Details View
   if (isDetailsView && foundOrder) {

@@ -62,7 +62,7 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
     <div
       className={cn(
         openImageModal
-          ? "fixed inset-0 z-[999] bg-background flex flex-col justify-center items-center w-full max-width-mobile"
+          ? "fixed inset-0 z-[999] bg-background flex flex-col justify-center items-center w-full max-width-mobile h-full"
           : ""
       )}
     >

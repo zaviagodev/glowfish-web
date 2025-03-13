@@ -213,6 +213,9 @@ export const HomeList = () => {
           title={t("Upcoming Events")}
           linkTo="/products"
           products={products
+            .sort(
+              (a, b) => new Date(a.start_datetime) - new Date(b.start_datetime)
+            )
             .filter((product) => isPast(product.end_datetime) === false)
             .slice(0, 5)}
           onProductSelect={handleProductSelect}

@@ -24,6 +24,7 @@ import { ChevronRight, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import { Checkbox } from "@/components/ui/checkbox";
+import CheckoutSkeletons from "@/components/skeletons/CheckoutSkeletons";
 
 interface CartItem extends CartItemType {
   variantId: string;
@@ -152,7 +153,7 @@ export function CheckoutPage() {
   }
 
   if (isCheckingProducts || customerLoading) {
-    return <LoadingSpin />;
+    return <CheckoutSkeletons />;
   }
 
   // Calculate order summary

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTranslate } from "@refinedev/core";
 import { Category as ProductCategory } from "@/features/home/types/product.types";
+import CategoriesSkeletons from "@/components/skeletons/CategoriesSkeletons";
 
 type Category = Omit<
   ProductCategory,
@@ -29,6 +30,10 @@ export function CategoryGrid({
     onSelectCategory(categoryId);
     navigate("/products", { state: { selectedCategory: categoryId } });
   };
+
+  if (isLoading) {
+    return <CategoriesSkeletons />;
+  }
 
   return (
     <div className="flex items-center gap-3 px-[22px] overflow-auto pt-[21px] pb-4 scrollbar-hide">

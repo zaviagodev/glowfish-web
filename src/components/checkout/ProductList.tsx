@@ -2,25 +2,48 @@ import { useTranslate } from "@refinedev/core";
 import { CartItem } from "@/lib/cart";
 import GlowfishIcon from "../icons/GlowfishIcon";
 import { makeTwoDecimals } from "@/lib/utils";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
 interface ProductListProps {
   items: CartItem[];
 }
 
+const LIMITED_ITEMS = 2;
+
 export function ProductList({ items }: ProductListProps) {
   const t = useTranslate();
+  const [showAllItems, setShowAllItems] = useState(false);
+  const visibleItems = showAllItems ? items : items.slice(0, LIMITED_ITEMS);
+
+  const ChevronIcon = showAllItems ? (
+    <ChevronUp className="h-4 w-4" />
+  ) : (
+    <ChevronDown className="h-4 w-4" />
+  );
 
   return (
     <div className="bg-darkgray rounded-xl shadow-sm border">
       <div className="p-4 pb-0">
-        <h2 className="text-sm font-medium mb-3">{t("Products Ordered")}</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-medium">{t("Products Ordered")}</h2>
+          {items.length > LIMITED_ITEMS && (
+            <button
+              onClick={() => setShowAllItems(!showAllItems)}
+              className="w-fit flex items-center gap-1 text-sm text-muted-foreground"
+            >
+              <span>{showAllItems ? "Show less" : "Show more"}</span>
+              {ChevronIcon}
+            </button>
+          )}
+        </div>
         <div className="text-xs text-secondary-foreground">
           {items.length} {t("items")}
         </div>
       </div>
 
       <div>
-        {items.map((item) => (
+        {visibleItems.map((item) => (
           <div key={item.variantId} className="p-4 flex gap-3">
             <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
               {item.image ? (
