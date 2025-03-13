@@ -58,7 +58,8 @@ export function useToast() {
   }
   return {
     ...context,
-    toast: (message: string, type: Toast["type"] = "info") => context.addToast(message, type)
+    toast: (message: string, type: Toast["type"] = "info") =>
+      context.addToast(message, type),
   };
 }
 
@@ -78,26 +79,26 @@ function ToastContainer() {
               pointer-events-auto min-w-[320px] p-4 rounded-lg shadow-lg flex items-start gap-3
               ${
                 toast.type === "error"
-                  ? "bg-red-500 text-white"
+                  ? "bg-red-500 text-foreground"
                   : toast.type === "success"
-                  ? "bg-green-500 text-white"
-                  : "bg-blue-500 text-white"
+                  ? "bg-green-500 text-foreground"
+                  : "bg-blue-500 text-foreground"
               }
             `}
           >
             <div className="flex-shrink-0">
               {toast.type === "error" ? (
-                <AlertCircle className="w-5 h-5 text-white" />
+                <AlertCircle className="w-5 h-5 text-foreground" />
               ) : toast.type === "success" ? (
-                <CheckCircle2 className="w-5 h-5 text-white" />
+                <CheckCircle2 className="w-5 h-5 text-foreground" />
               ) : (
-                <Info className="w-5 h-5 text-white" />
+                <Info className="w-5 h-5 text-foreground" />
               )}
             </div>
             <p className="text-sm flex-1 font-medium">{toast.message}</p>
             <button
               onClick={() => removeToast(toast.id)}
-              className="flex-shrink-0 text-white/80 hover:text-white"
+              className="flex-shrink-0 text-foreground/80 hover:text-foreground"
             >
               <X className="w-4 h-4" />
             </button>

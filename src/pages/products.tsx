@@ -140,7 +140,7 @@ export default function ProductsPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="text-white h-12 !bg-transparent"
+            className="text-foreground h-12 !bg-transparent"
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />

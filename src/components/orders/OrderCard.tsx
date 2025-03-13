@@ -96,7 +96,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
 
       {order.shipping_details && (
         <div className="px-4">
-          <div className="bg-[#232323] px-3 py-4 rounded-lg flex flex-col justify-center">
+          <div className="bg-darkgray-two px-3 py-4 rounded-lg flex flex-col justify-center">
             <p className="text-sm">
               {t("Tracking Number")}: {order.shipping_details.tracking_number}
             </p>
@@ -104,7 +104,8 @@ export function OrderCard({ order, index }: OrderCardProps) {
               {t("Courier")}: {order.shipping_details.courier}
             </p>
             <p className="text-sm text-muted-foreground">
-              {t("Shipped Date")}: {format(order.shipping_details.shipped_at, formattedDateAndTime)}
+              {t("Shipped Date")}:{" "}
+              {format(order.shipping_details.shipped_at, formattedDateAndTime)}
             </p>
           </div>
         </div>

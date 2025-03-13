@@ -9,7 +9,7 @@ import {
 type Theme = "dark" | "light";
 
 interface ThemeContextProps {
-  theme: Theme;
+  currentTheme: string;
   toggleTheme: () => void;
 }
 
@@ -17,6 +17,7 @@ const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>("dark");
+  const currentTheme = localStorage.getItem("theme") || theme;
 
   function toggleTheme() {
     setTheme((prevTheme) => {
@@ -27,11 +28,11 @@ const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   }
 
   useEffect(() => {
-    document.body.className = theme;
-  }, [theme]);
+    document.body.className = currentTheme;
+  }, [currentTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ currentTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

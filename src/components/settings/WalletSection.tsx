@@ -32,18 +32,22 @@ export function WalletSection() {
   const { customer, loading: customerLoading } = useCustomer();
 
   // Calculate total active tickets count
-  const activeTicketsCount = (events as CustomerEvent[] | undefined)?.reduce((total: number, eventData: CustomerEvent) => {
-    if (!eventData?.event || !eventData?.tickets) return total;
-    const eventDate = new Date(eventData.event.start_datetime);
-    // Only count tickets for upcoming events
-    if (eventDate > new Date()) {
-      const unusedTickets = eventData.tickets.filter(
-        (ticket) => ticket.status === "unused"
-      ).length;
-      return total + unusedTickets;
-    }
-    return total;
-  }, 0) || 0;
+  const activeTicketsCount =
+    (events as CustomerEvent[] | undefined)?.reduce(
+      (total: number, eventData: CustomerEvent) => {
+        if (!eventData?.event || !eventData?.tickets) return total;
+        const eventDate = new Date(eventData.event.start_datetime);
+        // Only count tickets for upcoming events
+        if (eventDate > new Date()) {
+          const unusedTickets = eventData.tickets.filter(
+            (ticket) => ticket.status === "unused"
+          ).length;
+          return total + unusedTickets;
+        }
+        return total;
+      },
+      0
+    ) || 0;
 
   const walletItems: WalletItem[] = [
     {
@@ -95,7 +99,7 @@ export function WalletSection() {
       {/* Standalone Tickets Button */}
       <button
         onClick={() => navigate("/tickets")}
-        className="w-full bg-darkgray rounded-lg p-4 transition-colors"
+        className="w-full bg-darkgray rounded-lg p-4"
       >
         <div className="flex items-center gap-3 w-full">
           <div className="w-12 h-12 rounded-lg bg-[#E1F5FE1A] flex items-center justify-center">

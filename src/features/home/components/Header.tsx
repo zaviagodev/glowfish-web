@@ -29,7 +29,7 @@ export function Header({ onSearchClick }: HeaderProps) {
           </Button>
           <Link to="/cart">
             <Button variant="ghost" size="icon" className="relative">
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-white text-[10px] rounded-full flex items-center justify-center">
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-foreground text-[10px] rounded-full flex items-center justify-center">
                 {cartItemCount}
               </div>
               <ShoppingCart className="h-5 w-5" />

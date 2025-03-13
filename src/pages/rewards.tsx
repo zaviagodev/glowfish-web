@@ -53,7 +53,7 @@ const RewardsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [codeType, setCodeType] = useState("barcode");
   const tabsClassName =
-    "w-full rounded-none flex py-4 gap-2 items-center text-[#979797] text-xs font-semibold box-border border-b border-[#282828] !bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-white data-[state=active]:text-white";
+    "w-full rounded-none flex py-4 gap-2 items-center text-[#979797] text-xs font-semibold box-border border-b border-[#282828] !bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-white data-[state=active]:text-foreground";
 
   const {
     rewards,
@@ -189,7 +189,7 @@ const RewardsPage = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
+            className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-foreground"
             onClick={() => navigate(-1)}
           >
             <ChevronLeft className="h-6 w-6" />
@@ -403,7 +403,7 @@ const RewardsPage = () => {
         <div className="px-5 pb-5">
           <button
             onClick={() => navigate("/scan")}
-            className="w-full bg-darkgray rounded-lg p-4 transition-colors flex items-center justify-between"
+            className="w-full bg-darkgray rounded-lg p-4 flex items-center justify-between"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="w-12 h-12 rounded-lg bg-[#2196F31A] flex items-center justify-center">

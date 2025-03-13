@@ -128,7 +128,7 @@ const ScanPage = () => {
         <Sheet open={hasError}>
           <SheetContent
             side="bottom"
-            className="h-max bg-background rounded-t-xl p-0 pb-12 overflow-auto max-width-mobile outline-none"
+            className="h-max bg-background rounded-t-xl p-0 pb-8 overflow-auto max-width-mobile outline-none"
             hideCloseButton={true}
           >
             <SheetHeader className="p-4 pt-8 rounded-t-xl bg-background backdrop-blur-xl items-center before:top-3 max-width-mobile w-full -translate-y-[1px] gap-2">
@@ -141,7 +141,7 @@ const ScanPage = () => {
             <div className="flex items-center gap-2 px-5 pt-1">
               <Button
                 onClick={() => navigate(-1)}
-                className="gap-2 secondary-btn text-white w-full"
+                className="gap-2 secondary-btn text-foreground w-full"
               >
                 <X className="h-4 w-4" />
                 {t("Close")}

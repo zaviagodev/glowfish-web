@@ -58,14 +58,16 @@ export function AnimatedCard({
     }
 
     // Find variants with compare_at_price
-    const variantsWithComparePrice = product_variants.filter(v => v.compare_at_price && v.compare_at_price > 0);
-    
+    const variantsWithComparePrice = product_variants.filter(
+      (v) => v.compare_at_price && v.compare_at_price > 0
+    );
+
     if (variantsWithComparePrice.length > 0) {
       // Get the variant with lowest price among those with compare_at_price
-      const lowestPriceVariant = variantsWithComparePrice.reduce((lowest, current) => 
-        current.price < lowest.price ? current : lowest
+      const lowestPriceVariant = variantsWithComparePrice.reduce(
+        (lowest, current) => (current.price < lowest.price ? current : lowest)
       );
-      return lowestPriceVariant.price === 0 
+      return lowestPriceVariant.price === 0
         ? t("free")
         : `฿${makeTwoDecimals(lowestPriceVariant.price).toLocaleString()}`;
     }
@@ -88,12 +90,14 @@ export function AnimatedCard({
     }
 
     // Find variants with compare_at_price
-    const variantsWithComparePrice = product_variants.filter(v => v.compare_at_price && v.compare_at_price > 0);
-    
+    const variantsWithComparePrice = product_variants.filter(
+      (v) => v.compare_at_price && v.compare_at_price > 0
+    );
+
     if (variantsWithComparePrice.length > 0) {
       // Get the variant with lowest price among those with compare_at_price
-      const lowestPriceVariant = variantsWithComparePrice.reduce((lowest, current) => 
-        current.price < lowest.price ? current : lowest
+      const lowestPriceVariant = variantsWithComparePrice.reduce(
+        (lowest, current) => (current.price < lowest.price ? current : lowest)
       );
       return `฿${lowestPriceVariant.compare_at_price!.toLocaleString()}`;
     }
@@ -149,11 +153,15 @@ export function AnimatedCard({
           </Button>
         )}
 
-        {product_variants && product_variants.some(variant => variant.compare_at_price && variant.compare_at_price > 0) && (
-          <span className="absolute left-2 top-2 bg-[#DE473C] text-white text-sm rounded-full px-2 py-0.5">
-            Sale
-          </span>
-        )}
+        {product_variants &&
+          product_variants.some(
+            (variant) =>
+              variant.compare_at_price && variant.compare_at_price > 0
+          ) && (
+            <span className="absolute left-2 top-2 bg-[#DE473C] text-foreground text-sm rounded-full px-2 py-0.5">
+              Sale
+            </span>
+          )}
       </motion.div>
 
       <div
