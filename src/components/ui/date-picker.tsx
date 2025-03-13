@@ -36,6 +36,7 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
             onSelect(utcDate);
           }
         }}
+        maxDate={new Date()}
         {...props}
         ref={ref}
         customInput={
