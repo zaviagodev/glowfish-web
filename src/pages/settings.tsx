@@ -103,7 +103,7 @@ const SettingsPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="pt-20 pb-4">
+      <div className="pt-16 pb-4">
         <WalletSection />
         <OrderStatusBar />
         {sections.map((section, index) => (
