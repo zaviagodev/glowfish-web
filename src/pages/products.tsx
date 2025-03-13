@@ -26,6 +26,7 @@ import { CategoryGrid } from "@/features/home/components/CategoryGrid";
 import { cn } from "@/lib/utils";
 import NoItemsComp from "@/components/ui/no-items";
 import { Product, ProductVariant } from "@/features/home/types/product.types";
+import EventPageSkeletons from "@/components/skeletons/EventPageSkeletons";
 
 export default function ProductsPage() {
   const t = useTranslate();
@@ -76,7 +77,9 @@ export default function ProductsPage() {
       // Helper function to get the highest price from variants or base price
       const getHighestPrice = (product: Product) => {
         if (!product.product_variants?.length) return product.price;
-        const variantPrices = product.product_variants.map((v: ProductVariant) => v.price);
+        const variantPrices = product.product_variants.map(
+          (v: ProductVariant) => v.price
+        );
         return Math.max(product.price, ...variantPrices);
       };
 
@@ -150,8 +153,11 @@ export default function ProductsPage() {
       {/* Product Grid */}
       <div className="p-5">
         {loading ? (
-          <div className="flex items-center justify-center h-40">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="grid grid-cols-2 gap-4">
+            <EventPageSkeletons />
+            <EventPageSkeletons />
+            <EventPageSkeletons />
+            <EventPageSkeletons />
           </div>
         ) : (
           <>
