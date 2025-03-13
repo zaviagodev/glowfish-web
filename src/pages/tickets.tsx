@@ -76,8 +76,6 @@ export default function TicketsPage() {
     foundOrder = tickets.find((order) => order.event?.event_id === id);
   }
 
-  console.log(foundOrder);
-
   // Handlers for ticket details
   const handleTicketCheckIn = (ticket: TicketType) => {
     setQrTicket(ticket.code);
