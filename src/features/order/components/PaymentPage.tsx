@@ -407,7 +407,7 @@ export function PaymentPage() {
           >
             <div
               className={cn("bg-white w-4 h-4 rounded-full", {
-                "bg-mainbutton border-2 border-black outline outline-1 outline-mainbutton":
+                "bg-mainbutton border-2 border-background outline outline-1 outline-mainbutton":
                   selectedBankAccount?.id === account.id,
               })}
             />
