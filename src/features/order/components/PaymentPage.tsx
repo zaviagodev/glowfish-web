@@ -531,7 +531,7 @@ export function PaymentPage() {
           </div>
 
           {/* Countdown Timer */}
-          <motion.div
+          {/* <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{
@@ -544,7 +544,7 @@ export function PaymentPage() {
           >
             <Clock className="w-4 h-4" />
             {formatTime(countdown)}
-          </motion.div>
+          </motion.div> */}
 
           <motion.p
             className="text-base font-normal text-[#636366] mb-3"
