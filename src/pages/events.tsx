@@ -376,8 +376,6 @@ export default function EventsPage() {
         </SheetContent>
       </Sheet>
 
-      {console.log(selectedProduct)}
-
       {/* Product Detail */}
       {selectedProduct && (
         <ProductDetail
@@ -385,6 +383,7 @@ export default function EventsPage() {
           location={selectedProduct.location}
           date={formattedDate(selectedProduct)}
           onClose={() => setSelectedProduct(null)}
+          isEvent={selectedProduct.end_datetime}
         />
       )}
     </div>
