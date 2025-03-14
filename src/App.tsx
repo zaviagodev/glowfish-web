@@ -33,7 +33,7 @@ import MyOrdersPage from "./pages/orders";
 import MyPointsPage from "./pages/points";
 import TicketsPage from "./pages/tickets";
 import { ToastProvider } from "@/components/ui/toast";
-import { ThemeProvider, useTheme } from "./hooks/useTheme";
+import { ThemeProvider } from "./hooks/useTheme";
 import EventsPage from "./pages/events";
 import ProductsPage from "./pages/products";
 import { HowToGetPoints } from "@/features/points";
@@ -45,7 +45,6 @@ import OrderFlow from "@/pages/OrderFlow";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 function App() {
-
   const ScrollToTop = () => {
     const { pathname } = useLocation();
 
@@ -55,7 +54,6 @@ function App() {
 
     return null;
   };
-
 
   const StoreHandler = () => {
     const [searchParams] = useSearchParams();
@@ -124,11 +122,25 @@ function App() {
                 }
               >
                 {/* Redirect from old paths to new auth paths */}
-                <Route path="/login" element={<Navigate to="/auth/login" replace />} />
-                <Route path="/line-callback" element={<LineCallbackRedirect />} />
-                <Route path="/phone-verification" element={<Navigate to="/auth/phone-verification" replace />} />
-                <Route path="/tell-us-about-yourself" element={<Navigate to="/auth/tell-us-about-yourself" replace />} />
-                
+                <Route
+                  path="/login"
+                  element={<Navigate to="/auth/login" replace />}
+                />
+                <Route
+                  path="/line-callback"
+                  element={<LineCallbackRedirect />}
+                />
+                <Route
+                  path="/phone-verification"
+                  element={<Navigate to="/auth/phone-verification" replace />}
+                />
+                <Route
+                  path="/tell-us-about-yourself"
+                  element={
+                    <Navigate to="/auth/tell-us-about-yourself" replace />
+                  }
+                />
+
                 {/* Auth routes */}
                 <Route path="auth/*" element={<AuthPage />} />
                 <Route
@@ -148,7 +160,7 @@ function App() {
                     <Route index element={<Rewards />} />
                     <Route path=":id" element={<Rewards />} />
                   </Route>
-                  <Route path="/events" element={<EventsPage />} />
+                  <Route path="/events" element={<ProductsPage />} />
                   <Route path="/products" element={<ProductsPage />} />
                   <Route path="/settings">
                     <Route index element={<SettingsPage />} />
@@ -165,7 +177,10 @@ function App() {
 
                   <Route path="/points">
                     <Route index element={<MyPointsPage />} />
-                    <Route path="how-to-get-points" element={<HowToGetPoints />} />
+                    <Route
+                      path="how-to-get-points"
+                      element={<HowToGetPoints />}
+                    />
                   </Route>
 
                   <Route path="/my-orders">
