@@ -118,7 +118,7 @@ export function ProductDetail({
         : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
     }
 
-    return `฿${makeTwoDecimals(minPrice).toLocaleString()} - ฿${makeTwoDecimals(
+    return `${minPrice === 0 ? t("free") : `฿${makeTwoDecimals(minPrice).toLocaleString()}`} - ฿${makeTwoDecimals(
       maxPrice
     ).toLocaleString()}`;
   };
@@ -196,9 +196,9 @@ export function ProductDetail({
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
       variant: selectedVariant?.options?.reduce(
-        (acc: Record<string, string>, opt: VariantOption) => ({
+        (acc: Record<string, string>, opt: any) => ({
           ...acc,
-          [opt.name]: opt.values.join(","),
+          [opt.name]: Array.isArray(opt.values) ? opt.values.join(",") : opt.values,
         }),
         {}
       ),
