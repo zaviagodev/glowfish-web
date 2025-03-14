@@ -9,7 +9,7 @@ interface ProductListProps {
   items: CartItem[];
 }
 
-const LIMITED_ITEMS = 2;
+const LIMITED_ITEMS = 1;
 
 export function ProductList({ items }: ProductListProps) {
   const t = useTranslate();
