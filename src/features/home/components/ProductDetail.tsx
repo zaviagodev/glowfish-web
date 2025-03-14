@@ -48,7 +48,7 @@ interface ProductDetailProps {
   date?: string;
   price?: number;
   sales_price?: number;
-  points?: number;
+  points_based_price?: number;
   variant_id?: string;
   quantity?: number;
   track_quantity?: boolean;
@@ -61,6 +61,7 @@ interface ProductDetailProps {
   gallery_link?: string;
   hide_cart?: boolean;
   end_datetime?: string;
+  isEvent?: boolean;
 }
 
 export function ProductDetail({
@@ -74,7 +75,7 @@ export function ProductDetail({
   date,
   price,
   sales_price,
-  points,
+  points_based_price,
   variant_id,
   quantity = 1,
   track_quantity = false,
@@ -87,10 +88,12 @@ export function ProductDetail({
   gallery_link,
   hide_cart,
   end_datetime,
+  isEvent,
 }: ProductDetailProps) {
   const t = useTranslate();
   const navigate = useNavigate();
   const addItem = useCart((state) => state.addItem);
+  const { getTotalItems } = useCart();
   const { addToast } = useToast();
   const [showVariantDrawer, setShowVariantDrawer] = useState(false);
   const [selectedVariantId, setSelectedVariantId] = useState<
@@ -121,6 +124,29 @@ export function ProductDetail({
     return `฿${makeTwoDecimals(minPrice).toLocaleString()} - ฿${makeTwoDecimals(
       maxPrice
     ).toLocaleString()}`;
+  };
+
+  const getPointsDisplay = () => {
+    if (!product_variants || product_variants.length === 0) {
+      return Number(points_based_price).toLocaleString();
+    }
+
+    const points = product_variants.map(
+      (v: ProductVariant) => v.points_based_price
+    );
+
+    if (points) {
+      const minPoint = Math.min(...points);
+      const maxPoint = Math.max(...points);
+
+      if (minPoint === maxPoint) {
+        return `${minPoint.toLocaleString()}`;
+      }
+
+      return `${minPoint.toLocaleString()} - ${maxPoint.toLocaleString()}`;
+    } else {
+      return 0;
+    }
   };
 
   // Get compare at price display
@@ -243,15 +269,20 @@ export function ProductDetail({
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />
+            <span className="absolute -top-1 -right-1 bg-red-500 rounded-full h-4 w-4 flex items-center justify-center text-xs">
+              {getTotalItems()}
+            </span>
           </Button>
         )}
         <ItemCarousel
-          images={images?.map(img => ({
-            id: img.id,
-            url: img.url,
-            alt: img.alt || name || "",
-            position: img.position
-          })) || []}
+          images={
+            images?.map((img) => ({
+              id: img.id,
+              url: img.url,
+              alt: img.alt || name || "",
+              position: img.position,
+            })) || []
+          }
           image={image || images?.[0]?.url || "/placeholder.png"}
           name={name}
         />
@@ -262,14 +293,6 @@ export function ProductDetail({
               <h2 className="text-2xl">{name}</h2>
 
               <div className="space-y-2.5">
-                <div className="flex items-center gap-2 text-sm font-light">
-                  <MapPin className="w-4 h-4" />
-                  <span>{location || "To be determined"}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm font-light">
-                  <Calendar className="w-4 h-4" />
-                  <span>{date || "To be determined"}</span>
-                </div>
                 {product_variants &&
                   product_variants.some(
                     (variant) =>
@@ -279,6 +302,18 @@ export function ProductDetail({
                       Sale
                     </div>
                   )}
+                {isEvent && (
+                  <>
+                    <div className="flex items-center gap-2 text-sm font-light">
+                      <MapPin className="w-4 h-4" />
+                      <span>{location || "To be determined"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-light">
+                      <Calendar className="w-4 h-4" />
+                      <span>{date || "To be determined"}</span>
+                    </div>
+                  </>
+                )}
                 {/* {points && (
                   <div className="flex items-center gap-2 text-sm text-primary font-medium">
                     <Tag className="w-4 h-4" />
@@ -317,8 +352,9 @@ export function ProductDetail({
                 <h2 className="text-base">{t("Venue & Location")}</h2>
                 {/* Get processed map links */}
                 {(() => {
-                  const { viewLink, embedLink, isShareLink } =
-                    getMapLinks(google_maps_link || "");
+                  const { viewLink, embedLink, isShareLink } = getMapLinks(
+                    google_maps_link || ""
+                  );
 
                   if (!viewLink) return null;
 
@@ -363,17 +399,19 @@ export function ProductDetail({
             )}
 
             {/* Organizer Details */}
-            <div className="space-y-2">
-              <h2 className="text-base">{t("Organizer")}</h2>
-              <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
-                <Contact className="w-4 h-4" />
-                {organizer_name || "To be determined"}
+            {isEvent && (
+              <div className="space-y-2">
+                <h2 className="text-base">{t("Organizer")}</h2>
+                <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
+                  <Contact className="w-4 h-4" />
+                  {organizer_name || "To be determined"}
+                </div>
+                <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
+                  <Phone className="w-4 h-4" />
+                  {organizer_contact || "To be determined"}
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
-                <Phone className="w-4 h-4" />
-                {organizer_contact || "To be determined"}
-              </div>
-            </div>
+            )}
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -547,7 +585,7 @@ export function ProductDetail({
         <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background/80 backdrop-blur-lg space-y-4 max-width-mobile border-t border-t-darkgray">
           {getPriceDisplay() && (
             <div className="flex items-center gap-2">
-              <div className="flex items-baseline gap-2">
+              <div className="flex items-baseline justify-between gap-2 w-full">
                 <span
                   className="flex flex-col font-bold tracking-tight text-secondary-foreground"
                   style={{
@@ -555,7 +593,9 @@ export function ProductDetail({
                     transform: "translateZ(0)",
                   }}
                 >
-                  <span className="text-sm font-normal">start from</span>
+                  <span className="text-sm font-normal">
+                    {isEvent ? "start from" : "Price"}
+                  </span>
                   <span className="flex items-end gap-2 text-2xl">
                     {getPriceDisplay()}
 
@@ -569,6 +609,20 @@ export function ProductDetail({
                           {getCompareAtPriceDisplay()}
                         </span>
                       )}
+                  </span>
+                </span>
+                <span
+                  className="flex flex-col font-bold tracking-tight items-end text-secondary-foreground"
+                  style={{
+                    willChange: "transform",
+                    transform: "translateZ(0)",
+                  }}
+                >
+                  <span className="text-sm font-normal">
+                    Point{getPointsDisplay() === 1 ? "" : "s"} to use
+                  </span>
+                  <span className="flex items-end gap-2 text-2xl font-normal">
+                    {getPointsDisplay() || 0}
                   </span>
                 </span>
               </div>
@@ -589,7 +643,9 @@ export function ProductDetail({
               ? t("This event has ended")
               : checkIfNoProduct
               ? t("Sold Out")
-              : t("Sign Up")}
+              : isEvent
+              ? t("Sign Up")
+              : t("Add to cart")}
           </Button>
           <p className="text-xs text-center text-muted-foreground">
             Hope you have a great time!
