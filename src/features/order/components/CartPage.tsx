@@ -199,18 +199,23 @@ export function CartPage() {
                     ฿{makeTwoDecimals(total).toLocaleString()}
                   </span>
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  {discount > 0 && (
-                    <>
-                      <span className="flex items-center gap-1">
-                        {t("Discount")}:
-                        <span className="text-[#EE4D2D] font-semibold">
-                          -฿{makeTwoDecimals(discount).toLocaleString()}
-                        </span>
-                      </span>
-                    </>
-                  )}
+                <div className="text-sm font-medium flex items-center gap-1 text-muted-foreground">
+                  {t("Points to use")}:
+                  <span className="text-foreground text-lg">
+                    {/* TODO: Change to the total points */}
+                    {total.toLocaleString()}
+                  </span>
                 </div>
+                {/* {discount < 0 && (
+                  <div className="text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      {t("Discount")}:
+                      <span className="text-[#EE4D2D] font-semibold">
+                        -฿{makeTwoDecimals(discount).toLocaleString()}
+                      </span>
+                    </span>
+                  </div>
+                )} */}
               </div>
               <Button
                 className="main-btn w-[130px]"
@@ -225,9 +230,11 @@ export function CartPage() {
                   })
                 }
               >
-                {t("Checkout")} ({items
+                {t("Checkout")} (
+                {items
                   .filter((item) => selectedItems.includes(item.variantId))
-                  .reduce((total, item) => total + item.quantity, 0)})
+                  .reduce((total, item) => total + item.quantity, 0)}
+                )
               </Button>
             </div>
           </div>
