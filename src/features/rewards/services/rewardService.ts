@@ -26,9 +26,12 @@ export const getRewards = async (): Promise<Reward[]> => {
         id,
         price,
         points_based_price
-      )
+      ),
+      events!left (*)
     `)
+    .is("events", null)
     .eq("is_reward", true);
+
 
   if (error) {
     throw new Error(error.message);
@@ -58,6 +61,5 @@ export const getRewardById = async (id: string): Promise<Reward | null> => {
   if (error) {
     throw new Error(error.message);
   }
-
   return data;
 }; 
