@@ -174,6 +174,7 @@ function App() {
                   </Route>
                   <Route path="/tickets" element={<TicketsPage />} />
                   <Route path="/tickets/:id" element={<TicketsPage />} />
+                  <Route path="/tickets/:id/:ticketId" element={<TicketsPage />} />
 
                   <Route path="/home">
                     <Route index element={<HomeList />} />
