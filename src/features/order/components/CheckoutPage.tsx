@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import { Checkbox } from "@/components/ui/checkbox";
 import CheckoutSkeletons from "@/components/skeletons/CheckoutSkeletons";
+import { Switch } from "@/components/ui/switch";
 
 interface CartItem extends CartItemType {
   variantId: string;
@@ -332,49 +333,53 @@ export function CheckoutPage() {
             </div>
           )}
 
-          <div className="flex items-center justify-between">
-            <div>
-              <p>Billing address same as shipping address</p>
-              <p className="text-muted-foreground">
-                Uncheck if you want to change to another address
-              </p>
-            </div>
-            <Checkbox
-              checked={isBillingAddressChecked}
-              onCheckedChange={() =>
-                setIsBillingAddressChecked(!isBillingAddressChecked)
-              }
-            />
-          </div>
+          {hasPhysicalProducts && (
+            <>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p>Billing address same as shipping address</p>
+                  <p className="text-muted-foreground">
+                    Uncheck if you want to change to another address
+                  </p>
+                </div>
+                <Checkbox
+                  checked={isBillingAddressChecked}
+                  onCheckedChange={() =>
+                    setIsBillingAddressChecked(!isBillingAddressChecked)
+                  }
+                />
+              </div>
 
-          {!isBillingAddressChecked && (
-            <div
-              onClick={() =>
-                navigate("/checkout/address", {
-                  state: { selectedItems: items },
-                })
-              }
-            >
-              {/* TODO: The address info may change based on the difference of billing and shipping address */}
-              <AddressCard
-                title={t("Billing Address")}
-                name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
-                phone={selectedAddress?.phone}
-                address={`${selectedAddress?.address1}${
-                  selectedAddress?.address2
-                    ? `, ${selectedAddress?.address2}`
-                    : ""
-                }, ${selectedAddress?.city}, ${selectedAddress?.state} ${
-                  selectedAddress?.postal_code
-                }`}
-                isDefault={!!selectedAddress}
-                icon={
-                  <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
-                    <MapPin className="w-4 h-4 text-icon-blue-foreground" />
-                  </div>
-                }
-              />
-            </div>
+              {!isBillingAddressChecked && (
+                <div
+                  onClick={() =>
+                    navigate("/checkout/address", {
+                      state: { selectedItems: items },
+                    })
+                  }
+                >
+                  {/* TODO: The address info may change based on the difference of billing and shipping address */}
+                  <AddressCard
+                    title={t("Billing Address")}
+                    name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
+                    phone={selectedAddress?.phone}
+                    address={`${selectedAddress?.address1}${
+                      selectedAddress?.address2
+                        ? `, ${selectedAddress?.address2}`
+                        : ""
+                    }, ${selectedAddress?.city}, ${selectedAddress?.state} ${
+                      selectedAddress?.postal_code
+                    }`}
+                    isDefault={!!selectedAddress}
+                    icon={
+                      <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
+                        <MapPin className="w-4 h-4 text-icon-blue-foreground" />
+                      </div>
+                    }
+                  />
+                </div>
+              )}
+            </>
           )}
 
           {(isPaymentMethodRequired || hasPhysicalProducts) && (
@@ -384,6 +389,24 @@ export function CheckoutPage() {
               required={isPaymentMethodRequired}
             />
           )}
+
+          <div className="flex items-center justify-between px-4">
+            <div>
+              <h2 className="text-base font-normal">
+                {/* TODO: Set the dynamic points to use */}
+                Points to use: 3200
+                <span className="text-orangefocus text-sm">
+                  {" "}
+                  {/* TODO: Set the dynamic available points */}
+                  (Available: 120)
+                </span>
+              </h2>
+              <p className="text-muted-foreground">
+                Enable when you want to buy with your points
+              </p>
+            </div>
+            <Switch />
+          </div>
 
           <OrderSummary
             subtotal={subtotal}
