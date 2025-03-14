@@ -47,6 +47,7 @@ export interface TicketMetadata {
   eventName: string;
   attendeeName?: string;
   attendeeEmail?: string;
+  customerName?: string;
   purchaseDate: string;
   ticketNumber: string;
 }

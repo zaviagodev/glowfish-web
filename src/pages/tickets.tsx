@@ -379,8 +379,7 @@ export default function TicketsPage() {
                         {t("Attendee")}
                       </div>
                       <div className="text-sm font-medium">
-                        {ticket.metadata?.attendeeName ||
-                          t("General Admission")}
+                        {ticket.metadata?.customerName || t("General Admission")}
                       </div>
                     </div>
                     <div>
@@ -415,7 +414,7 @@ export default function TicketsPage() {
                 eventName: foundOrder.event?.name || "",
                 seat:
                   foundOrder.tickets?.find((t) => t.code === qrTicket)?.metadata
-                    ?.attendeeName || "",
+                    ?.customerName || "",
                 date: foundOrder.event?.start_datetime || "",
                 location: foundOrder.event?.venue_name || t("To be determined"),
               }}
@@ -500,7 +499,7 @@ export default function TicketsPage() {
                           used: customerEvent.tickets[0].status === "used",
                           ticketNumber: customerEvent.tickets[0].code,
                           seat:
-                            customerEvent.tickets[0].metadata.attendeeName ||
+                            customerEvent.tickets[0].metadata.customerName ||
                             "General Admission",
                           groupSize: customerEvent.tickets.length,
                         }}
