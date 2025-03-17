@@ -25,6 +25,8 @@ import { cn } from "@/lib/utils";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import { Checkbox } from "@/components/ui/checkbox";
 import CheckoutSkeletons from "@/components/skeletons/CheckoutSkeletons";
+import { useShipping } from "../hooks/useShipping";
+import { ShippingMethodSelection } from "./ShippingMethodSelection";
 
 interface CartItem extends CartItemType {
   variantId: string;
@@ -71,6 +73,15 @@ export function CheckoutPage() {
   const [isCheckingProducts, setIsCheckingProducts] = useState(true);
   const [isBillingAddressChecked, setIsBillingAddressChecked] = useState(true);
 
+  const {
+    shippingMethods,
+    selectedMethod,
+    shippingCost,
+    loading: shippingLoading,
+    error: shippingError,
+    selectShippingMethod,
+  } = useShipping(items);
+
   // Function to check if a product is an event
   const checkForPhysicalProducts = async () => {
     setIsCheckingProducts(true);
@@ -94,6 +105,7 @@ export function CheckoutPage() {
         console.log("Variant Error:", variantError);
 
         if (variantError) {
+          console.log("Variant error, skipping:", variantError);
           continue;
         }
 
@@ -163,7 +175,7 @@ export function CheckoutPage() {
   );
   const discount = getTotalDiscount(subtotal);
   const pointsDiscount = getDiscountAmount();
-  const total = subtotal - discount - pointsDiscount;
+  const total = subtotal - discount - pointsDiscount + shippingCost;
 
   const handleCreateOrder = async (event?: React.MouseEvent) => {
     // Prevent default behavior
@@ -209,7 +221,12 @@ export function CheckoutPage() {
       return;
     }
 
-    // Rest of the existing order creation logic
+    // Add shipping method validation
+    if (hasPhysicalProducts && !selectedMethod) {
+      alert(t("Please select a shipping method"));
+      return;
+    }
+
     setIsProcessing(true);
     try {
       // Existing validation checks
@@ -237,11 +254,12 @@ export function CheckoutPage() {
         p_customer_id: customer.id,
         p_status: "pending",
         p_subtotal: subtotal,
-        p_shipping: 0,
+        p_shipping: shippingCost,
         p_tax: 0,
         p_total: total,
         p_shipping_address_id: hasPhysicalProducts ? selectedAddress.id : null,
         p_billing_address_id: hasPhysicalProducts ? selectedAddress.id : null,
+        p_shipping_method_id: hasPhysicalProducts ? selectedMethod?.id : null,
         p_applied_coupons: [], // Add actual coupon codes if available
         p_loyalty_points_used: 0, // Add actual points used if available
         p_notes: JSON.stringify({
@@ -385,11 +403,24 @@ export function CheckoutPage() {
             />
           )}
 
+          {/* Add shipping method selection after address selection */}
+          {hasPhysicalProducts && (
+            <div className="mt-6">
+              <ShippingMethodSelection
+                methods={shippingMethods}
+                selectedMethod={selectedMethod}
+                onSelect={selectShippingMethod}
+                loading={shippingLoading}
+                error={shippingError}
+              />
+            </div>
+          )}
+
           <OrderSummary
             subtotal={subtotal}
             discount={discount}
             pointsDiscount={pointsDiscount}
-            shipping={0}
+            shipping={shippingCost}
             total={total}
           />
         </div>

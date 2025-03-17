@@ -1,0 +1,336 @@
+-- Drop existing functions
+DROP FUNCTION IF EXISTS update_event;
+
+-- Function to update an event with its product
+CREATE OR REPLACE FUNCTION update_event(
+  -- Required fields
+  p_event_id uuid,
+  p_product_id uuid,
+  p_store_name text,
+  -- Optional Product fields
+  p_name text DEFAULT NULL,
+  p_description text DEFAULT NULL,
+  p_category_id uuid DEFAULT NULL,
+  p_price numeric DEFAULT NULL,
+  p_compare_at_price numeric DEFAULT NULL,
+  p_cost numeric DEFAULT NULL,
+  p_sku text DEFAULT NULL,
+  p_barcode text DEFAULT NULL,
+  p_track_quantity boolean DEFAULT NULL,
+  p_weight numeric DEFAULT NULL,
+  p_weight_unit text DEFAULT NULL,
+  p_status text DEFAULT NULL,
+  p_variant_options jsonb DEFAULT NULL,
+  p_variants jsonb DEFAULT NULL,
+  p_images jsonb DEFAULT NULL,
+  p_tags text[] DEFAULT NULL,
+  -- Optional Event fields
+  p_is_reward boolean DEFAULT false,
+  p_is_gift boolean DEFAULT false,
+  p_start_datetime timestamptz DEFAULT NULL,
+  p_end_datetime timestamptz DEFAULT NULL,
+  p_venue_name text DEFAULT NULL,
+  p_venue_address text DEFAULT NULL,
+  p_google_maps_link text DEFAULT NULL,
+  p_gallery_link text DEFAULT NULL,
+  p_organizer_name text DEFAULT NULL,
+  p_organizer_contact text DEFAULT NULL,
+  p_attendance_points integer DEFAULT 0
+) RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_product jsonb;
+  v_event jsonb;
+  v_variant record;
+  v_image record;
+BEGIN
+
+    -- Check if user has write permission
+    IF NOT has_permission('can_write', p_store_name) THEN
+        RAISE EXCEPTION 'Permission denied: User does not have write permission for store %', p_store_name;
+    END IF;
+
+  -- Validate store exists and owns the product/event
+  IF NOT EXISTS (
+    SELECT 1 
+    FROM products p
+    JOIN events e ON e.product_id = p.id
+    WHERE p.store_name = p_store_name 
+    AND p.id = p_product_id 
+    AND e.id = p_event_id
+  ) THEN
+    RAISE EXCEPTION 'Event not found or not owned by store';
+  END IF;
+
+  -- Start transaction
+  BEGIN
+    -- Update product if any product fields are provided
+    IF p_name IS NOT NULL OR p_description IS NOT NULL OR p_category_id IS NOT NULL OR
+       p_price IS NOT NULL OR p_compare_at_price IS NOT NULL OR p_cost IS NOT NULL OR
+       p_sku IS NOT NULL OR p_barcode IS NOT NULL OR p_track_quantity IS NOT NULL OR
+       p_weight IS NOT NULL OR p_weight_unit IS NOT NULL OR p_status IS NOT NULL OR
+       p_is_reward IS NOT NULL OR p_variant_options IS NOT NULL OR p_is_gift IS NOT NULL THEN
+      
+      UPDATE products
+      SET
+        name = COALESCE(p_name, name),
+        description = COALESCE(p_description, description),
+        category_id = COALESCE(p_category_id, category_id),
+        price = COALESCE(p_price, price),
+        compare_at_price = COALESCE(p_compare_at_price, compare_at_price),
+        cost = COALESCE(p_cost, cost),
+        sku = COALESCE(p_sku, sku),
+        barcode = COALESCE(p_barcode, barcode),
+        track_quantity = COALESCE(p_track_quantity, track_quantity),
+        weight = COALESCE(p_weight, weight),
+        weight_unit = COALESCE(p_weight_unit, weight_unit),
+        status = COALESCE(p_status, status),
+        variant_options = COALESCE(p_variant_options, variant_options),
+        is_reward = COALESCE(p_is_reward, is_reward),
+        is_gift = COALESCE(p_is_gift, is_gift),
+        updated_at = now()
+      WHERE id = p_product_id;
+    END IF;
+
+    -- Update variants if provided
+    IF p_variants IS NOT NULL THEN
+      -- Upsert variants
+      IF jsonb_array_length(p_variants) > 0 THEN
+        FOR v_variant IN SELECT value FROM jsonb_array_elements(p_variants)
+        LOOP
+          -- Try to update existing variant first
+          UPDATE product_variants 
+          SET
+            name = v_variant.value->>'name',
+            sku = v_variant.value->>'sku',
+            price = (v_variant.value->>'price')::numeric,
+            points_based_price = (v_variant.value->>'pointsBasedPrice')::numeric,
+            compare_at_price = (v_variant.value->>'compareAtPrice')::numeric,
+            quantity = COALESCE((v_variant.value->>'quantity')::integer, 0),
+            options = COALESCE((v_variant.value->'options')::jsonb, '[]'::jsonb),
+            status = COALESCE(v_variant.value->>'status', 'active'),
+            position = COALESCE((v_variant.value->>'position')::integer, 0)
+          WHERE 
+            product_id = p_product_id 
+            AND id = (v_variant.value->>'id')::uuid;
+            
+          -- If no existing variant was updated, insert a new one
+          IF NOT FOUND THEN
+            INSERT INTO product_variants (
+              id,
+              product_id,
+              name,
+              sku,
+              price,
+              points_based_price,
+              compare_at_price,
+              quantity,
+              options,
+              status,
+              position
+            ) VALUES (
+              COALESCE((v_variant.value->>'id')::uuid, gen_random_uuid()),
+              p_product_id,
+              v_variant.value->>'name',
+              v_variant.value->>'sku',
+              (v_variant.value->>'price')::numeric,
+              (v_variant.value->>'pointsBasedPrice')::numeric,
+              (v_variant.value->>'compareAtPrice')::numeric,
+              COALESCE((v_variant.value->>'quantity')::integer, 0),
+              COALESCE((v_variant.value->'options')::jsonb, '[]'::jsonb),
+              COALESCE(v_variant.value->>'status', 'active'),
+              COALESCE((v_variant.value->>'position')::integer, 0)
+            );
+          END IF;
+        END LOOP;
+      END IF;
+
+      -- Delete variants that are no longer in the provided list
+      DELETE FROM product_variants 
+      WHERE product_id = p_product_id 
+      AND sku != 'default'
+      AND id NOT IN (
+        SELECT (value->>'id')::uuid 
+        FROM jsonb_array_elements(p_variants)
+        WHERE value->>'id' IS NOT NULL
+      );
+    END IF;
+
+    -- Update images if provided
+    IF p_images IS NOT NULL THEN
+      -- Delete existing images
+      DELETE FROM product_images WHERE product_id = p_product_id;
+      
+      -- Insert new images
+      IF jsonb_array_length(p_images) > 0 THEN
+        FOR v_image IN SELECT value FROM jsonb_array_elements(p_images)
+        LOOP
+          INSERT INTO product_images (
+            product_id,
+            url,
+            alt,
+            position
+          ) VALUES (
+            p_product_id,
+            v_image.value->>'url',
+            COALESCE(v_image.value->>'alt', ''),
+            COALESCE((v_image.value->>'position')::integer, 0)
+          );
+        END LOOP;
+      END IF;
+    END IF;
+
+    -- Update tags if provided
+    IF p_tags IS NOT NULL THEN
+      -- Delete existing tags
+      DELETE FROM product_tags WHERE product_id = p_product_id;
+      
+      -- Insert new tags
+      IF array_length(p_tags, 1) > 0 THEN
+        INSERT INTO product_tags (product_id, store_name, name)
+        SELECT p_product_id, p_store_name, unnest(p_tags);
+      END IF;
+    END IF;
+
+    -- Update event if any event fields are provided
+    IF p_start_datetime IS NOT NULL OR p_end_datetime IS NOT NULL OR
+       p_venue_name IS NOT NULL OR p_venue_address IS NOT NULL OR
+       p_google_maps_link IS NOT NULL OR p_gallery_link IS NOT NULL OR
+       p_organizer_name IS NOT NULL OR p_organizer_contact IS NOT NULL OR
+       p_attendance_points IS NOT NULL OR p_is_reward IS NOT NULL OR p_is_gift IS NOT NULL THEN
+      
+      UPDATE events
+      SET
+        start_datetime = COALESCE(p_start_datetime, start_datetime),
+        end_datetime = COALESCE(p_end_datetime, end_datetime),
+        venue_name = COALESCE(p_venue_name, venue_name),
+        venue_address = COALESCE(p_venue_address, venue_address),
+        google_maps_link = COALESCE(p_google_maps_link, google_maps_link),
+        gallery_link = COALESCE(p_gallery_link, gallery_link),
+        organizer_name = COALESCE(p_organizer_name, organizer_name),
+        organizer_contact = COALESCE(p_organizer_contact, organizer_contact),
+        attendance_points = COALESCE(p_attendance_points, attendance_points),
+        updated_at = now()
+      WHERE id = p_event_id;
+    END IF;
+
+    -- Get the updated product with its relationships
+    SELECT jsonb_build_object(
+      'id', p.id,
+      'name', p.name,
+      'description', p.description,
+      'category', CASE 
+        WHEN pc.id IS NOT NULL THEN jsonb_build_object(
+          'id', pc.id,
+          'name', pc.name,
+          'slug', pc.slug
+        )
+        ELSE null
+      END,
+      'price', p.price,
+      'compareAtPrice', p.compare_at_price,
+      'cost', p.cost,
+      'sku', p.sku,
+      'barcode', p.barcode,
+      'trackQuantity', p.track_quantity,
+      'weight', p.weight,
+      'weightUnit', p.weight_unit,
+      'status', p.status,
+      'variantOptions', p.variant_options,
+      'isReward', p.is_reward,
+      'isGift', p.is_gift,
+      'variants', COALESCE(
+        (
+          SELECT jsonb_agg(result)
+          FROM (
+            SELECT jsonb_build_object(
+              'id', pv.id,
+              'name', pv.name,
+              'sku', pv.sku,
+              'price', pv.price,
+              'pointsBasedPrice', pv.points_based_price,
+              'compareAtPrice', pv.compare_at_price,
+              'quantity', pv.quantity,
+              'options', pv.options,
+              'status', pv.status,
+              'position', pv.position
+            ) AS result
+            FROM product_variants pv
+            WHERE pv.product_id = p.id
+            ORDER BY pv.position
+          ) ordered_variants
+        ),
+        '[]'::jsonb
+      ),
+      'images', COALESCE(
+        (
+          SELECT jsonb_agg(result)
+          FROM (
+            SELECT jsonb_build_object(
+              'id', pi.id,
+              'url', pi.url,
+              'alt', pi.alt,
+              'position', pi.position
+            ) AS result
+            FROM product_images pi
+            WHERE pi.product_id = p.id
+            ORDER BY pi.position
+          ) ordered_images
+        ),
+        '[]'::jsonb
+      ),
+      'tags', COALESCE(
+        (
+          SELECT jsonb_agg(jsonb_build_object(
+            'id', pt.id,
+            'name', pt.name
+          ))
+          FROM product_tags pt
+          WHERE pt.product_id = p.id
+        ),
+        '[]'::jsonb
+      ),
+      'createdAt', p.created_at,
+      'updatedAt', p.updated_at
+    ) INTO v_product
+    FROM products p
+    LEFT JOIN product_categories pc ON pc.id = p.category_id
+    WHERE p.id = p_product_id;
+
+    -- Get the updated event
+    SELECT jsonb_build_object(
+      'id', e.id,
+      'productId', e.product_id,
+      'storeName', e.store_name,
+      'startDateTime', e.start_datetime,
+      'endDateTime', e.end_datetime,
+      'venueName', e.venue_name,
+      'venueAddress', e.venue_address,
+      'googleMapsLink', e.google_maps_link,
+      'galleryLink', e.gallery_link,
+      'organizerName', e.organizer_name,
+      'organizerContact', e.organizer_contact,
+      'attendancePoints', e.attendance_points,
+      'createdAt', e.created_at,
+      'updatedAt', e.updated_at
+    ) INTO v_event
+    FROM events e
+    WHERE e.id = p_event_id;
+
+    -- Return combined result
+    RETURN jsonb_build_object(
+      'product', v_product,
+      'event', v_event
+    );
+  EXCEPTION
+    WHEN OTHERS THEN
+      -- Rollback will happen automatically
+      RAISE;
+  END;
+END;
+$$;
+
+-- Grant execute permissions
+GRANT EXECUTE ON FUNCTION update_event TO authenticated;
