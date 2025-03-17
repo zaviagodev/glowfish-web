@@ -131,7 +131,7 @@ export const ticketService: TicketService = {
 
   updateTicketStatus: async (id: string, status: 'used' | 'unused') => {
     const { error } = await supabase
-      .from('tickets')
+      .from('rewards')
       .update({ status })
       .eq('id', id);
 
@@ -140,7 +140,7 @@ export const ticketService: TicketService = {
 
   checkTicketStatus: async (id: string) => {
     const { data, error } = await supabase
-      .from('tickets')
+      .from('rewards')
       .select('status')
       .eq('id', id)
       .single();
