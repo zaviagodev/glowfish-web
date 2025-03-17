@@ -61,6 +61,17 @@ export function CheckoutPage() {
   // Get selected items from location state, fallback to all items if accessed directly
   const items = location.state?.selectedItems || allItems;
 
+  // Validate prices when items change
+  useEffect(() => {
+    if (items.length > 0) {
+      const hasInvalidPrices = items.some((item: CartItem) => item.price < 0);
+      if (hasInvalidPrices) {
+        alert(t("Some items have invalid prices. Please return to cart and try again."));
+        navigate("/cart", { replace: true });
+      }
+    }
+  }, [items, navigate, t]);
+
   // Get customer addresses and selected or default address
   const addresses = customer?.addresses || [];
   const selectedAddress =
@@ -253,22 +264,27 @@ export function CheckoutPage() {
         p_store_name: storeName,
         p_customer_id: customer.id,
         p_status: "pending",
-        p_subtotal: subtotal,
-        p_shipping: shippingCost,
+        p_subtotal: Number(subtotal),
+        p_shipping: Number(shippingCost),
         p_tax: 0,
-        p_total: total,
+        p_total: Number(total),
         p_shipping_address_id: hasPhysicalProducts ? selectedAddress.id : null,
         p_billing_address_id: hasPhysicalProducts ? selectedAddress.id : null,
-        p_shipping_method_id: hasPhysicalProducts ? selectedMethod?.id : null,
-        p_applied_coupons: [], // Add actual coupon codes if available
-        p_loyalty_points_used: 0, // Add actual points used if available
+        p_shipping_option_id: hasPhysicalProducts ? selectedMethod?.id : null,
+        p_applied_coupons: discount > 0 ? [{ code: "discount", amount: discount }] : [],
+        p_loyalty_points_used: Number(pointsDiscount),
         p_notes: JSON.stringify({
           message: storeMessage,
           vatInvoice: vatInvoiceData.enabled ? vatInvoiceData : null,
           paymentMethod,
         }),
         p_tags: ["web"],
-        p_items: orderItems,
+        p_items: orderItems.map((item: { variant_id: string; quantity: number; price: number }) => ({
+          variant_id: item.variant_id,
+          quantity: item.quantity,
+          price: Number(item.price),
+          total: Number(item.price * item.quantity)
+        }))
       });
 
       if (error) {
