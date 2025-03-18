@@ -1,4 +1,10 @@
-import { useState, useEffect } from "react";
+import {
+  useState,
+  useEffect,
+  ReactNode,
+  PropsWithChildren,
+  ButtonHTMLAttributes,
+} from "react";
 import { useTranslate } from "@refinedev/core";
 import {
   useNavigate,
@@ -25,6 +31,11 @@ import { format } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import ContactUsButton from "@/components/ui/contact-us-button";
+
+interface ConfirmOrderButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
+  condition: boolean | null | undefined;
+}
 
 // Add LoadingOverlay component at the top of the file
 const LoadingOverlay = () => (
@@ -200,6 +211,24 @@ const OrdersPage = () => {
           },
         ]
       : [];
+
+  const ConfirmOrderButton = ({
+    condition,
+    children,
+    ...props
+  }: PropsWithChildren<ConfirmOrderButtonProps>) => {
+    return (
+      <>
+        {condition && (
+          <div className="px-5">
+            <button className="w-full main-btn" {...props}>
+              {children}
+            </button>
+          </div>
+        )}
+      </>
+    );
+  };
 
   return (
     <>
@@ -472,7 +501,10 @@ const OrdersPage = () => {
                       {isEvent && (
                         <div className="flex flex-col p-6 bg-darkgray rounded-lg items-center gap-4">
                           <Quantity className="text-muted-foreground" />
-                          <Button className="rounded-full !bg-mainbutton text-[11px] h-6 px-2 w-full">
+                          <Button
+                            className="rounded-full !bg-mainbutton text-[11px] h-6 px-2 w-full"
+                            disabled={order.status === "pending"}
+                          >
                             View Ticket
                           </Button>
                           <Total />
@@ -546,26 +578,38 @@ const OrdersPage = () => {
             </div>
 
             {/* Pay Now Button */}
-            {order.status === "pending" &&
-              order.total_amount > 0 &&
-              !order.payment_details && (
-                <div className="px-5">
-                  <button onClick={handlePayNow} className="w-full main-btn">
-                    {t("Pay Now")} (฿
-                    {makeTwoDecimals(order.total_amount).toLocaleString()})
-                  </button>
-                </div>
-              )}
+            <ConfirmOrderButton
+              condition={
+                order.status === "pending" &&
+                order.total_amount > 0 &&
+                !order.payment_details
+              }
+              onClick={handlePayNow}
+            >
+              {t("Pay Now")} (฿
+              {makeTwoDecimals(order.total_amount).toLocaleString()})
+            </ConfirmOrderButton>
 
             {/* View Tickets Button */}
-            {!eventLoading && event && event.tickets.length > 0 && (
-              <div className="px-5">
-                <button onClick={handleViewTickets} className="w-full main-btn">
-                  <Ticket className="w-4 h-4 mr-2" />
-                  {t("View Tickets")} ({event.tickets.length})
-                </button>
-              </div>
-            )}
+            {/* <ConfirmOrderButton
+              condition={
+                order.status === "completed" &&
+                !eventLoading &&
+                event &&
+                event.tickets.length > 0
+              }
+              onClick={handleViewTickets}
+            >
+              <Ticket className="w-4 h-4 mr-2" />
+              {t("View Tickets")} ({event?.tickets.length})
+            </ConfirmOrderButton> */}
+
+            <ConfirmOrderButton
+              condition={order.status === "processing"}
+              disabled={true}
+            >
+              This order is in process...
+            </ConfirmOrderButton>
 
             <ContactUsButton />
           </div>
