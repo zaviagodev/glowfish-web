@@ -357,8 +357,6 @@ export function PaymentPage() {
       // Success handling
       setSlipImage(result.data.slip_url);
 
-      // Optional: Show success toast or message
-      alert(t("Payment slip uploaded successfully"));
     } catch (error: any) {
       console.error("Comprehensive upload error:", error);
 

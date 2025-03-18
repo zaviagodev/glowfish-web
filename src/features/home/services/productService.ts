@@ -136,6 +136,7 @@ export const ProductService = {
         `
         )
         .eq('store_name', storeName)
+        .eq('is_reward', false)
         .is('events', null)
         .order('created_at', { ascending: false });
 
