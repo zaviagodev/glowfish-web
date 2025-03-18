@@ -25,34 +25,34 @@ export function PointsCoupons({
   const totalDiscount = getTotalDiscount(subtotal);
   const pointsDiscount = getDiscountAmount();
 
+  const selected = selectedCoupons.length > 0 || selectedPoints > 0;
+
   return (
     <div className={cn("bg-darkgray rounded-lg", className)}>
       <div className="space-y-2">
         <button
-          onClick={() => navigate("/checkout/coupons")}
+          onClick={() => {}}
           className="w-full flex items-center justify-between bg-[rgba(23,23,23,0.05)] rounded-lg p-3 text-left"
         >
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-icon-orange-background flex items-center justify-center">
-              <Ticket className="w-4 h-4 text-icon-orange-foreground" />
+            <div
+              className={cn(
+                "w-10 h-10 rounded-lg flex items-center justify-center bg-white/10",
+                { "bg-icon-orange-background": selected }
+              )}
+            >
+              <Ticket
+                className={cn("w-5 h-5 text-white", {
+                  "text-icon-orange-foreground": selected,
+                })}
+              />
             </div>
-            <div>
-              <div className="text-sm font-medium text-muted-foreground">
-                {selectedCoupons.length > 0
-                  ? t("coupons applied", {
-                      count: selectedCoupons.length,
-                    })
-                  : t("My Coupons")}
-              </div>
-              <div className="text-xs text-secondary-foreground">
-                {selectedCoupons.length > 0 ? (
-                  <span className="text-[#EE4D2D]">
-                    -฿{totalDiscount.toLocaleString()}
-                  </span>
-                ) : (
-                  t("Select a coupon to get discount")
-                )}
-              </div>
+            <div className="text-sm font-medium">
+              {selectedCoupons.length > 0
+                ? t("coupons applied", {
+                    count: selectedCoupons.length,
+                  })
+                : t("Coupon")}
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -63,33 +63,6 @@ export function PointsCoupons({
             )}
             <ChevronRight className="w-4 h-4 text-secondary-foreground" />
           </div>
-        </button>
-
-        <button
-          onClick={() => navigate("/checkout/points")}
-          className="w-full flex items-center justify-between bg-[rgba(23,23,23,0.05)] rounded-lg p-3 text-left"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-icon-pink-background flex items-center justify-center">
-              <Gift className="w-4 h-4 text-icon-pink-foreground" />
-            </div>
-            <div>
-              <div className="text-sm font-medium text-muted-foreground">
-                {t("Use MyPoints")}
-                {selectedPoints > 0 && ` (${selectedPoints.toLocaleString()})`}
-              </div>
-              <div className="text-xs text-secondary-foreground">
-                {selectedPoints > 0 ? (
-                  <span className="text-[#EE4D2D]">
-                    -฿{pointsDiscount.toLocaleString()}
-                  </span>
-                ) : (
-                  t("Use your points to get discount")
-                )}
-              </div>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-secondary-foreground" />
         </button>
       </div>
     </div>
