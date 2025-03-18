@@ -24,6 +24,7 @@ import { isPast } from "date-fns";
 import { cn, getMapLinks, makeTwoDecimals } from "@/lib/utils";
 import ItemCarousel from "@/components/ui/item-carousel";
 import LongParagraph from "@/components/ui/long-paragraph";
+import ContactUsButton from "@/components/ui/contact-us-button";
 
 interface VariantOption {
   id: string;
@@ -121,9 +122,11 @@ export function ProductDetail({
         : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
     }
 
-    return `${minPrice === 0 ? t("free") : `฿${makeTwoDecimals(minPrice).toLocaleString()}`} - ฿${makeTwoDecimals(
-      maxPrice
-    ).toLocaleString()}`;
+    return `${
+      minPrice === 0
+        ? t("free")
+        : `฿${makeTwoDecimals(minPrice).toLocaleString()}`
+    } - ฿${makeTwoDecimals(maxPrice).toLocaleString()}`;
   };
 
   const getPointsDisplay = () => {
@@ -224,7 +227,9 @@ export function ProductDetail({
       variant: selectedVariant?.options?.reduce(
         (acc: Record<string, string>, opt: any) => ({
           ...acc,
-          [opt.name]: Array.isArray(opt.values) ? opt.values.join(",") : opt.values,
+          [opt.name]: Array.isArray(opt.values)
+            ? opt.values.join(",")
+            : opt.values,
         }),
         {}
       ),
@@ -647,9 +652,7 @@ export function ProductDetail({
               ? t("Sign Up")
               : t("Add to cart")}
           </Button>
-          <p className="text-xs text-center text-muted-foreground">
-            Hope you have a great time!
-          </p>
+          <ContactUsButton />
         </div>
       </div>
 
