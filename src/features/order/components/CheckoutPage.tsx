@@ -21,13 +21,12 @@ import { ShippingMethod } from "@/components/checkout/ShippingMethod";
 import { SuccessDialog } from "@/components/checkout/SuccessDialog";
 import type { Address } from "@/services/customerService";
 import { ChevronRight, MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
-import LoadingSpin from "@/components/loading/LoadingSpin";
 import { Checkbox } from "@/components/ui/checkbox";
 import CheckoutSkeletons from "@/components/skeletons/CheckoutSkeletons";
 import { Switch } from "@/components/ui/switch";
 import { ShippingMethodSelection } from "./ShippingMethodSelection";
 import { useShipping } from "../hooks/useShipping";
+import { cn } from "@/lib/utils";
 
 interface CartItem extends CartItemType {
   variantId: string;
@@ -50,6 +49,7 @@ export function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [storeMessage, setStoreMessage] = useState("");
   const [showMessageDialog, setShowMessageDialog] = useState(false);
+  const [isUsingPoints, setIsUsingPoints] = useState(false);
   const [vatInvoiceData, setVatInvoiceData] = useState({
     enabled: false,
     companyName: "",
@@ -341,7 +341,7 @@ export function CheckoutPage() {
       <PageHeader title={t("Checkout")} />
 
       <div className="pt-14 pb-32">
-        <div className="p-5 space-y-6">
+        <div className="p-5 space-y-3.5">
           <ProductList items={items} />
 
           {/* Only show address selection for physical products */}
@@ -423,31 +423,6 @@ export function CheckoutPage() {
             </>
           )}
 
-          {(isPaymentMethodRequired || hasPhysicalProducts) && (
-            <PaymentMethod
-              value={paymentMethod}
-              onChange={setPaymentMethod}
-              required={isPaymentMethodRequired}
-            />
-          )}
-
-          <div className="flex items-center justify-between px-4">
-            <div>
-              <h2 className="text-base font-normal">
-                {/* TODO: Set the dynamic points to use */}
-                Points to use: 3200
-                <span className="text-orangefocus text-sm">
-                  {" "}
-                  {/* TODO: Set the dynamic available points */}
-                  (Available: 120)
-                </span>
-              </h2>
-              <p className="text-muted-foreground">
-                Enable when you want to buy with your points
-              </p>
-            </div>
-            <Switch />
-          </div>
           {/* Add shipping method selection after address selection */}
           {hasPhysicalProducts && (
             <div className="mt-6">
@@ -461,18 +436,61 @@ export function CheckoutPage() {
             </div>
           )}
 
+          <div className="flex items-center justify-between px-4 py-3">
+            <div>
+              <h2 className="text-base font-normal flex items-center gap-1">
+                {/* TODO: Set the dynamic points to use */}
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    isUsingPoints ? "text-foreground" : "text-muted-foreground"
+                  )}
+                >
+                  Points to use: 3,200
+                </span>
+                <span className="text-orangefocus text-xs">
+                  (Available: {customer?.loyalty_points?.toLocaleString() || 0})
+                </span>
+              </h2>
+              <p
+                className={cn("text-muted-foreground", {
+                  "opacity-40": !isUsingPoints,
+                })}
+              >
+                Enable when you want to buy with your points
+              </p>
+            </div>
+            <Switch onCheckedChange={setIsUsingPoints} />
+          </div>
+
+          {(isPaymentMethodRequired || hasPhysicalProducts) &&
+            !isUsingPoints && (
+              <PaymentMethod
+                value={paymentMethod}
+                onChange={setPaymentMethod}
+                required={isPaymentMethodRequired}
+              />
+            )}
+
+          {/* I just added the coupon selection section, will set the dynamic data later */}
+          {!isUsingPoints && <PointsCoupons subtotal={subtotal} />}
+
+          {/* TODO: Replace '320' with dynamic points */}
           <OrderSummary
-            subtotal={subtotal}
+            subtotal={isUsingPoints ? 320 : subtotal}
             discount={discount}
             pointsDiscount={pointsDiscount}
             shipping={shippingCost}
-            total={total}
+            total={isUsingPoints ? 320 : total}
+            isUsingPoints={isUsingPoints}
           />
         </div>
       </div>
 
+      {/* TODO: Replace '320' with dynamic points */}
       <CheckoutFooter
-        total={total}
+        total={isUsingPoints ? 320 : total}
+        isUsingPoints={isUsingPoints}
         isProcessing={isProcessing}
         disabled={
           (hasPhysicalProducts && addresses.length === 0) ||
