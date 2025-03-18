@@ -26,6 +26,8 @@ import {
   ChevronLeft,
   CircleParking,
   CircleDollarSign,
+  CheckCircle,
+  CheckCircle2,
 } from "lucide-react";
 import Barcode from "react-barcode";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -54,6 +56,7 @@ const RewardsPage = () => {
   const [isRedeemSheetOpen, setIsRedeemSheetOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isSuccessfull, setIsSuccessfull] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [codeType, setCodeType] = useState("barcode");
@@ -171,7 +174,7 @@ const RewardsPage = () => {
       await refreshOrders();
 
       setIsConfirmDialogOpen(false);
-      navigate("/my-orders");
+      setIsSuccessfull(true);
     } catch (error) {
       console.error("Error redeeming reward:", error);
       setError(
@@ -356,50 +359,33 @@ const RewardsPage = () => {
           </section>
 
           <footer className="btn-footer flex flex-col gap-7">
-            {/* <Dialog
-              open={isConfirmDialogOpen}
-              onOpenChange={setIsConfirmDialogOpen}
-            >
-              <Button
-                disabled={
-                  isProcessing ||
-                  customerData.loyalty_points <
-                    (selectedReward.product_variants?.[0]?.points_based_price ||
-                      0)
-                }
-                onClick={() => setIsConfirmDialogOpen(true)}
-                className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
-              >
-                <Gift />
-                {isProcessing ? t("Processing...") : t("Redeem Reward")}
-              </Button>
+            <Dialog open={isSuccessfull}>
               <DialogContent className="w-[90%] max-width-mobile rounded-lg">
                 <DialogHeader>
-                  <DialogTitle>{t("Confirm Redemption")}</DialogTitle>
+                  <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto pb-6" />
+                  <DialogTitle>{t("Reward successfully redeemed")}</DialogTitle>
                   <DialogDescription>
-                    {t("Are you sure you want to redeem this reward for")}{" "}
-                    {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
-                    {t("points")}?
+                    {t(
+                      'You can check your redeemed rewards at " Rewards -> My Rewards".'
+                    )}
                   </DialogDescription>
                 </DialogHeader>
-                <div className="flex gap-4 mt-4">
+                <div className="flex flex-col justify-center items-center gap-4 mt-4">
                   <Button
-                    variant="ghost"
-                    onClick={() => setIsConfirmDialogOpen(false)}
-                    className="secondary-btn w-full"
-                  >
-                    {t("Cancel")}
-                  </Button>
-                  <Button
-                    onClick={handleRedeem}
-                    disabled={isProcessing}
+                    onClick={() => navigate("/rewards")}
                     className="main-btn w-full"
                   >
-                    {isProcessing ? t("Processing...") : t("Confirm")}
+                    {t("Confirm")}
                   </Button>
+                  <p
+                    className="text-muted-foreground"
+                    onClick={() => navigate("/my-rewards")}
+                  >
+                    See my rewards
+                  </p>
                 </div>
               </DialogContent>
-            </Dialog> */}
+            </Dialog>
 
             <Sheet
               open={isConfirmDialogOpen}
@@ -423,11 +409,11 @@ const RewardsPage = () => {
                 side="bottom"
               >
                 <section className="flex flex-col gap-7">
-                  <div>
-                    <h3 className="text-lg font-semibold text-center mb-4">
+                  <div className="mt-1">
+                    <h3 className="text-lg font-semibold mb-4">
                       {t("Confirm Redemption?")}
                     </h3>
-                    <p className="text-sm text-[#979797] text-center mb-6">
+                    <p className="text-sm text-[#979797] mb-6">
                       {t(
                         "This item can be redeemed by money. How would you like to exchange the item?"
                       )}
@@ -485,11 +471,11 @@ const RewardsPage = () => {
                   </div>
                 </section>
                 <Button
-                  disabled={isProcessing || redeemOptions === ""}
+                  disabled={isProcessing || selectedOption === ""}
                   onClick={handleRedeem}
                   className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
                 >
-                  Confirm
+                  {isProcessing ? t("Processing...") : t("Confirm")}
                 </Button>
               </SheetContent>
             </Sheet>
@@ -617,18 +603,24 @@ const RewardsPage = () => {
           <div className="absolute z-[99] right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
             <GoodAfterWorkCard />
           </div>
+          <button
+            onClick={() => navigate("/scan")}
+            className="absolute z-[99] left-[30px] bottom-5"
+          >
+            <QrCode className="h-6 w-6" />
+          </button>
         </div>
 
         <div className="px-5 pb-5">
           <button
-            onClick={() => navigate("/scan")}
+            onClick={() => navigate("/my-rewards")}
             className="w-full bg-darkgray rounded-lg p-4 transition-colors flex items-center justify-between"
           >
             <div className="flex items-center gap-3 w-full">
-              <div className="w-12 h-12 rounded-lg bg-[#2196F31A] flex items-center justify-center">
-                <QrCode className="h-5 w-5 text-[#2196F3]" />
+              <div className="w-12 h-12 rounded-lg bg-[#E66C9E1A] flex items-center justify-center">
+                <Gift className="h-5 w-5 text-[#E66C9E]" />
               </div>
-              <div className="text-left text-sm">{t("Scan to Redeem")}</div>
+              <div className="text-left text-sm">{t("My Rewards")}</div>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </button>
