@@ -220,7 +220,7 @@ export const HomeList = () => {
       </div>
 
       <section className="py-6 space-y-6 px-[1px]">
-        <ProductSection
+        {/* <ProductSection
           title={t("Discover things you'd love")}
           linkTo=""
           products={products.slice(0, 5)}
@@ -228,7 +228,7 @@ export const HomeList = () => {
           sliderRef={eventSliderRef}
           isLoading={loading}
           isBanner={true}
-        />
+        /> */}
         <ProductSection
           title={t("Upcoming Events")}
           linkTo="/products"
