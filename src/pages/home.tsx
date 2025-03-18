@@ -13,6 +13,7 @@ import { ProductSection } from "@/features/home/components/ProductSection";
 import { format, toZonedTime } from "date-fns-tz";
 import { isPast } from "date-fns";
 import { Category, Product } from "@/features/home/types/product.types";
+import { Banner } from "@/features/home";
 
 interface SelectedProduct extends Product {
   variant_id?: string;
@@ -31,12 +32,15 @@ export const HomeList = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<SelectedProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] =
+    useState<SelectedProduct | null>(null);
   const productSliderRef = useRef<HTMLDivElement>(null);
   const eventSliderRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = selectedCategory
-    ? events.filter((product: Product) => product.category_id === selectedCategory)
+    ? events.filter(
+        (product: Product) => product.category_id === selectedCategory
+      )
     : events;
 
   const searchResults = filteredProducts.filter(
@@ -133,6 +137,8 @@ export const HomeList = () => {
       formattedDateAndTime
     )}`;
 
+  console.log(products);
+
   return (
     <div className="min-h-screen relative">
       {/* Hero Section */}
@@ -215,14 +221,28 @@ export const HomeList = () => {
 
       <section className="py-6 space-y-6 px-[1px]">
         <ProductSection
+          title={t("Discover things you'd love")}
+          linkTo=""
+          products={products.slice(0, 5)}
+          onProductSelect={() => {}}
+          sliderRef={eventSliderRef}
+          isLoading={loading}
+          isBanner={true}
+        />
+        <ProductSection
           title={t("Upcoming Events")}
           linkTo="/products"
           products={events
-            .filter((product: Product) => product.end_datetime && isPast(new Date(product.end_datetime)) === false)
+            .filter(
+              (product: Product) =>
+                product.end_datetime &&
+                isPast(new Date(product.end_datetime)) === false
+            )
             .slice(0, 5)}
           onProductSelect={handleProductSelect}
           sliderRef={productSliderRef}
           isLoading={loading}
+          isProduct={false}
         />
 
         {/* Events you might enjoy Section */}
@@ -233,16 +253,18 @@ export const HomeList = () => {
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
           isLoading={loading}
+          isProduct={false}
         />
 
-        {/* Events you might enjoy Section */}
+        {/* New Arrivals Section */}
         <ProductSection
-          title={t("Products")}
+          title={t("New Arrivals")}
           linkTo="/products"
           products={products.slice(0, 8)}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
           isLoading={loading}
+          isProduct={true}
         />
       </section>
 
@@ -253,6 +275,7 @@ export const HomeList = () => {
           location={selectedProduct.location}
           date={formattedDate}
           onClose={() => setSelectedProduct(null)}
+          isEvent={!!selectedProduct.end_datetime}
         />
       )}
     </div>

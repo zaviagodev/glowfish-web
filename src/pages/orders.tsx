@@ -23,6 +23,8 @@ import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { format } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import ContactUsButton from "@/components/ui/contact-us-button";
 
 // Add LoadingOverlay component at the top of the file
 const LoadingOverlay = () => (
@@ -381,59 +383,104 @@ const OrdersPage = () => {
                 {t("Order Items")}
               </h2>
               <div className="space-y-6">
-                {order.order_items.map((item) => (
-                  <div key={item.id} className="flex gap-5">
-                    {item.product_variants.product.image ? (
-                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                        <img
-                          src={item.product_variants.product.image}
-                          alt={item.product_variants.product.name}
-                          className="w-full h-full object-cover object-top"
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center w-20 h-20 rounded-lg overflow-hidden bg-black">
-                        <GlowfishIcon className="w-14 h-14" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-medium text-card-foreground mb-1 truncate">
-                        {item.product_variants.product.name}
-                      </h3>
-                      <div className="text-sm text-muted-foreground space-y-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <p>
-                            {t("Unit Price")}: ฿
-                            {makeTwoDecimals(item.unit_price).toLocaleString()}
-                          </p>
-                          <p className="whitespace-pre">
-                            {t("Quantity")}: {item.quantity}
-                          </p>
-                        </div>
-                        <p className="font-medium text-card-foreground">
-                          {t("Total")}: ฿
-                          {makeTwoDecimals(
-                            item.unit_price * item.quantity
-                          ).toLocaleString()}
-                        </p>
-                        {item.product_variants.options?.length > 0 && (
-                          <div className="flex flex-wrap gap-1">
-                            {item.product_variants.options.map(
-                              (option, index) => (
-                                <span
-                                  key={index}
-                                  className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20"
-                                >
-                                  {option.name}: {option.value}
-                                </span>
-                              )
-                            )}
+                {order.order_items.map((item) => {
+                  // TODO: Check if item is an event ticket, 'false' value will be replaced with the condition check
+                  const isEvent = true;
+                  const Total = ({ className }: { className?: string }) => (
+                    <p
+                      className={cn(
+                        "font-medium text-card-foreground",
+                        className
+                      )}
+                    >
+                      {t("Total")}: ฿
+                      {makeTwoDecimals(
+                        item.unit_price * item.quantity
+                      ).toLocaleString()}
+                    </p>
+                  );
+                  const Quantity = ({ className }: { className?: string }) => (
+                    <p className={cn("whitespace-pre", className)}>
+                      {t("Quantity")}: {item.quantity}
+                    </p>
+                  );
+                  return (
+                    <div
+                      className={cn("w-full relative", {
+                        "grid grid-cols-3": isEvent,
+                      })}
+                    >
+                      {isEvent && (
+                        <>
+                          <div className="bg-background h-14 w-14 rounded-full absolute top-[50%] -translate-y-[50%] -left-[44px]"></div>
+                          <div className="bg-background h-14 w-14 rounded-full absolute top-[50%] -translate-y-[50%] -right-[44px]"></div>
+                        </>
+                      )}
+                      <div
+                        key={item.id}
+                        className={cn("flex gap-5 px-4", {
+                          "p-6 bg-darkgray rounded-lg items-center col-span-2 border-r-2 border-dashed border-r-background":
+                            isEvent,
+                        })}
+                      >
+                        {item.product_variants.product.image ? (
+                          <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                            <img
+                              src={item.product_variants.product.image}
+                              alt={item.product_variants.product.name}
+                              className="w-full h-full object-cover object-top"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center w-20 h-20 rounded-lg overflow-hidden bg-black">
+                            <GlowfishIcon className="w-14 h-14" />
                           </div>
                         )}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-base font-medium text-card-foreground mb-1 truncate">
+                            {item.product_variants.product.name}
+                          </h3>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            <div className="flex items-center justify-between gap-3">
+                              <p>
+                                {t("Unit Price")}: ฿
+                                {makeTwoDecimals(
+                                  item.unit_price
+                                ).toLocaleString()}
+                              </p>
+                              {!isEvent && <Quantity />}
+                            </div>
+                            {!isEvent && <Total />}
+                            {item.product_variants.options?.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {item.product_variants.options.map(
+                                  (option, index) => (
+                                    <span
+                                      key={index}
+                                      className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20"
+                                    >
+                                      {option.name}: {option.value}
+                                    </span>
+                                  )
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
+
+                      {isEvent && (
+                        <div className="flex flex-col p-6 bg-darkgray rounded-lg items-center gap-4">
+                          <Quantity className="text-muted-foreground" />
+                          <Button className="rounded-full !bg-mainbutton text-[11px] h-6 px-2 w-full">
+                            View Ticket
+                          </Button>
+                          <Total />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -519,6 +566,8 @@ const OrdersPage = () => {
                 </button>
               </div>
             )}
+
+            <ContactUsButton />
           </div>
         </div>
       ) : (

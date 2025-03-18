@@ -35,6 +35,8 @@ export function AnimatedCard({
   imageClassName,
   onClick,
   end_datetime,
+  isProduct,
+  isBanner,
 }: AnimatedCardProps) {
   const t = useTranslate();
   const [selectedVariantId, setSelectedVariantId] = useState<
@@ -58,14 +60,16 @@ export function AnimatedCard({
     }
 
     // Find variants with compare_at_price
-    const variantsWithComparePrice = product_variants.filter(v => v.compare_at_price && v.compare_at_price > 0);
-    
+    const variantsWithComparePrice = product_variants.filter(
+      (v) => v.compare_at_price && v.compare_at_price > 0
+    );
+
     if (variantsWithComparePrice.length > 0) {
       // Get the variant with lowest price among those with compare_at_price
-      const lowestPriceVariant = variantsWithComparePrice.reduce((lowest, current) => 
-        current.price < lowest.price ? current : lowest
+      const lowestPriceVariant = variantsWithComparePrice.reduce(
+        (lowest, current) => (current.price < lowest.price ? current : lowest)
       );
-      return lowestPriceVariant.price === 0 
+      return lowestPriceVariant.price === 0
         ? t("free")
         : `฿${makeTwoDecimals(lowestPriceVariant.price).toLocaleString()}`;
     }
@@ -88,12 +92,14 @@ export function AnimatedCard({
     }
 
     // Find variants with compare_at_price
-    const variantsWithComparePrice = product_variants.filter(v => v.compare_at_price && v.compare_at_price > 0);
-    
+    const variantsWithComparePrice = product_variants.filter(
+      (v) => v.compare_at_price && v.compare_at_price > 0
+    );
+
     if (variantsWithComparePrice.length > 0) {
       // Get the variant with lowest price among those with compare_at_price
-      const lowestPriceVariant = variantsWithComparePrice.reduce((lowest, current) => 
-        current.price < lowest.price ? current : lowest
+      const lowestPriceVariant = variantsWithComparePrice.reduce(
+        (lowest, current) => (current.price < lowest.price ? current : lowest)
       );
       return `฿${lowestPriceVariant.compare_at_price!.toLocaleString()}`;
     }
@@ -149,17 +155,22 @@ export function AnimatedCard({
           </Button>
         )}
 
-        {product_variants && product_variants.some(variant => variant.compare_at_price && variant.compare_at_price > 0) && (
-          <span className="absolute left-2 top-2 bg-[#DE473C] text-white text-sm rounded-full px-2 py-0.5">
-            Sale
-          </span>
-        )}
+        {product_variants &&
+          product_variants.some(
+            (variant) =>
+              variant.compare_at_price && variant.compare_at_price > 0
+          ) && (
+            <span className="absolute left-2 top-2 bg-[#DE473C] text-white text-sm rounded-full px-2 py-0.5">
+              Sale
+            </span>
+          )}
       </motion.div>
 
       <div
         className={cn(
           "p-4 space-y-2",
-          type === "event" ? "flex-1 absolute bottom-0" : "bg-card"
+          type === "event" ? "flex-1 absolute bottom-0" : "bg-card",
+          isBanner ? "hidden" : ""
         )}
       >
         <div className="space-y-2">
@@ -179,13 +190,15 @@ export function AnimatedCard({
               )}
             </motion.div>
 
-            {/* <motion.p
-              layoutId={`desc-${id}`}
-              className="text-sm text-muted-foreground line-clamp-1"
-              transition={springConfig}
-            >
-              {description}
-            </motion.p> */}
+            {isProduct && (
+              <motion.p
+                layoutId={`desc-${id}`}
+                className="text-sm text-muted-foreground line-clamp-1"
+                transition={springConfig}
+              >
+                {description}
+              </motion.p>
+            )}
           </div>
 
           {/* {price ? (
@@ -221,24 +234,30 @@ export function AnimatedCard({
           )} */}
 
           <div className="space-y-2">
-            <motion.div
-              layoutId={`location-${id}`}
-              className="flex items-center gap-2 text-xs text-muted-foreground"
-              transition={springConfig}
-            >
-              <MapPin className="min-w-3.5 w-3.5 h-3.5" />
-              <span className="line-clamp-1">
-                {location || "To be determined"}
-              </span>
-            </motion.div>
-            <motion.div
-              layoutId={`date-${id}`}
-              className="flex items-center gap-2 text-xs text-muted-foreground"
-              transition={springConfig}
-            >
-              <Calendar className="min-w-3.5 w-3.5 h-3.5" />
-              <span className="line-clamp-1">{date || "To be determined"}</span>
-            </motion.div>
+            {!isProduct && (
+              <>
+                <motion.div
+                  layoutId={`location-${id}`}
+                  className="flex items-center gap-2 text-xs text-muted-foreground"
+                  transition={springConfig}
+                >
+                  <MapPin className="min-w-3.5 w-3.5 h-3.5" />
+                  <span className="line-clamp-1">
+                    {location || "To be determined"}
+                  </span>
+                </motion.div>
+                <motion.div
+                  layoutId={`date-${id}`}
+                  className="flex items-center gap-2 text-xs text-muted-foreground"
+                  transition={springConfig}
+                >
+                  <Calendar className="min-w-3.5 w-3.5 h-3.5" />
+                  <span className="line-clamp-1">
+                    {date || "To be determined"}
+                  </span>
+                </motion.div>
+              </>
+            )}
             {points && (
               <motion.div
                 layoutId={`points-${id}`}

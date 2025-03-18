@@ -8,6 +8,7 @@ interface OrderSummaryProps {
   pointsDiscount: number;
   shipping: number;
   total: number;
+  isUsingPoints?: boolean;
 }
 
 export function OrderSummary({
@@ -16,8 +17,10 @@ export function OrderSummary({
   pointsDiscount,
   shipping,
   total,
+  isUsingPoints,
 }: OrderSummaryProps) {
   const t = useTranslate();
+  const currency = isUsingPoints ? "" : "฿";
 
   return (
     <div>
@@ -34,7 +37,8 @@ export function OrderSummary({
               {t("Subtotal")}
             </span>
             <span className="text-body">
-              ฿{makeTwoDecimals(subtotal).toLocaleString()}
+              {currency}
+              {makeTwoDecimals(subtotal).toLocaleString()}
             </span>
           </div>
           {discount > 0 && (
@@ -43,7 +47,8 @@ export function OrderSummary({
                 {t("Discount")}
               </span>
               <span className="text-body text-secondary-foreground">
-                -฿{makeTwoDecimals(discount).toLocaleString()}
+                -{currency}
+                {makeTwoDecimals(discount).toLocaleString()}
               </span>
             </div>
           )}
@@ -53,7 +58,8 @@ export function OrderSummary({
                 {t("Points discount")}
               </span>
               <span className="text-body text-secondary-foreground">
-                -฿{pointsDiscount.toLocaleString()}
+                -{currency}
+                {pointsDiscount.toLocaleString()}
               </span>
             </div>
           )}
@@ -62,13 +68,17 @@ export function OrderSummary({
               <span className="text-body text-muted-foreground">
                 {t("Shipping cost")}
               </span>
-              <span className="text-body">฿{makeTwoDecimals(shipping).toLocaleString()}</span>
+              <span className="text-body">
+                {currency}
+                {makeTwoDecimals(shipping).toLocaleString()}
+              </span>
             </div>
           )}
           <div className="pt-3 mt-1 border-t flex justify-between">
             <span className="font-semibold">{t("Total")}</span>
             <span className="font-bold text-secondary-foreground">
-              ฿{makeTwoDecimals(total).toLocaleString()}
+              {currency}
+              {makeTwoDecimals(total).toLocaleString()}
             </span>
           </div>
         </div>
