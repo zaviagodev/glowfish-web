@@ -9,20 +9,35 @@ export const useProducts = (): ProductQueryResult => {
   const { storeName } = useStore();
 
   const { 
-    data: productsData = [], 
-    isLoading: productsLoading, 
-    isError: productsError,
-    refetch: refetchProducts 
-  } = useQuery({
-    queryKey: ['products', storeName],
-    queryFn: async () => {
-      const data = await ProductService.getProducts(storeName);
-      return data;
-    },
-    staleTime: CACHE_EXPIRY_TIME,
-    cacheTime: CACHE_EXPIRY_TIME * 2,
-    retry: 2,
-  });
+      data: eventsData = [], 
+      isLoading: eventsLoading, 
+      isError: eventsError,
+      refetch: refetchProducts 
+    } = useQuery({
+      queryKey: ['events', storeName],
+      queryFn: async () => {
+        const data = await ProductService.getEvents(storeName);
+        return data;
+      },
+      staleTime: CACHE_EXPIRY_TIME,
+      cacheTime: CACHE_EXPIRY_TIME * 2,
+      retry: 2,
+    });
+
+    const { 
+      data: productsData = [], 
+      isLoading: productsLoading, 
+      isError: productsError,
+    } = useQuery({
+      queryKey: ['products', storeName],
+      queryFn: async () => {
+        const data = await ProductService.getProducts(storeName);
+        return data;
+      },
+      staleTime: CACHE_EXPIRY_TIME,
+      cacheTime: CACHE_EXPIRY_TIME * 2,
+      retry: 2,
+    });
 
   const {
     data: categoriesData = [],
@@ -57,7 +72,8 @@ export const useProducts = (): ProductQueryResult => {
   };
 
   return { 
-    products: productsData, 
+    events: eventsData, 
+    products: productsData,
     categories: categoriesData,
     loading, 
     error, 

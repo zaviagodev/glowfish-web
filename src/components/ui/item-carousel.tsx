@@ -6,8 +6,14 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { ProductImage } from "@/features/home/types/product.types";
 import GlowfishIcon from "../icons/GlowfishIcon";
+
+interface ProductImage {
+  id: string;
+  url: string;
+  alt: string;
+  position: number;
+}
 
 interface ItemCarouselProps {
   image: string | undefined;
@@ -116,7 +122,11 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
                 className="max-w-full max-h-[80vh] w-auto h-auto object-contain"
               />
             </div>
-          ) : null}
+          ) : (
+            <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
+              <GlowfishIcon />
+            </div>
+          )}
         </>
       )}
 

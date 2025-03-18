@@ -39,7 +39,7 @@ export default function TicketsPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { id } = useParams();
+  const { id, ticketId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<"upcoming" | "passed">(
     () => (searchParams.get("tab") as "upcoming" | "passed") || "upcoming"
@@ -69,12 +69,44 @@ export default function TicketsPage() {
     refreshTickets();
   }, []); // Empty dependency array means this runs once on mount
 
+  // Sort and filter logic for list view
+  const sortedEvents = [...tickets].sort((a, b) => {
+    const dateA = new Date(a.event?.start_datetime || "");
+    const dateB = new Date(b.event?.start_datetime || "");
+    return dateA.getTime() - dateB.getTime();
+  });
+
+  // Filter events based on tab without removing duplicates
+  const filteredEvents = sortedEvents.filter((customerEvent) => {
+    if (!customerEvent.event?.start_datetime || !customerEvent.event?.end_datetime) {
+      return false;
+    }
+    const now = new Date();
+    const endDate = new Date(customerEvent.event.end_datetime);
+    
+    if (activeTab === "upcoming") {
+      return endDate > now;
+    } else {
+      return endDate <= now;
+    }
+  });
+
+  const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE);
+  const currentEvents = filteredEvents.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   // If we have an ID, we're in details view
   const isDetailsView = !!id;
-  // Find the order and its details
+  // Find the order and its details by order ID
   let foundOrder = null;
+  let foundTicket = null;
   if (isDetailsView) {
-    foundOrder = tickets.find((order) => order.event?.event_id === id);
+    foundOrder = tickets.find((order) => order.order_id === id);
+    if (foundOrder && ticketId) {
+      foundTicket = foundOrder.tickets.find((t) => t.id === ticketId);
+    }
   }
 
   // Handlers for ticket details
@@ -83,9 +115,9 @@ export default function TicketsPage() {
     setShowCheckIn(true);
   };
 
-  const handleTicketClick = (eventId: string) => {
-    // Preserve the current search params when navigating to details
-    navigate(`/tickets/${eventId}${location.search}`);
+  const handleTicketClick = (orderId: string, ticketId: string) => {
+    // Navigate to the order details using both order_id and ticket_id
+    navigate(`/tickets/${orderId}/${ticketId}${location.search}`);
   };
 
   const handleCloseCheckIn = async () => {
@@ -111,34 +143,6 @@ export default function TicketsPage() {
     if (now > end) return "passed";
     return "ongoing";
   };
-
-  // Sort and filter logic for list view
-  const sortedEvents = [...tickets].sort((a, b) => {
-    const dateA = new Date(a.event?.end_datetime);
-    const dateB = new Date(b.event?.end_datetime);
-    const now = new Date();
-    return (
-      Math.abs(dateA.getTime() - now.getTime()) -
-      Math.abs(dateB.getTime() - now.getTime())
-    );
-  });
-
-  const filteredEvents = sortedEvents.filter((customerEvent) => {
-    const status = getEventStatus(
-      customerEvent.event?.start_datetime,
-      customerEvent.event?.end_datetime
-    );
-    if (activeTab === "upcoming") {
-      return status === "upcoming" || status === "ongoing";
-    }
-    return status === "passed";
-  });
-
-  const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE);
-  const currentEvents = filteredEvents.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -375,8 +379,7 @@ export default function TicketsPage() {
                         {t("Attendee")}
                       </div>
                       <div className="text-sm font-medium">
-                        {ticket.metadata?.attendeeName ||
-                          t("General Admission")}
+                        {ticket.metadata?.customerName || t("General Admission")}
                       </div>
                     </div>
                     <div>
@@ -411,7 +414,7 @@ export default function TicketsPage() {
                 eventName: foundOrder.event?.name || "",
                 seat:
                   foundOrder.tickets?.find((t) => t.code === qrTicket)?.metadata
-                    ?.attendeeName || "",
+                    ?.customerName || "",
                 date: foundOrder.event?.start_datetime || "",
                 location: foundOrder.event?.venue_name || t("To be determined"),
               }}
@@ -469,46 +472,40 @@ export default function TicketsPage() {
             ) : (
               <>
                 <div className="px-5 space-y-4">
-                  {currentEvents
-                    .sort(
-                      (a, b) =>
-                        new Date(a.event?.start_datetime) -
-                        new Date(b.event?.start_datetime)
-                    )
-                    .map((customerEvent, index) => (
-                      <motion.div
-                        key={customerEvent.order_id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        onClick={() =>
-                          handleTicketClick(customerEvent.event?.event_id || "")
-                        }
-                        className="cursor-pointer"
-                      >
-                        <Ticket
-                          ticket={{
-                            id: customerEvent.order_id,
-                            eventName: customerEvent.event?.name,
-                            location: customerEvent.event?.venue_name,
-                            date: customerEvent.event?.start_datetime,
-                            endDate: customerEvent.event?.end_datetime,
-                            image:
-                              customerEvent.event?.product.images[0]?.url || "",
-                            status: getEventStatus(
-                              customerEvent.event?.start_datetime,
-                              customerEvent.event?.end_datetime
-                            ),
-                            used: customerEvent.tickets[0].status === "used",
-                            ticketNumber: customerEvent.tickets[0].code,
-                            seat:
-                              customerEvent.tickets[0].metadata.attendeeName ||
-                              "General Admission",
-                            groupSize: customerEvent.tickets.length,
-                          }}
-                        />
-                      </motion.div>
-                    ))}
+                  {currentEvents.map((customerEvent, index) => (
+                    <motion.div
+                      key={customerEvent.order_id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      onClick={() =>
+                        handleTicketClick(customerEvent.order_id, customerEvent.tickets[0].id)
+                      }
+                      className="cursor-pointer"
+                    >
+                      <Ticket
+                        ticket={{
+                          id: customerEvent.order_id,
+                          eventName: customerEvent.event?.name,
+                          location: customerEvent.event?.venue_name,
+                          date: customerEvent.event?.start_datetime,
+                          endDate: customerEvent.event?.end_datetime,
+                          image:
+                            customerEvent.event?.product.images[0]?.url || "",
+                          status: getEventStatus(
+                            customerEvent.event?.start_datetime,
+                            customerEvent.event?.end_datetime
+                          ),
+                          used: customerEvent.tickets[0].status === "used",
+                          ticketNumber: customerEvent.tickets[0].code,
+                          seat:
+                            customerEvent.tickets[0].metadata.customerName ||
+                            "General Admission",
+                          groupSize: customerEvent.tickets.length,
+                        }}
+                      />
+                    </motion.div>
+                  ))}
                 </div>
 
                 {totalPages > 1 && (

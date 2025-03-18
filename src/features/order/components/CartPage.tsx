@@ -215,15 +215,24 @@ export function CartPage() {
               <Button
                 className="main-btn w-[130px]"
                 disabled={selectedItems.length === 0}
-                onClick={() =>
+                onClick={() => {
+                  const selectedCartItems = items.filter((item) =>
+                    selectedItems.includes(item.variantId)
+                  );
+                  
+                  // Validate prices before proceeding - allow zero prices but prevent negative prices
+                  const hasInvalidPrices = selectedCartItems.some(item => item.price < 0);
+                  if (hasInvalidPrices) {
+                    alert(t("Some items have invalid prices. Please try again."));
+                    return;
+                  }
+                  
                   navigate("/checkout", {
                     state: {
-                      selectedItems: items.filter((item) =>
-                        selectedItems.includes(item.variantId)
-                      ),
+                      selectedItems: selectedCartItems,
                     },
-                  })
-                }
+                  });
+                }}
               >
                 {t("Checkout")} ({items
                   .filter((item) => selectedItems.includes(item.variantId))

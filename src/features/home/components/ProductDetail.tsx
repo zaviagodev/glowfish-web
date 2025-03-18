@@ -18,26 +18,49 @@ import { useCart } from "@/lib/cart";
 import { VariantDrawer } from "./VariantDrawer";
 import { useState } from "react";
 import { useToast } from "@/components/ui/toast";
-import { Product, ProductVariant } from "../types/product.types";
+import { Product, ProductVariant, ProductImage } from "../types/product.types";
+import DOMPurify from "dompurify";
 import { isPast } from "date-fns";
 import { cn, getMapLinks, makeTwoDecimals } from "@/lib/utils";
 import ItemCarousel from "@/components/ui/item-carousel";
 import LongParagraph from "@/components/ui/long-paragraph";
 
-interface ProductVariantOption {
+interface VariantOption {
+  id: string;
   name: string;
-  value: string;
+  values: string[];
+  position: number;
 }
 
-interface ProductDetailProps extends Partial<Product> {
-  onClose: () => void;
-  hide_cart?: boolean;
+interface ProductDetailProps {
+  id: string;
+  image?: string;
+  images?: {
+    id: string;
+    url: string;
+    alt: string;
+    position: number;
+  }[];
+  name?: string;
+  description?: string;
+  location?: string;
+  venue_address?: string;
   date?: string;
+  price?: number;
+  sales_price?: number;
   points?: number;
   variant_id?: string;
   quantity?: number;
-  google_maps_link: string;
+  track_quantity?: boolean;
+  onClose: () => void;
+  variant_options?: VariantOption[];
+  product_variants?: ProductVariant[];
+  organizer_name?: string;
+  organizer_contact?: string;
+  google_maps_link?: string;
   gallery_link?: string;
+  hide_cart?: boolean;
+  end_datetime?: string;
 }
 
 export function ProductDetail({
@@ -95,7 +118,7 @@ export function ProductDetail({
         : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
     }
 
-    return `฿${makeTwoDecimals(minPrice).toLocaleString()} - ฿${makeTwoDecimals(
+    return `${minPrice === 0 ? t("free") : `฿${makeTwoDecimals(minPrice).toLocaleString()}`} - ฿${makeTwoDecimals(
       maxPrice
     ).toLocaleString()}`;
   };
@@ -132,7 +155,7 @@ export function ProductDetail({
       return t("Select Options");
     }
     return selectedVariant.options
-      .map((opt: ProductVariantOption) => opt.value)
+      .map((opt: VariantOption) => opt.values.join(" / "))
       .join(" / ");
   };
 
@@ -169,16 +192,17 @@ export function ProductDetail({
       variantId: selectedVariantId!,
       productId: id.toString(),
       name,
-      image: image || "",
+      image: image || images?.[0]?.url || "/placeholder.png",
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
       variant: selectedVariant?.options?.reduce(
-        (acc: Record<string, string>, opt: ProductVariantOption) => ({
+        (acc: Record<string, string>, opt: any) => ({
           ...acc,
-          [opt.name]: opt.value,
+          [opt.name]: Array.isArray(opt.values) ? opt.values.join(",") : opt.values,
         }),
         {}
       ),
+      isEvent: !!date, // Set isEvent to true if the item has a date field
     });
 
     addToast(t("Added to cart"), "success");
@@ -221,7 +245,16 @@ export function ProductDetail({
             <ShoppingCart className="h-6 w-6" />
           </Button>
         )}
-        <ItemCarousel images={images} image={image} />
+        <ItemCarousel
+          images={images?.map(img => ({
+            id: img.id,
+            url: img.url,
+            alt: img.alt || name || "",
+            position: img.position
+          })) || []}
+          image={image || images?.[0]?.url || "/placeholder.png"}
+          name={name}
+        />
 
         <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-[100px] -top-20">
           <div className="space-y-4">
@@ -285,7 +318,7 @@ export function ProductDetail({
                 {/* Get processed map links */}
                 {(() => {
                   const { viewLink, embedLink, isShareLink } =
-                    getMapLinks(google_maps_link);
+                    getMapLinks(google_maps_link || "");
 
                   if (!viewLink) return null;
 

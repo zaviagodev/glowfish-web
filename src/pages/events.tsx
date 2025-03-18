@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { useProducts } from "@/features/home/hooks/useProducts";
+import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import {
   Sheet,
   SheetContent,
@@ -23,17 +25,22 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ProductDetail } from "@/features/home/components/ProductDetail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import NoItemsComp from "@/components/ui/no-items";
 import { Product, ProductVariant } from "@/features/home/types/product.types";
-import EventPageSkeletons from "@/components/skeletons/EventPageSkeletons";
 
-export default function ProductsPage() {
+interface EventCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+export default function EventsPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { products, loading, error, categories } = useProducts();
-
+  const { events, loading, error, categories } = useProducts();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     location.state?.selectedCategory || null
   );
@@ -57,7 +64,7 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   // Filter and sort products
-  const filteredProducts = products
+  const filteredProducts = events
     .filter(
       (product) =>
         (selectedCategory ? product.category_id === selectedCategory : true) &&
@@ -77,9 +84,7 @@ export default function ProductsPage() {
       // Helper function to get the highest price from variants or base price
       const getHighestPrice = (product: Product) => {
         if (!product.product_variants?.length) return product.price;
-        const variantPrices = product.product_variants.map(
-          (v: ProductVariant) => v.price
-        );
+        const variantPrices = product.product_variants.map((v: ProductVariant) => v.price);
         return Math.max(product.price, ...variantPrices);
       };
 
@@ -89,11 +94,31 @@ export default function ProductsPage() {
         case "price-high":
           return getHighestPrice(b) - getHighestPrice(a);
         case "oldest":
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+          return (
+            new Date(a.start_datetime).getTime() -
+            new Date(b.start_datetime).getTime()
+          );
         default: // newest
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          return (
+            new Date(b.start_datetime).getTime() -
+            new Date(a.start_datetime).getTime()
+          );
       }
     });
+
+  const formattedDate = (product: any) => {
+    return (
+      product?.start_datetime &&
+      product?.end_datetime &&
+      `${format(
+        toZonedTime(new Date(product.start_datetime), "UTC"),
+        formattedDateAndTime
+      )} - ${format(
+        toZonedTime(new Date(product.end_datetime), "UTC"),
+        formattedDateAndTime
+      )}`
+    );
+  };
 
   return (
     <div className="bg-background">
@@ -112,7 +137,7 @@ export default function ProductsPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="text-foreground h-12 !bg-transparent"
+            className="text-white h-12 !bg-transparent"
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />
@@ -153,11 +178,8 @@ export default function ProductsPage() {
       {/* Product Grid */}
       <div className="p-5">
         {loading ? (
-          <div className="grid grid-cols-2 gap-4">
-            <EventPageSkeletons />
-            <EventPageSkeletons />
-            <EventPageSkeletons />
-            <EventPageSkeletons />
+          <div className="flex items-center justify-center h-40">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : (
           <>
@@ -171,11 +193,17 @@ export default function ProductsPage() {
                   >
                     <AnimatedCard
                       id={product.id}
-                      image={product.product_images[0]?.url || ""}
+                      image={product.image}
                       title={product.name}
                       price={product.price}
-                      compareAtPrice={product.compare_at_price || undefined}
+                      compareAtPrice={
+                        product.product_variants?.[0]?.compare_at_price ||
+                        undefined
+                      }
                       product_variants={product.product_variants}
+                      location={product.location}
+                      date={formattedDate(product)}
+                      gallery_link={product.gallery_link}
                       imageClassName="max-h-[220px] h-[40vw]"
                       onClick={() => {
                         // Get the default variant if product has variants
@@ -185,17 +213,12 @@ export default function ProductsPage() {
                             ...product,
                             variant_id: defaultVariant.id,
                             quantity: defaultVariant.quantity,
-                            image: product.product_images[0]?.url || "",
-                            images: product.product_images || [],
                           });
                         } else {
-                          setSelectedProduct({
-                            ...product,
-                            image: product.product_images[0]?.url || "",
-                            images: product.product_images || [],
-                          });
+                          setSelectedProduct(product);
                         }
                       }}
+                      end_datetime={product.end_datetime}
                     />
                   </motion.div>
                 ))}
@@ -347,11 +370,15 @@ export default function ProductsPage() {
         </SheetContent>
       </Sheet>
 
+      {console.log(selectedProduct)}
+
+
       {/* Product Detail */}
       {selectedProduct && (
         <ProductDetail
           {...selectedProduct}
-          useNewStructure={true}
+          location={selectedProduct.location}
+          date={formattedDate(selectedProduct)}
           onClose={() => setSelectedProduct(null)}
         />
       )}

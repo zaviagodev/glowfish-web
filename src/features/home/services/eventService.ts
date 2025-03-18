@@ -116,7 +116,7 @@ export const EventService = {
 
       // First check if any tickets exist for this order
       const { data: tickets, error } = await supabase
-        .from('tickets')
+        .from('rewards')
         .select(`*`)
         .eq('order_id', orderId);
 
