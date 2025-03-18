@@ -336,6 +336,10 @@ export function CheckoutPage() {
     }
   };
 
+  /* TODO: Will change to total dynamic points*/
+  const totalPoints = 320;
+  const canRedeemPoints = totalPoints <= customer?.loyalty_points;
+
   return (
     <div className="bg-background">
       <PageHeader title={t("Checkout")} />
@@ -443,10 +447,12 @@ export function CheckoutPage() {
                 <span
                   className={cn(
                     "text-sm font-medium",
-                    isUsingPoints ? "text-foreground" : "text-muted-foreground"
+                    canRedeemPoints
+                      ? "text-foreground"
+                      : "text-muted-foreground"
                   )}
                 >
-                  Points to use: 3,200
+                  Points to use: {totalPoints.toLocaleString()}
                 </span>
                 <span className="text-orangefocus text-xs">
                   (Available: {customer?.loyalty_points?.toLocaleString() || 0})
@@ -454,13 +460,16 @@ export function CheckoutPage() {
               </h2>
               <p
                 className={cn("text-muted-foreground", {
-                  "opacity-40": !isUsingPoints,
+                  "opacity-40": !canRedeemPoints,
                 })}
               >
                 Enable when you want to buy with your points
               </p>
             </div>
-            <Switch onCheckedChange={setIsUsingPoints} />
+            <Switch
+              onCheckedChange={setIsUsingPoints}
+              disabled={!canRedeemPoints}
+            />
           </div>
 
           {(isPaymentMethodRequired || hasPhysicalProducts) &&
@@ -477,11 +486,11 @@ export function CheckoutPage() {
 
           {/* TODO: Replace '320' with dynamic points */}
           <OrderSummary
-            subtotal={isUsingPoints ? 320 : subtotal}
+            subtotal={isUsingPoints ? totalPoints : subtotal}
             discount={discount}
             pointsDiscount={pointsDiscount}
             shipping={shippingCost}
-            total={isUsingPoints ? 320 : total}
+            total={isUsingPoints ? totalPoints : total}
             isUsingPoints={isUsingPoints}
           />
         </div>
@@ -489,7 +498,7 @@ export function CheckoutPage() {
 
       {/* TODO: Replace '320' with dynamic points */}
       <CheckoutFooter
-        total={isUsingPoints ? 320 : total}
+        total={isUsingPoints ? totalPoints : total}
         isUsingPoints={isUsingPoints}
         isProcessing={isProcessing}
         disabled={
