@@ -587,9 +587,9 @@ export function ProductDetail({
           </motion.div> */}
         </div>
 
-        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background/80 backdrop-blur-lg space-y-4 max-width-mobile border-t border-t-darkgray">
+        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background/80 backdrop-blur-lg max-width-mobile border-t border-t-darkgray">
           {getPriceDisplay() && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-4">
               <div className="flex items-baseline justify-between gap-2 w-full">
                 <span
                   className="flex flex-col font-bold tracking-tight text-secondary-foreground"
