@@ -223,7 +223,7 @@ export const HomeList = () => {
         <ProductSection
           title={t("Discover things you'd love")}
           linkTo=""
-          products={products.slice(0, 8)}
+          products={products.slice(0, 5)}
           onProductSelect={() => {}}
           sliderRef={eventSliderRef}
           isLoading={loading}
