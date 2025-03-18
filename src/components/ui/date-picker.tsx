@@ -28,7 +28,9 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
         onChange={(date) => {
           if (onSelect) {
             // Convert to local time
-            const localDate = date ? new Date(date.getTime() - (date.getTimezoneOffset() * 60000)) : null;
+            const localDate = date
+              ? new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+              : null;
             onSelect(localDate);
           }
         }}
@@ -42,12 +44,11 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
           />
         }
         wrapperClassName="w-full"
-        calendarClassName="!bg-darkgray !text-white !border-input"
-        weekDayClassName={() => "!text-white"}
+        calendarClassName="!bg-darkgray !text-foreground !border-input"
+        weekDayClassName={() => "!text-foreground"}
         dateFormat="dd MMM yyyy"
         dropdownMode="select"
-        dayClassName={() => "!text-white"}
-        timeZone="local"
+        dayClassName={() => "!text-foreground"}
         renderCustomHeader={({
           date,
           decreaseMonth,
