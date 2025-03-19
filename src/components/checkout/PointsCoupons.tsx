@@ -32,17 +32,17 @@ export function PointsCoupons({
       <div className="space-y-2">
         <button
           onClick={() => {}}
-          className="w-full flex items-center justify-between bg-[rgba(23,23,23,0.05)] rounded-lg p-3 text-left"
+          className="w-full flex items-center justify-between bg-darkgray rounded-lg p-3 text-left"
         >
           <div className="flex items-center gap-3">
             <div
               className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center bg-white/10",
+                "w-10 h-10 rounded-lg flex items-center justify-center bg-[#E1E1E1]/70 dark:bg-white/10",
                 { "bg-icon-orange-background": selected }
               )}
             >
               <Ticket
-                className={cn("w-5 h-5 text-white", {
+                className={cn("w-5 h-5 text-black dark:text-white", {
                   "text-icon-orange-foreground": selected,
                 })}
               />

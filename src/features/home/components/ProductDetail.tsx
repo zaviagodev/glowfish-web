@@ -303,7 +303,7 @@ export function ProductDetail({
                     (variant) =>
                       variant.compare_at_price && variant.compare_at_price > 0
                   ) && (
-                    <div className="bg-[#DE473C] text-foreground rounded-full px-1.5 py-0.5 w-fit text-xs">
+                    <div className="bg-red-500 text-white rounded-full px-1.5 py-0.5 w-fit text-xs">
                       Sale
                     </div>
                   )}

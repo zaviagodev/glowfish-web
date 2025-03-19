@@ -76,8 +76,8 @@ export function ShippingMethodSelection({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-white/10">
-              <Truck className="h-5 w-5 text-white" />
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-black/10 dark:bg-white/10">
+              <Truck className="h-5 w-5 text-black dark:text-white" />
             </div>
             <div>
               <div className="text-sm font-medium">

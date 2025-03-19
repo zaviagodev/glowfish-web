@@ -170,7 +170,7 @@ export function VariantDrawer({
                         onClick={() => handleOptionSelect(option.name, value)}
                       >
                         {/* TODO: set the condition of this red circle if there is a sales_price */}
-                        <div className="absolute -top-2 -right-2 bg-[#DE473C] text-foreground rounded-full px-1.5 w-fit text-[10px]">
+                        <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1.5 w-fit text-[10px]">
                           Sale
                         </div>
                         {value}

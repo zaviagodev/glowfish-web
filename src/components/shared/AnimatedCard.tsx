@@ -160,7 +160,7 @@ export function AnimatedCard({
             (variant) =>
               variant.compare_at_price && variant.compare_at_price > 0
           ) && (
-            <span className="absolute left-2 top-2 bg-[#DE473C] text-foreground text-sm rounded-full px-2 py-0.5">
+            <span className="absolute left-2 top-2 bg-red-500 text-white text-sm rounded-full px-2 py-0.5">
               Sale
             </span>
           )}
