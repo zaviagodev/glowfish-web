@@ -378,7 +378,7 @@ export function CheckoutPage() {
             </div>
           )}
 
-          {hasPhysicalProducts && (
+          {/* {hasPhysicalProducts && (
             <>
               <div className="flex items-center justify-between">
                 <div>
@@ -403,7 +403,7 @@ export function CheckoutPage() {
                     })
                   }
                 >
-                  {/* TODO: The address info may change based on the difference of billing and shipping address */}
+                  TODO: The address info may change based on the difference of billing and shipping address
                   <AddressCard
                     title={t("Billing Address")}
                     name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
@@ -425,7 +425,7 @@ export function CheckoutPage() {
                 </div>
               )}
             </>
-          )}
+          )} */}
 
           {/* Add shipping method selection after address selection */}
           {hasPhysicalProducts && (
@@ -440,10 +440,10 @@ export function CheckoutPage() {
             </div>
           )}
 
-          <div className="flex items-center justify-between px-4 py-3">
+          {/* <div className="flex items-center justify-between px-4 py-3">
             <div>
               <h2 className="text-base font-normal flex items-center gap-1">
-                {/* TODO: Set the dynamic points to use */}
+                {/* TODO: Set the dynamic points to use
                 <span
                   className={cn(
                     "text-sm font-medium",
@@ -470,7 +470,7 @@ export function CheckoutPage() {
               onCheckedChange={setIsUsingPoints}
               disabled={!canRedeemPoints}
             />
-          </div>
+          </div> */}
 
           {(isPaymentMethodRequired || hasPhysicalProducts) &&
             !isUsingPoints && (
@@ -482,7 +482,7 @@ export function CheckoutPage() {
             )}
 
           {/* I just added the coupon selection section, will set the dynamic data later */}
-          {!isUsingPoints && <PointsCoupons subtotal={subtotal} />}
+          {/* {!isUsingPoints && <PointsCoupons subtotal={subtotal} />} */}
 
           {/* TODO: Replace '320' with dynamic points */}
           <OrderSummary
