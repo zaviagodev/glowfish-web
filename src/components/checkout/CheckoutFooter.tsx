@@ -18,6 +18,7 @@ interface CheckoutFooterProps {
   };
   onMessageClick?: () => void;
   onVatClick?: () => void;
+  isUsingPoints?: boolean;
 }
 
 export function CheckoutFooter({
@@ -29,6 +30,7 @@ export function CheckoutFooter({
   vatInvoiceData,
   onMessageClick,
   onVatClick,
+  isUsingPoints,
 }: CheckoutFooterProps) {
   const t = useTranslate();
 
@@ -37,7 +39,8 @@ export function CheckoutFooter({
       <div className="flex items-center justify-between mb-4 text-sm">
         <span className="text-base">{t("Total Payment")}</span>
         <span className="text-base font-bold text-[#EE4D2D]">
-          ฿{makeTwoDecimals(total).toLocaleString()}
+          {isUsingPoints ? "" : "฿"}
+          {makeTwoDecimals(total).toLocaleString()}
         </span>
       </div>
       <Button

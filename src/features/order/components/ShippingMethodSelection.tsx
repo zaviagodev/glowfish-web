@@ -52,7 +52,8 @@ export function ShippingMethodSelection({
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">{t("Shipping")}</h3>
         <div className="text-gray-600">
-          {t("Fixed rate shipping")}: ฿{methods.fixed_rate.amount.toLocaleString()}
+          {t("Fixed rate shipping")}: ฿
+          {methods.fixed_rate.amount.toLocaleString()}
         </div>
       </Card>
     );
@@ -73,25 +74,23 @@ export function ShippingMethodSelection({
         className="bg-darkgray rounded-lg px-3 py-4 cursor-pointer"
         onClick={() => setShowOptions(true)}
       >
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-medium">{t("Shipping Method")}</h2>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-white/10">
+              <Truck className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <div className="text-sm font-medium">
+                {selectedMethod?.name || t("Shipping Method")}
+              </div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {selectedMethod
+                  ? `฿${selectedMethod.rate.toLocaleString()}`
+                  : t("Select a shipping method to calculate shipping cost")}
+              </div>
+            </div>
+          </div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-blue-50">
-            <Truck className="h-5 w-5 text-blue-500" />
-          </div>
-          <div>
-            <div className="text-sm font-medium">
-              {selectedMethod?.name || t("Select Shipping Method")}
-            </div>
-            <div className="text-xs text-muted-foreground mt-0.5">
-              {selectedMethod
-                ? `฿${selectedMethod.rate.toLocaleString()}`
-                : t("Choose a shipping method")}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -143,4 +142,4 @@ export function ShippingMethodSelection({
       </Sheet>
     </>
   );
-} 
+}

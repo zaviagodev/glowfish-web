@@ -18,6 +18,8 @@ interface ProductSectionProps {
   onProductSelect: (product: Product) => void;
   sliderRef: React.RefObject<HTMLDivElement>;
   isLoading?: boolean;
+  isProduct?: boolean;
+  isBanner?: boolean;
 }
 
 const formattedTime = (product: Product) => {
@@ -41,6 +43,8 @@ export const ProductSection = memo(function ProductSection({
   onProductSelect,
   sliderRef,
   isLoading,
+  isProduct,
+  isBanner = false,
 }: ProductSectionProps) {
   const t = useTranslate();
   return (
@@ -73,7 +77,9 @@ export const ProductSection = memo(function ProductSection({
               {products.map((product) => (
                 <motion.div
                   key={product.name}
-                  className="flex-shrink-0 w-[360px]"
+                  className={cn("flex-shrink-0 w-[360px]", {
+                    "h-full": isBanner,
+                  })}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
@@ -83,6 +89,7 @@ export const ProductSection = memo(function ProductSection({
                     id={product.id}
                     image={product.image}
                     title={product.name}
+                    description={product.description}
                     price={product.price}
                     location={product.location}
                     product_variants={product.product_variants}
@@ -93,6 +100,8 @@ export const ProductSection = memo(function ProductSection({
                       product.gallery_link !== null
                     }
                     end_datetime={product.end_datetime}
+                    isProduct={isProduct}
+                    isBanner={isBanner}
                   />
                 </motion.div>
               ))}

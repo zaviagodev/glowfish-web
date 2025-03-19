@@ -33,7 +33,7 @@ import MyOrdersPage from "./pages/orders";
 import MyPointsPage from "./pages/points";
 import TicketsPage from "./pages/tickets";
 import { ToastProvider } from "@/components/ui/toast";
-import { ThemeProvider, useTheme } from "./hooks/useTheme";
+import { ThemeProvider } from "./hooks/useTheme";
 import EventsPage from "./pages/events";
 import ProductsPage from "./pages/products";
 import { HowToGetPoints } from "@/features/points";
@@ -160,7 +160,7 @@ function App() {
                     <Route index element={<Rewards />} />
                     <Route path=":id" element={<Rewards />} />
                   </Route>
-                  <Route path="/events" element={<EventsPage />} />
+                  <Route path="/events" element={<ProductsPage />} />
                   <Route path="/products" element={<ProductsPage />} />
                   <Route path="/settings">
                     <Route index element={<SettingsPage />} />

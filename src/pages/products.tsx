@@ -27,12 +27,15 @@ import { cn } from "@/lib/utils";
 import NoItemsComp from "@/components/ui/no-items";
 import { Product, ProductVariant } from "@/features/home/types/product.types";
 import EventPageSkeletons from "@/components/skeletons/EventPageSkeletons";
+import { useCart } from "@/lib/cart";
 
 export default function ProductsPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { products, loading, error, categories } = useProducts();
+  const { events, products, loading, error, categories } = useProducts();
+  const { getTotalItems } = useCart();
+  const isEventPage = location.pathname === "/events";
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     location.state?.selectedCategory || null
@@ -57,43 +60,57 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   // Filter and sort products
-  const filteredProducts = products
-    .filter(
-      (product) =>
-        (selectedCategory ? product.category_id === selectedCategory : true) &&
-        (searchQuery
-          ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            product.description
-              ?.toLowerCase()
-              .includes(searchQuery.toLowerCase())
-          : true) &&
-        (inStock
-          ? product.product_variants?.some((v) => v.quantity > 0) ?? false
-          : true) &&
-        (priceRange.min !== null ? product.price >= priceRange.min : true) &&
-        (priceRange.max !== null ? product.price <= priceRange.max : true)
-    )
-    .sort((a, b) => {
-      // Helper function to get the highest price from variants or base price
-      const getHighestPrice = (product: Product) => {
-        if (!product.product_variants?.length) return product.price;
-        const variantPrices = product.product_variants.map(
-          (v: ProductVariant) => v.price
-        );
-        return Math.max(product.price, ...variantPrices);
-      };
+  const filteredProducts = isEventPage
+    ? events
+    : products
+        .filter(
+          (product) =>
+            (selectedCategory
+              ? product.category_id === selectedCategory
+              : true) &&
+            (searchQuery
+              ? product.name
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase()) ||
+                product.description
+                  ?.toLowerCase()
+                  .includes(searchQuery.toLowerCase())
+              : true) &&
+            (inStock
+              ? product.product_variants?.some((v) => v.quantity > 0) ?? false
+              : true) &&
+            (priceRange.min !== null
+              ? product.price >= priceRange.min
+              : true) &&
+            (priceRange.max !== null ? product.price <= priceRange.max : true)
+        )
+        .sort((a, b) => {
+          // Helper function to get the highest price from variants or base price
+          const getHighestPrice = (product: Product) => {
+            if (!product.product_variants?.length) return product.price;
+            const variantPrices = product.product_variants.map(
+              (v: ProductVariant) => v.price
+            );
+            return Math.max(product.price, ...variantPrices);
+          };
 
-      switch (sortBy) {
-        case "price-low":
-          return getHighestPrice(a) - getHighestPrice(b);
-        case "price-high":
-          return getHighestPrice(b) - getHighestPrice(a);
-        case "oldest":
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-        default: // newest
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      }
-    });
+          switch (sortBy) {
+            case "price-low":
+              return getHighestPrice(a) - getHighestPrice(b);
+            case "price-high":
+              return getHighestPrice(b) - getHighestPrice(a);
+            case "oldest":
+              return (
+                new Date(a.created_at).getTime() -
+                new Date(b.created_at).getTime()
+              );
+            default: // newest
+              return (
+                new Date(b.created_at).getTime() -
+                new Date(a.created_at).getTime()
+              );
+          }
+        });
 
   return (
     <div className="bg-background">
@@ -112,10 +129,13 @@ export default function ProductsPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="text-foreground h-12 !bg-transparent"
+            className="text-foreground h-12 !bg-transparent relative"
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />
+            <span className="absolute top-1 -right-1 bg-red-500 rounded-full h-4 w-4 flex items-center justify-center text-xs">
+              {getTotalItems()}
+            </span>
           </Button>
         </div>
 
@@ -174,6 +194,7 @@ export default function ProductsPage() {
                       image={product.product_images[0]?.url || ""}
                       title={product.name}
                       price={product.price}
+                      description={product.description}
                       compareAtPrice={product.compare_at_price || undefined}
                       product_variants={product.product_variants}
                       imageClassName="max-h-[220px] h-[40vw]"
@@ -196,6 +217,7 @@ export default function ProductsPage() {
                           });
                         }
                       }}
+                      isProduct={isEventPage ? false : true}
                     />
                   </motion.div>
                 ))}
@@ -353,6 +375,7 @@ export default function ProductsPage() {
           {...selectedProduct}
           useNewStructure={true}
           onClose={() => setSelectedProduct(null)}
+          isEvent={!!selectedProduct.end_datetime}
         />
       )}
     </div>
