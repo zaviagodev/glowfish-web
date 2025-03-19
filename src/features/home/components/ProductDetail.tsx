@@ -616,7 +616,7 @@ export function ProductDetail({
                       )}
                   </span>
                 </span>
-                <span
+                {/* <span
                   className="flex flex-col font-bold tracking-tight items-end text-secondary-foreground"
                   style={{
                     willChange: "transform",
@@ -629,7 +629,7 @@ export function ProductDetail({
                   <span className="flex items-end gap-2 text-2xl font-normal">
                     {getPointsDisplay() || 0}
                   </span>
-                </span>
+                </span> */}
               </div>
             </div>
           )}

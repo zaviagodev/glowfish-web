@@ -199,13 +199,13 @@ export function CartPage() {
                     ฿{makeTwoDecimals(total).toLocaleString()}
                   </span>
                 </div>
-                <div className="text-sm font-medium flex items-center gap-1 text-muted-foreground">
+                {/* <div className="text-sm font-medium flex items-center gap-1 text-muted-foreground">
                   {t("Points to use")}:
                   <span className="text-foreground text-lg">
-                    {/* TODO: Change to the total points */}
+                    {/* TODO: Change to the total points
                     {total.toLocaleString()}
                   </span>
-                </div>
+                </div> */}
                 {/* {discount < 0 && (
                   <div className="text-sm text-muted-foreground">
                     <span className="flex items-center gap-1">
@@ -224,14 +224,18 @@ export function CartPage() {
                   const selectedCartItems = items.filter((item) =>
                     selectedItems.includes(item.variantId)
                   );
-                  
+
                   // Validate prices before proceeding - allow zero prices but prevent negative prices
-                  const hasInvalidPrices = selectedCartItems.some(item => item.price < 0);
+                  const hasInvalidPrices = selectedCartItems.some(
+                    (item) => item.price < 0
+                  );
                   if (hasInvalidPrices) {
-                    alert(t("Some items have invalid prices. Please try again."));
+                    alert(
+                      t("Some items have invalid prices. Please try again.")
+                    );
                     return;
                   }
-                  
+
                   navigate("/checkout", {
                     state: {
                       selectedItems: selectedCartItems,
