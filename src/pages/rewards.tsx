@@ -3,15 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Barcode as BarcodeIcon,
   Calendar,
@@ -26,7 +19,6 @@ import {
   ChevronLeft,
   CircleParking,
   CircleDollarSign,
-  CheckCircle,
   CheckCircle2,
 } from "lucide-react";
 import Barcode from "react-barcode";
@@ -47,6 +39,7 @@ import RewardPageSkeletons from "@/components/skeletons/RewardPageSkeletons";
 import LongParagraph from "@/components/ui/long-paragraph";
 import { ProductVariant } from "@/type/type 2";
 import { VariantDrawer } from "@/features/home/components/VariantDrawer";
+import { set } from "date-fns";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -55,8 +48,9 @@ const RewardsPage = () => {
   const { storeName } = useStore();
   const [isRedeemSheetOpen, setIsRedeemSheetOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [isGoingToConfirm, setIsGoingToConfirm] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isSuccessfull, setIsSuccessfull] = useState(false);
+  const [isSuccessful, setIsSuccessful] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [codeType, setCodeType] = useState("barcode");
@@ -174,7 +168,15 @@ const RewardsPage = () => {
       await refreshOrders();
 
       setIsConfirmDialogOpen(false);
-      setIsSuccessfull(true);
+      if (selectedOption === "price") {
+        navigate("/checkout", {
+          state: {
+            selectedItems: orderItems,
+          },
+        });
+      } else {
+        setIsSuccessful(true);
+      }
     } catch (error) {
       console.error("Error redeeming reward:", error);
       setError(
@@ -290,6 +292,45 @@ const RewardsPage = () => {
     },
   ];
 
+  const handleConfirmRedeem = () => {
+    isGoingToConfirm ? handleRedeem() : setIsGoingToConfirm(true);
+  };
+
+  const handleSuccessful = (link: string | number) => {
+    setIsSuccessful(false);
+    setIsGoingToConfirm(false);
+    setIsConfirmDialogOpen(false);
+    setSelectedOption("");
+    setError(null);
+    navigate(link as string);
+  };
+
+  const checkIfNoPriceOrPoints = (check: string) => {
+    switch (check) {
+      case "price":
+        return selectedReward?.product_variants?.[0]?.price === 0;
+      case "points":
+        return selectedReward?.product_variants?.[0]?.points_based_price === 0;
+      case "both":
+        return (
+          selectedReward?.product_variants?.[0]?.price === 0 &&
+          selectedReward?.product_variants?.[0]?.points_based_price === 0
+        );
+      default:
+        return false;
+    }
+  };
+
+  const noPriceAndPoints =
+    checkIfNoPriceOrPoints("points") && checkIfNoPriceOrPoints("price");
+
+  const handleConfirmDialogOpen = () => {
+    setIsConfirmDialogOpen(true);
+    if (noPriceAndPoints) {
+      setIsGoingToConfirm(true);
+    }
+  };
+
   // Render detail view if a reward is selected
   if (id && selectedReward) {
     return (
@@ -299,7 +340,7 @@ const RewardsPage = () => {
             variant="ghost"
             size="icon"
             className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
-            onClick={() => navigate(-1)}
+            onClick={() => handleSuccessful(-1)}
           >
             <ChevronLeft className="h-6 w-6" />
           </Button>
@@ -359,33 +400,36 @@ const RewardsPage = () => {
           </section>
 
           <footer className="btn-footer flex flex-col gap-7">
-            <Dialog open={isSuccessfull}>
-              <DialogContent className="w-[90%] max-width-mobile rounded-lg">
-                <DialogHeader>
-                  <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto pb-6" />
-                  <DialogTitle>{t("Reward successfully redeemed")}</DialogTitle>
-                  <DialogDescription>
-                    {t(
-                      'You can check your redeemed rewards at " Rewards -> My Rewards".'
-                    )}
-                  </DialogDescription>
-                </DialogHeader>
+            <Sheet open={isSuccessful}>
+              <SheetContent
+                className="max-width-mobile rounded-lg"
+                side="bottom"
+              >
+                <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto pb-6" />
+                <h3 className="text-lg font-semibold mb-4 text-center">
+                  {t("Reward successfully redeemed")}
+                </h3>
+                <p className="text-sm text-[#979797] mb-6 text-center">
+                  {t(
+                    'You can check your redeemed rewards at " Rewards -> My Rewards".'
+                  )}
+                </p>
                 <div className="flex flex-col justify-center items-center gap-4 mt-4">
                   <Button
-                    onClick={() => navigate("/rewards")}
+                    onClick={() => handleSuccessful("/rewards")}
                     className="main-btn w-full"
                   >
                     {t("Confirm")}
                   </Button>
                   <p
                     className="text-muted-foreground"
-                    onClick={() => navigate("/my-rewards")}
+                    onClick={() => handleSuccessful("/my-rewards")}
                   >
                     See my rewards
                   </p>
                 </div>
-              </DialogContent>
-            </Dialog>
+              </SheetContent>
+            </Sheet>
 
             <Sheet
               open={isConfirmDialogOpen}
@@ -398,14 +442,14 @@ const RewardsPage = () => {
                     (selectedReward.product_variants?.[0]?.points_based_price ||
                       0)
                 }
-                onClick={() => setIsConfirmDialogOpen(true)}
+                onClick={handleConfirmDialogOpen}
                 className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
               >
                 <Gift />
                 {isProcessing ? t("Processing...") : t("Redeem Reward")}
               </Button>
               <SheetContent
-                className="h-3/4 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col justify-between"
+                className="h-max border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col"
                 side="bottom"
               >
                 <section className="flex flex-col gap-7">
@@ -413,70 +457,107 @@ const RewardsPage = () => {
                     <h3 className="text-lg font-semibold mb-4">
                       {t("Confirm Redemption?")}
                     </h3>
-                    <p className="text-sm text-[#979797] mb-6">
-                      {t(
-                        "This item can be redeemed by money. How would you like to exchange the item?"
-                      )}
-                    </p>
+                    {!isGoingToConfirm && (
+                      <p className="text-sm text-[#979797] mb-6">
+                        {t(
+                          "This item can be redeemed by money. How would you like to exchange the item?"
+                        )}
+                      </p>
+                    )}
                   </div>
 
-                  <div className="text-center space-y-4">
-                    <h3 className="text-lg font-semibold text-center">
-                      {t("Choose an option to redeem")}
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      {redeemOptions.map((option) => {
-                        return (
-                          <Button
-                            key={option.name}
-                            className={cn(
-                              "w-full text-left rounded-lg transition-all !bg-darkgray h-16",
-                              option.selected ? "!bg-mainbutton" : ""
-                            )}
-                            onClick={() => setSelectedOption(option.name)}
-                            disabled={option.disabled}
-                          >
-                            <div className="flex flex-col items-center">
-                              <div
-                                className={cn(
-                                  "text-sm font-medium flex items-center gap-1",
-                                  { "text-muted-foreground": !option.selected }
-                                )}
-                              >
-                                {option.icon}
-                                {option.value}
-                              </div>
-                              <div
-                                className={cn("text-2xl", {
-                                  "text-foreground": !option.selected,
-                                })}
-                              >
-                                {option.amount
-                                  ? option.amount.toLocaleString()
-                                  : t(
-                                      "Select a payment method to calculate shipping cost"
-                                    )}
-                              </div>
-                            </div>
-                          </Button>
-                        );
-                      })}
+                  {isGoingToConfirm ? (
+                    <div>
+                      Confirm the redemption of "{selectedReward.name}" for{" "}
+                      {selectedOption === "price"
+                        ? `฿${selectedReward?.product_variants?.[0]?.price}`
+                        : noPriceAndPoints
+                        ? "free"
+                        : `${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price
+                          } point${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price === 1
+                              ? ""
+                              : "s"
+                          }`}
+                      . If it has been redeemed, it cannot be refunded or
+                      returned.
                     </div>
-                    <p className="font-medium">
-                      Available:{" "}
-                      <span className="text-orangefocus">
-                        {customer?.loyalty_points?.toLocaleString() || 0}
-                      </span>
-                    </p>
-                  </div>
+                  ) : (
+                    <div className="text-center space-y-4">
+                      <h3 className="text-lg font-semibold text-center">
+                        {t("Choose an option to redeem")}
+                      </h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        {redeemOptions.map((option) => {
+                          return (
+                            <Button
+                              key={option.name}
+                              className={cn(
+                                "w-full text-left rounded-lg transition-all !bg-darkgray h-16",
+                                option.selected ? "!bg-mainbutton" : ""
+                              )}
+                              onClick={() => setSelectedOption(option.name)}
+                              disabled={option.disabled}
+                            >
+                              <div className="flex flex-col items-center">
+                                <div
+                                  className={cn(
+                                    "text-sm font-medium flex items-center gap-1",
+                                    {
+                                      "text-muted-foreground": !option.selected,
+                                    }
+                                  )}
+                                >
+                                  {option.icon}
+                                  {option.value}
+                                </div>
+                                <div
+                                  className={cn("text-2xl", {
+                                    "text-foreground": !option.selected,
+                                  })}
+                                >
+                                  {option.amount
+                                    ? option.amount.toLocaleString()
+                                    : t("free")}
+                                </div>
+                              </div>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                      <p className="font-medium">
+                        Available:{" "}
+                        <span className="text-orangefocus">
+                          {customer?.loyalty_points?.toLocaleString() || 0}
+                        </span>
+                      </p>
+                    </div>
+                  )}
                 </section>
-                <Button
-                  disabled={isProcessing || selectedOption === ""}
-                  onClick={handleRedeem}
-                  className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
-                >
-                  {isProcessing ? t("Processing...") : t("Confirm")}
-                </Button>
+                <div className="flex items-center gap-2 w-full">
+                  {isGoingToConfirm && (
+                    <Button
+                      onClick={() =>
+                        noPriceAndPoints
+                          ? setIsConfirmDialogOpen(false)
+                          : setIsGoingToConfirm(false)
+                      }
+                      className="secondary-btn w-full text-foreground"
+                    >
+                      {t("Cancel")}
+                    </Button>
+                  )}
+                  <Button
+                    disabled={isProcessing || selectedOption === ""}
+                    onClick={handleConfirmRedeem}
+                    className="main-btn w-full"
+                  >
+                    {isProcessing ? t("Processing...") : t("Confirm")}
+                  </Button>
+                </div>
               </SheetContent>
             </Sheet>
 
@@ -590,7 +671,7 @@ const RewardsPage = () => {
           )}
           <div className="flex justify-between items-center py-5 px-[30px] z-5 relative">
             <h3 className="font-semibold text-xl tracking-[-0.4px]">
-              {t("Good After Work")}
+              {t("Good Afterwork")}
             </h3>
             <h3 className="font-semibold text-xl">
               {hasPoints
@@ -600,12 +681,12 @@ const RewardsPage = () => {
                 : "0 points"}
             </h3>
           </div>
-          <div className="absolute z-[99] right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
+          <div className="absolute right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
             <GoodAfterWorkCard />
           </div>
           <button
             onClick={() => navigate("/scan")}
-            className="absolute z-[99] left-[30px] bottom-5"
+            className="absolute left-[30px] bottom-5"
           >
             <QrCode className="h-6 w-6" />
           </button>
