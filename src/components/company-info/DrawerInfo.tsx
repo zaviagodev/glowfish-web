@@ -26,23 +26,24 @@ const DrawerInfo = ({ className, isLogin }: DrawerInfoProps) => {
 
   return (
     <>
-      <p
-        className={cn(
-          "text-center font-light text-sm px-5 text-muted-foreground",
-          className
+      <p className={cn("text-center font-light text-sm px-5", className)}>
+        {isLogin && (
+          <span className="text-muted-foreground">
+            By proceeding, you agree to our{" "}
+          </span>
         )}
-      >
-        {isLogin && `By proceeding, you agree to our `}
         <span
           onClick={() => handleOpenModal("Terms of Service")}
-          className="underline"
+          className="underline dark:text-muted-foreground text-link"
         >
           Terms of Use
         </span>{" "}
-        {isLogin ? "and acknowledge the " : "• "}
+        <span className="text-muted-foreground">
+          {isLogin ? "and acknowledge the " : "• "}
+        </span>
         <span
           onClick={() => handleOpenModal("Privacy Policy")}
-          className="underline"
+          className="underline dark:text-muted-foreground text-link"
         >
           Privacy Statement
         </span>

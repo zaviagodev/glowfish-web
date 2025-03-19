@@ -48,7 +48,7 @@ export const ProfileForm = ({
   const labelClassName = cn(
     "block text-sm font-medium",
     "text-card-foreground",
-    { "text-muted-foreground": isProfileSetup }
+    { "dark:text-muted-foreground text-link": isProfileSetup }
   );
 
   const form = useForm<ProfileSchema>({
@@ -171,9 +171,12 @@ export const ProfileForm = ({
 
       if (customerError) {
         // Check for duplicate email error
-        if (customerError.code === '23505' && customerError.message.includes('customers_store_name_email_key')) {
+        if (
+          customerError.code === "23505" &&
+          customerError.message.includes("customers_store_name_email_key")
+        ) {
           const duplicateEmailMessage = "This email already exists";
-          form.setError('email', { message: duplicateEmailMessage });
+          form.setError("email", { message: duplicateEmailMessage });
           addToast(duplicateEmailMessage, "error");
           return;
         }
