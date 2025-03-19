@@ -173,7 +173,11 @@ export function AnimatedCard({
           isBanner ? "hidden" : ""
         )}
       >
-        <div className="space-y-2">
+        <div
+          className={`flex flex-col ${
+            description ? "gap-2" : "gap-7"
+          } justify-between h-fit`}
+        >
           <div>
             <motion.div
               layoutId={`title-${id}`}
