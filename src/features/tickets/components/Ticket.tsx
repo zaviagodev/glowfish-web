@@ -30,7 +30,6 @@ export function Ticket({ ticket }: TicketProps) {
       onClick={() => navigate(`/tickets/${ticket.id}`)}
       className={cn(
         "relative overflow-hidden rounded-xl transition-all bg-darkgray",
-        "shadow-[0_2px_8px_rgba(0,0,0,0.04),0_4px_24px_rgba(0,0,0,0.02)]",
         ticket.status === "passed" && "opacity-60"
       )}
       whileHover={{ scale: 0.98 }}
@@ -77,9 +76,12 @@ export function Ticket({ ticket }: TicketProps) {
                   ? "Ongoing"
                   : isToday(toZonedTime(new Date(ticket.date), "UTC"))
                   ? "Today!"
-                  : `In ${formatDistanceToNow(toZonedTime(new Date(ticket.date), "UTC"), {
-                      addSuffix: false,
-                    })}`}
+                  : `In ${formatDistanceToNow(
+                      toZonedTime(new Date(ticket.date), "UTC"),
+                      {
+                        addSuffix: false,
+                      }
+                    )}`}
               </div>
             </div>
           </div>
@@ -94,7 +96,10 @@ export function Ticket({ ticket }: TicketProps) {
               <Calendar className="w-4 h-4 flex-shrink-0" />
               <span>
                 {ticket.date
-                  ? format(toZonedTime(new Date(ticket.date), "UTC"), formattedDateAndTime)
+                  ? format(
+                      toZonedTime(new Date(ticket.date), "UTC"),
+                      formattedDateAndTime
+                    )
                   : "To be determined"}
               </span>
             </div>

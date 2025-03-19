@@ -31,11 +31,14 @@ export const Login = () => {
           className="main-btn relative font-semibold"
           onClick={handleLineLogin}
         >
-          <LineIcon className="w-7 h-7 absolute left-4" fill="#06c755" />
+          <LineIcon
+            className="w-7 h-7 absolute left-4 bg-white rounded-md"
+            fill="#06c655"
+          />
           {t("Continue with Line")}
         </Button>
         <DrawerInfo isLogin={true} />
       </div>
     </section>
   );
-}; 
+};

@@ -26,7 +26,12 @@ const DrawerInfo = ({ className, isLogin }: DrawerInfoProps) => {
 
   return (
     <>
-      <p className={cn("text-center font-light text-sm px-5", className)}>
+      <p
+        className={cn(
+          "text-center font-light text-sm px-5 text-muted-foreground",
+          className
+        )}
+      >
         {isLogin && `By proceeding, you agree to our `}
         <span
           onClick={() => handleOpenModal("Terms of Service")}

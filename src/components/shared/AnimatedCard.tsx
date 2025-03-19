@@ -184,7 +184,7 @@ export function AnimatedCard({
                 {title}
               </h3>
               {isEventEnded && (
-                <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-[#8E8E93]/10 text-[#8E8E93]">
+                <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium dark:bg-[#8E8E93]/10 dark:text-[#8E8E93] bg-[#BEBEC1] text-white">
                   {t("Ended")}
                 </div>
               )}

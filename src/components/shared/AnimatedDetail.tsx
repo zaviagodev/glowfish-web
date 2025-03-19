@@ -51,7 +51,7 @@ export function AnimatedDetail({
           <Button
             variant="ghost"
             size="icon"
-            className="fixed right-4 top-4 z-[60] bg-black/20 hover:bg-black/30 text-foreground"
+            className="fixed right-4 top-4 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
             onClick={onClose}
           >
             <X className="h-6 w-6" />

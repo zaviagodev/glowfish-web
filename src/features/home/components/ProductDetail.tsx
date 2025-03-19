@@ -261,7 +261,7 @@ export function ProductDetail({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-foreground"
+          className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
           onClick={onClose}
         >
           <ChevronLeft className="h-6 w-6" />
@@ -270,7 +270,7 @@ export function ProductDetail({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-foreground"
+            className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />

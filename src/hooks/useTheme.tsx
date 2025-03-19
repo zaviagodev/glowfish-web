@@ -16,7 +16,7 @@ interface ThemeContextProps {
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
   const currentTheme = localStorage.getItem("theme") || theme;
 
   function toggleTheme() {
@@ -28,6 +28,7 @@ const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   }
 
   useEffect(() => {
+    setTheme(currentTheme as Theme);
     document.body.className = currentTheme;
   }, [currentTheme]);
 
