@@ -229,12 +229,12 @@ function AppWrapper() {
     <ConfigProvider>
       <ToastProvider>
         <ThemeProvider>
-          <HelmetProvider>
-            <BrowserRouter>
+          <BrowserRouter>
+            <HelmetProvider>
               <DynamicTitle />
               <App />
-            </BrowserRouter>
-          </HelmetProvider>
+            </HelmetProvider>
+          </BrowserRouter>
         </ThemeProvider>
       </ToastProvider>
     </ConfigProvider>

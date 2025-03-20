@@ -35,6 +35,8 @@ export const DynamicTitle = () => {
       <meta property="og:type" content="website" />
       <meta property="og:url" content={window.location.href} />
       <meta property="og:image" content={thumbnailUrl} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       {storeName && <meta property="og:site_name" content={storeName} />}
       <meta name="twitter:title" content={title} />
       <meta name="twitter:card" content="summary_large_image" />
