@@ -748,8 +748,14 @@ const RewardsPage = () => {
                         alt={reward.title}
                         className="w-full h-full object-cover object-top"
                       />
+                    ) : config?.storeLogo ? (
+                      <img
+                        src={config?.storeLogo}
+                        alt="Store Logo"
+                        className="h-20 w-20 object-contain"
+                      />
                     ) : (
-                      <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+                      <DefaultStorefront />
                     )}
                   </div>
 
