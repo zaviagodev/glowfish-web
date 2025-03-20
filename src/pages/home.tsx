@@ -138,8 +138,6 @@ export const HomeList = () => {
       formattedDateAndTime
     )}`;
 
-  console.log(products);
-
   return (
     <div className="min-h-screen relative">
       {/* Hero Section */}
