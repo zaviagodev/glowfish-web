@@ -9,7 +9,7 @@ interface ProductListProps {
   items: CartItem[];
 }
 
-const LIMITED_ITEMS = 2;
+const LIMITED_ITEMS = 1;
 
 export function ProductList({ items }: ProductListProps) {
   const t = useTranslate();
@@ -24,7 +24,7 @@ export function ProductList({ items }: ProductListProps) {
 
   return (
     <div className="bg-darkgray rounded-xl shadow-sm border">
-      <div className="p-4 pb-0">
+      <div className="p-3 pb-0">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-medium">{t("Products Ordered")}</h2>
           {items.length > LIMITED_ITEMS && (
@@ -44,7 +44,7 @@ export function ProductList({ items }: ProductListProps) {
 
       <div>
         {visibleItems.map((item) => (
-          <div key={item.variantId} className="p-4 flex gap-3">
+          <div key={item.variantId} className="p-3 flex gap-3">
             <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
               {item.image ? (
                 <img

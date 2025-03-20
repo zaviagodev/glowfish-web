@@ -24,6 +24,8 @@ interface TicketProps {
 
 export function Ticket({ ticket }: TicketProps) {
   const navigate = useNavigate();
+  const dateFormat = (date: string) =>
+    format(toZonedTime(new Date(date), "UTC"), formattedDateAndTime);
 
   return (
     <motion.div
@@ -77,9 +79,12 @@ export function Ticket({ ticket }: TicketProps) {
                   ? "Ongoing"
                   : isToday(toZonedTime(new Date(ticket.date), "UTC"))
                   ? "Today!"
-                  : `In ${formatDistanceToNow(toZonedTime(new Date(ticket.date), "UTC"), {
-                      addSuffix: false,
-                    })}`}
+                  : `In ${formatDistanceToNow(
+                      toZonedTime(new Date(ticket.date), "UTC"),
+                      {
+                        addSuffix: false,
+                      }
+                    )}`}
               </div>
             </div>
           </div>
@@ -93,8 +98,12 @@ export function Ticket({ ticket }: TicketProps) {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 flex-shrink-0" />
               <span>
-                {ticket.date
-                  ? format(toZonedTime(new Date(ticket.date), "UTC"), formattedDateAndTime)
+                {ticket.date && ticket.endDate
+                  ? ticket.date === ticket.endDate
+                    ? dateFormat(ticket.date)
+                    : `${dateFormat(ticket.date)} - ${dateFormat(
+                        ticket.endDate
+                      )}`
                   : "To be determined"}
               </span>
             </div>

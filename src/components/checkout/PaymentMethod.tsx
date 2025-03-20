@@ -90,7 +90,6 @@ export function PaymentMethod({
   const { storeName } = useStore();
   const [paymentOptions, setPaymentOptions] = useState<PaymentOption[]>([]);
   const [showOptions, setShowOptions] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPaymentOptions = async () => {
@@ -129,8 +128,6 @@ export function PaymentMethod({
         setPaymentOptions(options);
       } catch (error) {
         console.error("Error fetching payment options:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -140,10 +137,6 @@ export function PaymentMethod({
   const selectedOption = value
     ? paymentOptions.find((option) => option.id === value)
     : null;
-
-  if (loading) {
-    return <LoadingSpin />;
-  }
 
   const PaymentMethodIcon = ({ name }: { name: string }) => {
     const checkIfBankTransfer = name === "Bank Transfer";

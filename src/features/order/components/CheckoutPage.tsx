@@ -21,12 +21,12 @@ import { ShippingMethod } from "@/components/checkout/ShippingMethod";
 import { SuccessDialog } from "@/components/checkout/SuccessDialog";
 import type { Address } from "@/services/customerService";
 import { ChevronRight, MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
-import LoadingSpin from "@/components/loading/LoadingSpin";
 import { Checkbox } from "@/components/ui/checkbox";
 import CheckoutSkeletons from "@/components/skeletons/CheckoutSkeletons";
-import { useShipping } from "../hooks/useShipping";
+import { Switch } from "@/components/ui/switch";
 import { ShippingMethodSelection } from "./ShippingMethodSelection";
+import { useShipping } from "../hooks/useShipping";
+import { cn } from "@/lib/utils";
 
 interface CartItem extends CartItemType {
   variantId: string;
@@ -49,6 +49,7 @@ export function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [storeMessage, setStoreMessage] = useState("");
   const [showMessageDialog, setShowMessageDialog] = useState(false);
+  const [isUsingPoints, setIsUsingPoints] = useState(false);
   const [vatInvoiceData, setVatInvoiceData] = useState({
     enabled: false,
     companyName: "",
@@ -66,7 +67,11 @@ export function CheckoutPage() {
     if (items.length > 0) {
       const hasInvalidPrices = items.some((item: CartItem) => item.price < 0);
       if (hasInvalidPrices) {
-        alert(t("Some items have invalid prices. Please return to cart and try again."));
+        alert(
+          t(
+            "Some items have invalid prices. Please return to cart and try again."
+          )
+        );
         navigate("/cart", { replace: true });
       }
     }
@@ -271,7 +276,8 @@ export function CheckoutPage() {
         p_shipping_address_id: hasPhysicalProducts ? selectedAddress.id : null,
         p_billing_address_id: hasPhysicalProducts ? selectedAddress.id : null,
         p_shipping_option_id: hasPhysicalProducts ? selectedMethod?.id : null,
-        p_applied_coupons: discount > 0 ? [{ code: "discount", amount: discount }] : [],
+        p_applied_coupons:
+          discount > 0 ? [{ code: "discount", amount: discount }] : [],
         p_loyalty_points_used: Number(pointsDiscount),
         p_notes: JSON.stringify({
           message: storeMessage,
@@ -279,12 +285,14 @@ export function CheckoutPage() {
           paymentMethod,
         }),
         p_tags: ["web"],
-        p_items: orderItems.map((item: { variant_id: string; quantity: number; price: number }) => ({
-          variant_id: item.variant_id,
-          quantity: item.quantity,
-          price: Number(item.price),
-          total: Number(item.price * item.quantity)
-        }))
+        p_items: orderItems.map(
+          (item: { variant_id: string; quantity: number; price: number }) => ({
+            variant_id: item.variant_id,
+            quantity: item.quantity,
+            price: Number(item.price),
+            total: Number(item.price * item.quantity),
+          })
+        ),
       });
 
       if (error) {
@@ -328,12 +336,16 @@ export function CheckoutPage() {
     }
   };
 
+  /* TODO: Will change to total dynamic points*/
+  const totalPoints = 320;
+  const canRedeemPoints = totalPoints <= customer?.loyalty_points;
+
   return (
     <div className="bg-background">
       <PageHeader title={t("Checkout")} />
 
       <div className="pt-14 pb-32">
-        <div className="p-5 space-y-6">
+        <div className="p-5 space-y-3.5">
           <ProductList items={items} />
 
           {/* Only show address selection for physical products */}
@@ -366,58 +378,54 @@ export function CheckoutPage() {
             </div>
           )}
 
-          <div className="flex items-center justify-between">
-            <div>
-              <p>Billing address same as shipping address</p>
-              <p className="text-muted-foreground">
-                Uncheck if you want to change to another address
-              </p>
-            </div>
-            <Checkbox
-              checked={isBillingAddressChecked}
-              onCheckedChange={() =>
-                setIsBillingAddressChecked(!isBillingAddressChecked)
-              }
-            />
-          </div>
+          {/* {hasPhysicalProducts && (
+            <>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p>Billing address same as shipping address</p>
+                  <p className="text-muted-foreground">
+                    Uncheck if you want to change to another address
+                  </p>
+                </div>
+                <Checkbox
+                  checked={isBillingAddressChecked}
+                  onCheckedChange={() =>
+                    setIsBillingAddressChecked(!isBillingAddressChecked)
+                  }
+                />
+              </div>
 
-          {!isBillingAddressChecked && (
-            <div
-              onClick={() =>
-                navigate("/checkout/address", {
-                  state: { selectedItems: items },
-                })
-              }
-            >
-              {/* TODO: The address info may change based on the difference of billing and shipping address */}
-              <AddressCard
-                title={t("Billing Address")}
-                name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
-                phone={selectedAddress?.phone}
-                address={`${selectedAddress?.address1}${
-                  selectedAddress?.address2
-                    ? `, ${selectedAddress?.address2}`
-                    : ""
-                }, ${selectedAddress?.city}, ${selectedAddress?.state} ${
-                  selectedAddress?.postal_code
-                }`}
-                isDefault={!!selectedAddress}
-                icon={
-                  <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
-                    <MapPin className="w-4 h-4 text-icon-blue-foreground" />
-                  </div>
-                }
-              />
-            </div>
-          )}
-
-          {(isPaymentMethodRequired || hasPhysicalProducts) && (
-            <PaymentMethod
-              value={paymentMethod}
-              onChange={setPaymentMethod}
-              required={isPaymentMethodRequired}
-            />
-          )}
+              {!isBillingAddressChecked && (
+                <div
+                  onClick={() =>
+                    navigate("/checkout/address", {
+                      state: { selectedItems: items },
+                    })
+                  }
+                >
+                  TODO: The address info may change based on the difference of billing and shipping address
+                  <AddressCard
+                    title={t("Billing Address")}
+                    name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
+                    phone={selectedAddress?.phone}
+                    address={`${selectedAddress?.address1}${
+                      selectedAddress?.address2
+                        ? `, ${selectedAddress?.address2}`
+                        : ""
+                    }, ${selectedAddress?.city}, ${selectedAddress?.state} ${
+                      selectedAddress?.postal_code
+                    }`}
+                    isDefault={!!selectedAddress}
+                    icon={
+                      <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
+                        <MapPin className="w-4 h-4 text-icon-blue-foreground" />
+                      </div>
+                    }
+                  />
+                </div>
+              )}
+            </>
+          )} */}
 
           {/* Add shipping method selection after address selection */}
           {hasPhysicalProducts && (
@@ -432,18 +440,66 @@ export function CheckoutPage() {
             </div>
           )}
 
+          {/* <div className="flex items-center justify-between px-4 py-3">
+            <div>
+              <h2 className="text-base font-normal flex items-center gap-1">
+                {/* TODO: Set the dynamic points to use
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    canRedeemPoints
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  Points to use: {totalPoints.toLocaleString()}
+                </span>
+                <span className="text-orangefocus text-xs">
+                  (Available: {customer?.loyalty_points?.toLocaleString() || 0})
+                </span>
+              </h2>
+              <p
+                className={cn("text-muted-foreground", {
+                  "opacity-40": !canRedeemPoints,
+                })}
+              >
+                Enable when you want to buy with your points
+              </p>
+            </div>
+            <Switch
+              onCheckedChange={setIsUsingPoints}
+              disabled={!canRedeemPoints}
+            />
+          </div> */}
+
+          {(isPaymentMethodRequired || hasPhysicalProducts) &&
+            !isUsingPoints && (
+              <PaymentMethod
+                value={paymentMethod}
+                onChange={setPaymentMethod}
+                required={isPaymentMethodRequired}
+              />
+            )}
+
+          {/* I just added the coupon selection section, will set the dynamic data later */}
+          {/* {!isUsingPoints && <PointsCoupons subtotal={subtotal} />} */}
+
+          {/* TODO: Replace '320' with dynamic points */}
           <OrderSummary
-            subtotal={subtotal}
+            subtotal={isUsingPoints ? totalPoints : subtotal}
             discount={discount}
             pointsDiscount={pointsDiscount}
             shipping={shippingCost}
-            total={total}
+            total={isUsingPoints ? totalPoints : total}
+            isUsingPoints={isUsingPoints}
           />
         </div>
       </div>
 
+      {/* TODO: Replace '320' with dynamic points */}
       <CheckoutFooter
-        total={total}
+        total={isUsingPoints ? totalPoints : total}
+        isUsingPoints={isUsingPoints}
         isProcessing={isProcessing}
         disabled={
           (hasPhysicalProducts && addresses.length === 0) ||

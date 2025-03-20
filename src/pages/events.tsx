@@ -28,6 +28,7 @@ import { CategoryGrid } from "@/features/home/components/CategoryGrid";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import NoItemsComp from "@/components/ui/no-items";
 import { Product, ProductVariant } from "@/features/home/types/product.types";
+import EventPageSkeletons from "@/components/skeletons/EventPageSkeletons";
 
 interface EventCategory {
   id: string;
@@ -84,7 +85,9 @@ export default function EventsPage() {
       // Helper function to get the highest price from variants or base price
       const getHighestPrice = (product: Product) => {
         if (!product.product_variants?.length) return product.price;
-        const variantPrices = product.product_variants.map((v: ProductVariant) => v.price);
+        const variantPrices = product.product_variants.map(
+          (v: ProductVariant) => v.price
+        );
         return Math.max(product.price, ...variantPrices);
       };
 
@@ -178,8 +181,11 @@ export default function EventsPage() {
       {/* Product Grid */}
       <div className="p-5">
         {loading ? (
-          <div className="flex items-center justify-center h-40">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="grid grid-cols-2 gap-4">
+            <EventPageSkeletons />
+            <EventPageSkeletons />
+            <EventPageSkeletons />
+            <EventPageSkeletons />
           </div>
         ) : (
           <>
@@ -370,9 +376,6 @@ export default function EventsPage() {
         </SheetContent>
       </Sheet>
 
-      {console.log(selectedProduct)}
-
-
       {/* Product Detail */}
       {selectedProduct && (
         <ProductDetail
@@ -380,6 +383,7 @@ export default function EventsPage() {
           location={selectedProduct.location}
           date={formattedDate(selectedProduct)}
           onClose={() => setSelectedProduct(null)}
+          isEvent={selectedProduct.end_datetime}
         />
       )}
     </div>

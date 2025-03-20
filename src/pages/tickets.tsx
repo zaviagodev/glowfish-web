@@ -78,12 +78,15 @@ export default function TicketsPage() {
 
   // Filter events based on tab without removing duplicates
   const filteredEvents = sortedEvents.filter((customerEvent) => {
-    if (!customerEvent.event?.start_datetime || !customerEvent.event?.end_datetime) {
+    if (
+      !customerEvent.event?.start_datetime ||
+      !customerEvent.event?.end_datetime
+    ) {
       return false;
     }
     const now = new Date();
     const endDate = new Date(customerEvent.event.end_datetime);
-    
+
     if (activeTab === "upcoming") {
       return endDate > now;
     } else {
@@ -181,6 +184,7 @@ export default function TicketsPage() {
     );
 
     const images = foundOrder.event?.product?.images;
+    console.log(foundOrder);
 
     return (
       <div className="bg-background">
@@ -359,7 +363,11 @@ export default function TicketsPage() {
                       <div className="w-10 h-10 rounded-lg bg-[#F8F8F81A] flex items-center justify-center">
                         <TicketIcon className="w-5 h-5 text-primary" />
                       </div>
-                      <h3 className="font-medium">{ticket.code}</h3>
+                      <div>
+                        <h3 className="font-medium">{ticket.code}</h3>
+                        {/* TODO: fetch the dynamic variant that users have purchased in case the events have variants */}
+                        <p className="text-muted-foreground">varianttest</p>
+                      </div>
                     </div>
                     <div
                       className={cn(
@@ -379,7 +387,8 @@ export default function TicketsPage() {
                         {t("Attendee")}
                       </div>
                       <div className="text-sm font-medium">
-                        {ticket.metadata?.customerName || t("General Admission")}
+                        {ticket.metadata?.customerName ||
+                          t("General Admission")}
                       </div>
                     </div>
                     <div>
@@ -479,7 +488,10 @@ export default function TicketsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
                       onClick={() =>
-                        handleTicketClick(customerEvent.order_id, customerEvent.tickets[0].id)
+                        handleTicketClick(
+                          customerEvent.order_id,
+                          customerEvent.tickets[0].id
+                        )
                       }
                       className="cursor-pointer"
                     >

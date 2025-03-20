@@ -1,7 +1,7 @@
 import { ChangeEvent, forwardRef, MouseEvent } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { Input } from "./input";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -28,7 +28,9 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
         onChange={(date) => {
           if (onSelect) {
             // Convert to local time
-            const localDate = date ? new Date(date.getTime() - (date.getTimezoneOffset() * 60000)) : null;
+            const localDate = date
+              ? new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+              : null;
             onSelect(localDate);
           }
         }}
@@ -42,12 +44,11 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
           />
         }
         wrapperClassName="w-full"
-        calendarClassName="!bg-darkgray !text-white !border-input"
-        weekDayClassName={() => "!text-white"}
-        dateFormat="dd MMM yyyy"
+        calendarClassName="!bg-darkgray !text-foreground !border-input"
+        weekDayClassName={() => "!text-foreground"}
+        dateFormat={formattedDateAndTime}
         dropdownMode="select"
-        dayClassName={() => "!text-white"}
-        timeZone="local"
+        dayClassName={() => "!text-foreground"}
         renderCustomHeader={({
           date,
           decreaseMonth,
