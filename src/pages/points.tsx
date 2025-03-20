@@ -14,7 +14,7 @@ import {
 import React from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import { useCustomer } from "@/hooks/useCustomer";
 import { usePoints } from "@/features/points/hooks/usePoints";
@@ -101,7 +101,7 @@ const PointsPage = () => {
     const Icon = transaction.type === "earn" ? ArrowUpToLine : ArrowDownToLine;
     const formattedDate = format(
       new Date(transaction.created_at),
-      "dd MMM yyyy"
+      formattedDateAndTime
     );
 
     return (

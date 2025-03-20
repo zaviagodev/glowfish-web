@@ -36,6 +36,16 @@ const formattedTime = (product: Product) => {
   );
 };
 
+const formattedStartDate = (product: Product) => {
+  return (
+    product?.start_datetime &&
+    `${format(
+      toZonedTime(new Date(product.start_datetime), "UTC"),
+      formattedDateAndTime
+    )}`
+  );
+};
+
 export const ProductSection = memo(function ProductSection({
   title,
   linkTo,
@@ -94,7 +104,7 @@ export const ProductSection = memo(function ProductSection({
                     location={product.location}
                     product_variants={product.product_variants}
                     gallery_link={product.gallery_link}
-                    date={formattedTime(product)}
+                    date={formattedStartDate(product)}
                     hasGallery={
                       product.gallery_link !== "" &&
                       product.gallery_link !== null

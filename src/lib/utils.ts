@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 export const trailingCountryCodeRegex = /-([A-Z]{2})(?!.*-[A-Z]{2})/;
 
-export const formattedDateAndTime = "dd MMM yyyy HH:mm";
+export const formattedDateAndTime = "dd MMM yyyy";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

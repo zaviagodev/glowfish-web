@@ -212,7 +212,13 @@ export default function ProductsPage() {
                       price={product.price}
                       description={product.description}
                       location={product.location}
-                      date={formattedDate(product)}
+                      date={format(
+                        toZonedTime(
+                          new Date(product.start_datetime as string),
+                          "UTC"
+                        ),
+                        formattedDateAndTime
+                      )}
                       compareAtPrice={product.compare_at_price || undefined}
                       product_variants={product.product_variants}
                       imageClassName="max-h-[220px] h-[40vw]"
@@ -394,6 +400,7 @@ export default function ProductsPage() {
           useNewStructure={true}
           onClose={() => setSelectedProduct(null)}
           isEvent={!!selectedProduct.end_datetime}
+          date={formattedDate(selectedProduct)}
         />
       )}
     </div>

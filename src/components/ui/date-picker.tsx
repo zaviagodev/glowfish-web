@@ -1,7 +1,7 @@
 import { ChangeEvent, forwardRef, MouseEvent } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { Input } from "./input";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -46,7 +46,7 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
         wrapperClassName="w-full"
         calendarClassName="!bg-darkgray !text-foreground !border-input"
         weekDayClassName={() => "!text-foreground"}
-        dateFormat="dd MMM yyyy"
+        dateFormat={formattedDateAndTime}
         dropdownMode="select"
         dayClassName={() => "!text-foreground"}
         renderCustomHeader={({

@@ -184,6 +184,7 @@ export default function TicketsPage() {
     );
 
     const images = foundOrder.event?.product?.images;
+    console.log(foundOrder);
 
     return (
       <div className="bg-background">

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { format, formatDistanceToNow, isToday } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { MapPin, Calendar, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
@@ -25,7 +25,7 @@ interface TicketProps {
 export function Ticket({ ticket }: TicketProps) {
   const navigate = useNavigate();
   const dateFormat = (date: string) =>
-    format(toZonedTime(new Date(date), "UTC"), "dd MMM yyyy");
+    format(toZonedTime(new Date(date), "UTC"), formattedDateAndTime);
 
   return (
     <motion.div
