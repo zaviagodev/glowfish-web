@@ -22,20 +22,6 @@ interface ProductSectionProps {
   isBanner?: boolean;
 }
 
-const formattedTime = (product: Product) => {
-  return (
-    product?.start_datetime &&
-    product?.end_datetime &&
-    `${format(
-      toZonedTime(new Date(product.start_datetime), "UTC"),
-      formattedDateAndTime
-    )} - ${format(
-      toZonedTime(new Date(product.end_datetime), "UTC"),
-      formattedDateAndTime
-    )}`
-  );
-};
-
 const formattedStartDate = (product: Product) => {
   return (
     product?.start_datetime &&

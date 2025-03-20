@@ -128,6 +128,16 @@ export default function ProductsPage() {
     );
   };
 
+  const formattedStartDate = (product: Product) => {
+    return (
+      product?.start_datetime &&
+      `${format(
+        toZonedTime(new Date(product.start_datetime), "UTC"),
+        formattedDateAndTime
+      )}`
+    );
+  };
+
   return (
     <div className="bg-background">
       {/* Search Bar */}
@@ -212,13 +222,7 @@ export default function ProductsPage() {
                       price={product.price}
                       description={product.description}
                       location={product.location}
-                      date={format(
-                        toZonedTime(
-                          new Date(product.start_datetime as string),
-                          "UTC"
-                        ),
-                        formattedDateAndTime
-                      )}
+                      date={formattedStartDate(product)}
                       compareAtPrice={product.compare_at_price || undefined}
                       product_variants={product.product_variants}
                       imageClassName="max-h-[220px] h-[40vw]"
