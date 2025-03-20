@@ -48,10 +48,10 @@ const RewardsPage = () => {
   const { storeName } = useStore();
   const [isRedeemSheetOpen, setIsRedeemSheetOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const [isGoingToConfirm, setIsGoingToConfirm] = useState(false);
+  const [isGoingToConfirm, setIsGoingToConfirm] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState("points");
   const [error, setError] = useState<string | null>(null);
   const [codeType, setCodeType] = useState("barcode");
   const tabsClassName =
@@ -298,38 +298,38 @@ const RewardsPage = () => {
 
   const handleSuccessful = (link: string | number) => {
     setIsSuccessful(false);
-    setIsGoingToConfirm(false);
+    // setIsGoingToConfirm(false);
     setIsConfirmDialogOpen(false);
     setSelectedOption("");
     setError(null);
     navigate(link as string);
   };
 
-  const checkIfNoPriceOrPoints = (check: string) => {
-    switch (check) {
-      case "price":
-        return selectedReward?.product_variants?.[0]?.price === 0;
-      case "points":
-        return selectedReward?.product_variants?.[0]?.points_based_price === 0;
-      case "both":
-        return (
-          selectedReward?.product_variants?.[0]?.price === 0 &&
-          selectedReward?.product_variants?.[0]?.points_based_price === 0
-        );
-      default:
-        return false;
-    }
-  };
+  // const checkIfNoPriceOrPoints = (check: string) => {
+  //   switch (check) {
+  //     case "price":
+  //       return selectedReward?.product_variants?.[0]?.price === 0;
+  //     case "points":
+  //       return selectedReward?.product_variants?.[0]?.points_based_price === 0;
+  //     case "both":
+  //       return (
+  //         selectedReward?.product_variants?.[0]?.price === 0 &&
+  //         selectedReward?.product_variants?.[0]?.points_based_price === 0
+  //       );
+  //     default:
+  //       return false;
+  //   }
+  // };
 
-  const noPriceAndPoints =
-    checkIfNoPriceOrPoints("points") && checkIfNoPriceOrPoints("price");
+  // const noPriceAndPoints =
+  //   checkIfNoPriceOrPoints("points") && checkIfNoPriceOrPoints("price");
 
-  const handleConfirmDialogOpen = () => {
-    setIsConfirmDialogOpen(true);
-    if (noPriceAndPoints) {
-      setIsGoingToConfirm(true);
-    }
-  };
+  // const handleConfirmDialogOpen = () => {
+  //   setIsConfirmDialogOpen(true);
+  //   if (noPriceAndPoints) {
+  //     setIsGoingToConfirm(true);
+  //   }
+  // };
 
   // Render detail view if a reward is selected
   if (id && selectedReward) {
@@ -355,15 +355,18 @@ const RewardsPage = () => {
             </div>
 
             <div className="grid grid-cols-2">
-              <div className="flex flex-col gap-1 py-1 pr-7 border-r border-r-[#FFFFFF1A]">
+              <div className="flex flex-col gap-1 py-1">
+                {" "}
+                {/* pr-7 border-r border-r-[#FFFFFF1A] */}
                 <p className="text-sm text-muted-foreground">
                   {t("Required Points")}
                 </p>
                 <h2 className="text-orangefocus text-2xl font-semibold">
-                  {getPointsDisplay() || 0}
+                  {selectedReward?.product_variants?.[0]?.points_based_price ||
+                    0}
                 </h2>
               </div>
-              <div className="flex flex-col gap-1 py-1 pl-7">
+              {/* <div className="flex flex-col gap-1 py-1 pl-7">
                 <p className="text-sm text-muted-foreground">
                   {t("Converted to Price")}
                 </p>
@@ -372,14 +375,14 @@ const RewardsPage = () => {
                     {getPriceDisplay() || 0}{" "}
                   </h2>
 
-                  {/* Product variants have no compare at price, which will set the discount price range */}
+                  {/* Product variants have no compare at price, which will set the discount price range
                   {getCompareAtPriceDisplay() && (
                     <p className="text-muted-foreground line-through">
                       {getCompareAtPriceDisplay()}
                     </p>
                   )}
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="flex flex-col gap-4">
@@ -442,7 +445,7 @@ const RewardsPage = () => {
                     (selectedReward.product_variants?.[0]?.points_based_price ||
                       0)
                 }
-                onClick={handleConfirmDialogOpen}
+                onClick={() => setIsConfirmDialogOpen(true)}
                 className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
               >
                 <Gift />
@@ -469,7 +472,7 @@ const RewardsPage = () => {
                   {isGoingToConfirm ? (
                     <div>
                       Confirm the redemption of "{selectedReward.name}" for{" "}
-                      {selectedOption === "price"
+                      {/* {selectedOption === "price"
                         ? `฿${selectedReward?.product_variants?.[0]?.price}`
                         : noPriceAndPoints
                         ? "free"
@@ -481,7 +484,16 @@ const RewardsPage = () => {
                               ?.points_based_price === 1
                               ? ""
                               : "s"
-                          }`}
+                          }`} */}
+                      {`${
+                        selectedReward?.product_variants?.[0]
+                          ?.points_based_price
+                      } point${
+                        selectedReward?.product_variants?.[0]
+                          ?.points_based_price === 1
+                          ? ""
+                          : "s"
+                      }`}
                       . If it has been redeemed, it cannot be refunded or
                       returned.
                     </div>
@@ -538,20 +550,14 @@ const RewardsPage = () => {
                   )}
                 </section>
                 <div className="flex items-center gap-2 w-full">
-                  {isGoingToConfirm && (
-                    <Button
-                      onClick={() =>
-                        noPriceAndPoints
-                          ? setIsConfirmDialogOpen(false)
-                          : setIsGoingToConfirm(false)
-                      }
-                      className="secondary-btn w-full text-foreground"
-                    >
-                      {t("Cancel")}
-                    </Button>
-                  )}
                   <Button
-                    disabled={isProcessing || selectedOption === ""}
+                    onClick={() => setIsConfirmDialogOpen(false)}
+                    className="secondary-btn w-full text-foreground"
+                  >
+                    {t("Cancel")}
+                  </Button>
+                  <Button
+                    disabled={isProcessing}
                     onClick={handleConfirmRedeem}
                     className="main-btn w-full"
                   >
