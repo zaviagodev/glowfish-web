@@ -252,7 +252,19 @@ export function ProductDetail({
   };
 
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
-  const checkIfNoProduct = track_quantity === true && quantity === 0;
+
+  const checkIfNoProduct = () => {
+    if (track_quantity === true) {
+      if (product_variants) {
+        return product_variants.reduce(
+          (acc, variant) => acc + variant.quantity,
+          0
+        );
+      } else {
+        return quantity;
+      }
+    }
+  };
 
   return createPortal(
     <div className="fixed inset-0 z-50 max-width-mobile bg-background pointer-events-auto">
@@ -639,7 +651,7 @@ export function ProductDetail({
           )}
           <Button
             className="w-full main-btn"
-            disabled={isEventEnded || checkIfNoProduct}
+            disabled={isEventEnded || checkIfNoProduct() === 0}
             onClick={() => {
               if (variant_options && variant_options.length > 0) {
                 setShowVariantDrawer(true);
@@ -650,7 +662,7 @@ export function ProductDetail({
           >
             {isEventEnded
               ? t("This event has ended")
-              : checkIfNoProduct
+              : checkIfNoProduct() === 0
               ? t("Sold Out")
               : isEvent
               ? t("Sign Up")
