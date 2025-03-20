@@ -3,6 +3,7 @@ import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import Cookies from "js-cookie";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { useTranslation } from "react-i18next";
+import { HelmetProvider } from "react-helmet-async";
 import routerBindings, {
   CatchAllNavigate,
   DocumentTitleHandler,
@@ -228,10 +229,12 @@ function AppWrapper() {
     <ConfigProvider>
       <ToastProvider>
         <ThemeProvider>
-          <BrowserRouter>
-            <DynamicTitle />
-            <App />
-          </BrowserRouter>
+          <HelmetProvider>
+            <BrowserRouter>
+              <DynamicTitle />
+              <App />
+            </BrowserRouter>
+          </HelmetProvider>
         </ThemeProvider>
       </ToastProvider>
     </ConfigProvider>
