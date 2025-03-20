@@ -38,6 +38,8 @@ export function AnimatedCard({
   end_datetime,
   isProduct,
   isBanner,
+  quantity = 1,
+  track_quantity = false,
 }: AnimatedCardProps) {
   const t = useTranslate();
   const { config } = useConfig();
@@ -110,6 +112,7 @@ export function AnimatedCard({
   };
 
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
+  const checkIfNoProduct = track_quantity === true && quantity === 0;
 
   return (
     <motion.div
@@ -118,7 +121,7 @@ export function AnimatedCard({
       className={cn(
         "relative overflow-hidden rounded-2xl cursor-pointer w-full h-full border border-input",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
-        { "!opacity-60": isEventEnded },
+        { "!opacity-60": isEventEnded || checkIfNoProduct },
         type === "event" && "flex h-fit"
       )}
       transition={springConfig}
@@ -197,11 +200,12 @@ export function AnimatedCard({
               <h3 className="font-semibold text-foreground line-clamp-1 text-base">
                 {title}
               </h3>
-              {isEventEnded && (
-                <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-[#8E8E93]/10 text-[#8E8E93]">
-                  {t("Ended")}
-                </div>
-              )}
+              {isEventEnded ||
+                (checkIfNoProduct && (
+                  <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-[#8E8E93]/10 text-[#8E8E93]">
+                    {t(checkIfNoProduct ? "Sold out" : "Ended")}
+                  </div>
+                ))}
             </motion.div>
 
             {isProduct && (
