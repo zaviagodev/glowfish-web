@@ -7,12 +7,14 @@ interface NoItemsProps {
   text: string;
   icon: ComponentType<{ className?: string }>;
   className?: string;
+  description?: string;
 }
 
 const NoItemsComp = ({
   text,
   icon: IconComponent,
   className,
+  description,
 }: NoItemsProps) => {
   const t = useTranslate();
   return (
@@ -26,7 +28,12 @@ const NoItemsComp = ({
       )}
     >
       <IconComponent className="w-16 h-16 text-muted-foreground/50" />
-      <p className="text-muted-foreground text-center">{t(text)}</p>
+      <div className="space-y-2 text-center">
+        <p className="text-muted-foreground font-medium">{t(text)}</p>
+        {description && (
+          <p className="text-sm text-muted-foreground/70">{t(description)}</p>
+        )}
+      </div>
     </motion.div>
   );
 };
