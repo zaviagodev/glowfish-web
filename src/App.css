@@ -536,6 +536,10 @@
   border-left:none;
 }
 
+.light .member-card {
+  background-color:#0D0D0DCC;
+}
+
 .max-width-mobile {
   @apply max-w-[500px] mx-auto
 }

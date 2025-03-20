@@ -359,7 +359,7 @@ export default function TicketsPage() {
                 >
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#F8F8F8]/10 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-[#E1E1E1]/70 dark:bg-[#F8F8F8]/10 flex items-center justify-center">
                         <TicketIcon className="w-5 h-5 text-primary" />
                       </div>
                       <h3 className="font-medium">{ticket.code}</h3>

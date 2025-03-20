@@ -602,9 +602,9 @@ const RewardsPage = () => {
               className="absolute z-0 w-full h-full object-cover opacity-75"
             />
           )}
-          <div className="flex justify-between items-center py-5 px-[30px] z-5 relative">
+          <div className="flex justify-between items-center py-5 px-[30px] z-5 relative text-white">
             <h3 className="font-semibold text-xl tracking-[-0.4px]">
-              {t("Good After Work")}
+              {t("Good Afterwork")}
             </h3>
             <h3 className="font-semibold text-xl">
               {hasPoints
