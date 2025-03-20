@@ -231,7 +231,7 @@ export const HomeList = () => {
         /> */}
         <ProductSection
           title={t("Upcoming Events")}
-          linkTo="/products"
+          linkTo="/events"
           products={events
             .filter(
               (product: Product) =>
@@ -248,7 +248,7 @@ export const HomeList = () => {
         {/* Events you might enjoy Section */}
         <ProductSection
           title={t("Events you might enjoy")}
-          linkTo="/products"
+          linkTo="/events"
           products={events.slice(0, 8)}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}

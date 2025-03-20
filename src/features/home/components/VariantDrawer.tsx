@@ -115,10 +115,7 @@ export function VariantDrawer({
     );
 
     // If we have a complete match, call onSelect
-    if (
-      matchingVariant &&
-      Object.keys(newSelections).length === variantOptions.length
-    ) {
+    if (matchingVariant) {
       onSelect(matchingVariant.id);
     }
   };
@@ -219,8 +216,8 @@ export function VariantDrawer({
               (track_quantity ? currentVariant.quantity === 0 : false)
             }
             onClick={() => {
-              if (selectedVariantId) {
-                onSelect(selectedVariantId);
+              if (currentVariant) {
+                onSelect(currentVariant.id);
                 onSubmit();
               }
             }}
