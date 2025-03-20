@@ -1,11 +1,16 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { useConfig } from "@/hooks/useConfig";
 import { Reward } from "../services/rewardService";
 
-export function MyReward({ reward }: Reward) {
+interface MyRewardProps {
+  reward: Reward;
+}
+
+export function MyReward({ reward }: MyRewardProps) {
   const navigate = useNavigate();
+  const { config } = useConfig();
   return (
     <motion.div
       onClick={() => navigate(`/rewards/${reward.id}`)}
@@ -19,7 +24,7 @@ export function MyReward({ reward }: Reward) {
       {/* Content */}
       <div className="relative grid grid-cols-3 h-[120px]">
         {/* Image Section */}
-        {reward.product_images.length > 0 ? (
+        {reward.product_images && reward.product_images.length > 0 ? (
           <img
             src={reward.product_images[0].url}
             alt={reward.name}
@@ -27,7 +32,11 @@ export function MyReward({ reward }: Reward) {
           />
         ) : (
           <div className="h-full bg-black flex items-center justify-center">
-            <GlowfishIcon className="w-20 h-20" />
+            {config?.storeLogo ? (
+              <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+            ) : (
+              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+            )}
           </div>
         )}
 

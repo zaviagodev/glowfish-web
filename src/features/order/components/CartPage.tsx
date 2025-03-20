@@ -8,12 +8,13 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { makeTwoDecimals } from "@/lib/utils";
+import { useConfig } from "@/hooks/useConfig";
 
 export function CartPage() {
   const t = useTranslate();
   const navigate = useNavigate();
+  const { config } = useConfig();
   const debounceTimeout = useRef<NodeJS.Timeout>();
   const { items, updateQuantity, removeItem, getTotalItems, getTotalPrice } =
     useCart();
@@ -83,7 +84,11 @@ export function CartPage() {
                       />
                     ) : (
                       <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                        <GlowfishIcon className="h-10 w-10" />
+                        {config?.storeLogo ? (
+                          <img src={config.storeLogo} alt="Store Logo" className="h-10 w-10 object-contain" />
+                        ) : (
+                          <div className="h-10 w-10 bg-primary/10 rounded-lg" />
+                        )}
                       </div>
                     )}
                   </div>

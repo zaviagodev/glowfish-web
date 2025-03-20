@@ -3,11 +3,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Button } from "../ui/button";
-import GlowfishIcon from "../icons/GlowfishIcon";
 import { format } from "date-fns";
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
+import { useConfig } from "@/hooks/useConfig";
 
 interface OrderItem {
   id: string;
@@ -50,6 +50,7 @@ const LIMITED_ORDERS: number = 1;
 export function OrderCard({ order, index }: OrderCardProps) {
   const t = useTranslate();
   const navigate = useNavigate();
+  const { config } = useConfig();
   const [searchParams] = useSearchParams();
   const currentPage = searchParams.get("page") || "1";
   const [showAllItems, setShowAllItems] = useState(false);
@@ -129,7 +130,11 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 />
               ) : (
                 <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                  <GlowfishIcon className="h-10 w-10" />
+                  {config?.storeLogo ? (
+                    <img src={config.storeLogo} alt="Store Logo" className="h-10 w-10 object-contain" />
+                  ) : (
+                    <div className="h-10 w-10 bg-primary/10 rounded-lg" />
+                  )}
                 </div>
               )}
             </div>
