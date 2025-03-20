@@ -4,6 +4,7 @@ import { makeTwoDecimals } from "@/lib/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "../icons/DefaultStorefront";
 
 interface ProductListProps {
   items: CartItem[];
@@ -56,9 +57,13 @@ export function ProductList({ items }: ProductListProps) {
               ) : (
                 <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
                   {config?.storeLogo ? (
-                    <img src={config.storeLogo} alt="Store Logo" className="h-10 w-10 object-contain" />
+                    <img
+                      src={config.storeLogo}
+                      alt="Store Logo"
+                      className="h-10 w-10 object-contain"
+                    />
                   ) : (
-                    <div className="h-10 w-10 bg-primary/10 rounded-lg" />
+                    <DefaultStorefront />
                   )}
                 </div>
               )}

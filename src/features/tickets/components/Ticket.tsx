@@ -5,6 +5,7 @@ import { MapPin, Calendar, Users } from "lucide-react";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "@/components/icons/DefaultStorefront";
 
 interface TicketProps {
   ticket: {
@@ -51,9 +52,13 @@ export function Ticket({ ticket }: TicketProps) {
         ) : (
           <div className="h-full bg-black flex items-center justify-center">
             {config?.storeLogo ? (
-              <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+              <img
+                src={config.storeLogo}
+                alt="Store Logo"
+                className="w-20 h-20 object-contain"
+              />
             ) : (
-              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+              <DefaultStorefront />
             )}
           </div>
         )}

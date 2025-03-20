@@ -40,6 +40,7 @@ import LongParagraph from "@/components/ui/long-paragraph";
 import { ProductVariant } from "@/type/type 2";
 import { VariantDrawer } from "@/features/home/components/VariantDrawer";
 import { set } from "date-fns";
+import DefaultStorefront from "@/components/icons/DefaultStorefront";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -690,9 +691,13 @@ const RewardsPage = () => {
           </div>
           <div className="absolute right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
             {config?.storeLogo ? (
-              <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+              <img
+                src={config.storeLogo}
+                alt="Store Logo"
+                className="w-20 h-20 object-contain"
+              />
             ) : (
-              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+              <DefaultStorefront />
             )}
           </div>
           <button

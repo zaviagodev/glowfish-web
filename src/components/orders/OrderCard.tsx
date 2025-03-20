@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "../icons/DefaultStorefront";
 
 interface OrderItem {
   id: string;
@@ -105,7 +106,8 @@ export function OrderCard({ order, index }: OrderCardProps) {
               {t("Courier")}: {order.shipping_details.courier}
             </p>
             <p className="text-sm text-muted-foreground">
-              {t("Shipped Date")}: {format(order.shipping_details.shipped_at, formattedDateAndTime)}
+              {t("Shipped Date")}:{" "}
+              {format(order.shipping_details.shipped_at, formattedDateAndTime)}
             </p>
           </div>
         </div>
@@ -131,9 +133,13 @@ export function OrderCard({ order, index }: OrderCardProps) {
               ) : (
                 <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
                   {config?.storeLogo ? (
-                    <img src={config.storeLogo} alt="Store Logo" className="h-10 w-10 object-contain" />
+                    <img
+                      src={config.storeLogo}
+                      alt="Store Logo"
+                      className="h-10 w-10 object-contain"
+                    />
                   ) : (
-                    <div className="h-10 w-10 bg-primary/10 rounded-lg" />
+                    <DefaultStorefront />
                   )}
                 </div>
               )}

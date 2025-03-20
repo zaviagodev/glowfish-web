@@ -10,6 +10,7 @@ import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
 import { makeTwoDecimals } from "@/lib/utils";
 import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "@/components/icons/DefaultStorefront";
 
 export function CartPage() {
   const t = useTranslate();
@@ -85,9 +86,13 @@ export function CartPage() {
                     ) : (
                       <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
                         {config?.storeLogo ? (
-                          <img src={config.storeLogo} alt="Store Logo" className="h-10 w-10 object-contain" />
+                          <img
+                            src={config.storeLogo}
+                            alt="Store Logo"
+                            className="h-10 w-10 object-contain"
+                          />
                         ) : (
-                          <div className="h-10 w-10 bg-primary/10 rounded-lg" />
+                          <DefaultStorefront />
                         )}
                       </div>
                     )}

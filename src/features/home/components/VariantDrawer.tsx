@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProductVariant } from "@/type/type 2";
 import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "@/components/icons/DefaultStorefront";
 
 interface VariantOption {
   id: string;
@@ -134,9 +135,13 @@ export function VariantDrawer({
           <div className="flex items-center justify-between">
             <SheetTitle className="text-lg font-semibold">
               {config?.storeLogo ? (
-                <img src={config.storeLogo} alt="Store Logo" className="w-[100px] object-contain" />
+                <img
+                  src={config.storeLogo}
+                  alt="Store Logo"
+                  className="w-[100px] object-contain"
+                />
               ) : (
-                <div className="w-[100px] h-[40px] bg-primary/10 rounded-lg" />
+                <DefaultStorefront />
               )}
             </SheetTitle>
           </div>
@@ -188,11 +193,12 @@ export function VariantDrawer({
           {/* Price Display */}
           {currentVariant && (
             <div className="flex flex-col items-center">
-              {currentVariant.compare_at_price && currentVariant.compare_at_price > 0 && (
-                <span className="text-sm text-muted-foreground line-through">
-                  ฿{currentVariant.compare_at_price.toLocaleString()}
-                </span>
-              )}
+              {currentVariant.compare_at_price &&
+                currentVariant.compare_at_price > 0 && (
+                  <span className="text-sm text-muted-foreground line-through">
+                    ฿{currentVariant.compare_at_price.toLocaleString()}
+                  </span>
+                )}
               <span className="text-2xl font-bold">
                 ฿{currentVariant.price.toLocaleString()}
               </span>

@@ -7,6 +7,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "../icons/DefaultStorefront";
 
 interface ProductImage {
   id: string;
@@ -126,9 +127,13 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
           ) : (
             <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
               {config?.storeLogo ? (
-                <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+                <img
+                  src={config.storeLogo}
+                  alt="Store Logo"
+                  className="w-20 h-20 object-contain"
+                />
               ) : (
-                <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+                <DefaultStorefront />
               )}
             </div>
           )}
@@ -194,9 +199,13 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
           ) : (
             <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
               {config?.storeLogo ? (
-                <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+                <img
+                  src={config.storeLogo}
+                  alt="Store Logo"
+                  className="w-20 h-20 object-contain"
+                />
               ) : (
-                <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+                <DefaultStorefront />
               )}
             </div>
           )}

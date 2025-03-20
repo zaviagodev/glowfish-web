@@ -7,6 +7,7 @@ import { AnimatedCardProps } from "@/type/type 2";
 import { Button } from "../ui/button";
 import { isPast } from "date-fns";
 import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "../icons/DefaultStorefront";
 
 const springConfig = {
   type: "spring",
@@ -152,7 +153,7 @@ export function AnimatedCard({
                 className="w-20 h-20 object-contain"
               />
             ) : (
-              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+              <DefaultStorefront />
             )}
           </div>
         )}
