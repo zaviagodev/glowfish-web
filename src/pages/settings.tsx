@@ -43,43 +43,43 @@ const SettingsPage = () => {
         },
       ],
     },
-    {
-      title: t("Points & Rewards"),
-      items: [
-        // {
-        //   icon: <QrCode className="h-5 w-5" />,
-        //   label: t("Scan to Redeem"),
-        //   path: "/scan",
-        //   showArrow: true,
-        //   color: "#2196F3", // Blue
-        //   bgColor: "rgba(33, 150, 243, 0.1)",
-        // },
-        {
-          icon: <Star className="h-5 w-5" />,
-          label: t("How to Get Points"),
-          path: "/info/how-to-get-points",
-          showArrow: true,
-          color: "#fcc800", // Yellow
-          bgColor: "rgba(252, 200, 0, 0.1)",
-        },
-        // {
-        //   icon: <Gift className="h-5 w-5" />,
-        //   label: t("How to Spend Points"),
-        //   path: "/info/how-to-spend-points",
-        //   showArrow: true,
-        //   color: "#F44336", // Red
-        //   bgColor: "rgba(244, 67, 54, 0.1)",
-        // },
-        // {
-        //   icon: <Crown className="h-5 w-5" />,
-        //   label: t("Member Level"),
-        //   path: "/info/member-level",
-        //   showArrow: true,
-        //   color: "#FF9800", // Orange
-        //   bgColor: "rgba(255, 152, 0, 0.1)",
-        // },
-      ],
-    },
+    // {
+    //   title: t("Points & Rewards"),
+    //   items: [
+    //     // {
+    //     //   icon: <QrCode className="h-5 w-5" />,
+    //     //   label: t("Scan to Redeem"),
+    //     //   path: "/scan",
+    //     //   showArrow: true,
+    //     //   color: "#2196F3", // Blue
+    //     //   bgColor: "rgba(33, 150, 243, 0.1)",
+    //     // },
+    //     {
+    //       icon: <Star className="h-5 w-5" />,
+    //       label: t("How to Get Points"),
+    //       path: "/info/how-to-get-points",
+    //       showArrow: true,
+    //       color: "#fcc800", // Yellow
+    //       bgColor: "rgba(252, 200, 0, 0.1)",
+    //     },
+    //     // {
+    //     //   icon: <Gift className="h-5 w-5" />,
+    //     //   label: t("How to Spend Points"),
+    //     //   path: "/info/how-to-spend-points",
+    //     //   showArrow: true,
+    //     //   color: "#F44336", // Red
+    //     //   bgColor: "rgba(244, 67, 54, 0.1)",
+    //     // },
+    //     // {
+    //     //   icon: <Crown className="h-5 w-5" />,
+    //     //   label: t("Member Level"),
+    //     //   path: "/info/member-level",
+    //     //   showArrow: true,
+    //     //   color: "#FF9800", // Orange
+    //     //   bgColor: "rgba(255, 152, 0, 0.1)",
+    //     // },
+    //   ],
+    // },
   ];
 
   return (

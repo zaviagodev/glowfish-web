@@ -184,6 +184,7 @@ export default function TicketsPage() {
     );
 
     const images = foundOrder.event?.product?.images;
+    console.log(foundOrder);
 
     return (
       <div className="bg-background">
@@ -362,7 +363,11 @@ export default function TicketsPage() {
                       <div className="w-10 h-10 rounded-lg bg-[#E1E1E1]/70 dark:bg-[#F8F8F8]/10 flex items-center justify-center">
                         <TicketIcon className="w-5 h-5 text-primary" />
                       </div>
-                      <h3 className="font-medium">{ticket.code}</h3>
+                      <div>
+                        <h3 className="font-medium">{ticket.code}</h3>
+                        {/* TODO: fetch the dynamic variant that users have purchased in case the events have variants */}
+                        <p className="text-muted-foreground">varianttest</p>
+                      </div>
                     </div>
                     <div
                       className={cn(

@@ -23,11 +23,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ProductDetail } from "@/features/home/components/ProductDetail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import NoItemsComp from "@/components/ui/no-items";
 import { Product, ProductVariant } from "@/features/home/types/product.types";
 import EventPageSkeletons from "@/components/skeletons/EventPageSkeletons";
 import { useCart } from "@/lib/cart";
+import { toZonedTime } from "date-fns-tz";
+import { format } from "date-fns";
 
 export default function ProductsPage() {
   const t = useTranslate();
@@ -112,6 +114,30 @@ export default function ProductsPage() {
           }
         });
 
+  const formattedDate = (product: any) => {
+    return (
+      product?.start_datetime &&
+      product?.end_datetime &&
+      `${format(
+        toZonedTime(new Date(product.start_datetime), "UTC"),
+        formattedDateAndTime
+      )} - ${format(
+        toZonedTime(new Date(product.end_datetime), "UTC"),
+        formattedDateAndTime
+      )}`
+    );
+  };
+
+  const formattedStartDate = (product: Product) => {
+    return (
+      product?.start_datetime &&
+      `${format(
+        toZonedTime(new Date(product.start_datetime), "UTC"),
+        formattedDateAndTime
+      )}`
+    );
+  };
+
   return (
     <div className="bg-background">
       {/* Search Bar */}
@@ -195,6 +221,8 @@ export default function ProductsPage() {
                       title={product.name}
                       price={product.price}
                       description={product.description}
+                      location={product.location}
+                      date={formattedStartDate(product)}
                       compareAtPrice={product.compare_at_price || undefined}
                       product_variants={product.product_variants}
                       imageClassName="max-h-[220px] h-[40vw]"
@@ -376,6 +404,7 @@ export default function ProductsPage() {
           useNewStructure={true}
           onClose={() => setSelectedProduct(null)}
           isEvent={!!selectedProduct.end_datetime}
+          date={formattedDate(selectedProduct)}
         />
       )}
     </div>

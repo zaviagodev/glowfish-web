@@ -8,12 +8,13 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { makeTwoDecimals } from "@/lib/utils";
+import { useConfig } from "@/hooks/useConfig";
 
 export function CartPage() {
   const t = useTranslate();
   const navigate = useNavigate();
+  const { config } = useConfig();
   const debounceTimeout = useRef<NodeJS.Timeout>();
   const { items, updateQuantity, removeItem, getTotalItems, getTotalPrice } =
     useCart();
@@ -83,7 +84,11 @@ export function CartPage() {
                       />
                     ) : (
                       <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                        <GlowfishIcon className="h-10 w-10" />
+                        {config?.storeLogo ? (
+                          <img src={config.storeLogo} alt="Store Logo" className="h-10 w-10 object-contain" />
+                        ) : (
+                          <div className="h-10 w-10 bg-primary/10 rounded-lg" />
+                        )}
                       </div>
                     )}
                   </div>
@@ -199,13 +204,13 @@ export function CartPage() {
                     ฿{makeTwoDecimals(total).toLocaleString()}
                   </span>
                 </div>
-                <div className="text-sm font-medium flex items-center gap-1 text-muted-foreground">
+                {/* <div className="text-sm font-medium flex items-center gap-1 text-muted-foreground">
                   {t("Points to use")}:
                   <span className="text-foreground text-lg">
-                    {/* TODO: Change to the total points */}
+                    {/* TODO: Change to the total points
                     {total.toLocaleString()}
                   </span>
-                </div>
+                </div> */}
                 {/* {discount < 0 && (
                   <div className="text-sm text-muted-foreground">
                     <span className="flex items-center gap-1">
@@ -224,14 +229,18 @@ export function CartPage() {
                   const selectedCartItems = items.filter((item) =>
                     selectedItems.includes(item.variantId)
                   );
-                  
+
                   // Validate prices before proceeding - allow zero prices but prevent negative prices
-                  const hasInvalidPrices = selectedCartItems.some(item => item.price < 0);
+                  const hasInvalidPrices = selectedCartItems.some(
+                    (item) => item.price < 0
+                  );
                   if (hasInvalidPrices) {
-                    alert(t("Some items have invalid prices. Please try again."));
+                    alert(
+                      t("Some items have invalid prices. Please try again.")
+                    );
                     return;
                   }
-                  
+
                   navigate("/checkout", {
                     state: {
                       selectedItems: selectedCartItems,

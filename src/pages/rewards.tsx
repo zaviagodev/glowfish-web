@@ -3,15 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Barcode as BarcodeIcon,
   Calendar,
@@ -26,6 +19,7 @@ import {
   ChevronLeft,
   CircleParking,
   CircleDollarSign,
+  CheckCircle2,
 } from "lucide-react";
 import Barcode from "react-barcode";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -35,7 +29,7 @@ import { useRewards, useReward } from "@/features/rewards/hooks/useRewards";
 import { supabase } from "@/lib/supabase";
 import { cn, makeTwoDecimals } from "@/lib/utils";
 import { PageHeader } from "@/components/shared/PageHeader";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { useConfig } from "@/hooks/useConfig";
 import cardReward from "@/img/my-card.svg";
 import RewardAccordions from "@/features/rewards/components/RewardAccordions";
 import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
@@ -45,15 +39,19 @@ import RewardPageSkeletons from "@/components/skeletons/RewardPageSkeletons";
 import LongParagraph from "@/components/ui/long-paragraph";
 import { ProductVariant } from "@/type/type 2";
 import { VariantDrawer } from "@/features/home/components/VariantDrawer";
+import { set } from "date-fns";
 
 const RewardsPage = () => {
   const t = useTranslate();
   const navigate = useNavigate();
   const { id } = useParams();
   const { storeName } = useStore();
+  const { config } = useConfig();
   const [isRedeemSheetOpen, setIsRedeemSheetOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [isGoingToConfirm, setIsGoingToConfirm] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isSuccessful, setIsSuccessful] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [codeType, setCodeType] = useState("barcode");
@@ -171,7 +169,15 @@ const RewardsPage = () => {
       await refreshOrders();
 
       setIsConfirmDialogOpen(false);
-      navigate("/my-orders");
+      if (selectedOption === "price") {
+        navigate("/checkout", {
+          state: {
+            selectedItems: orderItems,
+          },
+        });
+      } else {
+        setIsSuccessful(true);
+      }
     } catch (error) {
       console.error("Error redeeming reward:", error);
       setError(
@@ -287,6 +293,45 @@ const RewardsPage = () => {
     },
   ];
 
+  const handleConfirmRedeem = () => {
+    isGoingToConfirm ? handleRedeem() : setIsGoingToConfirm(true);
+  };
+
+  const handleSuccessful = (link: string | number) => {
+    setIsSuccessful(false);
+    setIsGoingToConfirm(false);
+    setIsConfirmDialogOpen(false);
+    setSelectedOption("");
+    setError(null);
+    navigate(link as string);
+  };
+
+  const checkIfNoPriceOrPoints = (check: string) => {
+    switch (check) {
+      case "price":
+        return selectedReward?.product_variants?.[0]?.price === 0;
+      case "points":
+        return selectedReward?.product_variants?.[0]?.points_based_price === 0;
+      case "both":
+        return (
+          selectedReward?.product_variants?.[0]?.price === 0 &&
+          selectedReward?.product_variants?.[0]?.points_based_price === 0
+        );
+      default:
+        return false;
+    }
+  };
+
+  const noPriceAndPoints =
+    checkIfNoPriceOrPoints("points") && checkIfNoPriceOrPoints("price");
+
+  const handleConfirmDialogOpen = () => {
+    setIsConfirmDialogOpen(true);
+    if (noPriceAndPoints) {
+      setIsGoingToConfirm(true);
+    }
+  };
+
   // Render detail view if a reward is selected
   if (id && selectedReward) {
     return (
@@ -296,7 +341,7 @@ const RewardsPage = () => {
             variant="ghost"
             size="icon"
             className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
-            onClick={() => navigate(-1)}
+            onClick={() => handleSuccessful(-1)}
           >
             <ChevronLeft className="h-6 w-6" />
           </Button>
@@ -356,50 +401,36 @@ const RewardsPage = () => {
           </section>
 
           <footer className="btn-footer flex flex-col gap-7">
-            {/* <Dialog
-              open={isConfirmDialogOpen}
-              onOpenChange={setIsConfirmDialogOpen}
-            >
-              <Button
-                disabled={
-                  isProcessing ||
-                  customerData.loyalty_points <
-                    (selectedReward.product_variants?.[0]?.points_based_price ||
-                      0)
-                }
-                onClick={() => setIsConfirmDialogOpen(true)}
-                className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
+            <Sheet open={isSuccessful}>
+              <SheetContent
+                className="max-width-mobile rounded-lg"
+                side="bottom"
               >
-                <Gift />
-                {isProcessing ? t("Processing...") : t("Redeem Reward")}
-              </Button>
-              <DialogContent className="w-[90%] max-width-mobile rounded-lg">
-                <DialogHeader>
-                  <DialogTitle>{t("Confirm Redemption")}</DialogTitle>
-                  <DialogDescription>
-                    {t("Are you sure you want to redeem this reward for")}{" "}
-                    {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
-                    {t("points")}?
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="flex gap-4 mt-4">
+                <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto pb-6" />
+                <h3 className="text-lg font-semibold mb-4 text-center">
+                  {t("Reward successfully redeemed")}
+                </h3>
+                <p className="text-sm text-[#979797] mb-6 text-center">
+                  {t(
+                    'You can check your redeemed rewards at " Rewards -> My Rewards".'
+                  )}
+                </p>
+                <div className="flex flex-col justify-center items-center gap-4 mt-4">
                   <Button
-                    variant="ghost"
-                    onClick={() => setIsConfirmDialogOpen(false)}
-                    className="secondary-btn w-full"
-                  >
-                    {t("Cancel")}
-                  </Button>
-                  <Button
-                    onClick={handleRedeem}
-                    disabled={isProcessing}
+                    onClick={() => handleSuccessful("/rewards")}
                     className="main-btn w-full"
                   >
-                    {isProcessing ? t("Processing...") : t("Confirm")}
+                    {t("Confirm")}
                   </Button>
+                  <p
+                    className="text-muted-foreground"
+                    onClick={() => handleSuccessful("/my-rewards")}
+                  >
+                    See my rewards
+                  </p>
                 </div>
-              </DialogContent>
-            </Dialog> */}
+              </SheetContent>
+            </Sheet>
 
             <Sheet
               open={isConfirmDialogOpen}
@@ -412,85 +443,122 @@ const RewardsPage = () => {
                     (selectedReward.product_variants?.[0]?.points_based_price ||
                       0)
                 }
-                onClick={() => setIsConfirmDialogOpen(true)}
+                onClick={handleConfirmDialogOpen}
                 className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
               >
                 <Gift />
                 {isProcessing ? t("Processing...") : t("Redeem Reward")}
               </Button>
               <SheetContent
-                className="h-3/4 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col justify-between"
+                className="h-max border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col"
                 side="bottom"
               >
                 <section className="flex flex-col gap-7">
-                  <div>
-                    <h3 className="text-lg font-semibold text-center mb-4">
+                  <div className="mt-1">
+                    <h3 className="text-lg font-semibold mb-4">
                       {t("Confirm Redemption?")}
                     </h3>
-                    <p className="text-sm text-[#979797] text-center mb-6">
-                      {t(
-                        "This item can be redeemed by money. How would you like to exchange the item?"
-                      )}
-                    </p>
+                    {!isGoingToConfirm && (
+                      <p className="text-sm text-[#979797] mb-6">
+                        {t(
+                          "This item can be redeemed by money. How would you like to exchange the item?"
+                        )}
+                      </p>
+                    )}
                   </div>
 
-                  <div className="text-center space-y-4">
-                    <h3 className="text-lg font-semibold text-center">
-                      {t("Choose an option to redeem")}
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      {redeemOptions.map((option) => {
-                        return (
-                          <Button
-                            key={option.name}
-                            className={cn(
-                              "w-full text-left rounded-lg transition-all !bg-darkgray h-16",
-                              option.selected ? "!bg-mainbutton" : ""
-                            )}
-                            onClick={() => setSelectedOption(option.name)}
-                            disabled={option.disabled}
-                          >
-                            <div className="flex flex-col items-center">
-                              <div
-                                className={cn(
-                                  "text-sm font-medium flex items-center gap-1",
-                                  { "text-muted-foreground": !option.selected }
-                                )}
-                              >
-                                {option.icon}
-                                {option.value}
-                              </div>
-                              <div
-                                className={cn("text-2xl", {
-                                  "text-foreground": !option.selected,
-                                })}
-                              >
-                                {option.amount
-                                  ? option.amount.toLocaleString()
-                                  : t(
-                                      "Select a payment method to calculate shipping cost"
-                                    )}
-                              </div>
-                            </div>
-                          </Button>
-                        );
-                      })}
+                  {isGoingToConfirm ? (
+                    <div>
+                      Confirm the redemption of "{selectedReward.name}" for{" "}
+                      {selectedOption === "price"
+                        ? `฿${selectedReward?.product_variants?.[0]?.price}`
+                        : noPriceAndPoints
+                        ? "free"
+                        : `${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price
+                          } point${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price === 1
+                              ? ""
+                              : "s"
+                          }`}
+                      . If it has been redeemed, it cannot be refunded or
+                      returned.
                     </div>
-                    <p className="font-medium">
-                      Available:{" "}
-                      <span className="text-orangefocus">
-                        {customer?.loyalty_points?.toLocaleString() || 0}
-                      </span>
-                    </p>
-                  </div>
+                  ) : (
+                    <div className="text-center space-y-4">
+                      <h3 className="text-lg font-semibold text-center">
+                        {t("Choose an option to redeem")}
+                      </h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        {redeemOptions.map((option) => {
+                          return (
+                            <Button
+                              key={option.name}
+                              className={cn(
+                                "w-full text-left rounded-lg transition-all !bg-darkgray h-16",
+                                option.selected ? "!bg-mainbutton" : ""
+                              )}
+                              onClick={() => setSelectedOption(option.name)}
+                              disabled={option.disabled}
+                            >
+                              <div className="flex flex-col items-center">
+                                <div
+                                  className={cn(
+                                    "text-sm font-medium flex items-center gap-1",
+                                    {
+                                      "text-muted-foreground": !option.selected,
+                                    }
+                                  )}
+                                >
+                                  {option.icon}
+                                  {option.value}
+                                </div>
+                                <div
+                                  className={cn("text-2xl", {
+                                    "text-foreground": !option.selected,
+                                  })}
+                                >
+                                  {option.amount
+                                    ? option.amount.toLocaleString()
+                                    : t("free")}
+                                </div>
+                              </div>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                      <p className="font-medium">
+                        Available:{" "}
+                        <span className="text-orangefocus">
+                          {customer?.loyalty_points?.toLocaleString() || 0}
+                        </span>
+                      </p>
+                    </div>
+                  )}
                 </section>
-                <Button
-                  disabled={isProcessing || redeemOptions === ""}
-                  onClick={handleRedeem}
-                  className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
-                >
-                  Confirm
-                </Button>
+                <div className="flex items-center gap-2 w-full">
+                  {isGoingToConfirm && (
+                    <Button
+                      onClick={() =>
+                        noPriceAndPoints
+                          ? setIsConfirmDialogOpen(false)
+                          : setIsGoingToConfirm(false)
+                      }
+                      className="secondary-btn w-full text-foreground"
+                    >
+                      {t("Cancel")}
+                    </Button>
+                  )}
+                  <Button
+                    disabled={isProcessing || selectedOption === ""}
+                    onClick={handleConfirmRedeem}
+                    className="main-btn w-full"
+                  >
+                    {isProcessing ? t("Processing...") : t("Confirm")}
+                  </Button>
+                </div>
               </SheetContent>
             </Sheet>
 
@@ -614,21 +682,35 @@ const RewardsPage = () => {
                 : "0 points"}
             </h3>
           </div>
-          <div className="absolute z-[99] right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
-            <GoodAfterWorkCard />
+          <div className="absolute right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
+            {config?.storeLogo ? (
+              <img
+                src={config.storeLogo}
+                alt="Store Logo"
+                className="w-20 h-20 object-contain"
+              />
+            ) : (
+              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+            )}
           </div>
+          <button
+            onClick={() => navigate("/scan")}
+            className="absolute left-[30px] bottom-5"
+          >
+            <QrCode className="h-6 w-6" />
+          </button>
         </div>
 
         <div className="px-5 pb-5">
           <button
-            onClick={() => navigate("/scan")}
+            onClick={() => navigate("/my-rewards")}
             className="w-full bg-darkgray rounded-lg p-4 flex items-center justify-between"
           >
             <div className="flex items-center gap-3 w-full">
-              <div className="w-12 h-12 rounded-lg bg-[#2196F31A] flex items-center justify-center">
-                <QrCode className="h-5 w-5 text-[#2196F3]" />
+              <div className="w-12 h-12 rounded-lg bg-[#E66C9E1A] flex items-center justify-center">
+                <Gift className="h-5 w-5 text-[#E66C9E]" />
               </div>
-              <div className="text-left text-sm">{t("Scan to Redeem")}</div>
+              <div className="text-left text-sm">{t("My Rewards")}</div>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </button>
@@ -660,7 +742,7 @@ const RewardsPage = () => {
                         className="w-full h-full object-cover object-top"
                       />
                     ) : (
-                      <GlowfishIcon />
+                      <div className="w-20 h-20 bg-primary/10 rounded-lg" />
                     )}
                   </div>
 

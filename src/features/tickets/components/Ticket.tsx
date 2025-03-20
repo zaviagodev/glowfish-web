@@ -4,7 +4,7 @@ import { toZonedTime } from "date-fns-tz";
 import { MapPin, Calendar, Users } from "lucide-react";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { useConfig } from "@/hooks/useConfig";
 
 interface TicketProps {
   ticket: {
@@ -24,6 +24,9 @@ interface TicketProps {
 
 export function Ticket({ ticket }: TicketProps) {
   const navigate = useNavigate();
+  const { config } = useConfig();
+  const dateFormat = (date: string) =>
+    format(toZonedTime(new Date(date), "UTC"), formattedDateAndTime);
 
   return (
     <motion.div
@@ -46,7 +49,15 @@ export function Ticket({ ticket }: TicketProps) {
           />
         ) : (
           <div className="h-full bg-black flex items-center justify-center">
-            <GlowfishIcon className="w-20 h-20" />
+            {config?.storeLogo ? (
+              <img
+                src={config.storeLogo}
+                alt="Store Logo"
+                className="w-20 h-20 object-contain"
+              />
+            ) : (
+              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+            )}
           </div>
         )}
 
@@ -95,11 +106,12 @@ export function Ticket({ ticket }: TicketProps) {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 flex-shrink-0" />
               <span>
-                {ticket.date
-                  ? format(
-                      toZonedTime(new Date(ticket.date), "UTC"),
-                      formattedDateAndTime
-                    )
+                {ticket.date && ticket.endDate
+                  ? ticket.date === ticket.endDate
+                    ? dateFormat(ticket.date)
+                    : `${dateFormat(ticket.date)} - ${dateFormat(
+                        ticket.endDate
+                      )}`
                   : "To be determined"}
               </span>
             </div>

@@ -336,6 +336,10 @@ export function CheckoutPage() {
     }
   };
 
+  /* TODO: Will change to total dynamic points*/
+  const totalPoints = 320;
+  const canRedeemPoints = totalPoints <= customer?.loyalty_points;
+
   return (
     <div className="bg-background">
       <PageHeader title={t("Checkout")} />
@@ -374,7 +378,7 @@ export function CheckoutPage() {
             </div>
           )}
 
-          {hasPhysicalProducts && (
+          {/* {hasPhysicalProducts && (
             <>
               <div className="flex items-center justify-between">
                 <div>
@@ -399,7 +403,7 @@ export function CheckoutPage() {
                     })
                   }
                 >
-                  {/* TODO: The address info may change based on the difference of billing and shipping address */}
+                  TODO: The address info may change based on the difference of billing and shipping address
                   <AddressCard
                     title={t("Billing Address")}
                     name={`${selectedAddress?.first_name} ${selectedAddress?.last_name}`}
@@ -421,7 +425,7 @@ export function CheckoutPage() {
                 </div>
               )}
             </>
-          )}
+          )} */}
 
           {/* Add shipping method selection after address selection */}
           {hasPhysicalProducts && (
@@ -436,17 +440,19 @@ export function CheckoutPage() {
             </div>
           )}
 
-          <div className="flex items-center justify-between px-4 py-3">
+          {/* <div className="flex items-center justify-between px-4 py-3">
             <div>
               <h2 className="text-base font-normal flex items-center gap-1">
-                {/* TODO: Set the dynamic points to use */}
+                {/* TODO: Set the dynamic points to use
                 <span
                   className={cn(
                     "text-sm font-medium",
-                    isUsingPoints ? "text-foreground" : "text-muted-foreground"
+                    canRedeemPoints
+                      ? "text-foreground"
+                      : "text-muted-foreground"
                   )}
                 >
-                  Points to use: 3,200
+                  Points to use: {totalPoints.toLocaleString()}
                 </span>
                 <span className="text-orangefocus text-xs">
                   (Available: {customer?.loyalty_points?.toLocaleString() || 0})
@@ -454,14 +460,17 @@ export function CheckoutPage() {
               </h2>
               <p
                 className={cn("text-muted-foreground", {
-                  "opacity-40": !isUsingPoints,
+                  "opacity-40": !canRedeemPoints,
                 })}
               >
                 Enable when you want to buy with your points
               </p>
             </div>
-            <Switch onCheckedChange={setIsUsingPoints} />
-          </div>
+            <Switch
+              onCheckedChange={setIsUsingPoints}
+              disabled={!canRedeemPoints}
+            />
+          </div> */}
 
           {(isPaymentMethodRequired || hasPhysicalProducts) &&
             !isUsingPoints && (
@@ -473,15 +482,15 @@ export function CheckoutPage() {
             )}
 
           {/* I just added the coupon selection section, will set the dynamic data later */}
-          {!isUsingPoints && <PointsCoupons subtotal={subtotal} />}
+          {/* {!isUsingPoints && <PointsCoupons subtotal={subtotal} />} */}
 
           {/* TODO: Replace '320' with dynamic points */}
           <OrderSummary
-            subtotal={isUsingPoints ? 320 : subtotal}
+            subtotal={isUsingPoints ? totalPoints : subtotal}
             discount={discount}
             pointsDiscount={pointsDiscount}
             shipping={shippingCost}
-            total={isUsingPoints ? 320 : total}
+            total={isUsingPoints ? totalPoints : total}
             isUsingPoints={isUsingPoints}
           />
         </div>
@@ -489,7 +498,7 @@ export function CheckoutPage() {
 
       {/* TODO: Replace '320' with dynamic points */}
       <CheckoutFooter
-        total={isUsingPoints ? 320 : total}
+        total={isUsingPoints ? totalPoints : total}
         isUsingPoints={isUsingPoints}
         isProcessing={isProcessing}
         disabled={

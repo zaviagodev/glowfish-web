@@ -43,6 +43,8 @@ import ScanPage from "@/pages/scan";
 import InfoPage from "@/pages/info";
 import OrderFlow from "@/pages/OrderFlow";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import MyRewardsPage from "./pages/my-rewards";
+import { DynamicTitle } from "@/components/DynamicTitle";
 
 function App() {
   const ScrollToTop = () => {
@@ -160,6 +162,7 @@ function App() {
                     <Route index element={<Rewards />} />
                     <Route path=":id" element={<Rewards />} />
                   </Route>
+                  <Route path="/my-rewards" element={<MyRewardsPage />} />
                   <Route path="/events" element={<ProductsPage />} />
                   <Route path="/products" element={<ProductsPage />} />
                   <Route path="/settings">
@@ -189,7 +192,10 @@ function App() {
                   </Route>
                   <Route path="/tickets" element={<TicketsPage />} />
                   <Route path="/tickets/:id" element={<TicketsPage />} />
-                  <Route path="/tickets/:id/:ticketId" element={<TicketsPage />} />
+                  <Route
+                    path="/tickets/:id/:ticketId"
+                    element={<TicketsPage />}
+                  />
 
                   <Route path="/home">
                     <Route index element={<HomeList />} />
@@ -220,6 +226,7 @@ function AppWrapper() {
     <ConfigProvider>
       <ToastProvider>
         <ThemeProvider>
+          <DynamicTitle />
           <App />
         </ThemeProvider>
       </ToastProvider>

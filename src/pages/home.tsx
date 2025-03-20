@@ -6,7 +6,6 @@ import { getUserProfile } from "@/lib/auth";
 import { useProducts } from "@/features/home/hooks/useProducts";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import { ProductDetail } from "@/features/home/components/ProductDetail";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
 import { SearchDialog } from "@/features/home/components/SearchDialog";
 import { ProductSection } from "@/features/home/components/ProductSection";
@@ -14,6 +13,7 @@ import { format, toZonedTime } from "date-fns-tz";
 import { isPast } from "date-fns";
 import { Category, Product } from "@/features/home/types/product.types";
 import { Banner } from "@/features/home";
+import { useConfig } from "@/hooks/useConfig";
 
 interface SelectedProduct extends Product {
   variant_id?: string;
@@ -24,6 +24,7 @@ export const HomeList = () => {
   const t = useTranslate();
   const navigate = useNavigate();
   const { products, events, loading, error, categories } = useProducts();
+  const { config } = useConfig();
   const [userProfile, setUserProfile] = useState<{
     id: string;
     full_name: string;
@@ -164,8 +165,9 @@ export const HomeList = () => {
           <div className="relative pt-6">
             <div className="flex items-center justify-between">
               <div className="px-5">
-                {/* TODO: add GlowfishIcon */}
-                <GlowfishIcon className="w-[90px]" />
+                {config?.storeLogo && (
+                  <img src={config.storeLogo} alt="Store Logo" className="w-[90px]" />
+                )}
               </div>
               <Link to="/settings">
                 <div className="px-5">

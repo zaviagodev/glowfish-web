@@ -1,9 +1,9 @@
 import { useTranslate } from "@refinedev/core";
 import { CartItem } from "@/lib/cart";
-import GlowfishIcon from "../icons/GlowfishIcon";
 import { makeTwoDecimals } from "@/lib/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
+import { useConfig } from "@/hooks/useConfig";
 
 interface ProductListProps {
   items: CartItem[];
@@ -13,6 +13,7 @@ const LIMITED_ITEMS = 1;
 
 export function ProductList({ items }: ProductListProps) {
   const t = useTranslate();
+  const { config } = useConfig();
   const [showAllItems, setShowAllItems] = useState(false);
   const visibleItems = showAllItems ? items : items.slice(0, LIMITED_ITEMS);
 
@@ -24,7 +25,7 @@ export function ProductList({ items }: ProductListProps) {
 
   return (
     <div className="bg-darkgray rounded-xl shadow-sm border">
-      <div className="p-4 pb-0">
+      <div className="p-3 pb-0">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-medium">{t("Products Ordered")}</h2>
           {items.length > LIMITED_ITEMS && (
@@ -44,7 +45,7 @@ export function ProductList({ items }: ProductListProps) {
 
       <div>
         {visibleItems.map((item) => (
-          <div key={item.variantId} className="p-4 flex gap-3">
+          <div key={item.variantId} className="p-3 flex gap-3">
             <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
               {item.image ? (
                 <img
@@ -54,7 +55,11 @@ export function ProductList({ items }: ProductListProps) {
                 />
               ) : (
                 <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                  <GlowfishIcon className="h-10 w-10" />
+                  {config?.storeLogo ? (
+                    <img src={config.storeLogo} alt="Store Logo" className="h-10 w-10 object-contain" />
+                  ) : (
+                    <div className="h-10 w-10 bg-primary/10 rounded-lg" />
+                  )}
                 </div>
               )}
             </div>
