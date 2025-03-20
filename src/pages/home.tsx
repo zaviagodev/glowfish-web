@@ -216,7 +216,7 @@ export const HomeList = () => {
       <section className="py-6 space-y-6 px-[1px]">
         <ProductSection
           title={t("Upcoming Events")}
-          linkTo="/products"
+          linkTo="/events"
           products={events
             .filter((product: Product) => product.end_datetime && isPast(new Date(product.end_datetime)) === false)
             .slice(0, 5)}
@@ -228,7 +228,7 @@ export const HomeList = () => {
         {/* Events you might enjoy Section */}
         <ProductSection
           title={t("Events you might enjoy")}
-          linkTo="/products"
+          linkTo="/events"
           products={events.slice(0, 8)}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
