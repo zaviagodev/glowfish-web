@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import TicketsSkeletons from "@/components/skeletons/TicketsSkeletons";
 
 const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
   const navigate = useNavigate();
@@ -27,13 +28,9 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
 
   if (loading) {
     return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-8 bg-muted rounded-lg w-1/4" />
-        <div className="h-40 bg-muted rounded-xl" />
-        <div className="space-y-4">
-          <div className="h-4 bg-muted rounded w-1/3" />
-          <div className="h-4 bg-muted rounded w-1/2" />
-        </div>
+      <div className="bg-background">
+        <PageHeader title="My Rewards" />
+        <TicketsSkeletons />
       </div>
     );
   }
@@ -209,13 +206,7 @@ const MyRewardsPage = () => {
     return (
       <div className="pt-14">
         <PageHeader title="My Rewards" />
-        <div className="max-width-mobile mx-auto p-5">
-          <div className="animate-pulse space-y-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-40 bg-muted rounded-xl shadow-sm" />
-            ))}
-          </div>
-        </div>
+        <TicketsSkeletons />
       </div>
     );
   }
@@ -226,14 +217,9 @@ const MyRewardsPage = () => {
       <div className="max-width-mobile mx-auto p-5">
         {orders.length > 0 ? (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-foreground">
-                My Rewards
-              </h2>
-              <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                {orders.length} {orders.length === 1 ? "reward" : "rewards"}
-              </span>
-            </div>
+            <h2 className="text-lg font-semibold text-foreground">
+              My Rewards ({orders.length})
+            </h2>
             <div className="grid gap-6">
               {orders.map((order) => (
                 <MyReward key={order.id} order={order} />
