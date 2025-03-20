@@ -162,7 +162,10 @@ function App() {
                     <Route index element={<Rewards />} />
                     <Route path=":id" element={<Rewards />} />
                   </Route>
-                  <Route path="/my-rewards" element={<MyRewardsPage />} />
+                  <Route path="/my-rewards">
+                    <Route index element={<MyRewardsPage />} />
+                    <Route path=":orderId" element={<MyRewardsPage />} />
+                  </Route>
                   <Route path="/events" element={<ProductsPage />} />
                   <Route path="/products" element={<ProductsPage />} />
                   <Route path="/settings">
