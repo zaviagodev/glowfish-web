@@ -6,7 +6,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import GlowfishIcon from "../icons/GlowfishIcon";
+import { useConfig } from "@/hooks/useConfig";
 
 interface ProductImage {
   id: string;
@@ -22,6 +22,7 @@ interface ItemCarouselProps {
 }
 
 const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
+  const { config } = useConfig();
   const [openImageModal, setOpenImageModal] = useState<boolean>(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [thumbnailApi, setThumbnailApi] = useState<any>(null);
@@ -124,7 +125,11 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
             </div>
           ) : (
             <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
-              <GlowfishIcon />
+              {config?.storeLogo ? (
+                <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+              ) : (
+                <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+              )}
             </div>
           )}
         </>
@@ -188,7 +193,11 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
             </div>
           ) : (
             <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-              <GlowfishIcon />
+              {config?.storeLogo ? (
+                <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+              ) : (
+                <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+              )}
             </div>
           )}
         </>

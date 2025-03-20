@@ -4,9 +4,9 @@ import { useTranslate } from "@refinedev/core";
 import { cn, makeTwoDecimals } from "@/lib/utils";
 import { useState } from "react";
 import { AnimatedCardProps } from "@/type/type 2";
-import GlowfishIcon from "../icons/GlowfishIcon";
 import { Button } from "../ui/button";
 import { isPast } from "date-fns";
+import { useConfig } from "@/hooks/useConfig";
 
 const springConfig = {
   type: "spring",
@@ -39,6 +39,7 @@ export function AnimatedCard({
   isBanner,
 }: AnimatedCardProps) {
   const t = useTranslate();
+  const { config } = useConfig();
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
   >(variant_id);
@@ -144,7 +145,11 @@ export function AnimatedCard({
           />
         ) : (
           <div className="flex items-center justify-center h-full">
-            <GlowfishIcon />
+            {config?.storeLogo ? (
+              <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+            ) : (
+              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+            )}
           </div>
         )}
 

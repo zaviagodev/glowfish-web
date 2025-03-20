@@ -29,7 +29,7 @@ import { useRewards, useReward } from "@/features/rewards/hooks/useRewards";
 import { supabase } from "@/lib/supabase";
 import { cn, makeTwoDecimals } from "@/lib/utils";
 import { PageHeader } from "@/components/shared/PageHeader";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { useConfig } from "@/hooks/useConfig";
 import cardReward from "@/img/my-card.svg";
 import RewardAccordions from "@/features/rewards/components/RewardAccordions";
 import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
@@ -46,6 +46,7 @@ const RewardsPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { storeName } = useStore();
+  const { config } = useConfig();
   const [isRedeemSheetOpen, setIsRedeemSheetOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isGoingToConfirm, setIsGoingToConfirm] = useState(true);
@@ -688,7 +689,11 @@ const RewardsPage = () => {
             </h3>
           </div>
           <div className="absolute right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
-            <GoodAfterWorkCard />
+            {config?.storeLogo ? (
+              <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+            ) : (
+              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
+            )}
           </div>
           <button
             onClick={() => navigate("/scan")}
@@ -739,7 +744,7 @@ const RewardsPage = () => {
                         className="w-full h-full object-cover object-top"
                       />
                     ) : (
-                      <GlowfishIcon />
+                      <div className="w-20 h-20 bg-primary/10 rounded-lg" />
                     )}
                   </div>
 

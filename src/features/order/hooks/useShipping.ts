@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { shippingService, ShippingOption, ShippingMethods } from "../services/shippingService";
 import { CartItem } from "@/lib/cart";
 import { useStore } from "@/hooks/useStore";
+import { supabase } from "@/lib/supabase";
 
 export function useShipping(items: CartItem[]) {
   const { storeName } = useStore();
@@ -19,6 +20,43 @@ export function useShipping(items: CartItem[]) {
         const methods = await shippingService.getShippingMethods(storeName);
         console.log("Received shipping methods:", methods);
         setShippingMethods(methods);
+
+        // Check if all items are events
+        let hasPhysicalProducts = false;
+        for (const item of items) {
+          const { data: variant, error: variantError } = await supabase
+            .from("product_variants")
+            .select("product_id")
+            .eq("id", item.variantId)
+            .single();
+
+          if (variantError) {
+            console.log("Variant error, skipping:", variantError);
+            continue;
+          }
+
+          if (variant) {
+            // Check if this product is an event
+            const { data: event, error: eventError } = await supabase
+              .from("events")
+              .select("id")
+              .eq("product_id", variant.product_id)
+              .single();
+
+            if (!event) {
+              // If there's no event entry, it's a physical product
+              hasPhysicalProducts = true;
+              break;
+            }
+          }
+        }
+
+        // If there are no physical products, set shipping cost to 0
+        if (!hasPhysicalProducts) {
+          console.log("No physical products found, setting shipping cost to 0");
+          setShippingCost(0);
+          return;
+        }
         
         // Handle fixed rate shipping
         if (methods.fixed_rate?.enabled) {

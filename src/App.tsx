@@ -44,6 +44,7 @@ import InfoPage from "@/pages/info";
 import OrderFlow from "@/pages/OrderFlow";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import MyRewardsPage from "./pages/my-rewards";
+import { DynamicTitle } from "@/components/DynamicTitle";
 
 function App() {
   const ScrollToTop = () => {
@@ -225,6 +226,7 @@ function AppWrapper() {
     <ConfigProvider>
       <ToastProvider>
         <ThemeProvider>
+          <DynamicTitle />
           <App />
         </ThemeProvider>
       </ToastProvider>
