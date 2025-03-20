@@ -17,6 +17,7 @@ import {
   CreditCard,
   Truck,
   Receipt,
+  Image,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -81,7 +82,7 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
         </div>
 
         {/* Product Image */}
-        <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-6">
+        <div className="flex items-center justify-center aspect-video bg-black rounded-lg overflow-hidden mb-6">
           {image ? (
             <img
               src={image.url}
@@ -89,8 +90,8 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Package2 className="w-16 h-16 text-muted-foreground/50" />
+            <div className="flex items-center justify-center h-full bg-darkgray w-full">
+              <Image className="w-20 h-20 text-white" />
             </div>
           )}
         </div>

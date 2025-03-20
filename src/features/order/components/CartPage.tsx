@@ -1,6 +1,6 @@
 import { useTranslate } from "@refinedev/core";
 import { motion, AnimatePresence } from "framer-motion";
-import { Minus, Package2, Plus, Trash2 } from "lucide-react";
+import { Image, Minus, Package2, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -10,7 +10,6 @@ import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
 import { makeTwoDecimals } from "@/lib/utils";
 import { useConfig } from "@/hooks/useConfig";
-import DefaultStorefront from "@/components/icons/DefaultStorefront";
 
 export function CartPage() {
   const t = useTranslate();
@@ -84,16 +83,8 @@ export function CartPage() {
                         className="w-full h-full object-cover object-top"
                       />
                     ) : (
-                      <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                        {config?.storeLogo ? (
-                          <img
-                            src={config.storeLogo}
-                            alt="Store Logo"
-                            className="h-10 w-10 object-contain"
-                          />
-                        ) : (
-                          <DefaultStorefront />
-                        )}
+                      <div className="flex items-center justify-center h-full bg-darkgray w-full">
+                        <Image className="w-8 h-8 text-white" />
                       </div>
                     )}
                   </div>

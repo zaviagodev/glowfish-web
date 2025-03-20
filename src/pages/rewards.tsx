@@ -20,6 +20,7 @@ import {
   CircleParking,
   CircleDollarSign,
   CheckCircle2,
+  Image,
 } from "lucide-react";
 import Barcode from "react-barcode";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -748,14 +749,10 @@ const RewardsPage = () => {
                         alt={reward.title}
                         className="w-full h-full object-cover object-top"
                       />
-                    ) : config?.storeLogo ? (
-                      <img
-                        src={config?.storeLogo}
-                        alt="Store Logo"
-                        className="h-20 w-20 object-contain"
-                      />
                     ) : (
-                      <DefaultStorefront />
+                      <div className="flex items-center justify-center h-full bg-darkgray w-full">
+                        <Image className="w-20 h-20 text-white" />
+                      </div>
                     )}
                   </div>
 

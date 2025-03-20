@@ -1,13 +1,11 @@
 import { motion } from "framer-motion";
-import { BookImage, Calendar, MapPin, Tag } from "lucide-react";
+import { BookImage, Calendar, Image, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { cn, makeTwoDecimals } from "@/lib/utils";
 import { useState } from "react";
 import { AnimatedCardProps } from "@/type/type 2";
 import { Button } from "../ui/button";
 import { isPast } from "date-fns";
-import { useConfig } from "@/hooks/useConfig";
-import DefaultStorefront from "../icons/DefaultStorefront";
 
 const springConfig = {
   type: "spring",
@@ -42,7 +40,6 @@ export function AnimatedCard({
   track_quantity = false,
 }: AnimatedCardProps) {
   const t = useTranslate();
-  const { config } = useConfig();
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
   >(variant_id);
@@ -148,16 +145,8 @@ export function AnimatedCard({
             transition={springConfig}
           />
         ) : (
-          <div className="flex items-center justify-center h-full">
-            {config?.storeLogo ? (
-              <img
-                src={config.storeLogo}
-                alt="Store Logo"
-                className="w-20 h-20 object-contain"
-              />
-            ) : (
-              <DefaultStorefront />
-            )}
+          <div className="flex items-center justify-center h-full bg-darkgray w-full">
+            <Image className="w-20 h-20 text-white" />
           </div>
         )}
 

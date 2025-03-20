@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
+import { Image, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   Carousel,
@@ -7,7 +7,6 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { useConfig } from "@/hooks/useConfig";
-import DefaultStorefront from "../icons/DefaultStorefront";
 
 interface ProductImage {
   id: string;
@@ -126,15 +125,7 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
             </div>
           ) : (
             <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
-              {config?.storeLogo ? (
-                <img
-                  src={config.storeLogo}
-                  alt="Store Logo"
-                  className="w-20 h-20 object-contain"
-                />
-              ) : (
-                <DefaultStorefront />
-              )}
+              <Image className="w-20 h-20 text-white" />
             </div>
           )}
         </>
@@ -197,16 +188,8 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
               </Carousel>
             </div>
           ) : (
-            <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-              {config?.storeLogo ? (
-                <img
-                  src={config.storeLogo}
-                  alt="Store Logo"
-                  className="w-20 h-20 object-contain"
-                />
-              ) : (
-                <DefaultStorefront />
-              )}
+            <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-darkgray">
+              <Image className="w-20 h-20 text-white" />
             </div>
           )}
         </>

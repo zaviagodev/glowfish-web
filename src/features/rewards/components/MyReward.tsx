@@ -3,8 +3,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useConfig } from "@/hooks/useConfig";
 import { RewardOrder } from "../services/rewardService";
-import { Package2, Calendar, Gift, Tag } from "lucide-react";
-import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import { Package2, Calendar, Gift, Tag, Image } from "lucide-react";
 
 interface MyRewardProps {
   order: RewardOrder;
@@ -33,21 +32,17 @@ export function MyReward({ order }: MyRewardProps) {
       {/* Content */}
       <div className="relative grid grid-cols-3 h-auto md:h-[140px]">
         {/* Image Section */}
-        <div className="h-48 md:h-full bg-black flex items-center justify-center relative overflow-hidden">
+        <div className="h-full bg-black flex items-center justify-center relative overflow-hidden">
           {image ? (
             <img
               src={image.url}
               alt={image.alt || product?.name || "Reward"}
               className="w-full h-full object-cover"
             />
-          ) : config?.storeLogo ? (
-            <img
-              src={config.storeLogo}
-              alt="Store Logo"
-              className="w-20 h-20 object-contain"
-            />
           ) : (
-            <DefaultStorefront />
+            <div className="flex items-center justify-center h-full bg-darkgray w-full">
+              <Image className="w-16 h-16 text-white" />
+            </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>

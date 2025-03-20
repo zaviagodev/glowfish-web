@@ -304,7 +304,7 @@ export function ProductDetail({
               position: img.position,
             })) || []
           }
-          image={image || images?.[0]?.url || "/placeholder.png"}
+          image={image || images?.[0]?.url || ""}
           name={name}
         />
 

@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
 import { format, formatDistanceToNow, isToday } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { MapPin, Calendar, Users } from "lucide-react";
+import { MapPin, Calendar, Users, Image } from "lucide-react";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useConfig } from "@/hooks/useConfig";
-import DefaultStorefront from "@/components/icons/DefaultStorefront";
 
 interface TicketProps {
   ticket: {
@@ -50,16 +49,8 @@ export function Ticket({ ticket }: TicketProps) {
             className="w-full h-full object-cover aspect-square object-top"
           />
         ) : (
-          <div className="h-full bg-black flex items-center justify-center">
-            {config?.storeLogo ? (
-              <img
-                src={config.storeLogo}
-                alt="Store Logo"
-                className="w-20 h-20 object-contain"
-              />
-            ) : (
-              <DefaultStorefront />
-            )}
+          <div className="flex items-center justify-center h-full bg-darkgray w-full">
+            <Image className="w-12 h-12 text-white" />
           </div>
         )}
 
