@@ -146,7 +146,11 @@ export function AnimatedCard({
         ) : (
           <div className="flex items-center justify-center h-full">
             {config?.storeLogo ? (
-              <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
+              <img
+                src={config.storeLogo}
+                alt="Store Logo"
+                className="w-20 h-20 object-contain"
+              />
             ) : (
               <div className="w-20 h-20 bg-primary/10 rounded-lg" />
             )}
@@ -180,7 +184,7 @@ export function AnimatedCard({
       >
         <div
           className={`flex flex-col ${
-            description ? "gap-2" : "gap-7"
+            !isProduct || description ? "gap-2" : "gap-7"
           } justify-between h-fit`}
         >
           <div>
