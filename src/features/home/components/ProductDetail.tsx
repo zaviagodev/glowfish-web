@@ -217,6 +217,18 @@ export function ProductDetail({
       return;
     }
 
+    // Create variant object from selected variant options
+    const variantData = selectedVariant?.options?.reduce(
+      (acc: Record<string, string>, opt: { name: string; value: string }) => ({
+        ...acc,
+        [opt.name]: opt.value,
+      }),
+      {}
+    );
+
+    console.log("Selected Variant:", selectedVariant);
+    console.log("Variant Data:", variantData);
+
     addItem({
       variantId: selectedVariantId!,
       productId: id.toString(),
@@ -224,16 +236,8 @@ export function ProductDetail({
       image: image || images?.[0]?.url || "/placeholder.png",
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
-      variant: selectedVariant?.options?.reduce(
-        (acc: Record<string, string>, opt: any) => ({
-          ...acc,
-          [opt.name]: Array.isArray(opt.values)
-            ? opt.values.join(",")
-            : opt.values,
-        }),
-        {}
-      ),
-      isEvent: !!date, // Set isEvent to true if the item has a date field
+      variant: variantData,
+      isEvent: !!date,
     });
 
     addToast(t("Added to cart"), "success");
