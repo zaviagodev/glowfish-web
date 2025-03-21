@@ -22,6 +22,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import TicketsSkeletons from "@/components/skeletons/TicketsSkeletons";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
   const navigate = useNavigate();
@@ -82,9 +83,7 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="flex items-center justify-center h-full bg-darkgray w-full">
-              <Image className="w-20 h-20 text-[#767676]" />
-            </div>
+            <ProductPlaceholder />
           )}
         </div>
 

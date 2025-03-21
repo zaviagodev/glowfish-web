@@ -222,13 +222,13 @@ export const HomeList = () => {
       />
 
       {/* Category Bar */}
-      <div className="sticky top-0 z-50 bg-background border-b">
+      <div className="sticky top-0 bg-background border-b">
         <CategoryGrid
           categories={categories}
           isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
-          category_type="products"
+          tab_type="colorful"
         />
       </div>
 
@@ -268,6 +268,18 @@ export const HomeList = () => {
           isLoading={loading}
           isProduct={false}
         />
+      </section>
+
+      <section className="space-y-6 px-[1px]">
+        <div className="sticky top-0 bg-background border-b">
+          <CategoryGrid
+            categories={categories}
+            isLoading={loading}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            tab_type="no_style"
+          />
+        </div>
 
         {/* New Arrivals Section */}
         <ProductSection

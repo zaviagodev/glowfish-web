@@ -1,4 +1,3 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,14 +11,14 @@ type Category = Omit<
   "store_name" | "created_at" | "updated_at"
 >;
 
-type CategoryType = "events" | "products";
+type TabType = "colorful" | "no_style";
 
 interface CategoryGridProps {
   categories: Category[];
   isLoading?: boolean;
   selectedCategory: string | null;
   onSelectCategory: (id: string | null) => void;
-  category_type: CategoryType;
+  tab_type?: TabType;
 }
 
 export function CategoryGrid({
@@ -27,13 +26,13 @@ export function CategoryGrid({
   isLoading,
   selectedCategory,
   onSelectCategory,
-  category_type,
+  tab_type,
 }: CategoryGridProps) {
   const t = useTranslate();
   const navigate = useNavigate();
   const handleCategoryClick = (categoryId: string | null) => {
     onSelectCategory(categoryId);
-    navigate(category_type === "events" ? "/events" : "/products", {
+    navigate("/products", {
       state: { selectedCategory: categoryId },
     });
   };
@@ -46,7 +45,7 @@ export function CategoryGrid({
     <div
       className={cn(
         "flex items-center gap-3 px-[22px] pt-[21px] overflow-auto scrollbar-hide pb-0.5",
-        { "pb-4": category_type === "products" }
+        { "pb-4": tab_type === "colorful" }
       )}
     >
       <motion.div
@@ -60,15 +59,15 @@ export function CategoryGrid({
             "whitespace-nowrap px-3 py-2 h-9 text-black text-base outline outline-2 outline-background",
             {
               "!bg-transparent rounded-none border-b-2 border-transparent text-muted-foreground":
-                category_type === "events",
+                tab_type === "no_style",
             },
             {
               "border-b-white text-foreground":
-                category_type === "events" && selectedCategory === null,
+                tab_type === "no_style" && selectedCategory === null,
             }
           )}
           style={
-            category_type === "products"
+            tab_type === "colorful"
               ? {
                   backgroundColor: "#F2E9D6",
                   boxShadow: `0 0 0 4px ${
@@ -98,16 +97,15 @@ export function CategoryGrid({
                 "whitespace-nowrap px-3 py-2 h-9 text-foreground text-base outline outline-2 outline-background",
                 {
                   "!bg-transparent rounded-none border-b-2 border-transparent text-muted-foreground":
-                    category_type === "events",
+                    tab_type === "no_style",
                 },
                 {
                   "border-b-white text-foreground":
-                    category_type === "events" &&
-                    selectedCategory === category.id,
+                    tab_type === "no_style" && selectedCategory === category.id,
                 }
               )}
               style={
-                category_type === "products"
+                tab_type === "colorful"
                   ? {
                       backgroundColor: colors[index % colors.length],
                       boxShadow: `0 0 0 4px ${
