@@ -94,7 +94,7 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
         </div>
 
         {/* Order Details Grid */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="flex flex-col gap-6">
           {/* Customer Information */}
           {/* <div className="space-y-4">
             <h4 className="font-medium">Customer Information</h4>
@@ -169,10 +169,10 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
                 <span className="text-muted-foreground">Points Used</span>
                 <span>{order.loyalty_points_used} points</span>
               </div>
-              <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                 <span className="text-muted-foreground">Points Rate</span>
                 <span>{order.loyalty_points_rate}</span>
-              </div>
+              </div> */}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Points Discount</span>
                 <span>${order.points_discount.toFixed(2)}</span>

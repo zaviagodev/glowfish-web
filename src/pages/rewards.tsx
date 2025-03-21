@@ -172,15 +172,16 @@ const RewardsPage = () => {
       await refreshOrders();
 
       setIsConfirmDialogOpen(false);
-      if (selectedOption === "price") {
-        navigate("/checkout", {
-          state: {
-            selectedItems: orderItems,
-          },
-        });
-      } else {
-        setIsSuccessful(true);
-      }
+      if (newOrder) navigate(`/my-rewards/${newOrder?.[0]?.order_id}`);
+      // if (selectedOption === "price") {
+      //   navigate("/checkout", {
+      //     state: {
+      //       selectedItems: orderItems,
+      //     },
+      //   });
+      // } else {
+      //   setIsSuccessful(true);
+      // }
     } catch (error) {
       console.error("Error redeeming reward:", error);
       setError(
