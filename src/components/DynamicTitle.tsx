@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useStore } from '@/hooks/useStore';
 import { useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { navItems } from './navigation/BottomNav';
+import { Helmet } from 'react-helmet-async';
 
 export const DynamicTitle = () => {
   const storeName = useStore((state) => state.storeName);

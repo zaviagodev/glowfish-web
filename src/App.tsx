@@ -3,7 +3,7 @@ import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import Cookies from "js-cookie";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { useTranslation } from "react-i18next";
-import { HelmetProvider } from "react-helmet-async";
+import { HelmetProvider, Helmet } from "react-helmet-async";
 import routerBindings, {
   CatchAllNavigate,
   DocumentTitleHandler,
@@ -227,16 +227,17 @@ function App() {
 function AppWrapper() {
   return (
     <ConfigProvider>
-      <HelmetProvider>
+      
         <ToastProvider>
           <ThemeProvider>
             <BrowserRouter>
-                <DynamicTitle />
-                <App />
+              <HelmetProvider>
+                  <DynamicTitle />
+                  <App />
+              </HelmetProvider>
             </BrowserRouter>
           </ThemeProvider>
         </ToastProvider>
-      </HelmetProvider>
     </ConfigProvider>
   );
 }
