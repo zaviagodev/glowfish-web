@@ -171,6 +171,7 @@ export default function ProductsPage() {
           isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
+          category_type={isEventPage ? "events" : "products"}
         />
 
         {/* Filter & Sort Bar */}

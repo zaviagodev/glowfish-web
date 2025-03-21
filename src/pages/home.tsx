@@ -228,6 +228,7 @@ export const HomeList = () => {
           isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
+          category_type="products"
         />
       </div>
 
