@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { RewardOrder } from "../services/rewardService";
 import { Calendar, Gift, Tag, Image } from "lucide-react";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 interface MyRewardProps {
   order: RewardOrder;
@@ -45,9 +46,7 @@ export function MyReward({ order }: MyRewardProps) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="flex items-center justify-center h-full bg-darkgray w-full">
-              <Image className="w-16 h-16 text-[#767676]" />
-            </div>
+            <ProductPlaceholder imageClassName="w-16 h-16" />
           )}
         </div>
 

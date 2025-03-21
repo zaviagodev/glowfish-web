@@ -7,6 +7,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { useConfig } from "@/hooks/useConfig";
+import ProductPlaceholder from "./product-placeholder";
 
 interface ProductImage {
   id: string;
@@ -124,9 +125,7 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
               />
             </div>
           ) : (
-            <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
-              <Image className="w-20 h-20 text-[#767676]" />
-            </div>
+            <ProductPlaceholder />
           )}
         </>
       )}
@@ -188,9 +187,7 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
               </Carousel>
             </div>
           ) : (
-            <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-darkgray">
-              <Image className="w-20 h-20 text-[#767676]" />
-            </div>
+            <ProductPlaceholder className="aspect-square overflow-hidden" />
           )}
         </>
       )}

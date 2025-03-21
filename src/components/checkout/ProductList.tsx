@@ -4,6 +4,7 @@ import { makeTwoDecimals } from "@/lib/utils";
 import { ChevronDown, ChevronUp, Image } from "lucide-react";
 import { useState } from "react";
 import { useConfig } from "@/hooks/useConfig";
+import ProductPlaceholder from "../ui/product-placeholder";
 
 interface ProductListProps {
   items: CartItem[];
@@ -54,9 +55,7 @@ export function ProductList({ items }: ProductListProps) {
                   className="w-full h-full object-cover object-top"
                 />
               ) : (
-                <div className="flex items-center justify-center h-full w-full bg-black">
-                  <Image className="w-8 h-8 text-[#767676]" />
-                </div>
+                <ProductPlaceholder imageClassName="w-8 h-8" />
               )}
             </div>
             <div className="flex-1 min-w-0">

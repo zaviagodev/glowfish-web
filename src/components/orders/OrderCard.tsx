@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Image } from "lucide-react";
 import { formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 import { useConfig } from "@/hooks/useConfig";
+import ProductPlaceholder from "../ui/product-placeholder";
 
 interface OrderItem {
   id: string;
@@ -130,9 +131,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="flex items-center justify-center h-full w-full bg-black">
-                  <Image className="w-12 h-12 text-[#767676]" />
-                </div>
+                <ProductPlaceholder imageClassName="w-12 h-12" />
               )}
             </div>
             <div className="flex-1 min-w-0">

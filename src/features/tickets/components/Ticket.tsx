@@ -5,6 +5,7 @@ import { MapPin, Calendar, Users, Image } from "lucide-react";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useConfig } from "@/hooks/useConfig";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 interface TicketProps {
   ticket: {
@@ -48,9 +49,7 @@ export function Ticket({ ticket }: TicketProps) {
             className="w-full h-full object-cover aspect-square object-top"
           />
         ) : (
-          <div className="flex items-center justify-center h-full bg-darkgray w-full">
-            <Image className="w-12 h-12 text-[#767676]" />
-          </div>
+          <ProductPlaceholder imageClassName="w-12 h-12" />
         )}
 
         {/* Event Details */}
