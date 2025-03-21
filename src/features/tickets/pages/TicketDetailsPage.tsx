@@ -88,11 +88,21 @@ export default function TicketDetailsPage() {
           >
             <div className="flex items-center gap-2 text-sm font-light">
               <MapPin className="w-4 h-4 flex-shrink-0" />
-              <span>{customerEvent.event.venue_name || t("To be determined")}</span>
+              <span>
+                {customerEvent.event.venue_name || t("To be determined")}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-sm font-light">
               <Calendar className="w-4 h-4 flex-shrink-0" />
-              <span>{format(toZonedTime(new Date(customerEvent.event.start_datetime), "UTC"), formattedDateAndTime)}</span>
+              <span>
+                {format(
+                  toZonedTime(
+                    new Date(customerEvent.event.start_datetime),
+                    "UTC"
+                  ),
+                  formattedDateAndTime
+                )}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-sm font-light">
               <Users className="w-4 h-4 flex-shrink-0" />
@@ -120,9 +130,7 @@ export default function TicketDetailsPage() {
               <span
                 className={cn(
                   "text-sm font-medium",
-                  ticket.status === "used"
-                    ? "text-[#8E8E93]"
-                    : "text-[#007AFF]"
+                  ticket.status === "used" ? "text-[#8E8E93]" : "text-[#007AFF]"
                 )}
               >
                 {ticket.status === "used" ? t("Used") : t("Unused")}
@@ -140,7 +148,7 @@ export default function TicketDetailsPage() {
           >
             <button
               onClick={handleCheckIn}
-              className="w-full py-4 rounded-lg bg-[#007AFF] text-white font-medium"
+              className="w-full py-4 rounded-lg bg-[#007AFF] text-foreground font-medium"
             >
               {t("Check In")}
             </button>

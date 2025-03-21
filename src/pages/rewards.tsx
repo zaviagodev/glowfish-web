@@ -58,7 +58,7 @@ const RewardsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [codeType, setCodeType] = useState("barcode");
   const tabsClassName =
-    "w-full rounded-none flex py-4 gap-2 items-center text-[#979797] text-xs font-semibold box-border border-b border-[#282828] !bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-white data-[state=active]:text-white";
+    "w-full rounded-none flex py-4 gap-2 items-center text-[#979797] text-xs font-semibold box-border border-b border-[#282828] !bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-white data-[state=active]:text-foreground";
 
   const {
     rewards,
@@ -345,7 +345,7 @@ const RewardsPage = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
+            className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
             onClick={() => handleSuccessful(-1)}
           >
             <ChevronLeft className="h-6 w-6" />
@@ -683,7 +683,7 @@ const RewardsPage = () => {
               className="absolute z-0 w-full h-full object-cover opacity-75"
             />
           )}
-          <div className="flex justify-between items-center py-5 px-[30px] z-5 relative">
+          <div className="flex justify-between items-center py-5 px-[30px] z-5 relative text-white">
             <h3 className="font-semibold text-xl tracking-[-0.4px]">
               {t("Good Afterwork")}
             </h3>
@@ -717,7 +717,7 @@ const RewardsPage = () => {
         <div className="px-5 pb-5">
           <button
             onClick={() => navigate("/my-rewards")}
-            className="w-full bg-darkgray rounded-lg p-4 transition-colors flex items-center justify-between"
+            className="w-full bg-darkgray rounded-lg p-4 flex items-center justify-between"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="w-12 h-12 rounded-lg bg-[#E66C9E1A] flex items-center justify-center">

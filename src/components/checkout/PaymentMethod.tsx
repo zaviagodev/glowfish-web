@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import LoadingSpin from "../loading/LoadingSpin";
+import { useTheme } from "@/hooks/useTheme";
 
 // Add function to generate full image URL
 const getFullImageUrl = (imageUrl: string) => {
@@ -90,6 +91,8 @@ export function PaymentMethod({
   const { storeName } = useStore();
   const [paymentOptions, setPaymentOptions] = useState<PaymentOption[]>([]);
   const [showOptions, setShowOptions] = useState(false);
+  const { currentTheme } = useTheme();
+  const isDarkMode = currentTheme === "dark";
 
   useEffect(() => {
     const fetchPaymentOptions = async () => {
@@ -149,12 +152,16 @@ export function PaymentMethod({
             ? "#2196F31A"
             : checkIfBankTransfer
             ? "#FF98001A"
-            : "#FFFFFF1A",
+            : isDarkMode
+            ? "#FFFFFF1A"
+            : "#E1E1E1B3",
           color: checkIfPromptPay
             ? "#2196F3"
             : checkIfBankTransfer
             ? "#FF9800"
-            : "#FFFFFF",
+            : isDarkMode
+            ? "#FFFFFF"
+            : "#000000",
         }}
       >
         {checkIfPromptPay ? (

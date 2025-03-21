@@ -405,7 +405,7 @@ export function PaymentPage() {
           >
             <div
               className={cn("bg-white w-4 h-4 rounded-full", {
-                "bg-mainbutton border-2 border-black outline outline-1 outline-mainbutton":
+                "bg-mainbutton border-2 border-background outline outline-1 outline-mainbutton":
                   selectedBankAccount?.id === account.id,
               })}
             />
@@ -657,7 +657,7 @@ export function PaymentPage() {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 exit={{ scale: 0 }}
-                                className="absolute -top-8 px-2 py-1 bg-green-500 text-white text-xs whitespace-nowrap rounded-full"
+                                className="absolute -top-8 px-2 py-1 bg-green-500 text-foreground text-xs whitespace-nowrap rounded-full"
                               >
                                 {t("Copied!")}
                               </motion.div>
@@ -733,7 +733,7 @@ export function PaymentPage() {
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     exit={{ scale: 0 }}
-                                    className="absolute -top-8 px-2 py-1 bg-green-500 text-white text-xs whitespace-nowrap rounded-full"
+                                    className="absolute -top-8 px-2 py-1 bg-green-500 text-foreground text-xs whitespace-nowrap rounded-full"
                                   >
                                     {t("Copied!")}
                                   </motion.div>
@@ -769,7 +769,7 @@ export function PaymentPage() {
                 />
                 <button
                   onClick={() => setSlipImage(null)}
-                  className="absolute top-2 right-2 bg-darkgray/50 text-white p-1 rounded-full"
+                  className="absolute top-2 right-2 bg-darkgray/50 text-foreground p-1 rounded-full"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -848,7 +848,7 @@ export function PaymentPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
           >
             <motion.div
               initial={{ scale: 0 }}

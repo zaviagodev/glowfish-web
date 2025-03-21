@@ -162,7 +162,7 @@ export function AnimatedCard({
             (variant) =>
               variant.compare_at_price && variant.compare_at_price > 0
           ) && (
-            <span className="absolute left-2 top-2 bg-[#DE473C] text-white text-sm rounded-full px-2 py-0.5">
+            <span className="absolute left-2 top-2 bg-red-500 text-white text-sm rounded-full px-2 py-0.5">
               Sale
             </span>
           )}
@@ -191,7 +191,7 @@ export function AnimatedCard({
               </h3>
               {isEventEnded ||
                 (checkIfNoProduct && (
-                  <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-[#8E8E93]/10 text-[#8E8E93]">
+                  <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium dark:bg-[#8E8E93]/10 dark:text-[#8E8E93] bg-[#BEBEC1] text-white">
                     {t(checkIfNoProduct ? "Sold out" : "Ended")}
                   </div>
                 ))}

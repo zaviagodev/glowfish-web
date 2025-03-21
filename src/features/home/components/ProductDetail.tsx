@@ -277,7 +277,7 @@ export function ProductDetail({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
+          className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
           onClick={onClose}
         >
           <ChevronLeft className="h-6 w-6" />
@@ -286,7 +286,7 @@ export function ProductDetail({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
+            className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />
@@ -319,7 +319,7 @@ export function ProductDetail({
                     (variant) =>
                       variant.compare_at_price && variant.compare_at_price > 0
                   ) && (
-                    <div className="bg-[#DE473C] text-white rounded-full px-1.5 py-0.5 w-fit text-xs">
+                    <div className="bg-red-500 text-white rounded-full px-1.5 py-0.5 w-fit text-xs">
                       Sale
                     </div>
                   )}
@@ -352,7 +352,7 @@ export function ProductDetail({
                 className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
               >
                 <div className="flex items-center gap-3">
-                  <BookImage className="w-5 h-5 text-white" />
+                  <BookImage className="w-5 h-5 text-foreground" />
                   {t("View gallery")}
                 </div>
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -388,7 +388,7 @@ export function ProductDetail({
                         className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
                       >
                         <div className="flex items-center gap-3">
-                          <Map className="w-5 h-5 text-white" />
+                          <Map className="w-5 h-5 text-foreground" />
                           {t("View map")}
                         </div>
                         <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -496,7 +496,7 @@ export function ProductDetail({
                 {t("Add to Cart")}
               </Button>
               <Button 
-                className="w-full bg-[#EE4D2D] text-white hover:bg-[#EE4D2D]/90"
+                className="w-full bg-[#EE4D2D] text-foreground hover:bg-[#EE4D2D]/90"
                 onClick={() => handleAddToCart(true)}
               >
                 {t("Buy Now")}
@@ -560,7 +560,7 @@ export function ProductDetail({
               {t("Add to Cart")}
             </Button>
             <Button
-              className="w-full bg-[#EE4D2D] text-white hover:bg-[#EE4D2D]/90"
+              className="w-full bg-[#EE4D2D] text-foreground hover:bg-[#EE4D2D]/90"
               onClick={() => handleAddToCart(true)}
             >
               {t("Buy Now")}

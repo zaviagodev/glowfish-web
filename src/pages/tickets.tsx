@@ -312,7 +312,7 @@ export default function TicketsPage() {
                         className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
                       >
                         <div className="flex items-center gap-3">
-                          <Map className="w-5 h-5 text-white" />
+                          <Map className="w-5 h-5 text-foreground" />
                           {t("View map")}
                         </div>
                         <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -359,7 +359,7 @@ export default function TicketsPage() {
                 >
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#F8F8F81A] flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-[#E1E1E1]/70 dark:bg-[#F8F8F8]/10 flex items-center justify-center">
                         <TicketIcon className="w-5 h-5 text-primary" />
                       </div>
                       <div>
@@ -396,7 +396,7 @@ export default function TicketsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full mt-2.5 !bg-mainbutton rounded-full !text-black"
+                        className="w-full mt-2.5 !bg-mainbutton rounded-full !text-background"
                         onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
                           handleTicketCheckIn(ticket);

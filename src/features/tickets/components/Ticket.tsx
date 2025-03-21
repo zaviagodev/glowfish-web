@@ -33,7 +33,6 @@ export function Ticket({ ticket }: TicketProps) {
       onClick={() => navigate(`/tickets/${ticket.id}`)}
       className={cn(
         "relative overflow-hidden rounded-xl transition-all bg-darkgray",
-        "shadow-[0_2px_8px_rgba(0,0,0,0.04),0_4px_24px_rgba(0,0,0,0.02)]",
         ticket.status === "passed" && "opacity-60"
       )}
       whileHover={{ scale: 0.98 }}

@@ -78,14 +78,14 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
               <div className="flex items-center justify-between">
                 <button
                   onClick={handleDecreaseMonth}
-                  className="text-white hover:text-foreground"
+                  className="text-foreground hover:text-foreground"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
                 <span>{format(date, "MMMM yyyy")}</span>
                 <button
                   onClick={handleIncreaseMonth}
-                  className="text-white hover:text-foreground"
+                  className="text-foreground hover:text-foreground"
                 >
                   <ChevronRight className="h-5 w-5" />
                 </button>
@@ -95,7 +95,7 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
                 <select
                   value={date.getMonth()}
                   onChange={handleChangeMonth}
-                  className="bg-darkgray text-white"
+                  className="bg-darkgray text-foreground"
                 >
                   {Array.from({ length: 12 }, (_, i) => (
                     <option key={i} value={i}>
@@ -106,7 +106,7 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
                 <select
                   value={date.getFullYear()}
                   onChange={handleChangeYear}
-                  className="bg-darkgray text-white"
+                  className="bg-darkgray text-foreground"
                 >
                   {Array.from(
                     { length: new Date().getFullYear() - 1900 + 1 },

@@ -73,6 +73,7 @@ export default {
 				DEFAULT: 'hsl(var(--mainbutton))'
 			},
   			darkgray: 'hsl(var(--darkgray))',
+			"darkgray-two": 'hsl(var(--darkgray-two))',
   			border: 'hsl(var(--border))',
   			header: '#181818',
   			input: 'hsl(var(--input))',
