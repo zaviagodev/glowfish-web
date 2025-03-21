@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { useConfig } from "@/hooks/useConfig";
 import { RewardOrder } from "../services/rewardService";
-import { Package2, Calendar, Gift, Tag, Image } from "lucide-react";
+import { Calendar, Gift, Tag, Image } from "lucide-react";
 
 interface MyRewardProps {
   order: RewardOrder;
@@ -11,7 +10,6 @@ interface MyRewardProps {
 
 export function MyReward({ order }: MyRewardProps) {
   const navigate = useNavigate();
-  const { config } = useConfig();
 
   // Get the first reward item from the order
   const rewardItem = order.order_items.find((item) => item.meta_data.reward);
@@ -30,7 +28,7 @@ export function MyReward({ order }: MyRewardProps) {
       transition={{ duration: 0.2 }}
     >
       {/* Content */}
-      <div className="relative grid grid-cols-3 h-auto md:h-[140px]">
+      <div className="relative grid grid-cols-3 h-auto">
         {/* Image Section */}
         <div className="h-full bg-black flex items-center justify-center relative overflow-hidden">
           {image ? (

@@ -9,12 +9,10 @@ import { useState, useRef, useEffect } from "react";
 import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
 import { makeTwoDecimals } from "@/lib/utils";
-import { useConfig } from "@/hooks/useConfig";
 
 export function CartPage() {
   const t = useTranslate();
   const navigate = useNavigate();
-  const { config } = useConfig();
   const debounceTimeout = useRef<NodeJS.Timeout>();
   const { items, updateQuantity, removeItem, getTotalItems, getTotalPrice } =
     useCart();
