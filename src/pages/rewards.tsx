@@ -42,6 +42,7 @@ import { ProductVariant } from "@/type/type 2";
 import { VariantDrawer } from "@/features/home/components/VariantDrawer";
 import { set } from "date-fns";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -755,9 +756,7 @@ const RewardsPage = () => {
                         className="w-full h-full object-cover object-top"
                       />
                     ) : (
-                      <div className="flex items-center justify-center h-full bg-darkgray w-full">
-                        <Image className="w-20 h-20 text-[#767676]" />
-                      </div>
+                      <ProductPlaceholder />
                     )}
                   </div>
 

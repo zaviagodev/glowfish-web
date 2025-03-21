@@ -32,6 +32,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import ContactUsButton from "@/components/ui/contact-us-button";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 interface ConfirmOrderButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -477,9 +478,10 @@ const OrdersPage = () => {
                             />
                           </div>
                         ) : (
-                          <div className="flex items-center justify-center h-20 w-20 bg-darkgray rounded-lg">
-                            <Image className="w-12 h-12 text-[#767676]" />
-                          </div>
+                          <ProductPlaceholder
+                            className="w-20 h-20"
+                            imageClassName="w-12 h-12"
+                          />
                         )}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
