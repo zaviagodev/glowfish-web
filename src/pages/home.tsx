@@ -221,6 +221,28 @@ export const HomeList = () => {
         onProductSelect={handleProductSelect}
       />
 
+      <section className="space-y-6 px-[1px]">
+        <div className="sticky top-0 bg-background border-b">
+          <CategoryGrid
+            categories={categories}
+            isLoading={loading}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            tab_type="colorful"
+          />
+        </div>
+        {/* New Arrivals Section */}
+        <ProductSection
+          title={t("New Arrivals")}
+          linkTo="/products"
+          products={products.slice(0, 8)}
+          onProductSelect={handleProductSelect}
+          sliderRef={eventSliderRef}
+          isLoading={loading}
+          isProduct={true}
+        />
+      </section>
+
       {/* Category Bar */}
       <div className="sticky top-0 bg-background border-b">
         <CategoryGrid
@@ -228,7 +250,7 @@ export const HomeList = () => {
           isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
-          tab_type="colorful"
+          tab_type="no_style"
         />
       </div>
 
@@ -267,29 +289,6 @@ export const HomeList = () => {
           sliderRef={eventSliderRef}
           isLoading={loading}
           isProduct={false}
-        />
-      </section>
-
-      <section className="space-y-6 px-[1px]">
-        <div className="sticky top-0 bg-background border-b">
-          <CategoryGrid
-            categories={categories}
-            isLoading={loading}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            tab_type="no_style"
-          />
-        </div>
-
-        {/* New Arrivals Section */}
-        <ProductSection
-          title={t("New Arrivals")}
-          linkTo="/products"
-          products={products.slice(0, 8)}
-          onProductSelect={handleProductSelect}
-          sliderRef={eventSliderRef}
-          isLoading={loading}
-          isProduct={true}
         />
       </section>
 
