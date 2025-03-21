@@ -308,6 +308,9 @@ const RewardsPage = () => {
     navigate(link as string);
   };
 
+  const isFree =
+    selectedReward?.product_variants?.[0]?.points_based_price === 0;
+
   // const checkIfNoPriceOrPoints = (check: string) => {
   //   switch (check) {
   //     case "price":
@@ -455,7 +458,7 @@ const RewardsPage = () => {
                 {isProcessing ? t("Processing...") : t("Redeem Reward")}
               </Button>
               <SheetContent
-                className="h-max border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col"
+                className="h-max border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col max-width-mobile mx-auto"
                 side="bottom"
               >
                 <section className="flex flex-col gap-7">
@@ -488,15 +491,17 @@ const RewardsPage = () => {
                               ? ""
                               : "s"
                           }`} */}
-                      {`${
-                        selectedReward?.product_variants?.[0]
-                          ?.points_based_price
-                      } point${
-                        selectedReward?.product_variants?.[0]
-                          ?.points_based_price === 1
-                          ? ""
-                          : "s"
-                      }`}
+                      {isFree
+                        ? "free"
+                        : `${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price
+                          } point${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price === 1
+                              ? ""
+                              : "s"
+                          }`}
                       . If it has been redeemed, it cannot be refunded or
                       returned.
                     </div>
