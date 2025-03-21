@@ -15,6 +15,7 @@ import { Category, Product } from "@/features/home/types/product.types";
 import { Banner } from "@/features/home";
 import { useConfig } from "@/hooks/useConfig";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import HomeSkeletons from "@/components/skeletons/HomeSkeletons";
 
 interface SelectedProduct extends Product {
   variant_id?: string;
@@ -139,6 +140,10 @@ export const HomeList = () => {
       formattedDateAndTime
     )}`;
 
+  if (loading) {
+    return <HomeSkeletons />;
+  }
+
   return (
     <div className="min-h-screen relative">
       {/* Hero Section */}
@@ -216,13 +221,36 @@ export const HomeList = () => {
         onProductSelect={handleProductSelect}
       />
 
+      <section className="space-y-6 px-[1px]">
+        <div className="sticky top-0 bg-background border-b">
+          <CategoryGrid
+            categories={categories}
+            isLoading={loading}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            tab_type="colorful"
+          />
+        </div>
+        {/* New Arrivals Section */}
+        <ProductSection
+          title={t("New Arrivals")}
+          linkTo="/products"
+          products={products.slice(0, 8)}
+          onProductSelect={handleProductSelect}
+          sliderRef={eventSliderRef}
+          isLoading={loading}
+          isProduct={true}
+        />
+      </section>
+
       {/* Category Bar */}
-      <div className="sticky top-0 z-50 bg-background border-b">
+      <div className="sticky top-0 bg-background border-b">
         <CategoryGrid
           categories={categories}
           isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
+          tab_type="no_style"
         />
       </div>
 
@@ -261,17 +289,6 @@ export const HomeList = () => {
           sliderRef={eventSliderRef}
           isLoading={loading}
           isProduct={false}
-        />
-
-        {/* New Arrivals Section */}
-        <ProductSection
-          title={t("New Arrivals")}
-          linkTo="/products"
-          products={products.slice(0, 8)}
-          onProductSelect={handleProductSelect}
-          sliderRef={eventSliderRef}
-          isLoading={loading}
-          isProduct={true}
         />
       </section>
 

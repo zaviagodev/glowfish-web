@@ -362,10 +362,10 @@ export default function TicketsPage() {
                       <div className="w-10 h-10 rounded-lg bg-[#E1E1E1]/70 dark:bg-[#F8F8F8]/10 flex items-center justify-center">
                         <TicketIcon className="w-5 h-5 text-primary" />
                       </div>
-                      <div>
+                      <div className="space-y-1">
                         <h3 className="font-medium">{ticket.code}</h3>
                         {/* TODO: fetch the dynamic variant that users have purchased in case the events have variants */}
-                        <p className="text-muted-foreground">
+                        <p className="text-muted-foreground inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20">
                           {ticket.variant_snapshot?.name}
                         </p>
                       </div>

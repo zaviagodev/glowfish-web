@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useLogin, useNavigation } from "@refinedev/core";
 import { useLocation } from "react-router-dom";
 import { useStore } from "@/hooks/useStore";
+import HomeSkeletons from "@/components/skeletons/HomeSkeletons";
 
 export const LineCallback = () => {
   const { replace } = useNavigation();
@@ -46,17 +47,10 @@ export const LineCallback = () => {
       login({
         providerName: "line",
         code,
-        storeName // Use store name from hook
+        storeName, // Use store name from hook
       });
     }
   }, [location.search, login, replace, storeName]);
 
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <h1 className="text-xl">Logging in...</h1>
-        <p>Please wait while we complete your authentication</p>
-      </div>
-    </div>
-  );
-}; 
+  return <HomeSkeletons />;
+};
