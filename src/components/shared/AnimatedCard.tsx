@@ -1,12 +1,11 @@
 import { motion } from "framer-motion";
-import { BookImage, Calendar, MapPin, Tag } from "lucide-react";
+import { BookImage, Calendar, Image, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
 import { cn, makeTwoDecimals } from "@/lib/utils";
 import { useState } from "react";
 import { AnimatedCardProps } from "@/type/type 2";
 import { Button } from "../ui/button";
 import { isPast } from "date-fns";
-import { useConfig } from "@/hooks/useConfig";
 
 const springConfig = {
   type: "spring",
@@ -37,9 +36,10 @@ export function AnimatedCard({
   end_datetime,
   isProduct,
   isBanner,
+  quantity = 1,
+  track_quantity = false,
 }: AnimatedCardProps) {
   const t = useTranslate();
-  const { config } = useConfig();
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
   >(variant_id);
@@ -109,6 +109,7 @@ export function AnimatedCard({
   };
 
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
+  const checkIfNoProduct = track_quantity === true && quantity === 0;
 
   return (
     <motion.div
@@ -117,7 +118,7 @@ export function AnimatedCard({
       className={cn(
         "relative overflow-hidden rounded-2xl cursor-pointer w-full h-full border border-input",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
-        { "!opacity-60": isEventEnded },
+        { "!opacity-60": isEventEnded || checkIfNoProduct },
         type === "event" && "flex h-fit"
       )}
       transition={springConfig}
@@ -144,12 +145,8 @@ export function AnimatedCard({
             transition={springConfig}
           />
         ) : (
-          <div className="flex items-center justify-center h-full">
-            {config?.storeLogo ? (
-              <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
-            ) : (
-              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
-            )}
+          <div className="flex items-center justify-center h-full bg-darkgray w-full">
+            <Image className="w-20 h-20 text-white" />
           </div>
         )}
 
@@ -180,7 +177,7 @@ export function AnimatedCard({
       >
         <div
           className={`flex flex-col ${
-            description ? "gap-2" : "gap-7"
+            !isProduct || description ? "gap-2" : "gap-7"
           } justify-between h-fit`}
         >
           <div>
@@ -192,11 +189,12 @@ export function AnimatedCard({
               <h3 className="font-semibold text-foreground line-clamp-1 text-base">
                 {title}
               </h3>
-              {isEventEnded && (
-                <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium dark:bg-[#8E8E93]/10 dark:text-[#8E8E93] bg-[#BEBEC1] text-white">
-                  {t("Ended")}
-                </div>
-              )}
+              {isEventEnded ||
+                (checkIfNoProduct && (
+                  <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium dark:bg-[#8E8E93]/10 dark:text-[#8E8E93] bg-[#BEBEC1] text-white">
+                    {t(checkIfNoProduct ? "Sold out" : "Ended")}
+                  </div>
+                ))}
             </motion.div>
 
             {isProduct && (

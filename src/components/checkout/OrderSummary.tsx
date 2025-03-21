@@ -7,6 +7,7 @@ interface OrderSummaryProps {
   discount: number;
   pointsDiscount: number;
   shipping: number;
+  shippingMethod?: string;
   total: number;
   isUsingPoints?: boolean;
 }
@@ -16,6 +17,7 @@ export function OrderSummary({
   discount,
   pointsDiscount,
   shipping,
+  shippingMethod,
   total,
   isUsingPoints,
 }: OrderSummaryProps) {
@@ -64,10 +66,15 @@ export function OrderSummary({
             </div>
           )}
           {shipping > 0 && (
-            <div className="flex justify-between">
-              <span className="text-body text-muted-foreground">
-                {t("Shipping cost")}
-              </span>
+            <div className="flex justify-between items-end">
+              <div className="flex flex-col">
+                <span className="text-body text-muted-foreground">
+                  {t("Shipping cost")} :
+                </span>
+                <span className="text-body text-muted-foreground">
+                  {shippingMethod}
+                </span>
+              </div>
               <span className="text-body">
                 {currency}
                 {makeTwoDecimals(shipping).toLocaleString()}

@@ -14,6 +14,7 @@ import { isPast } from "date-fns";
 import { Category, Product } from "@/features/home/types/product.types";
 import { Banner } from "@/features/home";
 import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "@/components/icons/DefaultStorefront";
 
 interface SelectedProduct extends Product {
   variant_id?: string;
@@ -163,8 +164,14 @@ export const HomeList = () => {
           <div className="relative pt-6">
             <div className="flex items-center justify-between">
               <div className="px-5">
-                {config?.storeLogo && (
-                  <img src={config.storeLogo} alt="Store Logo" className="w-[90px]" />
+                {config?.storeLogo ? (
+                  <img
+                    src={config.storeLogo}
+                    alt="Store Logo"
+                    className="w-[90px]"
+                  />
+                ) : (
+                  <DefaultStorefront />
                 )}
               </div>
               <Link to="/settings">
