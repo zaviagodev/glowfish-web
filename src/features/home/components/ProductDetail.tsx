@@ -233,7 +233,7 @@ export function ProductDetail({
       variantId: selectedVariantId!,
       productId: id.toString(),
       name,
-      image: image || images?.[0]?.url || "/placeholder.png",
+      image: image || images?.[0]?.url || "", // /placeholder.png
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
       variant: variantData,
