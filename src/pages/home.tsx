@@ -15,6 +15,7 @@ import { Category, Product } from "@/features/home/types/product.types";
 import { Banner } from "@/features/home";
 import { useConfig } from "@/hooks/useConfig";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import HomeSkeletons from "@/components/skeletons/HomeSkeletons";
 
 interface SelectedProduct extends Product {
   variant_id?: string;
@@ -138,6 +139,10 @@ export const HomeList = () => {
       toZonedTime(new Date(selectedProduct.end_datetime), "UTC"),
       formattedDateAndTime
     )}`;
+
+  if (loading) {
+    return <HomeSkeletons />;
+  }
 
   return (
     <div className="min-h-screen relative">
