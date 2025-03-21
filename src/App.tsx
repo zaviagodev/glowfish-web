@@ -3,6 +3,7 @@ import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import Cookies from "js-cookie";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { useTranslation } from "react-i18next";
+import { HelmetProvider, Helmet } from "react-helmet-async";
 import routerBindings, {
   CatchAllNavigate,
   DocumentTitleHandler,
@@ -44,7 +45,7 @@ import InfoPage from "@/pages/info";
 import OrderFlow from "@/pages/OrderFlow";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import MyRewardsPage from "./pages/my-rewards";
-import { DynamicTitle } from "@/components/DynamicTitle";
+import { DynamicTitle } from "./components/DynamicTitle";
 
 function App() {
   const ScrollToTop = () => {
@@ -76,7 +77,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
+    <>
       <RefineKbarProvider>
         <DevtoolsProvider>
           {/* Add StoreHandler at the top level */}
@@ -215,24 +216,27 @@ function App() {
 
             <RefineKbar />
             <UnsavedChangesNotifier />
-            <DocumentTitleHandler />
           </Refine>
           <DevtoolsPanel />
         </DevtoolsProvider>
       </RefineKbarProvider>
-    </BrowserRouter>
+    </>
   );
 }
 
 function AppWrapper() {
   return (
     <ConfigProvider>
-      <ToastProvider>
-        <ThemeProvider>
-          <DynamicTitle />
-          <App />
-        </ThemeProvider>
-      </ToastProvider>
+        <ToastProvider>
+          <ThemeProvider>
+            <BrowserRouter>
+              <HelmetProvider>
+                  <DynamicTitle />
+                  <App />
+              </HelmetProvider>
+            </BrowserRouter>
+          </ThemeProvider>
+        </ToastProvider>
     </ConfigProvider>
   );
 }
