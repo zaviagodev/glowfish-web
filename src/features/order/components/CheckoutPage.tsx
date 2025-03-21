@@ -238,7 +238,7 @@ export function CheckoutPage() {
     }
 
     // Add shipping method validation
-    if (hasPhysicalProducts && !selectedMethod) {
+    if (hasPhysicalProducts && shippingMethods.options && shippingMethods.options.length > 0 && !selectedMethod) {
       alert(t("Please select a shipping method"));
       return;
     }
