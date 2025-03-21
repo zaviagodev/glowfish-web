@@ -5,7 +5,7 @@ import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Image } from "lucide-react";
 import { formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 import { useConfig } from "@/hooks/useConfig";
 
@@ -130,12 +130,8 @@ export function OrderCard({ order, index }: OrderCardProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                  {config?.storeLogo ? (
-                    <img src={config.storeLogo} alt="Store Logo" className="h-10 w-10 object-contain" />
-                  ) : (
-                    <div className="h-10 w-10 bg-primary/10 rounded-lg" />
-                  )}
+                <div className="flex items-center justify-center h-full w-full bg-black">
+                  <Image className="w-12 h-12 text-white" />
                 </div>
               )}
             </div>

@@ -98,6 +98,12 @@ export const ProductSection = memo(function ProductSection({
                     end_datetime={product.end_datetime}
                     isProduct={isProduct}
                     isBanner={isBanner}
+                    track_quantity={product.track_quantity}
+                    quantity={product.product_variants.reduce(
+                      (acc, variant) =>
+                        acc + variant.quantity === null ? 0 : variant.quantity,
+                      0
+                    )}
                   />
                 </motion.div>
               ))}

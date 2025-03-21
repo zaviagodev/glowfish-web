@@ -23,7 +23,7 @@ import { useEvent } from "@/features/orders/hooks/useEvent";
 import { defaultOrderStatuses } from "@/components/settings/OrderStatusBar";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import Pagination from "@/components/pagination/Pagination";
-import { Package2, Truck, Ticket } from "lucide-react";
+import { Package2, Truck, Ticket, Image } from "lucide-react";
 import { cn, formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import { useConfig } from "@/hooks/useConfig";
@@ -31,6 +31,7 @@ import { format } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import ContactUsButton from "@/components/ui/contact-us-button";
+import DefaultStorefront from "@/components/icons/DefaultStorefront";
 
 interface ConfirmOrderButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -234,11 +235,15 @@ const OrdersPage = () => {
   // Replace the GlowfishIcon usage with store logo
   const renderLogo = () => {
     if (config?.storeLogo) {
-      return <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />;
+      return (
+        <img
+          src={config.storeLogo}
+          alt="Store Logo"
+          className="w-20 h-20 object-contain"
+        />
+      );
     }
-    return (
-      <div className="w-20 h-20 bg-primary/10 rounded-lg" />
-    );
+    return <DefaultStorefront />;
   };
 
   return (
@@ -472,12 +477,8 @@ const OrdersPage = () => {
                             />
                           </div>
                         ) : (
-                          <div className="flex items-center justify-center w-20 h-20 rounded-lg overflow-hidden bg-black">
-                            {config?.storeLogo ? (
-                              <img src={config.storeLogo} alt="Store Logo" className="w-20 h-20 object-contain" />
-                            ) : (
-                              <div className="w-20 h-20 bg-primary/10 rounded-lg" />
-                            )}
+                          <div className="flex items-center justify-center h-full bg-darkgray w-full">
+                            <Image className="w-20 h-20 text-white" />
                           </div>
                         )}
                         <div className="flex-1 min-w-0">

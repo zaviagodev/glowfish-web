@@ -365,7 +365,9 @@ export default function TicketsPage() {
                       <div>
                         <h3 className="font-medium">{ticket.code}</h3>
                         {/* TODO: fetch the dynamic variant that users have purchased in case the events have variants */}
-                        <p className="text-muted-foreground">{ticket.variant_snapshot?.name}</p>
+                        <p className="text-muted-foreground">
+                          {ticket.variant_snapshot?.name}
+                        </p>
                       </div>
                     </div>
                     <div

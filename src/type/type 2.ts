@@ -77,6 +77,8 @@ export interface AnimatedCardProps {
     gallery_link?: string;
     isProduct?: boolean;
     isBanner?: boolean;
+    quantity?: number;
+    track_quantity?: boolean;
 }
 
 type EventDataTypes = "small" | "event"

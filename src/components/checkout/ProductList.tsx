@@ -1,7 +1,7 @@
 import { useTranslate } from "@refinedev/core";
 import { CartItem } from "@/lib/cart";
 import { makeTwoDecimals } from "@/lib/utils";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Image } from "lucide-react";
 import { useState } from "react";
 import { useConfig } from "@/hooks/useConfig";
 
@@ -54,12 +54,8 @@ export function ProductList({ items }: ProductListProps) {
                   className="w-full h-full object-cover object-top"
                 />
               ) : (
-                <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                  {config?.storeLogo ? (
-                    <img src={config.storeLogo} alt="Store Logo" className="h-10 w-10 object-contain" />
-                  ) : (
-                    <div className="h-10 w-10 bg-primary/10 rounded-lg" />
-                  )}
+                <div className="flex items-center justify-center h-full w-full bg-black">
+                  <Image className="w-8 h-8 text-white" />
                 </div>
               )}
             </div>
