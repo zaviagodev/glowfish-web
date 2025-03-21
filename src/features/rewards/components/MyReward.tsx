@@ -13,8 +13,8 @@ export function MyReward({ order }: MyRewardProps) {
 
   // Get the first reward item from the order
   const rewardItem = order.order_items.find((item) => item.meta_data.reward);
-  const product = rewardItem?.product_variant.product;
-  const image = product?.images[0];
+  const product = rewardItem?.product_variant?.product;
+  const image = product?.images && product.images.length > 0 ? product.images[0] : null;
 
   return (
     <motion.div
