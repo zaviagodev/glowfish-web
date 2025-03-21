@@ -23,10 +23,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import TicketsSkeletons from "@/components/skeletons/TicketsSkeletons";
 import ProductPlaceholder from "@/components/ui/product-placeholder";
+import { useState } from "react";
 
 const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
   const navigate = useNavigate();
   const { order, loading } = useRewardOrder(orderId);
+  const [isBarcode, setIsBarcode] = useState(false);
 
   if (loading) {
     return (
@@ -179,6 +181,23 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="flex flex-col gap-4 items-center mt-6">
+          {/* TODO: Change the QR Code, Barcode, and Reward No. to the dynamic ones */}
+          <div>NO. 123465</div>
+          {isBarcode ? (
+            <div className="h-40 w-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl">
+              Bar
+            </div>
+          ) : (
+            <div className="h-40 w-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl">
+              QR
+            </div>
+          )}
+          <p onClick={() => setIsBarcode(!isBarcode)}>
+            {isBarcode ? "Switch to QR code" : "Switch to Barcode"}
+          </p>
         </div>
       </div>
     </div>
