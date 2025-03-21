@@ -227,16 +227,16 @@ function App() {
 function AppWrapper() {
   return (
     <ConfigProvider>
-      <ToastProvider>
-        <ThemeProvider>
-          <BrowserRouter>
-            <HelmetProvider>
-              <DynamicTitle />
-              <App />
-            </HelmetProvider>
-          </BrowserRouter>
-        </ThemeProvider>
-      </ToastProvider>
+      <HelmetProvider>
+        <ToastProvider>
+          <ThemeProvider>
+            <BrowserRouter>
+                <DynamicTitle />
+                <App />
+            </BrowserRouter>
+          </ThemeProvider>
+        </ToastProvider>
+      </HelmetProvider>
     </ConfigProvider>
   );
 }
