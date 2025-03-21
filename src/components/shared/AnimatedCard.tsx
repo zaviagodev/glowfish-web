@@ -146,7 +146,7 @@ export function AnimatedCard({
           />
         ) : (
           <div className="flex items-center justify-center h-full bg-darkgray w-full">
-            <Image className="w-20 h-20 text-white" />
+            <Image className="w-20 h-20 text-gray-300 dark:text-[#767676]" />
           </div>
         )}
 

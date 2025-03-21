@@ -55,7 +55,7 @@ export function ProductList({ items }: ProductListProps) {
                 />
               ) : (
                 <div className="flex items-center justify-center h-full w-full bg-black">
-                  <Image className="w-8 h-8 text-white" />
+                  <Image className="w-8 h-8 text-[#767676]" />
                 </div>
               )}
             </div>

@@ -131,7 +131,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 />
               ) : (
                 <div className="flex items-center justify-center h-full w-full bg-black">
-                  <Image className="w-12 h-12 text-white" />
+                  <Image className="w-12 h-12 text-[#767676]" />
                 </div>
               )}
             </div>

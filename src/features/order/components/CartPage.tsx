@@ -82,7 +82,7 @@ export function CartPage() {
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full bg-darkgray w-full">
-                        <Image className="w-8 h-8 text-white" />
+                        <Image className="w-8 h-8 text-[#767676]" />
                       </div>
                     )}
                   </div>

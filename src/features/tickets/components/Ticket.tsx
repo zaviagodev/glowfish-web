@@ -49,7 +49,7 @@ export function Ticket({ ticket }: TicketProps) {
           />
         ) : (
           <div className="flex items-center justify-center h-full bg-darkgray w-full">
-            <Image className="w-12 h-12 text-white" />
+            <Image className="w-12 h-12 text-[#767676]" />
           </div>
         )}
 

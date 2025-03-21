@@ -125,7 +125,7 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
             </div>
           ) : (
             <div className="w-full h-full flex items-center justify-center p-4 max-width-mobile">
-              <Image className="w-20 h-20 text-white" />
+              <Image className="w-20 h-20 text-[#767676]" />
             </div>
           )}
         </>
@@ -189,7 +189,7 @@ const ItemCarousel = ({ images, image, name }: ItemCarouselProps) => {
             </div>
           ) : (
             <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-darkgray">
-              <Image className="w-20 h-20 text-white" />
+              <Image className="w-20 h-20 text-[#767676]" />
             </div>
           )}
         </>
