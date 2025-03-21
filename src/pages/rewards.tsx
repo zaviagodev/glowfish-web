@@ -710,7 +710,7 @@ const RewardsPage = () => {
             onClick={() => navigate("/scan")}
             className="absolute left-[30px] bottom-5"
           >
-            <QrCode className="h-6 w-6" />
+            <QrCode className="h-6 w-6 text-white" />
           </button>
         </div>
 
@@ -756,7 +756,7 @@ const RewardsPage = () => {
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full bg-darkgray w-full">
-                        <Image className="w-20 h-20 text-white" />
+                        <Image className="w-20 h-20 text-[#767676]" />
                       </div>
                     )}
                   </div>
