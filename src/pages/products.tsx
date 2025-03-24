@@ -171,7 +171,7 @@ export default function ProductsPage() {
           isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
-          tab_type="colorful"
+          category_type="products"
         />
 
         {/* Filter & Sort Bar */}
