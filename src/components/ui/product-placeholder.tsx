@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Image } from "lucide-react";
+import GlowfishIcon from "../icons/GlowfishIcon";
 
 interface ProductPlaceholderProps {
   className?: string;
@@ -17,9 +18,7 @@ const ProductPlaceholder = ({
         className
       )}
     >
-      <Image
-        className={cn(imageClassName, "text-[#CDCDCD] dark:text-[#767676]")}
-      />
+      <GlowfishIcon className={imageClassName} />
     </div>
   );
 };
