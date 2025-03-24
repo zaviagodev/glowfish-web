@@ -117,12 +117,22 @@ export interface RewardOrder {
       };
     };
   }[];
+  rewards: {
+    id: string;
+    code: string;
+  }[];
 }
 
 export const getRewardOrders = async (): Promise<RewardOrder[]> => {
   const { data, error } = await supabase
     .from("reward_orders")
-    .select("*")
+    .select(`
+      *,
+      rewards (
+        id,
+        code
+      )
+    `)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -135,7 +145,13 @@ export const getRewardOrders = async (): Promise<RewardOrder[]> => {
 export const getRewardOrderById = async (id: string): Promise<RewardOrder | null> => {
   const { data, error } = await supabase
     .from("reward_orders")
-    .select("*")
+    .select(`
+      *,
+      rewards (
+        id,
+        code
+      )
+    `)
     .eq("id", id)
     .single();
 

@@ -24,6 +24,8 @@ import { cn } from "@/lib/utils";
 import TicketsSkeletons from "@/components/skeletons/TicketsSkeletons";
 import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useState } from "react";
+import { QRCodeCanvas } from "qrcode.react";
+
 
 const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
   const navigate = useNavigate();
@@ -184,20 +186,20 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
         </div>
 
         <div className="flex flex-col gap-4 items-center mt-6">
-          {/* TODO: Change the QR Code, Barcode, and Reward No. to the dynamic ones */}
-          <div>NO. 123465</div>
-          {isBarcode ? (
-            <div className="h-40 w-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl">
-              Bar
-            </div>
-          ) : (
-            <div className="h-40 w-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl">
-              QR
-            </div>
+          {/* Check if 'rewards' exists and has at least one entry before accessing it */}
+          {order.rewards && order.rewards.length > 0 && (
+            <>
+              <div>NO. {order.rewards[0].code}</div>
+              <div className="h-40 w-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl">
+                <QRCodeCanvas
+                  value={`${import.meta.env.VITE_ADMIN_URL}/dashboard/events/record-attendance?ticket_code=${order.rewards[0].code}`}
+                  size={224}
+                  level="H"
+                  includeMargin={false}
+                />
+              </div>
+            </>
           )}
-          <p onClick={() => setIsBarcode(!isBarcode)}>
-            {isBarcode ? "Switch to QR code" : "Switch to Barcode"}
-          </p>
         </div>
       </div>
     </div>

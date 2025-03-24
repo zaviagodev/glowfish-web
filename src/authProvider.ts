@@ -17,8 +17,6 @@ const LINE_CONFIG = {
   scope: "profile openid email",
 };
 
-console.log(LINE_CONFIG);
-
 const isStorefrontMode = () => import.meta.env.VITE_STOREFRONT_MODE === "1";
 
 // Function to create test session

@@ -6,8 +6,6 @@ const ContactUsButton = () => {
   const { config } = useConfig();
   const contactUrl = config?.contactLink || "#";
 
-  console.log(config);
-  
 
   return (
     <Button 
