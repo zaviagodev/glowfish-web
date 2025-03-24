@@ -233,20 +233,6 @@ const OrdersPage = () => {
     );
   };
 
-  // Replace the GlowfishIcon usage with store logo
-  const renderLogo = () => {
-    if (config?.storeLogo) {
-      return (
-        <img
-          src={config.storeLogo}
-          alt="Store Logo"
-          className="w-20 h-20 object-contain"
-        />
-      );
-    }
-    return <DefaultStorefront />;
-  };
-
   return (
     <>
       <AnimatePresence mode="wait">
