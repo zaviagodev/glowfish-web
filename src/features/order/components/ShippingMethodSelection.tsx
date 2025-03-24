@@ -66,11 +66,7 @@ export function ShippingMethodSelection({
 
   // If no shipping options available
   if (!methods.options?.length) {
-    return (
-      <div className="text-gray-500 p-4 text-center">
-        {t("No shipping methods available")}
-      </div>
-    );
+    return null;
   }
 
   return (

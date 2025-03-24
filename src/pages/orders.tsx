@@ -32,6 +32,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import ContactUsButton from "@/components/ui/contact-us-button";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 interface ConfirmOrderButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -430,7 +431,7 @@ const OrdersPage = () => {
               <div className="space-y-6">
                 {order.order_items.map((item) => {
                   // TODO: Check if item is an event ticket, 'false' value will be replaced with the condition check
-                  const isEvent = true;
+                  const isEvent = false;
                   const Total = ({ className }: { className?: string }) => (
                     <p
                       className={cn(
@@ -463,7 +464,7 @@ const OrdersPage = () => {
                       )}
                       <div
                         key={item.id}
-                        className={cn("flex gap-5 px-4", {
+                        className={cn("flex gap-5", {
                           "p-6 bg-darkgray rounded-lg items-center col-span-2 border-r-2 border-dashed border-r-background":
                             isEvent,
                         })}
@@ -477,25 +478,16 @@ const OrdersPage = () => {
                             />
                           </div>
                         ) : (
-                          <div className="flex items-center justify-center h-full bg-darkgray w-full">
-                            <Image className="w-20 h-20 text-white" />
-                          </div>
+                          <ProductPlaceholder
+                            className="w-20 h-20"
+                            imageClassName="w-12 h-12"
+                          />
                         )}
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-base font-medium text-card-foreground mb-1 truncate">
-                            {item.product_variants.product.name}
-                          </h3>
-                          <div className="text-sm text-muted-foreground space-y-1">
-                            <div className="flex items-center justify-between gap-3">
-                              <p>
-                                {t("Unit Price")}: ฿
-                                {makeTwoDecimals(
-                                  item.unit_price
-                                ).toLocaleString()}
-                              </p>
-                              {!isEvent && <Quantity />}
-                            </div>
-                            {!isEvent && <Total />}
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-base font-medium text-card-foreground truncate">
+                              {item.product_variants.product.name}
+                            </h3>
                             {item.product_variants.options?.length > 0 && (
                               <div className="flex flex-wrap gap-1">
                                 {item.product_variants.options.map(
@@ -510,6 +502,18 @@ const OrdersPage = () => {
                                 )}
                               </div>
                             )}
+                          </div>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            <div className="flex items-center justify-between gap-3">
+                              <p>
+                                {t("Unit Price")}: ฿
+                                {makeTwoDecimals(
+                                  item.unit_price
+                                ).toLocaleString()}
+                              </p>
+                              {!isEvent && <Quantity />}
+                            </div>
+                            {!isEvent && <Total />}
                           </div>
                         </div>
                       </div>

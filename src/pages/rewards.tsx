@@ -42,6 +42,7 @@ import { ProductVariant } from "@/type/type 2";
 import { VariantDrawer } from "@/features/home/components/VariantDrawer";
 import { set } from "date-fns";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -171,15 +172,16 @@ const RewardsPage = () => {
       await refreshOrders();
 
       setIsConfirmDialogOpen(false);
-      if (selectedOption === "price") {
-        navigate("/checkout", {
-          state: {
-            selectedItems: orderItems,
-          },
-        });
-      } else {
-        setIsSuccessful(true);
-      }
+      if (newOrder) navigate(`/my-rewards/${newOrder?.[0]?.order_id}`);
+      // if (selectedOption === "price") {
+      //   navigate("/checkout", {
+      //     state: {
+      //       selectedItems: orderItems,
+      //     },
+      //   });
+      // } else {
+      //   setIsSuccessful(true);
+      // }
     } catch (error) {
       console.error("Error redeeming reward:", error);
       setError(
@@ -755,9 +757,7 @@ const RewardsPage = () => {
                         className="w-full h-full object-cover object-top"
                       />
                     ) : (
-                      <div className="flex items-center justify-center h-full bg-darkgray w-full">
-                        <Image className="w-20 h-20 text-white" />
-                      </div>
+                      <ProductPlaceholder />
                     )}
                   </div>
 

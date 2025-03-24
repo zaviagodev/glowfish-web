@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { RewardOrder } from "../services/rewardService";
 import { Calendar, Gift, Tag, Image } from "lucide-react";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 interface MyRewardProps {
   order: RewardOrder;
@@ -13,8 +14,15 @@ export function MyReward({ order }: MyRewardProps) {
 
   // Get the first reward item from the order
   const rewardItem = order.order_items.find((item) => item.meta_data.reward);
-  const product = rewardItem?.product_variant.product;
-  const image = product?.images[0];
+  const product = rewardItem?.product_variant?.product;
+  const image =
+    product?.images && product.images.length > 0 ? product.images[0] : null;
+  const orderStatusColors = {
+    completed: "bg-icon-green-background text-icon-green-foreground",
+    processing: "bg-icon-blue-background text-icon-blue-foreground",
+    cancelled: "bg-icon-red-background text-icon-red-foreground",
+    pending: "bg-icon-orange-background text-icon-orange-foreground",
+  };
 
   return (
     <motion.div
@@ -38,28 +46,27 @@ export function MyReward({ order }: MyRewardProps) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="flex items-center justify-center h-full bg-darkgray w-full">
-              <Image className="w-16 h-16 text-white" />
-            </div>
+            <ProductPlaceholder imageClassName="w-16 h-16" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
 
         {/* Order Details */}
         <div className="p-4 col-span-2 space-y-4">
           <div className="space-y-2">
             <div className="flex items-start justify-between">
-              <h3 className="text-lg font-semibold text-foreground">
-                {product?.name || `Order #${order.id.slice(0, 8)}`}
-              </h3>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  {product?.name || `Order #${order.id.slice(0, 8)}`}
+                </h3>
+                <p className="text-muted-foreground">{`Order #${order.id.slice(
+                  0,
+                  8
+                )}`}</p>
+              </div>
               <span
                 className={cn(
                   "px-3 py-1 rounded-full text-xs font-medium",
-                  order.status === "completed" && "bg-green-100 text-green-800",
-                  order.status === "processing" &&
-                    "bg-yellow-100 text-yellow-800",
-                  order.status === "cancelled" && "bg-red-100 text-red-800",
-                  order.status === "pending" && "bg-gray-100 text-gray-800"
+                  orderStatusColors[order.status]
                 )}
               >
                 {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
@@ -84,7 +91,7 @@ export function MyReward({ order }: MyRewardProps) {
           </div>
 
           {/* Order Summary */}
-          <div className="flex items-center justify-between text-sm">
+          {/* <div className="flex items-center justify-between text-sm">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground">Order Items:</span>
@@ -98,7 +105,7 @@ export function MyReward({ order }: MyRewardProps) {
                 <span className="font-medium">${order.total.toFixed(2)}</span>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </motion.div>

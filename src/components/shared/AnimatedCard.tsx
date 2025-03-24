@@ -6,6 +6,7 @@ import { useState } from "react";
 import { AnimatedCardProps } from "@/type/type 2";
 import { Button } from "../ui/button";
 import { isPast } from "date-fns";
+import ProductPlaceholder from "../ui/product-placeholder";
 
 const springConfig = {
   type: "spring",
@@ -145,9 +146,7 @@ export function AnimatedCard({
             transition={springConfig}
           />
         ) : (
-          <div className="flex items-center justify-center h-full bg-darkgray w-full">
-            <Image className="w-20 h-20 text-white" />
-          </div>
+          <ProductPlaceholder />
         )}
 
         {/* This button is not clickable, it is used to identify that there is a gallery in this product card, but there will be a 'view gallery' button to click to another link on the single product page */}
