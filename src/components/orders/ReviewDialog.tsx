@@ -75,14 +75,6 @@ export function ReviewDialog({
     setIsSubmitting(true);
     try {
       // Add your review submission logic here
-      console.log({
-        orderId,
-        itemId: item.id,
-        rating,
-        review,
-        mediaFiles,
-      });
-
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 

@@ -226,9 +226,6 @@ export function ProductDetail({
       {}
     );
 
-    console.log("Selected Variant:", selectedVariant);
-    console.log("Variant Data:", variantData);
-
     addItem({
       variantId: selectedVariantId!,
       productId: id.toString(),
