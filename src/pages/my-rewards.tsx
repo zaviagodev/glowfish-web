@@ -26,7 +26,6 @@ import ProductPlaceholder from "@/components/ui/product-placeholder";
 import { useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
-
 const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
   const navigate = useNavigate();
   const { order, loading } = useRewardOrder(orderId);
@@ -190,14 +189,24 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
           {order.rewards && order.rewards.length > 0 && (
             <>
               <div>NO. {order.rewards[0].code}</div>
-              <div className="h-40 w-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl">
+              <div className="w-40 h-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl mb-4">
                 <QRCodeCanvas
-                  value={`${import.meta.env.VITE_ADMIN_URL}/dashboard/events/record-attendance?ticket_code=${order.rewards[0].code}`}
-                  size={224}
+                  value={`${
+                    import.meta.env.VITE_ADMIN_URL
+                  }/dashboard/events/record-attendance?ticket_code=${
+                    order.rewards[0].code
+                  }`}
+                  size={180}
                   level="H"
                   includeMargin={false}
                 />
               </div>
+              <p
+                className="text-sm text-muted-foreground"
+                onClick={() => setIsBarcode(!isBarcode)}
+              >
+                {isBarcode ? "Switch to QR Code" : "Switch to Barcode"}
+              </p>
             </>
           )}
         </div>
