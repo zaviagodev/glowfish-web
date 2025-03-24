@@ -105,11 +105,9 @@ export function CheckoutPage() {
     let totalEventPrice = 0;
 
     console.group("Checkout Product Check");
-    console.log("Total Items:", items);
 
     try {
       for (const item of items) {
-        console.log("Checking item:", item);
 
         const { data: variant, error: variantError } = await supabase
           .from("product_variants")
@@ -117,11 +115,8 @@ export function CheckoutPage() {
           .eq("id", item.variantId)
           .single();
 
-        console.log("Variant Data:", variant);
-        console.log("Variant Error:", variantError);
 
         if (variantError) {
-          console.log("Variant error, skipping:", variantError);
           continue;
         }
 
