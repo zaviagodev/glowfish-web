@@ -9,6 +9,7 @@ import { useState, useRef, useEffect } from "react";
 import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
 import { makeTwoDecimals } from "@/lib/utils";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 export function CartPage() {
   const t = useTranslate();
@@ -81,9 +82,7 @@ export function CartPage() {
                         className="w-full h-full object-cover object-top"
                       />
                     ) : (
-                      <div className="flex items-center justify-center h-full bg-darkgray w-full">
-                        <Image className="w-8 h-8 text-white" />
-                      </div>
+                      <ProductPlaceholder imageClassName="w-8 h-8" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
