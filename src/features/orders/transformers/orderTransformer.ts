@@ -33,6 +33,12 @@ interface DbOrder {
   loyalty_points_used: number;
   created_at: string;
   customer_id: string;
+  payment_details: any;
+  shipping_details: {
+    courier: string;
+    shipped_at: string;
+    tracking_number: string;
+  };
   customer: {
     id: string;
     email: string;
@@ -54,6 +60,12 @@ export interface Order {
   loyalty_points_used: number;
   created_at: string;
   customer_id: string;
+  payment_details: any;
+  shipping_details: {
+    courier: string;
+    shipped_at: string;
+    tracking_number: string;
+  };
   customer: {
     id: string;
     email: string;
@@ -93,6 +105,8 @@ export const transformOrder = (order: DbOrder): Order => ({
   loyalty_points_used: order.loyalty_points_used || 0,
   created_at: order.created_at,
   customer_id: order.customer_id,
+  payment_details: order.payment_details,
+  shipping_details: order.shipping_details,
   customer: {
     id: order.customer.id,
     email: order.customer.email,

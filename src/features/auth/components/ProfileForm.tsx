@@ -23,6 +23,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { DatePicker } from "@/components/ui/date-picker";
+import { toZonedTime } from "date-fns-tz";
 
 interface ProfileFormProps {
   onComplete?: () => void;
@@ -47,7 +48,7 @@ export const ProfileForm = ({
   const labelClassName = cn(
     "block text-sm font-medium",
     "text-card-foreground",
-    { "text-muted-foreground": isProfileSetup }
+    { "dark:text-muted-foreground text-link": isProfileSetup }
   );
 
   const form = useForm<ProfileSchema>({
@@ -149,6 +150,11 @@ export const ProfileForm = ({
         profile_setup_completed_at: new Date().toISOString(),
       };
 
+      // Convert date of birth to UTC ISO string
+      const dateOfBirth = data.dateOfBirth
+        ? toZonedTime(data.dateOfBirth, "UTC").toISOString()
+        : null;
+
       // Update customer record with merged meta
       const { error: customerError } = await supabase
         .from("customers")
@@ -163,7 +169,19 @@ export const ProfileForm = ({
         })
         .eq("auth_id", user.id);
 
-      if (customerError) throw customerError;
+      if (customerError) {
+        // Check for duplicate email error
+        if (
+          customerError.code === "23505" &&
+          customerError.message.includes("customers_store_name_email_key")
+        ) {
+          const duplicateEmailMessage = "This email already exists";
+          form.setError("email", { message: duplicateEmailMessage });
+          addToast(duplicateEmailMessage, "error");
+          return;
+        }
+        throw customerError;
+      }
 
       await refreshCustomer();
       addToast(t("Profile updated successfully"), "success");
@@ -285,9 +303,7 @@ export const ProfileForm = ({
               {...form.register("email")}
               disabled={isLoading}
               className="bg-darkgray"
-              placeholder={
-                isProfileSetup ? t("Enter your email") : "youremail@gmail.com"
-              }
+              placeholder="youremail@gmail.com"
             />
             {form.formState.errors.email && (
               <p className="text-sm text-red-500">

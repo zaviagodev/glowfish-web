@@ -14,12 +14,13 @@ import {
 import React from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import { useCustomer } from "@/hooks/useCustomer";
 import { usePoints } from "@/features/points/hooks/usePoints";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Pagination from "@/components/pagination/Pagination";
+import MyPointsSkeleton from "@/components/skeletons/MyPointsSkeletons";
 
 const PointsPage = () => {
   const t = useTranslate();
@@ -59,7 +60,7 @@ const PointsPage = () => {
     return (
       <div className="bg-background">
         <PageHeader title={t("My Points")} />
-        <LoadingSpin />
+        <MyPointsSkeleton />
       </div>
     );
   }
@@ -100,7 +101,7 @@ const PointsPage = () => {
     const Icon = transaction.type === "earn" ? ArrowUpToLine : ArrowDownToLine;
     const formattedDate = format(
       new Date(transaction.created_at),
-      "dd MMM yyyy"
+      formattedDateAndTime
     );
 
     return (
@@ -147,7 +148,7 @@ const PointsPage = () => {
               transaction.type === "earn" ? "text-[#34C759]" : "text-[#FF3B30]"
             )}
           >
-            {transaction.type === "earn" ? "+" : "-"}
+            {transaction.type === "earn" ? "+" : ""}
             {transaction.points?.toLocaleString()}
           </div>
         </div>

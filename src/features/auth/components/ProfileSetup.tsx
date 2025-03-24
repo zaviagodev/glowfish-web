@@ -4,6 +4,7 @@ import { ProfileForm } from "./ProfileForm";
 
 export const ProfileSetup = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const returnTo = "/auth/tell-us-about-yourself";
 
   return (

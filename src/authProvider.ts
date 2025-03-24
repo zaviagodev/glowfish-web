@@ -3,7 +3,7 @@ import type { AuthProvider } from "@refinedev/core";
 import { supabase } from "./lib/supabase";
 import { setSupabaseSession } from "@/lib/auth";
 import { custom } from "zod";
-import { useStore } from '@/hooks/useStore';  
+import { useStore } from "@/hooks/useStore";
 
 export const TOKEN_KEY = "refine-auth";
 export const LINE_USER_KEY = "line-user";
@@ -11,8 +11,10 @@ export const LINE_USER_KEY = "line-user";
 // Line auth configuration
 const LINE_CONFIG = {
   clientId: import.meta.env.VITE_LINE_CLIENT_ID,
-  redirectUri: `${window.location.origin}/line-callback`,
-  scope: "profile openid email" 
+  redirectUri: `${window.location.hostname === 'localhost' ? 'http' : 'https'}://${
+    import.meta.env.VITE_CALLBACK_DOMAIN || window.location.hostname + (window.location.hostname === 'localhost' ? `:${window.location.port}` : '')
+  }${import.meta.env.VITE_CALLBACK_DOMAIN ? '/line/callback' : '/line-callback'}?original_domain=${encodeURIComponent(window.location.hostname)}`,
+  scope: "profile openid email",
 };
 
 const isStorefrontMode = () => import.meta.env.VITE_STOREFRONT_MODE === "1";
@@ -21,21 +23,23 @@ const isStorefrontMode = () => import.meta.env.VITE_STOREFRONT_MODE === "1";
 export const createTestSession = async () => {
   try {
     // Create anonymous session with limited permissions
-    const { data: { session }, error } = await supabase.auth.signInWithPassword({
-      email: import.meta.env.VITE_TEST_EMAIL || 'test@example.com',
-      password: import.meta.env.VITE_TEST_PASSWORD || 'test123'
-    });
+    const { data: { session = null }, error } = await supabase.auth.signInWithPassword(
+      {
+        email: import.meta.env.VITE_TEST_EMAIL || "test@example.com",
+        password: import.meta.env.VITE_TEST_PASSWORD || "test123",
+      },
+    );
 
     if (error) throw error;
 
     // Get or create test customer
     const { data: customer, error: customerError } = await supabase
-      .from('customers')
-      .select('*')
-      .eq('email', session.user.email)
+      .from("customers")
+      .select("*")
+      .eq("email", session?.user?.email)
       .single();
 
-    if (customerError && customerError.code !== 'PGRST116') {
+    if (customerError && customerError.code !== "PGRST116") {
       throw customerError;
     }
 
@@ -43,16 +47,16 @@ export const createTestSession = async () => {
 
     if (!testCustomer) {
       const { data: newCustomer, error: createError } = await supabase
-        .from('customers')
+        .from("customers")
         .insert({
-          email: session.user.email,
-          first_name: 'Test',
-          last_name: 'User',
-          store_name: 'glowfish',
+          email: session?.user?.email,
+          first_name: "Test",
+          last_name: "User",
+          store_name: "glowfish",
           is_verified: true,
           meta: {
-            is_test_account: true
-          }
+            is_test_account: true,
+          },
         })
         .select()
         .single();
@@ -61,19 +65,19 @@ export const createTestSession = async () => {
       testCustomer = newCustomer;
     }
 
-    const testSession =  {
-      access_token: session.access_token,
-      refresh_token: session.refresh_token,
-      user : session.user,
-      customer : testCustomer,
+    const testSession = {
+      access_token: session?.access_token || "" ,
+      refresh_token: session?.refresh_token || "",
+      user: session?.user || null,
+      customer: testCustomer,
     };
     await setSupabaseSession(testSession);
     return {
       success: true,
-      redirectTo: "/home"
+      redirectTo: "/home",
     };
   } catch (error) {
-    console.error('Error creating test session:', error);
+    console.error("Error creating test session:", error);
     throw error;
   }
 };
@@ -84,23 +88,20 @@ export const authProvider: AuthProvider = {
     if (isStorefrontMode()) {
       try {
         const testSession = await createTestSession();
-        const sessionSet = await setSupabaseSession(testSession);
-        if (!sessionSet) {
-          throw new Error('Failed to set session');
-        }
-
+        return testSession;
+        
         return {
           success: true,
-          redirectTo: "/home"
+          redirectTo: "/home",
         };
       } catch (error) {
-        console.error('Test login error:', error);
+        console.error("Test login error:", error);
         return {
           success: false,
           error: {
             name: "LoginError",
-            message: "Failed to create test session"
-          }
+            message: "Failed to create test session",
+          },
         };
       }
     }
@@ -108,33 +109,35 @@ export const authProvider: AuthProvider = {
     if (providerName === "line" && code) {
       try {
         // Exchange code for access token using Edge Function
-        const { data: tokenData, error: functionError } = await supabase.functions.invoke('line-auth', {
-          body: {
-            code,
-            redirectUri: LINE_CONFIG.redirectUri,
-            storeName: storeName
-          }
-        });
+        const { data: tokenData, error: functionError } = await supabase
+          .functions.invoke("line-auth", {
+            body: {
+              code,
+              redirectUri: LINE_CONFIG.redirectUri,
+              storeName: storeName,
+            },
+          });
         if (functionError) {
           throw new Error("Failed to get access token");
         }
 
-        if(tokenData.type == 1){
+        if (tokenData.type == 1) {
           const sessionSet = await setSupabaseSession(tokenData);
           if (!sessionSet) {
-            throw new Error('Failed to set session');
+            throw new Error("Failed to set session");
           }
         }
 
         // Store tokens and user data
         localStorage.setItem(TOKEN_KEY, tokenData.access_token);
         localStorage.setItem(LINE_USER_KEY, JSON.stringify(tokenData.line_id));
-        
+
         return {
           success: true,
-          redirectTo: tokenData.redirect === "register" ? "/phone-verification" : "/home",
+          redirectTo: tokenData.redirect === "register"
+            ? "/phone-verification"
+            : "/home",
         };
-
       } catch (error) {
         console.error("Line login error:", error);
         return {
@@ -150,7 +153,7 @@ export const authProvider: AuthProvider = {
     return {
       success: false,
       error: {
-        name: "LoginError", 
+        name: "LoginError",
         message: "Invalid login method",
       },
     };
@@ -160,8 +163,8 @@ export const authProvider: AuthProvider = {
     await supabase.auth.signOut();
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(LINE_USER_KEY);
-    localStorage.removeItem('user_profile');
-    localStorage.removeItem('cached_events');
+    localStorage.removeItem("user_profile");
+    localStorage.removeItem("cached_events");
     return {
       success: true,
       redirectTo: "/login",
@@ -172,7 +175,7 @@ export const authProvider: AuthProvider = {
     if (isStorefrontMode()) {
       const { data: { session } } = await supabase.auth.getSession();
       return {
-        authenticated: !!session
+        authenticated: !!session,
       };
     }
 
@@ -198,17 +201,17 @@ export const authProvider: AuthProvider = {
       if (!user) return null;
 
       const { data: customer } = await supabase
-        .from('customers')
-        .select('*')
-        .eq('auth_id', user.id)
-        .eq('store_name', storeName)
+        .from("customers")
+        .select("*")
+        .eq("auth_id", user.id)
+        .eq("store_name", storeName)
         .single();
 
       return {
         id: user.id,
-        name: customer?.full_name || 'Test User',
+        name: customer?.full_name || "Test User",
         email: customer?.email || user.email,
-        avatar: customer?.avatar_url || ""
+        avatar: customer?.avatar_url || "",
       };
     }
 
@@ -233,7 +236,7 @@ export const authProvider: AuthProvider = {
 // Helper function to initiate Line login
 export const loginWithLine = () => {
   if (isStorefrontMode()) {
-    window.location.href = '/line-callback?code=test-code';
+    window.location.href = "/line-callback?code=test-code";
     return;
   }
 
@@ -245,5 +248,6 @@ export const loginWithLine = () => {
     state: Math.random().toString(36).substring(7), // Random state for security
   });
 
-  window.location.href = `https://access.line.me/oauth2/v2.1/authorize?${params.toString()}`;
+  window.location.href =
+    `https://access.line.me/oauth2/v2.1/authorize?${params.toString()}`;
 };

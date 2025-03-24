@@ -1,3 +1,4 @@
+import { makeTwoDecimals } from "@/lib/utils";
 import { useTranslate } from "@refinedev/core";
 import { Receipt } from "lucide-react";
 
@@ -6,7 +7,9 @@ interface OrderSummaryProps {
   discount: number;
   pointsDiscount: number;
   shipping: number;
+  shippingMethod?: string;
   total: number;
+  isUsingPoints?: boolean;
 }
 
 export function OrderSummary({
@@ -14,9 +17,12 @@ export function OrderSummary({
   discount,
   pointsDiscount,
   shipping,
+  shippingMethod,
   total,
+  isUsingPoints,
 }: OrderSummaryProps) {
   const t = useTranslate();
+  const currency = isUsingPoints ? "" : "฿";
 
   return (
     <div>
@@ -32,7 +38,10 @@ export function OrderSummary({
             <span className="text-body text-muted-foreground">
               {t("Subtotal")}
             </span>
-            <span className="text-body">฿{subtotal.toLocaleString()}</span>
+            <span className="text-body">
+              {currency}
+              {makeTwoDecimals(subtotal).toLocaleString()}
+            </span>
           </div>
           {discount > 0 && (
             <div className="flex justify-between">
@@ -40,7 +49,8 @@ export function OrderSummary({
                 {t("Discount")}
               </span>
               <span className="text-body text-secondary-foreground">
-                -฿{discount.toLocaleString()}
+                -{currency}
+                {makeTwoDecimals(discount).toLocaleString()}
               </span>
             </div>
           )}
@@ -50,20 +60,32 @@ export function OrderSummary({
                 {t("Points discount")}
               </span>
               <span className="text-body text-secondary-foreground">
-                -฿{pointsDiscount.toLocaleString()}
+                -{currency}
+                {pointsDiscount.toLocaleString()}
               </span>
             </div>
           )}
-          {/* <div className="flex justify-between">
-            <span className="text-body text-muted-foreground">
-              {t("Shipping cost")}
-            </span>
-            <span className="text-body">฿{shipping.toLocaleString()}</span>
-          </div> */}
+          {shipping > 0 && (
+            <div className="flex justify-between items-end">
+              <div className="flex flex-col">
+                <span className="text-body text-muted-foreground">
+                  {t("Shipping cost")} :
+                </span>
+                <span className="text-body text-muted-foreground">
+                  {shippingMethod}
+                </span>
+              </div>
+              <span className="text-body">
+                {currency}
+                {makeTwoDecimals(shipping).toLocaleString()}
+              </span>
+            </div>
+          )}
           <div className="pt-3 mt-1 border-t flex justify-between">
             <span className="font-semibold">{t("Total")}</span>
             <span className="font-bold text-secondary-foreground">
-              ฿{total.toLocaleString()}
+              {currency}
+              {makeTwoDecimals(total).toLocaleString()}
             </span>
           </div>
         </div>

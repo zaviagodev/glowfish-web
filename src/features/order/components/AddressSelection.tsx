@@ -181,7 +181,7 @@ export default function AddressSelection() {
           className="h-[85%] sm:h-[85%] p-0 border-0 outline-none bg-background rounded-t-[14px] max-width-mobile max-w-[500px] mx-auto flex flex-col gap-0"
         >
           <SheetHeader className="px-5 pb-3 pt-8 border-b flex-shrink-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
-            <SheetTitle className="text-title2 font-semibold tracking-tight">
+            <SheetTitle className="text-base font-semibold tracking-tight">
               {editingAddress ? t("Edit Address") : t("Add New Address")}
             </SheetTitle>
           </SheetHeader>

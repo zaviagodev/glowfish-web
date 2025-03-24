@@ -6,18 +6,27 @@ import { getUserProfile } from "@/lib/auth";
 import { useProducts } from "@/features/home/hooks/useProducts";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import { ProductDetail } from "@/features/home/components/ProductDetail";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
 import { SearchDialog } from "@/features/home/components/SearchDialog";
 import { ProductSection } from "@/features/home/components/ProductSection";
 import { format, toZonedTime } from "date-fns-tz";
 import { isPast } from "date-fns";
-import { Category } from "@/features/home/types/product.types";
+import { Category, Product } from "@/features/home/types/product.types";
+import { Banner } from "@/features/home";
+import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import HomeSkeletons from "@/components/skeletons/HomeSkeletons";
+
+interface SelectedProduct extends Product {
+  variant_id?: string;
+  quantity?: number;
+}
 
 export const HomeList = () => {
   const t = useTranslate();
   const navigate = useNavigate();
-  const { products, loading, error, categories } = useProducts();
+  const { products, events, loading, error, categories } = useProducts();
+  const { config } = useConfig();
   const [userProfile, setUserProfile] = useState<{
     id: string;
     full_name: string;
@@ -26,28 +35,31 @@ export const HomeList = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] =
+    useState<SelectedProduct | null>(null);
   const productSliderRef = useRef<HTMLDivElement>(null);
   const eventSliderRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = selectedCategory
-    ? products.filter((product) => product.category_id === selectedCategory)
-    : products;
+    ? events.filter(
+        (product: Product) => product.category_id === selectedCategory
+      )
+    : events;
 
   const searchResults = filteredProducts.filter(
-    (product) =>
+    (product: Product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleProductSelect = (product: any) => {
+  const handleProductSelect = (product: Product) => {
     // If product has no variants, just set the product
     if (!product.product_variants || product.product_variants.length === 0) {
       setSelectedProduct({
         ...product,
         track_quantity: product.track_quantity,
         variant_id: undefined,
-        quantity: product.quantity,
+        quantity: product.product_variants?.[0]?.quantity || 0,
       });
       setIsSearchOpen(false);
       return;
@@ -71,12 +83,12 @@ export const HomeList = () => {
       ...product,
       track_quantity: product.track_quantity,
       variant_id: undefined,
-      quantity: product.quantity,
+      quantity: product.product_variants?.[0]?.quantity || 0,
     });
     setIsSearchOpen(false);
   };
 
-  const getPriceDisplay = (product: any) => {
+  const getPriceDisplay = (product: Product) => {
     if (!product.product_variants || product.product_variants.length === 0) {
       return product.price === 0
         ? t("free")
@@ -87,7 +99,7 @@ export const HomeList = () => {
       return `${product.product_variants[0].price.toLocaleString()}`;
     }
 
-    const prices = product.product_variants.map((v: any) => v.price);
+    const prices = product.product_variants.map((v) => v.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
@@ -128,6 +140,10 @@ export const HomeList = () => {
       formattedDateAndTime
     )}`;
 
+  if (loading) {
+    return <HomeSkeletons />;
+  }
+
   return (
     <div className="min-h-screen relative">
       {/* Hero Section */}
@@ -153,8 +169,15 @@ export const HomeList = () => {
           <div className="relative pt-6">
             <div className="flex items-center justify-between">
               <div className="px-5">
-                {/* TODO: add GlowfishIcon */}
-                <GlowfishIcon className="w-[90px]" />
+                {config?.storeLogo ? (
+                  <img
+                    src={config.storeLogo}
+                    alt="Store Logo"
+                    className="w-[90px]"
+                  />
+                ) : (
+                  <DefaultStorefront />
+                )}
               </div>
               <Link to="/settings">
                 <div className="px-5">
@@ -198,36 +221,74 @@ export const HomeList = () => {
         onProductSelect={handleProductSelect}
       />
 
-      {/* Category Bar */}
-      <div className="sticky top-0 z-50 bg-background border-b">
-        <CategoryGrid
-          categories={categories}
-          isLoading={loading}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
-      </div>
-
-      <section className="py-6 space-y-6 px-[1px]">
+      <section className="space-y-6 px-[1px]">
+        <div className="sticky top-0 bg-background border-b">
+          <CategoryGrid
+            categories={categories}
+            isLoading={loading}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            tab_type="colorful"
+          />
+        </div>
+        {/* New Arrivals Section */}
         <ProductSection
-          title={t("Upcoming Events")}
-          linkTo="/products"
-          products={products
-            .filter((product) => isPast(product.end_datetime) === false)
-            .slice(0, 5)}
-          onProductSelect={handleProductSelect}
-          sliderRef={productSliderRef}
-          isLoading={loading}
-        />
-
-        {/* Events you might enjoy Section */}
-        <ProductSection
-          title={t("Events you might enjoy")}
+          title={t("New Arrivals")}
           linkTo="/products"
           products={products.slice(0, 8)}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
           isLoading={loading}
+          isProduct={true}
+        />
+      </section>
+
+      {/* Category Bar */}
+      <div className="sticky top-0 bg-background border-b">
+        <CategoryGrid
+          categories={categories}
+          isLoading={loading}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          tab_type="no_style"
+        />
+      </div>
+
+      <section className="py-6 space-y-6 px-[1px]">
+        {/* <ProductSection
+          title={t("Discover things you'd love")}
+          linkTo=""
+          products={products.slice(0, 5)}
+          onProductSelect={() => {}}
+          sliderRef={eventSliderRef}
+          isLoading={loading}
+          isBanner={true}
+        /> */}
+        <ProductSection
+          title={t("Upcoming Events")}
+          linkTo="/events"
+          products={events
+            .filter(
+              (product: Product) =>
+                product.end_datetime &&
+                isPast(new Date(product.end_datetime)) === false
+            )
+            .slice(0, 5)}
+          onProductSelect={handleProductSelect}
+          sliderRef={productSliderRef}
+          isLoading={loading}
+          isProduct={false}
+        />
+
+        {/* Events you might enjoy Section */}
+        <ProductSection
+          title={t("Events you might enjoy")}
+          linkTo="/events"
+          products={events.slice(0, 8)}
+          onProductSelect={handleProductSelect}
+          sliderRef={eventSliderRef}
+          isLoading={loading}
+          isProduct={false}
         />
       </section>
 
@@ -238,6 +299,7 @@ export const HomeList = () => {
           location={selectedProduct.location}
           date={formattedDate}
           onClose={() => setSelectedProduct(null)}
+          isEvent={!!selectedProduct.end_datetime}
         />
       )}
     </div>

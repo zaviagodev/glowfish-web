@@ -19,22 +19,19 @@ import {
   QrCode,
   Ticket as TicketIcon,
   Clock,
-  X,
+  Map,
+  ChevronRight,
 } from "lucide-react";
-import { cn, formattedDateAndTime } from "@/lib/utils";
+import { cn, formattedDateAndTime, getMapLinks } from "@/lib/utils";
 import { useTickets } from "@/features/tickets/hooks/useTickets";
 import { Ticket } from "@/features/tickets/components/Ticket";
 import { CheckInView } from "@/features/tickets/components/CheckInView";
 import LoadingSpin from "@/components/loading/LoadingSpin";
 import Pagination from "@/components/pagination/Pagination";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
 import type { Ticket as TicketType } from "@/features/tickets/services/ticketService";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import { ProductImage } from "@/features/home/types/product.types";
+import NoItemsComp from "@/components/ui/no-items";
+import ItemCarousel from "@/components/ui/item-carousel";
+import TicketsSkeletons from "@/components/skeletons/TicketsSkeletons";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -42,16 +39,12 @@ export default function TicketsPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { id } = useParams();
+  const { id, ticketId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<"upcoming" | "passed">(
     () => (searchParams.get("tab") as "upcoming" | "passed") || "upcoming"
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [openImageModal, setOpenImageModal] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [thumbnailApi, setThumbnailApi] = useState<any>(null);
-  const [modalApi, setModalApi] = useState<any>(null);
   const [qrTicket, setQrTicket] = useState<string | null>(null);
   const [showCheckIn, setShowCheckIn] = useState(false);
   const {
@@ -62,43 +55,6 @@ export default function TicketsPage() {
     updateTicketStatus,
     checkTicketStatus,
   } = useTickets();
-
-  // Sync thumbnail carousel
-  useEffect(() => {
-    if (thumbnailApi) {
-      thumbnailApi.on("select", () => {
-        const index = thumbnailApi.selectedScrollSnap();
-        setCurrentSlide(index);
-      });
-    }
-  }, [thumbnailApi]);
-
-  // Sync modal carousel
-  useEffect(() => {
-    if (modalApi) {
-      modalApi.on("select", () => {
-        const index = modalApi.selectedScrollSnap();
-        setCurrentSlide(index);
-      });
-    }
-  }, [modalApi]);
-
-  // Sync both carousels when current slide changes
-  useEffect(() => {
-    if (thumbnailApi) {
-      thumbnailApi.scrollTo(currentSlide);
-    }
-    if (modalApi) {
-      modalApi.scrollTo(currentSlide);
-    }
-  }, [currentSlide, thumbnailApi, modalApi]);
-
-  // When opening modal, ensure it shows the same slide as thumbnail
-  useEffect(() => {
-    if (openImageModal && modalApi) {
-      modalApi.scrollTo(currentSlide);
-    }
-  }, [openImageModal, modalApi, currentSlide]);
 
   // Update search params when tab changes
   useEffect(() => {
@@ -113,12 +69,47 @@ export default function TicketsPage() {
     refreshTickets();
   }, []); // Empty dependency array means this runs once on mount
 
+  // Sort and filter logic for list view
+  const sortedEvents = [...tickets].sort((a, b) => {
+    const dateA = new Date(a.event?.start_datetime || "");
+    const dateB = new Date(b.event?.start_datetime || "");
+    return dateA.getTime() - dateB.getTime();
+  });
+
+  // Filter events based on tab without removing duplicates
+  const filteredEvents = sortedEvents.filter((customerEvent) => {
+    if (
+      !customerEvent.event?.start_datetime ||
+      !customerEvent.event?.end_datetime
+    ) {
+      return false;
+    }
+    const now = new Date();
+    const endDate = new Date(customerEvent.event.end_datetime);
+
+    if (activeTab === "upcoming") {
+      return endDate > now;
+    } else {
+      return endDate <= now;
+    }
+  });
+
+  const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE);
+  const currentEvents = filteredEvents.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   // If we have an ID, we're in details view
   const isDetailsView = !!id;
-  // Find the order and its details
+  // Find the order and its details by order ID
   let foundOrder = null;
+  let foundTicket = null;
   if (isDetailsView) {
     foundOrder = tickets.find((order) => order.order_id === id);
+    if (foundOrder && ticketId) {
+      foundTicket = foundOrder.tickets.find((t) => t.id === ticketId);
+    }
   }
 
   // Handlers for ticket details
@@ -127,9 +118,9 @@ export default function TicketsPage() {
     setShowCheckIn(true);
   };
 
-  const handleTicketClick = (orderId: string) => {
-    // Preserve the current search params when navigating to details
-    navigate(`/tickets/${orderId}${location.search}`);
+  const handleTicketClick = (orderId: string, ticketId: string) => {
+    // Navigate to the order details using both order_id and ticket_id
+    navigate(`/tickets/${orderId}/${ticketId}${location.search}`);
   };
 
   const handleCloseCheckIn = async () => {
@@ -156,34 +147,6 @@ export default function TicketsPage() {
     return "ongoing";
   };
 
-  // Sort and filter logic for list view
-  const sortedEvents = [...tickets].sort((a, b) => {
-    const dateA = toZonedTime(new Date(a.event?.end_datetime), "UTC");
-    const dateB = toZonedTime(new Date(b.event?.end_datetime), "UTC");
-    const now = toZonedTime(new Date(), "UTC");
-    return (
-      Math.abs(dateA.getTime() - now.getTime()) -
-      Math.abs(dateB.getTime() - now.getTime())
-    );
-  });
-
-  const filteredEvents = sortedEvents.filter((customerEvent) => {
-    const status = getEventStatus(
-      customerEvent.event?.start_datetime,
-      customerEvent.event?.end_datetime
-    );
-    if (activeTab === "upcoming") {
-      return status === "upcoming" || status === "ongoing";
-    }
-    return status === "passed";
-  });
-
-  const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE);
-  const currentEvents = filteredEvents.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -193,7 +156,7 @@ export default function TicketsPage() {
     return (
       <div className="bg-background">
         <PageHeader title={isDetailsView ? "Ticket Details" : "My Tickets"} />
-        <LoadingSpin />
+        <TicketsSkeletons />
       </div>
     );
   }
@@ -220,7 +183,7 @@ export default function TicketsPage() {
       foundOrder.event?.end_datetime
     );
 
-    const images = foundOrder.event?.product.images;
+    const images = foundOrder.event?.product?.images;
 
     return (
       <div className="bg-background">
@@ -241,149 +204,11 @@ export default function TicketsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              {/* {foundOrder.event?.product.images[0]?.url ? (
-                <img
-                  src={foundOrder.event?.product.images[0].url}
-                  alt={foundOrder.event?.name}
-                  className="w-full h-full object-cover object-top"
-                  onClick={() => setOpenImageModal(true)}
-                />
-              ) : (
-                <div className="flex items-center justify-center w-full h-full overflow-hidden bg-black">
-                  <GlowfishIcon />
-                </div>
-              )} */}
-              <div
-                className={cn(
-                  openImageModal
-                    ? "fixed inset-0 z-[999] bg-background flex flex-col justify-center items-center w-full"
-                    : ""
-                )}
-              >
-                {openImageModal && (
-                  <>
-                    <div
-                      className="absolute right-5 top-5 h-10 w-10 bg-black/20 rounded-full flex items-center justify-center cursor-pointer"
-                      onClick={() => setOpenImageModal(false)}
-                    >
-                      <X className="h-6 w-6" />
-                    </div>
-                    {Array.isArray(images) && images.length > 0 ? (
-                      <div className="w-full h-full flex items-center justify-center p-4">
-                        <Carousel className="w-full" setApi={setModalApi}>
-                          <CarouselContent>
-                            {images.map((img: ProductImage) => (
-                              <CarouselItem key={img.id}>
-                                <div className="relative w-full h-full flex items-center justify-center">
-                                  <img
-                                    src={img.url}
-                                    alt={
-                                      img.alt || foundOrder.event?.product.name
-                                    }
-                                    className="max-w-full max-h-[80vh] w-auto h-auto object-contain"
-                                  />
-                                </div>
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                          {images.length > 1 && (
-                            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                              {images.map((_, index) => (
-                                <div
-                                  key={index}
-                                  onClick={() => setCurrentSlide(index)}
-                                  className={cn(
-                                    "w-2 h-2 rounded-full transition-all duration-200 cursor-pointer",
-                                    index === currentSlide
-                                      ? "bg-white"
-                                      : "bg-white/50 hover:bg-white/75"
-                                  )}
-                                />
-                              ))}
-                            </div>
-                          )}
-                        </Carousel>
-                      </div>
-                    ) : foundOrder.event?.product.images[0].url ? (
-                      <div className="w-full h-full flex items-center justify-center p-4">
-                        <img
-                          src={foundOrder.event?.product.images[0].url}
-                          alt={foundOrder.event?.product.name}
-                          className="max-w-full max-h-[80vh] w-auto h-auto object-contain"
-                        />
-                      </div>
-                    ) : null}
-                  </>
-                )}
-
-                {/* Thumbnail view (when modal is closed) */}
-                {!openImageModal && (
-                  <>
-                    {Array.isArray(images) && images.length > 0 ? (
-                      <div className="w-full aspect-square overflow-hidden">
-                        <Carousel className="w-full" setApi={setThumbnailApi}>
-                          <CarouselContent>
-                            {images.map((img: ProductImage) => (
-                              <CarouselItem
-                                key={img.id}
-                                onClick={() => setOpenImageModal(true)}
-                              >
-                                <div className="relative w-full aspect-square">
-                                  <img
-                                    src={img.url}
-                                    alt={
-                                      img.alt || foundOrder.event?.product.name
-                                    }
-                                    className="w-full h-full object-cover object-top"
-                                  />
-                                </div>
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                          {images.length > 1 && (
-                            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                              {images.map((_, index) => (
-                                <div
-                                  key={index}
-                                  onClick={() => setCurrentSlide(index)}
-                                  className={cn(
-                                    "w-2 h-2 rounded-full transition-all duration-200 cursor-pointer",
-                                    index === currentSlide
-                                      ? "bg-white"
-                                      : "bg-white/50 hover:bg-white/75"
-                                  )}
-                                />
-                              ))}
-                            </div>
-                          )}
-                        </Carousel>
-                      </div>
-                    ) : foundOrder.event?.product.images[0].url ? (
-                      <div className="w-full aspect-square overflow-hidden">
-                        <Carousel>
-                          <CarouselContent>
-                            <CarouselItem
-                              onClick={() => setOpenImageModal(true)}
-                            >
-                              <div className="relative w-full aspect-square">
-                                <img
-                                  src={foundOrder.event?.product.images[0].url}
-                                  alt={foundOrder.event?.product.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            </CarouselItem>
-                          </CarouselContent>
-                        </Carousel>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                        <GlowfishIcon />
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
+              <ItemCarousel
+                images={images}
+                image={foundOrder.event?.product?.images?.[0]?.url}
+                name={foundOrder.event?.product?.name}
+              />
             </motion.div>
           </div>
 
@@ -441,12 +266,18 @@ export default function TicketsPage() {
                   <Calendar className="w-4 h-4 flex-shrink-0" />
                   <span>
                     {format(
-                      toZonedTime(new Date(foundOrder.event?.start_datetime), "UTC"),
+                      toZonedTime(
+                        new Date(foundOrder.event?.start_datetime || ""),
+                        "UTC"
+                      ),
                       formattedDateAndTime
                     )}{" "}
                     -{" "}
                     {format(
-                      toZonedTime(new Date(foundOrder.event?.end_datetime), "UTC"),
+                      toZonedTime(
+                        new Date(foundOrder.event?.end_datetime || ""),
+                        "UTC"
+                      ),
                       formattedDateAndTime
                     )}
                   </span>
@@ -454,16 +285,71 @@ export default function TicketsPage() {
                 <div className="flex items-center gap-2 text-sm font-light">
                   <Users className="w-4 h-4 flex-shrink-0" />
                   <span>
-                    {foundOrder.tickets.length}{" "}
-                    {foundOrder.tickets.length === 1 ? "ticket" : "tickets"}
+                    {foundOrder.tickets?.length}{" "}
+                    {foundOrder.tickets?.length === 1 ? "ticket" : "tickets"}
                   </span>
                 </div>
               </motion.div>
             </div>
 
+            {foundOrder.event?.venue_address && (
+              <div className="space-y-2">
+                <h2 className="text-base">{t("Venue & Location")}</h2>
+                {/* Get processed map links */}
+                {(() => {
+                  const { viewLink, embedLink, isShareLink } = getMapLinks(
+                    foundOrder.event?.google_maps_link || ""
+                  );
+
+                  if (!viewLink) return null;
+
+                  if (isShareLink) {
+                    return (
+                      <button
+                        onClick={() =>
+                          window.open(viewLink, "_blank", "noopener,noreferrer")
+                        }
+                        className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Map className="w-5 h-5 text-foreground" />
+                          {t("View map")}
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      </button>
+                    );
+                  }
+
+                  if (embedLink) {
+                    return (
+                      <iframe
+                        src={embedLink}
+                        style={{
+                          border: 0,
+                          width: "100%",
+                          borderRadius: "12px",
+                          height: "50vw",
+                          maxHeight: "270px",
+                        }}
+                        allowFullScreen={false}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      ></iframe>
+                    );
+                  }
+
+                  return null;
+                })()}
+
+                <p className="text-sm text-secondary-foreground font-light">
+                  {foundOrder.event?.venue_address}
+                </p>
+              </div>
+            )}
+
             {/* Tickets List */}
             <div className="space-y-4">
-              {foundOrder.tickets.map((ticket, index) => (
+              {foundOrder.tickets?.map((ticket, index) => (
                 <motion.div
                   key={ticket.id}
                   className="bg-darkgray rounded-lg p-5"
@@ -473,10 +359,16 @@ export default function TicketsPage() {
                 >
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#F8F8F81A] flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-[#E1E1E1]/70 dark:bg-[#F8F8F8]/10 flex items-center justify-center">
                         <TicketIcon className="w-5 h-5 text-primary" />
                       </div>
-                      <h3 className="font-medium">{ticket.code}</h3>
+                      <div className="space-y-1">
+                        <h3 className="font-medium">{ticket.code}</h3>
+                        {/* TODO: fetch the dynamic variant that users have purchased in case the events have variants */}
+                        <p className="text-muted-foreground inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20">
+                          {ticket.variant_snapshot?.name}
+                        </p>
+                      </div>
                     </div>
                     <div
                       className={cn(
@@ -496,14 +388,15 @@ export default function TicketsPage() {
                         {t("Attendee")}
                       </div>
                       <div className="text-sm font-medium">
-                        {ticket.metadata.attendeeName || t("General Admission")}
+                        {ticket.metadata?.customerName ||
+                          t("General Admission")}
                       </div>
                     </div>
                     <div>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full mt-2.5 !bg-mainbutton rounded-full !text-black"
+                        className="w-full mt-2.5 !bg-mainbutton rounded-full !text-background"
                         onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
                           handleTicketCheckIn(ticket);
@@ -525,13 +418,14 @@ export default function TicketsPage() {
             <CheckInView
               ticket={{
                 id:
-                  foundOrder.tickets.find((t) => t.code === qrTicket)?.id || "",
+                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.id ||
+                  "",
                 ticketNumber: qrTicket,
-                eventName: foundOrder.event?.name,
+                eventName: foundOrder.event?.name || "",
                 seat:
-                  foundOrder.tickets.find((t) => t.code === qrTicket)?.metadata
-                    .attendeeName || "",
-                date: foundOrder.event?.start_datetime,
+                  foundOrder.tickets?.find((t) => t.code === qrTicket)?.metadata
+                    ?.customerName || "",
+                date: foundOrder.event?.start_datetime || "",
                 location: foundOrder.event?.venue_name || t("To be determined"),
               }}
               onClose={handleCloseCheckIn}
@@ -577,18 +471,14 @@ export default function TicketsPage() {
 
           <div className="mt-4">
             {currentEvents.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center justify-center py-12 px-5"
-              >
-                <TicketIcon className="w-12 h-12 text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground text-center">
-                  {activeTab === "upcoming"
+              <NoItemsComp
+                icon={TicketIcon}
+                text={
+                  activeTab === "upcoming"
                     ? "No upcoming events"
-                    : "No ended events"}
-                </p>
-              </motion.div>
+                    : "No ended events"
+                }
+              />
             ) : (
               <>
                 <div className="px-5 space-y-4">
@@ -598,7 +488,12 @@ export default function TicketsPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      onClick={() => handleTicketClick(customerEvent.order_id)}
+                      onClick={() =>
+                        handleTicketClick(
+                          customerEvent.order_id,
+                          customerEvent.tickets[0].id
+                        )
+                      }
                       className="cursor-pointer"
                     >
                       <Ticket
@@ -623,7 +518,7 @@ export default function TicketsPage() {
                           used: customerEvent.tickets[0].status === "used",
                           ticketNumber: customerEvent.tickets[0].code,
                           seat:
-                            customerEvent.tickets[0].metadata.attendeeName ||
+                            customerEvent.tickets[0].metadata.customerName ||
                             "General Admission",
                           groupSize: customerEvent.tickets.length,
                         }}

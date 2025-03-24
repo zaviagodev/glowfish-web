@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { format, formatDistanceToNow, isToday } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { MapPin, Calendar, Users } from "lucide-react";
+import { MapPin, Calendar, Users, Image } from "lucide-react";
 import { cn, formattedDateAndTime } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { useConfig } from "@/hooks/useConfig";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 interface TicketProps {
   ticket: {
@@ -24,13 +25,15 @@ interface TicketProps {
 
 export function Ticket({ ticket }: TicketProps) {
   const navigate = useNavigate();
+  const { config } = useConfig();
+  const dateFormat = (date: string) =>
+    format(toZonedTime(new Date(date), "UTC"), formattedDateAndTime);
 
   return (
     <motion.div
       onClick={() => navigate(`/tickets/${ticket.id}`)}
       className={cn(
         "relative overflow-hidden rounded-xl transition-all bg-darkgray",
-        "shadow-[0_2px_8px_rgba(0,0,0,0.04),0_4px_24px_rgba(0,0,0,0.02)]",
         ticket.status === "passed" && "opacity-60"
       )}
       whileHover={{ scale: 0.98 }}
@@ -46,9 +49,7 @@ export function Ticket({ ticket }: TicketProps) {
             className="w-full h-full object-cover aspect-square object-top"
           />
         ) : (
-          <div className="h-full bg-black flex items-center justify-center">
-            <GlowfishIcon className="w-20 h-20" />
-          </div>
+          <ProductPlaceholder imageClassName="w-12 h-12" />
         )}
 
         {/* Event Details */}
@@ -77,9 +78,12 @@ export function Ticket({ ticket }: TicketProps) {
                   ? "Ongoing"
                   : isToday(toZonedTime(new Date(ticket.date), "UTC"))
                   ? "Today!"
-                  : `In ${formatDistanceToNow(toZonedTime(new Date(ticket.date), "UTC"), {
-                      addSuffix: false,
-                    })}`}
+                  : `In ${formatDistanceToNow(
+                      toZonedTime(new Date(ticket.date), "UTC"),
+                      {
+                        addSuffix: false,
+                      }
+                    )}`}
               </div>
             </div>
           </div>
@@ -93,8 +97,12 @@ export function Ticket({ ticket }: TicketProps) {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 flex-shrink-0" />
               <span>
-                {ticket.date
-                  ? format(toZonedTime(new Date(ticket.date), "UTC"), formattedDateAndTime)
+                {ticket.date && ticket.endDate
+                  ? ticket.date === ticket.endDate
+                    ? dateFormat(ticket.date)
+                    : `${dateFormat(ticket.date)} - ${dateFormat(
+                        ticket.endDate
+                      )}`
                   : "To be determined"}
               </span>
             </div>

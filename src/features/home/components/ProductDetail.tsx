@@ -8,7 +8,6 @@ import {
   Phone,
   BookImage,
   ChevronRight,
-  X,
   Map,
 } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
@@ -17,33 +16,53 @@ import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { useCart } from "@/lib/cart";
 import { VariantDrawer } from "./VariantDrawer";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/toast";
-import { Product, ProductImage, ProductVariant } from "../types/product.types";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { Product, ProductVariant, ProductImage } from "../types/product.types";
 import DOMPurify from "dompurify";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 import { isPast } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn, getMapLinks, makeTwoDecimals } from "@/lib/utils";
+import ItemCarousel from "@/components/ui/item-carousel";
+import LongParagraph from "@/components/ui/long-paragraph";
+import ContactUsButton from "@/components/ui/contact-us-button";
 
-interface ProductVariantOption {
+interface VariantOption {
+  id: string;
   name: string;
-  value: string;
+  values: string[];
+  position: number;
 }
 
-interface ProductDetailProps extends Partial<Product> {
-  onClose: () => void;
-  hide_cart?: boolean;
+interface ProductDetailProps {
+  id: string;
+  image?: string;
+  images?: {
+    id: string;
+    url: string;
+    alt: string;
+    position: number;
+  }[];
+  name?: string;
+  description?: string;
+  location?: string;
+  venue_address?: string;
   date?: string;
-  points?: number;
+  price?: number;
+  sales_price?: number;
+  points_based_price?: number;
   variant_id?: string;
   quantity?: number;
-  google_maps_link: string;
+  track_quantity?: boolean;
+  onClose: () => void;
+  variant_options?: VariantOption[];
+  product_variants?: ProductVariant[];
+  organizer_name?: string;
+  organizer_contact?: string;
+  google_maps_link?: string;
   gallery_link?: string;
+  hide_cart?: boolean;
+  end_datetime?: string;
+  isEvent?: boolean;
 }
 
 export function ProductDetail({
@@ -56,7 +75,8 @@ export function ProductDetail({
   venue_address,
   date,
   price,
-  points,
+  sales_price,
+  points_based_price,
   variant_id,
   quantity = 1,
   track_quantity = false,
@@ -69,56 +89,17 @@ export function ProductDetail({
   gallery_link,
   hide_cart,
   end_datetime,
+  isEvent,
 }: ProductDetailProps) {
   const t = useTranslate();
   const navigate = useNavigate();
   const addItem = useCart((state) => state.addItem);
+  const { getTotalItems } = useCart();
   const { addToast } = useToast();
-  const [openImageModal, setOpenImageModal] = useState(false);
   const [showVariantDrawer, setShowVariantDrawer] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [thumbnailApi, setThumbnailApi] = useState<any>(null);
-  const [modalApi, setModalApi] = useState<any>(null);
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
   >(variant_id);
-
-  // Sync thumbnail carousel
-  useEffect(() => {
-    if (thumbnailApi) {
-      thumbnailApi.on("select", () => {
-        const index = thumbnailApi.selectedScrollSnap();
-        setCurrentSlide(index);
-      });
-    }
-  }, [thumbnailApi]);
-
-  // Sync modal carousel
-  useEffect(() => {
-    if (modalApi) {
-      modalApi.on("select", () => {
-        const index = modalApi.selectedScrollSnap();
-        setCurrentSlide(index);
-      });
-    }
-  }, [modalApi]);
-
-  // Sync both carousels when current slide changes
-  useEffect(() => {
-    if (thumbnailApi) {
-      thumbnailApi.scrollTo(currentSlide);
-    }
-    if (modalApi) {
-      modalApi.scrollTo(currentSlide);
-    }
-  }, [currentSlide, thumbnailApi, modalApi]);
-
-  // When opening modal, ensure it shows the same slide as thumbnail
-  useEffect(() => {
-    if (openImageModal && modalApi) {
-      modalApi.scrollTo(currentSlide);
-    }
-  }, [openImageModal, modalApi, currentSlide]);
 
   // Find selected variant
   const selectedVariant = product_variants?.find(
@@ -136,10 +117,65 @@ export function ProductDetail({
     const maxPrice = Math.max(...prices);
 
     if (minPrice === maxPrice) {
-      return minPrice === 0 ? t("free") : `฿${minPrice.toLocaleString()}`;
+      return minPrice === 0
+        ? t("free")
+        : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
     }
 
-    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+    return `${
+      minPrice === 0
+        ? t("free")
+        : `฿${makeTwoDecimals(minPrice).toLocaleString()}`
+    } - ฿${makeTwoDecimals(maxPrice).toLocaleString()}`;
+  };
+
+  const getPointsDisplay = () => {
+    if (!product_variants || product_variants.length === 0) {
+      return Number(points_based_price).toLocaleString();
+    }
+
+    const points = product_variants.map(
+      (v: ProductVariant) => v.points_based_price
+    );
+
+    if (points) {
+      const minPoint = Math.min(...points);
+      const maxPoint = Math.max(...points);
+
+      if (minPoint === maxPoint) {
+        return `${minPoint.toLocaleString()}`;
+      }
+
+      return `${minPoint.toLocaleString()} - ${maxPoint.toLocaleString()}`;
+    } else {
+      return 0;
+    }
+  };
+
+  // Get compare at price display
+  const getCompareAtPriceDisplay = () => {
+    if (!product_variants || product_variants.length === 0) {
+      return null;
+    }
+
+    const comparePrices = product_variants
+      .filter((v) => v.compare_at_price && v.compare_at_price > 0)
+      .map((v) => v.compare_at_price!);
+
+    if (comparePrices.length === 0) return null;
+
+    const minComparePrice = Math.min(...comparePrices);
+    const maxComparePrice = Math.max(...comparePrices);
+
+    if (minComparePrice === maxComparePrice) {
+      return `฿${makeTwoDecimals(minComparePrice).toLocaleString()}`;
+    }
+
+    return `฿${makeTwoDecimals(
+      minComparePrice
+    ).toLocaleString()} - ฿${makeTwoDecimals(
+      maxComparePrice
+    ).toLocaleString()}`;
   };
 
   // Format variant options for display
@@ -148,7 +184,7 @@ export function ProductDetail({
       return t("Select Options");
     }
     return selectedVariant.options
-      .map((opt: ProductVariantOption) => opt.value)
+      .map((opt: VariantOption) => opt.values.join(" / "))
       .join(" / ");
   };
 
@@ -181,20 +217,24 @@ export function ProductDetail({
       return;
     }
 
+    // Create variant object from selected variant options
+    const variantData = selectedVariant?.options?.reduce(
+      (acc: Record<string, string>, opt: { name: string; value: string }) => ({
+        ...acc,
+        [opt.name]: opt.value,
+      }),
+      {}
+    );
+
     addItem({
       variantId: selectedVariantId!,
       productId: id.toString(),
       name,
-      image: image || "",
+      image: image || images?.[0]?.url || "", // /placeholder.png
       price: selectedVariant?.price || Number(price),
       maxQuantity: shouldTrackQuantity ? stockQuantity : 999999,
-      variant: selectedVariant?.options?.reduce(
-        (acc: Record<string, string>, opt: ProductVariantOption) => ({
-          ...acc,
-          [opt.name]: opt.value,
-        }),
-        {}
-      ),
+      variant: variantData,
+      isEvent: !!date,
     });
 
     addToast(t("Added to cart"), "success");
@@ -208,21 +248,20 @@ export function ProductDetail({
     }
   };
 
-  const paragraphRef = useRef<HTMLParagraphElement>(null);
-  const [isClamped, setIsClamped] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    if (paragraphRef.current) {
-      const style = window.getComputedStyle(paragraphRef.current);
-      const lineHeight = parseFloat(style.lineHeight);
-      const maxHeight = lineHeight * 3;
-
-      setIsClamped(paragraphRef.current.scrollHeight > maxHeight);
-    }
-  }, [description, venue_address]);
-
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
+
+  const checkIfNoProduct = () => {
+    if (track_quantity === true) {
+      if (product_variants) {
+        return product_variants.reduce(
+          (acc, variant) => acc + variant.quantity,
+          0
+        );
+      } else {
+        return quantity;
+      }
+    }
+  };
 
   return createPortal(
     <div className="fixed inset-0 z-50 max-width-mobile bg-background pointer-events-auto">
@@ -235,7 +274,7 @@ export function ProductDetail({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
+          className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
           onClick={onClose}
         >
           <ChevronLeft className="h-6 w-6" />
@@ -244,152 +283,55 @@ export function ProductDetail({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 text-white"
+            className="absolute right-5 top-5 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />
+            <span className="absolute -top-1 -right-1 bg-red-500 rounded-full h-4 w-4 flex items-center justify-center text-xs">
+              {getTotalItems()}
+            </span>
           </Button>
         )}
-        <div
-          className={cn(
-            openImageModal
-              ? "fixed inset-0 z-[999] bg-background flex flex-col justify-center items-center w-full"
-              : ""
-          )}
-        >
-          {openImageModal && (
-            <>
-              <div
-                className="absolute right-5 top-5 h-10 w-10 bg-black/20 rounded-full flex items-center justify-center cursor-pointer"
-                onClick={() => setOpenImageModal(false)}
-              >
-                <X className="h-6 w-6" />
-              </div>
-              {Array.isArray(images) && images.length > 0 ? (
-                <div className="w-full h-full flex items-center justify-center p-4">
-                  <Carousel className="w-full" setApi={setModalApi}>
-                    <CarouselContent>
-                      {images.map((img: ProductImage) => (
-                        <CarouselItem key={img.id}>
-                          <div className="relative w-full h-full flex items-center justify-center">
-                            <img
-                              src={img.url}
-                              alt={img.alt || name}
-                              className="max-w-full max-h-[80vh] w-auto h-auto object-contain"
-                            />
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    {images.length > 1 && (
-                      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                        {images.map((_, index) => (
-                          <div
-                            key={index}
-                            onClick={() => setCurrentSlide(index)}
-                            className={cn(
-                              "w-2 h-2 rounded-full transition-all duration-200 cursor-pointer",
-                              index === currentSlide
-                                ? "bg-white"
-                                : "bg-white/50 hover:bg-white/75"
-                            )}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </Carousel>
-                </div>
-              ) : image ? (
-                <div className="w-full h-full flex items-center justify-center p-4">
-                  <img
-                    src={image}
-                    alt={name}
-                    className="max-w-full max-h-[80vh] w-auto h-auto object-contain"
-                  />
-                </div>
-              ) : null}
-            </>
-          )}
+        <ItemCarousel
+          images={
+            images?.map((img) => ({
+              id: img.id,
+              url: img.url,
+              alt: img.alt || name || "",
+              position: img.position,
+            })) || []
+          }
+          image={image || images?.[0]?.url || ""}
+          name={name}
+        />
 
-          {/* Thumbnail view (when modal is closed) */}
-          {!openImageModal && (
-            <>
-              {Array.isArray(images) && images.length > 0 ? (
-                <div className="w-full aspect-square overflow-hidden">
-                  <Carousel className="w-full" setApi={setThumbnailApi}>
-                    <CarouselContent>
-                      {images.map((img: ProductImage) => (
-                        <CarouselItem
-                          key={img.id}
-                          onClick={() => setOpenImageModal(true)}
-                        >
-                          <div className="relative w-full aspect-square">
-                            <img
-                              src={img.url}
-                              alt={img.alt || name}
-                              className="w-full h-full object-cover object-top"
-                            />
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    {images.length > 1 && (
-                      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                        {images.map((_, index) => (
-                          <div
-                            key={index}
-                            onClick={() => setCurrentSlide(index)}
-                            className={cn(
-                              "w-2 h-2 rounded-full transition-all duration-200 cursor-pointer",
-                              index === currentSlide
-                                ? "bg-white"
-                                : "bg-white/50 hover:bg-white/75"
-                            )}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </Carousel>
-                </div>
-              ) : image ? (
-                <div className="w-full aspect-square overflow-hidden">
-                  <Carousel>
-                    <CarouselContent>
-                      <CarouselItem onClick={() => setOpenImageModal(true)}>
-                        <div className="relative w-full aspect-square">
-                          <img
-                            src={image}
-                            alt={name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </CarouselItem>
-                    </CarouselContent>
-                  </Carousel>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                  <GlowfishIcon />
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-20 -top-20">
+        <div className="p-5 space-y-6 bg-background/70 relative z-[99] backdrop-blur-sm rounded-t-2xl overflow-auto pb-[100px] -top-20">
           <div className="space-y-4">
             <div className="space-y-2">
               <h2 className="text-2xl">{name}</h2>
 
               <div className="space-y-2.5">
-                <div className="flex items-center gap-2 text-sm font-light">
-                  <MapPin className="w-4 h-4" />
-                  <span>{location || "To be determined"}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm font-light">
-                  <Calendar className="w-4 h-4" />
-                  <span>{date || "To be determined"}</span>
-                </div>
+                {product_variants &&
+                  product_variants.some(
+                    (variant) =>
+                      variant.compare_at_price && variant.compare_at_price > 0
+                  ) && (
+                    <div className="bg-red-500 text-white rounded-full px-1.5 py-0.5 w-fit text-xs">
+                      Sale
+                    </div>
+                  )}
+                {isEvent && (
+                  <>
+                    <div className="flex items-center gap-2 text-sm font-light">
+                      <MapPin className="w-4 h-4" />
+                      <span>{location || "To be determined"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-light">
+                      <Calendar className="w-4 h-4" />
+                      <span>{date || "To be determined"}</span>
+                    </div>
+                  </>
+                )}
                 {/* {points && (
                   <div className="flex items-center gap-2 text-sm text-primary font-medium">
                     <Tag className="w-4 h-4" />
@@ -407,7 +349,7 @@ export function ProductDetail({
                 className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
               >
                 <div className="flex items-center gap-3">
-                  <BookImage className="w-5 h-5 text-white" />
+                  <BookImage className="w-5 h-5 text-foreground" />
                   {t("View gallery")}
                 </div>
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -419,66 +361,75 @@ export function ProductDetail({
             {description && (
               <div className="space-y-2">
                 <h2 className="text-base">{t("Description")}</h2>
-                <div
-                  ref={paragraphRef}
-                  className={cn(
-                    "text-sm text-secondary-foreground font-light",
-                    !expanded && "line-clamp-5"
-                  )}
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(description || ""),
-                  }}
-                />
-                {isClamped && (
-                  <p
-                    className="text-orangefocus text-sm w-fit cursor-pointer"
-                    onClick={() => setExpanded(!expanded)}
-                  >
-                    {expanded ? t("Read less...") : t("Read more...")}
-                  </p>
-                )}
+                <LongParagraph description={description} />
               </div>
             )}
 
             {venue_address && (
               <div className="space-y-2">
                 <h2 className="text-base">{t("Venue & Location")}</h2>
-                {google_maps_link && (
-                  <button
-                    onClick={() =>
-                      window.open(
-                        google_maps_link,
-                        "_blank",
-                        "noopener,noreferrer"
-                      )
-                    }
-                    className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Map className="w-5 h-5 text-white" />
-                      {t("View map")}
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                  </button>
-                )}
-                <p className="text-sm text-secondary-foreground font-light">
-                  {venue_address}
-                </p>
+                {/* Get processed map links */}
+                {(() => {
+                  const { viewLink, embedLink, isShareLink } = getMapLinks(
+                    google_maps_link || ""
+                  );
+
+                  if (!viewLink) return null;
+
+                  if (isShareLink) {
+                    return (
+                      <button
+                        onClick={() =>
+                          window.open(viewLink, "_blank", "noopener,noreferrer")
+                        }
+                        className="flex items-center justify-between p-4 rounded-lg bg-darkgray w-full"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Map className="w-5 h-5 text-foreground" />
+                          {t("View map")}
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      </button>
+                    );
+                  }
+
+                  if (embedLink) {
+                    return (
+                      <iframe
+                        src={embedLink}
+                        style={{
+                          border: 0,
+                          width: "100%",
+                          borderRadius: "12px",
+                          height: "50vw",
+                          maxHeight: "270px",
+                        }}
+                        allowFullScreen={false}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      ></iframe>
+                    );
+                  }
+                  return null;
+                })()}
+                <LongParagraph description={venue_address} />
               </div>
             )}
 
             {/* Organizer Details */}
-            <div className="space-y-2">
-              <h2 className="text-base">{t("Organizer")}</h2>
-              <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
-                <Contact className="w-4 h-4" />
-                {organizer_name || "To be determined"}
+            {isEvent && (
+              <div className="space-y-2">
+                <h2 className="text-base">{t("Organizer")}</h2>
+                <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
+                  <Contact className="w-4 h-4" />
+                  {organizer_name || "To be determined"}
+                </div>
+                <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
+                  <Phone className="w-4 h-4" />
+                  {organizer_contact || "To be determined"}
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-secondary-foreground font-light">
-                <Phone className="w-4 h-4" />
-                {organizer_contact || "To be determined"}
-              </div>
-            </div>
+            )}
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -542,7 +493,7 @@ export function ProductDetail({
                 {t("Add to Cart")}
               </Button>
               <Button 
-                className="w-full bg-[#EE4D2D] text-white hover:bg-[#EE4D2D]/90"
+                className="w-full bg-[#EE4D2D] text-foreground hover:bg-[#EE4D2D]/90"
                 onClick={() => handleAddToCart(true)}
               >
                 {t("Buy Now")}
@@ -606,7 +557,7 @@ export function ProductDetail({
               {t("Add to Cart")}
             </Button>
             <Button
-              className="w-full bg-[#EE4D2D] text-white hover:bg-[#EE4D2D]/90"
+              className="w-full bg-[#EE4D2D] text-foreground hover:bg-[#EE4D2D]/90"
               onClick={() => handleAddToCart(true)}
             >
               {t("Buy Now")}
@@ -649,10 +600,10 @@ export function ProductDetail({
           </motion.div> */}
         </div>
 
-        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background space-y-4 max-width-mobile">
+        <div className="fixed bottom-0 w-full p-5 pt-4 z-[99] bg-background/80 backdrop-blur-lg max-width-mobile border-t border-t-darkgray">
           {getPriceDisplay() && (
-            <div className="flex items-center gap-2">
-              <div className="flex items-baseline gap-2">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-baseline justify-between gap-2 w-full">
                 <span
                   className="flex flex-col font-bold tracking-tight text-secondary-foreground"
                   style={{
@@ -660,17 +611,44 @@ export function ProductDetail({
                     transform: "translateZ(0)",
                   }}
                 >
-                  <span className="text-sm font-normal">start from</span>
-                  <span className="flex items-center gap-2 text-2xl">
+                  <span className="text-sm font-normal">
+                    {isEvent ? "start from" : "Price"}
+                  </span>
+                  <span className="flex items-end gap-2 text-2xl">
                     {getPriceDisplay()}
+
+                    {product_variants &&
+                      product_variants.some(
+                        (variant) =>
+                          variant.compare_at_price &&
+                          variant.compare_at_price > 0
+                      ) && (
+                        <span className="text-muted-foreground text-base line-through leading-[26px]">
+                          {getCompareAtPriceDisplay()}
+                        </span>
+                      )}
                   </span>
                 </span>
+                {/* <span
+                  className="flex flex-col font-bold tracking-tight items-end text-secondary-foreground"
+                  style={{
+                    willChange: "transform",
+                    transform: "translateZ(0)",
+                  }}
+                >
+                  <span className="text-sm font-normal">
+                    Point{getPointsDisplay() === 1 ? "" : "s"} to use
+                  </span>
+                  <span className="flex items-end gap-2 text-2xl font-normal">
+                    {getPointsDisplay() || 0}
+                  </span>
+                </span> */}
               </div>
             </div>
           )}
           <Button
             className="w-full main-btn"
-            disabled={isEventEnded}
+            disabled={isEventEnded || checkIfNoProduct() === 0}
             onClick={() => {
               if (variant_options && variant_options.length > 0) {
                 setShowVariantDrawer(true);
@@ -679,11 +657,15 @@ export function ProductDetail({
               }
             }}
           >
-            {isEventEnded ? t("This event has ended") : t("Sign Up")}
+            {isEventEnded
+              ? t("This event has ended")
+              : checkIfNoProduct() === 0
+              ? t("Sold Out")
+              : isEvent
+              ? t("Sign Up")
+              : t("Add to cart")}
           </Button>
-          <p className="text-xs text-center text-muted-foreground">
-            You won't be charged yet
-          </p>
+          <ContactUsButton />
         </div>
       </div>
 

@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  react-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_LINE_CLIENT_ID=${VITE_LINE_CLIENT_ID}
+        - VITE_ADMIN_URL=${VITE_ADMIN_URL}
+        - VITE_CALLBACK_DOMAIN=${VITE_CALLBACK_DOMAIN}
+        - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+        - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    environment:
+      - VITE_LINE_CLIENT_ID=${VITE_LINE_CLIENT_ID}
+      - VITE_ADMIN_URL=${VITE_ADMIN_URL}
+      - VITE_CALLBACK_DOMAIN=${VITE_CALLBACK_DOMAIN}
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    env_file:
+      - .env.compose
+    volumes:
+      - ./dist:/usr/share/nginx/html
+    networks:
+      - app-network
+    expose:
+      - 3000
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    networks:
+      - app-network
+    expose:
+      - 80
+
+  caddy:
+    image: caddy/caddy:2-builder
+    build:
+      dockerfile: Dockerfile-caddy
+      context: .
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - ./caddy-config:/config
+    command: ["caddy", "run", "--resume", "--config", "/etc/caddy/Caddyfile"]
+    networks:
+      - app-network
+    ports:
+      - "80:80"
+      - "443:443"
+    expose:
+      - 2019
+    depends_on:
+      - nginx
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  caddy_data:

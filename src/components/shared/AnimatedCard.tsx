@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
-import { BookImage, Calendar, MapPin, Tag } from "lucide-react";
+import { BookImage, Calendar, Image, MapPin, Tag } from "lucide-react";
 import { useTranslate } from "@refinedev/core";
-import { cn } from "@/lib/utils";
+import { cn, makeTwoDecimals } from "@/lib/utils";
 import { useState } from "react";
 import { AnimatedCardProps } from "@/type/type 2";
-import GlowfishIcon from "../icons/GlowfishIcon";
 import { Button } from "../ui/button";
 import { isPast } from "date-fns";
+import ProductPlaceholder from "../ui/product-placeholder";
 
 const springConfig = {
   type: "spring",
@@ -23,6 +23,7 @@ export function AnimatedCard({
   location,
   date,
   price,
+  sales_price,
   compareAtPrice,
   variant_id,
   product_variants,
@@ -34,6 +35,10 @@ export function AnimatedCard({
   imageClassName,
   onClick,
   end_datetime,
+  isProduct,
+  isBanner,
+  quantity = 1,
+  track_quantity = false,
 }: AnimatedCardProps) {
   const t = useTranslate();
   const [selectedVariantId, setSelectedVariantId] = useState<
@@ -56,19 +61,56 @@ export function AnimatedCard({
       return price === 0 ? t("free") : `฿${Number(price).toLocaleString()}`;
     }
 
-    const prices = product_variants.map((v) => v.price);
-    const minPrice = Math.min(...prices);
-    const maxPrice = Math.max(...prices);
+    // Find variants with compare_at_price
+    const variantsWithComparePrice = product_variants.filter(
+      (v) => v.compare_at_price && v.compare_at_price > 0
+    );
 
-    if (minPrice === maxPrice) {
-      // return `฿${minPrice.toLocaleString()}`;
-      return minPrice === 0 ? t("free") : `฿${minPrice.toLocaleString()}`;
+    if (variantsWithComparePrice.length > 0) {
+      // Get the variant with lowest price among those with compare_at_price
+      const lowestPriceVariant = variantsWithComparePrice.reduce(
+        (lowest, current) => (current.price < lowest.price ? current : lowest)
+      );
+      return lowestPriceVariant.price === 0
+        ? t("free")
+        : `฿${makeTwoDecimals(lowestPriceVariant.price).toLocaleString()}`;
     }
 
-    return `฿${minPrice.toLocaleString()} - ฿${maxPrice.toLocaleString()}`;
+    // If no variants with compare price, show the lowest price among all variants
+    const prices = product_variants.map((v) => v.price);
+    const minPrice = Math.min(...prices);
+    return minPrice === 0
+      ? t("free")
+      : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
+  };
+
+  const getCompareAtPriceDisplay = () => {
+    if (selectedVariant && selectedVariant.compare_at_price) {
+      return `฿${selectedVariant.compare_at_price.toLocaleString()}`;
+    }
+
+    if (!product_variants || product_variants.length === 0) {
+      return null;
+    }
+
+    // Find variants with compare_at_price
+    const variantsWithComparePrice = product_variants.filter(
+      (v) => v.compare_at_price && v.compare_at_price > 0
+    );
+
+    if (variantsWithComparePrice.length > 0) {
+      // Get the variant with lowest price among those with compare_at_price
+      const lowestPriceVariant = variantsWithComparePrice.reduce(
+        (lowest, current) => (current.price < lowest.price ? current : lowest)
+      );
+      return `฿${lowestPriceVariant.compare_at_price!.toLocaleString()}`;
+    }
+
+    return null;
   };
 
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
+  const checkIfNoProduct = track_quantity === true && quantity === 0;
 
   return (
     <motion.div
@@ -77,7 +119,7 @@ export function AnimatedCard({
       className={cn(
         "relative overflow-hidden rounded-2xl cursor-pointer w-full h-full border border-input",
         "transition-all duration-200 hover:scale-[0.98] active:scale-[0.97] text-sm",
-        { "!opacity-60": isEventEnded },
+        { "!opacity-60": isEventEnded || checkIfNoProduct },
         type === "event" && "flex h-fit"
       )}
       transition={springConfig}
@@ -104,9 +146,7 @@ export function AnimatedCard({
             transition={springConfig}
           />
         ) : (
-          <div className="flex items-center justify-center h-full">
-            <GlowfishIcon />
-          </div>
+          <ProductPlaceholder />
         )}
 
         {/* This button is not clickable, it is used to identify that there is a gallery in this product card, but there will be a 'view gallery' button to click to another link on the single product page */}
@@ -115,15 +155,30 @@ export function AnimatedCard({
             <BookImage className="w-4 h-4" />
           </Button>
         )}
+
+        {product_variants &&
+          product_variants.some(
+            (variant) =>
+              variant.compare_at_price && variant.compare_at_price > 0
+          ) && (
+            <span className="absolute left-2 top-2 bg-red-500 text-white text-sm rounded-full px-2 py-0.5">
+              Sale
+            </span>
+          )}
       </motion.div>
 
       <div
         className={cn(
           "p-4 space-y-2",
-          type === "event" ? "flex-1 absolute bottom-0" : "bg-card"
+          type === "event" ? "flex-1 absolute bottom-0" : "bg-card",
+          isBanner ? "hidden" : ""
         )}
       >
-        <div className="space-y-2">
+        <div
+          className={`flex flex-col ${
+            !isProduct || description ? "gap-2" : "gap-7"
+          } justify-between h-fit`}
+        >
           <div>
             <motion.div
               layoutId={`title-${id}`}
@@ -133,20 +188,23 @@ export function AnimatedCard({
               <h3 className="font-semibold text-foreground line-clamp-1 text-base">
                 {title}
               </h3>
-              {isEventEnded && (
-                <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-[#FF3B30]/10 text-[#FF3B30]">
-                  {t("Ended")}
-                </div>
-              )}
+              {isEventEnded ||
+                (checkIfNoProduct && (
+                  <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium dark:bg-[#8E8E93]/10 dark:text-[#8E8E93] bg-[#BEBEC1] text-white">
+                    {t(checkIfNoProduct ? "Sold out" : "Ended")}
+                  </div>
+                ))}
             </motion.div>
 
-            {/* <motion.p
-              layoutId={`desc-${id}`}
-              className="text-sm text-muted-foreground line-clamp-1"
-              transition={springConfig}
-            >
-              {description}
-            </motion.p> */}
+            {isProduct && (
+              <motion.p
+                layoutId={`desc-${id}`}
+                className="text-sm text-muted-foreground line-clamp-1"
+                transition={springConfig}
+              >
+                {description}
+              </motion.p>
+            )}
           </div>
 
           {/* {price ? (
@@ -182,24 +240,30 @@ export function AnimatedCard({
           )} */}
 
           <div className="space-y-2">
-            <motion.div
-              layoutId={`location-${id}`}
-              className="flex items-center gap-2 text-xs text-muted-foreground"
-              transition={springConfig}
-            >
-              <MapPin className="min-w-3.5 w-3.5 h-3.5" />
-              <span className="line-clamp-1">
-                {location || "To be determined"}
-              </span>
-            </motion.div>
-            <motion.div
-              layoutId={`date-${id}`}
-              className="flex items-center gap-2 text-xs text-muted-foreground"
-              transition={springConfig}
-            >
-              <Calendar className="min-w-3.5 w-3.5 h-3.5" />
-              <span className="line-clamp-1">{date || "To be determined"}</span>
-            </motion.div>
+            {!isProduct && (
+              <>
+                <motion.div
+                  layoutId={`location-${id}`}
+                  className="flex items-center gap-2 text-xs text-muted-foreground"
+                  transition={springConfig}
+                >
+                  <MapPin className="min-w-3.5 w-3.5 h-3.5" />
+                  <span className="line-clamp-1">
+                    {location || "To be determined"}
+                  </span>
+                </motion.div>
+                <motion.div
+                  layoutId={`date-${id}`}
+                  className="flex items-center gap-2 text-xs text-muted-foreground"
+                  transition={springConfig}
+                >
+                  <Calendar className="min-w-3.5 w-3.5 h-3.5" />
+                  <span className="line-clamp-1">
+                    {date || "To be determined"}
+                  </span>
+                </motion.div>
+              </>
+            )}
             {points && (
               <motion.div
                 layoutId={`points-${id}`}
@@ -221,6 +285,12 @@ export function AnimatedCard({
               >
                 <span className="flex items-baseline gap-2 text-lg font-semibold">
                   {getPriceDisplay()}
+
+                  {getCompareAtPriceDisplay() && (
+                    <span className="text-muted-foreground text-base line-through leading-[26px]">
+                      {getCompareAtPriceDisplay()}
+                    </span>
+                  )}
                 </span>
               </motion.p>
             )}

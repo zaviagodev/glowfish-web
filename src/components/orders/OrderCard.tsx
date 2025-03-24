@@ -3,11 +3,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Button } from "../ui/button";
-import GlowfishIcon from "../icons/GlowfishIcon";
 import { format } from "date-fns";
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { formattedDateAndTime } from "@/lib/utils";
+import { ChevronDown, ChevronUp, Image } from "lucide-react";
+import { formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
+import { useConfig } from "@/hooks/useConfig";
+import ProductPlaceholder from "../ui/product-placeholder";
 
 interface OrderItem {
   id: string;
@@ -36,6 +37,11 @@ interface OrderCardProps {
     created_at: string;
     order_items: OrderItem[];
     total_amount: number;
+    shipping_details?: {
+      courier: string;
+      shipped_at: string;
+      tracking_number: string;
+    };
   };
   index: number;
 }
@@ -45,6 +51,7 @@ const LIMITED_ORDERS: number = 1;
 export function OrderCard({ order, index }: OrderCardProps) {
   const t = useTranslate();
   const navigate = useNavigate();
+  const { config } = useConfig();
   const [searchParams] = useSearchParams();
   const currentPage = searchParams.get("page") || "1";
   const [showAllItems, setShowAllItems] = useState(false);
@@ -89,6 +96,23 @@ export function OrderCard({ order, index }: OrderCardProps) {
         <OrderStatusBadge status={order.status} />
       </div>
 
+      {order.shipping_details && (
+        <div className="px-4">
+          <div className="bg-darkgray-two px-3 py-4 rounded-lg flex flex-col justify-center">
+            <p className="text-sm">
+              {t("Tracking Number")}: {order.shipping_details.tracking_number}
+            </p>
+            <p className="text-sm">
+              {t("Courier")}: {order.shipping_details.courier}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {t("Shipped Date")}:{" "}
+              {format(order.shipping_details.shipped_at, formattedDateAndTime)}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Order Items */}
       {visibleItems.map((item, index) => {
         return (
@@ -107,9 +131,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                  <GlowfishIcon className="h-10 w-10" />
-                </div>
+                <ProductPlaceholder imageClassName="w-12 h-12" />
               )}
             </div>
             <div className="flex-1 min-w-0">
@@ -122,7 +144,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                     x{item.quantity}
                   </div>
                   <div className="text-sm font-medium">
-                    ฿{item.unit_price.toLocaleString()}
+                    ฿{makeTwoDecimals(item.unit_price).toLocaleString()}
                   </div>
                 </div>
               </div>
@@ -153,7 +175,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
           <div className="flex items-center justify-between">
             <div className="text-sm text-muted-foreground">{t("Total")}</div>
             <div className="text-lg font-semibold">
-              ฿{order.total_amount.toLocaleString()}
+              ฿{makeTwoDecimals(order.total_amount).toLocaleString()}
             </div>
           </div>
           <Button onClick={handleClick} className="main-btn mt-2">

@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Barcode as BarcodeIcon,
   Calendar,
@@ -23,6 +16,11 @@ import {
   Ticket,
   AlertCircle,
   ChevronRight,
+  ChevronLeft,
+  CircleParking,
+  CircleDollarSign,
+  CheckCircle2,
+  Image,
 } from "lucide-react";
 import Barcode from "react-barcode";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -30,26 +28,38 @@ import { useStore } from "@/hooks/useStore";
 import { useOrders } from "@/features/orders";
 import { useRewards, useReward } from "@/features/rewards/hooks/useRewards";
 import { supabase } from "@/lib/supabase";
-import { cn } from "@/lib/utils";
+import { cn, makeTwoDecimals } from "@/lib/utils";
 import { PageHeader } from "@/components/shared/PageHeader";
-import LoadingSpin from "@/components/loading/LoadingSpin";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { useConfig } from "@/hooks/useConfig";
 import cardReward from "@/img/my-card.svg";
 import RewardAccordions from "@/features/rewards/components/RewardAccordions";
 import GoodAfterWorkCard from "@/components/icons/GoodAfterWorkCard";
+import NoItemsComp from "@/components/ui/no-items";
+import ItemCarousel from "@/components/ui/item-carousel";
+import RewardPageSkeletons from "@/components/skeletons/RewardPageSkeletons";
+import LongParagraph from "@/components/ui/long-paragraph";
+import { ProductVariant } from "@/type/type 2";
+import { VariantDrawer } from "@/features/home/components/VariantDrawer";
+import { set } from "date-fns";
+import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 const RewardsPage = () => {
   const t = useTranslate();
   const navigate = useNavigate();
   const { id } = useParams();
   const { storeName } = useStore();
+  const { config } = useConfig();
   const [isRedeemSheetOpen, setIsRedeemSheetOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [isGoingToConfirm, setIsGoingToConfirm] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isSuccessful, setIsSuccessful] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("points");
   const [error, setError] = useState<string | null>(null);
   const [codeType, setCodeType] = useState("barcode");
   const tabsClassName =
-    "w-full rounded-none flex py-4 gap-2 items-center text-[#979797] text-xs font-semibold box-border border-b border-[#282828] !bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-white data-[state=active]:text-white";
+    "w-full rounded-none flex py-4 gap-2 items-center text-[#979797] text-xs font-semibold box-border border-b border-[#282828] !bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-white data-[state=active]:text-foreground";
 
   const {
     rewards,
@@ -73,7 +83,7 @@ const RewardsPage = () => {
   const { refreshOrders } = useOrders();
 
   if (customerLoading || rewardsLoading || (id && rewardLoading)) {
-    return <LoadingSpin />;
+    return <RewardPageSkeletons />;
   }
 
   if (customerError || rewardsError || rewardError) {
@@ -162,7 +172,16 @@ const RewardsPage = () => {
       await refreshOrders();
 
       setIsConfirmDialogOpen(false);
-      navigate("/my-orders");
+      if (newOrder) navigate(`/my-rewards/${newOrder?.[0]?.order_id}`);
+      // if (selectedOption === "price") {
+      //   navigate("/checkout", {
+      //     state: {
+      //       selectedItems: orderItems,
+      //     },
+      //   });
+      // } else {
+      //   setIsSuccessful(true);
+      // }
     } catch (error) {
       console.error("Error redeeming reward:", error);
       setError(
@@ -177,169 +196,463 @@ const RewardsPage = () => {
     }
   };
 
+  const getPriceDisplay = () => {
+    const { product_variants } = selectedReward;
+    const { price } = product_variants?.[0] || { price: 0 };
+    if (!product_variants || product_variants.length === 0) {
+      return price === 0 ? t("free") : `฿${Number(price).toLocaleString()}`;
+    }
+
+    const prices = product_variants.map((v: ProductVariant) => v.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+
+    if (minPrice === maxPrice) {
+      return minPrice === 0
+        ? t("free")
+        : `฿${makeTwoDecimals(minPrice).toLocaleString()}`;
+    }
+
+    return `${
+      minPrice === 0
+        ? t("free")
+        : `฿${makeTwoDecimals(minPrice).toLocaleString()}`
+    } - ฿${makeTwoDecimals(maxPrice).toLocaleString()}`;
+  };
+
+  const getPointsDisplay = () => {
+    const { product_variants } = selectedReward;
+    const { points_based_price } = product_variants?.[0] || {
+      points_based_price: 0,
+    };
+    if (!product_variants || product_variants.length === 0) {
+      return Number(points_based_price).toLocaleString();
+    }
+
+    const points = product_variants.map(
+      (v: ProductVariant) => v.points_based_price
+    );
+
+    if (points) {
+      const minPoint = Math.min(...points);
+      const maxPoint = Math.max(...points);
+
+      if (minPoint === maxPoint) {
+        return `${minPoint.toLocaleString()}`;
+      }
+
+      return `${minPoint.toLocaleString()} - ${maxPoint.toLocaleString()}`;
+    } else {
+      return 0;
+    }
+  };
+
+  {
+    /* Product variants have no compare at price, which will set the discount price range */
+  }
+  const getCompareAtPriceDisplay = () => {
+    const { product_variants } = selectedReward;
+    if (!product_variants || product_variants.length === 0) {
+      return null;
+    }
+
+    const comparePrices = product_variants
+      .filter((v) => v.compare_at_price && v.compare_at_price > 0)
+      .map((v) => v.compare_at_price!);
+
+    if (comparePrices.length === 0) return null;
+
+    const minComparePrice = Math.min(...comparePrices);
+    const maxComparePrice = Math.max(...comparePrices);
+
+    if (minComparePrice === maxComparePrice) {
+      return `฿${makeTwoDecimals(minComparePrice).toLocaleString()}`;
+    }
+
+    return `฿${makeTwoDecimals(
+      minComparePrice
+    ).toLocaleString()} - ฿${makeTwoDecimals(
+      maxComparePrice
+    ).toLocaleString()}`;
+  };
+
+  const redeemOptions = [
+    {
+      name: "points",
+      icon: <CircleParking className="h-4 w-4" />,
+      value: "Points",
+      amount: selectedReward?.product_variants?.[0]?.points_based_price,
+      selected: selectedOption === "points",
+      disabled:
+        customerData.loyalty_points <
+        selectedReward?.product_variants?.[0]?.points_based_price,
+    },
+    {
+      name: "price",
+      icon: <CircleDollarSign className="h-4 w-4" />,
+      value: "Price",
+      amount: `฿${selectedReward?.product_variants?.[0]?.price}`,
+      selected: selectedOption === "price",
+      disabled: false,
+    },
+  ];
+
+  const handleConfirmRedeem = () => {
+    isGoingToConfirm ? handleRedeem() : setIsGoingToConfirm(true);
+  };
+
+  const handleSuccessful = (link: string | number) => {
+    setIsSuccessful(false);
+    // setIsGoingToConfirm(false);
+    setIsConfirmDialogOpen(false);
+    setSelectedOption("");
+    setError(null);
+    navigate(link as string);
+  };
+
+  const isFree =
+    selectedReward?.product_variants?.[0]?.points_based_price === 0;
+
+  // const checkIfNoPriceOrPoints = (check: string) => {
+  //   switch (check) {
+  //     case "price":
+  //       return selectedReward?.product_variants?.[0]?.price === 0;
+  //     case "points":
+  //       return selectedReward?.product_variants?.[0]?.points_based_price === 0;
+  //     case "both":
+  //       return (
+  //         selectedReward?.product_variants?.[0]?.price === 0 &&
+  //         selectedReward?.product_variants?.[0]?.points_based_price === 0
+  //       );
+  //     default:
+  //       return false;
+  //   }
+  // };
+
+  // const noPriceAndPoints =
+  //   checkIfNoPriceOrPoints("points") && checkIfNoPriceOrPoints("price");
+
+  // const handleConfirmDialogOpen = () => {
+  //   setIsConfirmDialogOpen(true);
+  //   if (noPriceAndPoints) {
+  //     setIsGoingToConfirm(true);
+  //   }
+  // };
+
   // Render detail view if a reward is selected
   if (id && selectedReward) {
     return (
       <div className="pb-10">
-        <PageHeader className="bg-transparent border-0" />
-        {selectedReward.product_images?.[0]?.url ? (
-          <img
-            src={selectedReward.product_images[0].url}
-            className="w-full h-full aspect-square object-cover"
-          />
-        ) : (
-          <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-            <GlowfishIcon />
-          </div>
-        )}
-        <section className="p-5 bg-background/70 relative backdrop-blur-sm rounded-t-2xl flex flex-col gap-7 -top-20">
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">Reward</p>
-            <h2 className="text-2xl">{selectedReward.name}</h2>
-          </div>
-
-          <div className="grid grid-cols-2">
-            <div className="flex flex-col gap-1 pr-7 border-r border-r-[#FFFFFF1A]">
-              <p className="text-sm text-muted-foreground">
-                {t("Required Points")}
-              </p>
-              <h2 className="text-orangefocus text-xl font-semibold">
-                {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
-                {t("points")}
-              </h2>
-            </div>
-            <div className="flex flex-col gap-1 pl-7">
-              <p className="text-sm text-muted-foreground">
-                {t("Your Points")}
-              </p>
-              <h2 className="page-title">
-                {customerData?.loyalty_points?.toLocaleString()}{" "}
-                {customerData?.loyalty_points === 1 ? "point" : "points"}
-              </h2>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <h2 className="text-base">{t("Description")}</h2>
-            <p className="text-sm text-secondary-foreground font-light">
-              {selectedReward.description}
-            </p>
-          </div>
-
-          <RewardAccordions />
-        </section>
-
-        {error && (
-          <div className="px-5 mb-4">
-            <div className="bg-red-500/10 text-red-500 px-4 py-3 rounded-lg flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" />
-              <p className="text-sm">{error}</p>
-            </div>
-          </div>
-        )}
-
-        <footer className="btn-footer flex flex-col gap-7 z-[50]">
-          <Dialog
-            open={isConfirmDialogOpen}
-            onOpenChange={setIsConfirmDialogOpen}
+        <div className="fixed inset-0 overflow-y-auto max-width-mobile h-dvh z-[50]">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute left-5 top-5 z-[60] bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white"
+            onClick={() => handleSuccessful(-1)}
           >
-            <Button
-              disabled={
-                isProcessing ||
-                customerData.loyalty_points <
-                  (selectedReward.product_variants?.[0]?.points_based_price ||
-                    0)
-              }
-              onClick={() => setIsConfirmDialogOpen(true)}
-              className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
-            >
-              <Gift />
-              {isProcessing ? t("Processing...") : t("Redeem Reward")}
-            </Button>
-            <DialogContent className="w-[90%] rounded-lg">
-              <DialogHeader>
-                <DialogTitle>{t("Confirm Redemption")}</DialogTitle>
-                <DialogDescription>
-                  {t("Are you sure you want to redeem this reward for")}{" "}
-                  {selectedReward.product_variants?.[0]?.points_based_price?.toLocaleString()}{" "}
-                  {t("points")}?
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex gap-4 mt-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => setIsConfirmDialogOpen(false)}
-                  className="secondary-btn w-full"
-                >
-                  {t("Cancel")}
-                </Button>
-                <Button
-                  onClick={handleRedeem}
-                  disabled={isProcessing}
-                  className="main-btn w-full"
-                >
-                  {isProcessing ? t("Processing...") : t("Confirm")}
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+          <ItemCarousel
+            images={selectedReward?.product_images}
+            image={selectedReward?.product_images?.[0]?.url}
+          />
+          <section className="p-5 bg-background/70 relative backdrop-blur-sm rounded-t-2xl flex flex-col gap-7 -top-20">
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-muted-foreground">Reward</p>
+              <h2 className="text-2xl">{selectedReward.name}</h2>
+            </div>
 
-          <Sheet open={isRedeemSheetOpen} onOpenChange={setIsRedeemSheetOpen}>
-            <SheetContent
-              className="h-3/4 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col justify-between"
-              side="bottom"
-            >
-              <div>
-                <h3 className="text-lg font-semibold text-center mb-4">
-                  {t("Redeem Your Reward")}
-                </h3>
-                <p className="text-sm text-[#979797] text-center mb-6">
-                  {t("Show this code to the staff to redeem your reward")}
+            <div className="grid grid-cols-2">
+              <div className="flex flex-col gap-1 py-1">
+                {" "}
+                {/* pr-7 border-r border-r-[#FFFFFF1A] */}
+                <p className="text-sm text-muted-foreground">
+                  {t("Required Points")}
                 </p>
-                <Tabs defaultValue={codeType} onValueChange={setCodeType}>
-                  <TabsList className="w-full bg-transparent">
-                    <TabsTrigger value="barcode" className={tabsClassName}>
-                      <BarcodeIcon />
-                      {t("Barcode")}
-                    </TabsTrigger>
-                    <TabsTrigger value="qrcode" className={tabsClassName}>
-                      <QrCode />
-                      {t("QR Code")}
-                    </TabsTrigger>
-                    <TabsTrigger value="coupon-code" className={tabsClassName}>
-                      <Ticket />
-                      {t("Code")}
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent
-                    value="barcode"
-                    className="mt-10 flex justify-center"
-                  >
-                    <Barcode value={selectedReward.id} width={2.5} />
-                  </TabsContent>
-                  <TabsContent value="qrcode" className="mt-10 text-center">
-                    {/* TODO: add ScanQRCode */}
-                    QR Code Prototype
-                  </TabsContent>
-                  <TabsContent value="coupon-code" className="mt-10">
-                    <h3 className="text-center text-2xl font-bold tracking-wider">
-                      {selectedReward.id}
-                    </h3>
-                  </TabsContent>
-                </Tabs>
+                <h2 className="text-orangefocus text-2xl font-semibold">
+                  {selectedReward?.product_variants?.[0]?.points_based_price ||
+                    0}
+                </h2>
               </div>
-              <footer className="space-y-4 p-5">
-                <Button className="!bg-transparent w-full flex items-center gap-2">
-                  <Download />
-                  {t("Download Code")}
-                </Button>
-                <p className="text-sm text-[#979797] text-center">
-                  {t("This code is valid for one-time use only")}
+              {/* <div className="flex flex-col gap-1 py-1 pl-7">
+                <p className="text-sm text-muted-foreground">
+                  {t("Converted to Price")}
                 </p>
-              </footer>
-            </SheetContent>
-          </Sheet>
-        </footer>
+                <div className="space-y-1">
+                  <h2 className="text-xl font-semibold">
+                    {getPriceDisplay() || 0}{" "}
+                  </h2>
+
+                  {/* Product variants have no compare at price, which will set the discount price range
+                  {getCompareAtPriceDisplay() && (
+                    <p className="text-muted-foreground line-through">
+                      {getCompareAtPriceDisplay()}
+                    </p>
+                  )}
+                </div>
+              </div> */}
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <h2 className="text-base">{t("Description")}</h2>
+              <LongParagraph description={selectedReward.description} />
+            </div>
+
+            <RewardAccordions />
+
+            {error && (
+              <div className="mb-4">
+                <div className="bg-red-500/10 text-red-500 px-4 py-3 rounded-lg flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  <p className="text-sm">{error}</p>
+                </div>
+              </div>
+            )}
+          </section>
+
+          <footer className="btn-footer flex flex-col gap-7">
+            <Sheet open={isSuccessful}>
+              <SheetContent
+                className="max-width-mobile rounded-lg"
+                side="bottom"
+              >
+                <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto pb-6" />
+                <h3 className="text-lg font-semibold mb-4 text-center">
+                  {t("Reward successfully redeemed")}
+                </h3>
+                <p className="text-sm text-[#979797] mb-6 text-center">
+                  {t(
+                    'You can check your redeemed rewards at " Rewards -> My Rewards".'
+                  )}
+                </p>
+                <div className="flex flex-col justify-center items-center gap-4 mt-4">
+                  <Button
+                    onClick={() => handleSuccessful("/rewards")}
+                    className="main-btn w-full"
+                  >
+                    {t("Confirm")}
+                  </Button>
+                  <p
+                    className="text-muted-foreground"
+                    onClick={() => handleSuccessful("/my-rewards")}
+                  >
+                    See my rewards
+                  </p>
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <Sheet
+              open={isConfirmDialogOpen}
+              onOpenChange={setIsConfirmDialogOpen}
+            >
+              <Button
+                disabled={
+                  isProcessing ||
+                  customerData.loyalty_points <
+                    (selectedReward.product_variants?.[0]?.points_based_price ||
+                      0)
+                }
+                onClick={() => setIsConfirmDialogOpen(true)}
+                className="main-btn !bg-mainbutton rounded-full flex gap-2 items-center justify-center"
+              >
+                <Gift />
+                {isProcessing ? t("Processing...") : t("Redeem Reward")}
+              </Button>
+              <SheetContent
+                className="h-max border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col max-width-mobile mx-auto"
+                side="bottom"
+              >
+                <section className="flex flex-col gap-7">
+                  <div className="mt-1">
+                    <h3 className="text-lg font-semibold mb-4">
+                      {t("Confirm Redemption?")}
+                    </h3>
+                    {!isGoingToConfirm && (
+                      <p className="text-sm text-[#979797] mb-6">
+                        {t(
+                          "This item can be redeemed by money. How would you like to exchange the item?"
+                        )}
+                      </p>
+                    )}
+                  </div>
+
+                  {isGoingToConfirm ? (
+                    <div>
+                      Confirm the redemption of "{selectedReward.name}" for{" "}
+                      {/* {selectedOption === "price"
+                        ? `฿${selectedReward?.product_variants?.[0]?.price}`
+                        : noPriceAndPoints
+                        ? "free"
+                        : `${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price
+                          } point${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price === 1
+                              ? ""
+                              : "s"
+                          }`} */}
+                      {isFree
+                        ? "free"
+                        : `${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price
+                          } point${
+                            selectedReward?.product_variants?.[0]
+                              ?.points_based_price === 1
+                              ? ""
+                              : "s"
+                          }`}
+                      . If it has been redeemed, it cannot be refunded or
+                      returned.
+                    </div>
+                  ) : (
+                    <div className="text-center space-y-4">
+                      <h3 className="text-lg font-semibold text-center">
+                        {t("Choose an option to redeem")}
+                      </h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        {redeemOptions.map((option) => {
+                          return (
+                            <Button
+                              key={option.name}
+                              className={cn(
+                                "w-full text-left rounded-lg transition-all !bg-darkgray h-16",
+                                option.selected ? "!bg-mainbutton" : ""
+                              )}
+                              onClick={() => setSelectedOption(option.name)}
+                              disabled={option.disabled}
+                            >
+                              <div className="flex flex-col items-center">
+                                <div
+                                  className={cn(
+                                    "text-sm font-medium flex items-center gap-1",
+                                    {
+                                      "text-muted-foreground": !option.selected,
+                                    }
+                                  )}
+                                >
+                                  {option.icon}
+                                  {option.value}
+                                </div>
+                                <div
+                                  className={cn("text-2xl", {
+                                    "text-foreground": !option.selected,
+                                  })}
+                                >
+                                  {option.amount
+                                    ? option.amount.toLocaleString()
+                                    : t("free")}
+                                </div>
+                              </div>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                      <p className="font-medium">
+                        Available:{" "}
+                        <span className="text-orangefocus">
+                          {customer?.loyalty_points?.toLocaleString() || 0}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                </section>
+                <div className="flex items-center gap-2 w-full">
+                  <Button
+                    onClick={() => setIsConfirmDialogOpen(false)}
+                    className="secondary-btn w-full text-foreground"
+                  >
+                    {t("Cancel")}
+                  </Button>
+                  <Button
+                    disabled={isProcessing}
+                    onClick={handleConfirmRedeem}
+                    className="main-btn w-full"
+                  >
+                    {isProcessing ? t("Processing...") : t("Confirm")}
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <Sheet open={isRedeemSheetOpen} onOpenChange={setIsRedeemSheetOpen}>
+              <SheetContent
+                className="h-3/4 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col justify-between"
+                side="bottom"
+              >
+                <div>
+                  <h3 className="text-lg font-semibold text-center mb-4">
+                    {t("Redeem Your Reward")}
+                  </h3>
+                  <p className="text-sm text-[#979797] text-center mb-6">
+                    {t("Show this code to the staff to redeem your reward")}
+                  </p>
+                  <Tabs defaultValue={codeType} onValueChange={setCodeType}>
+                    <TabsList className="w-full bg-transparent">
+                      <TabsTrigger value="barcode" className={tabsClassName}>
+                        <BarcodeIcon />
+                        {t("Barcode")}
+                      </TabsTrigger>
+                      <TabsTrigger value="qrcode" className={tabsClassName}>
+                        <QrCode />
+                        {t("QR Code")}
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="coupon-code"
+                        className={tabsClassName}
+                      >
+                        <Ticket />
+                        {t("Code")}
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent
+                      value="barcode"
+                      className="mt-10 flex justify-center"
+                    >
+                      <Barcode value={selectedReward.id} width={2.5} />
+                    </TabsContent>
+                    <TabsContent value="qrcode" className="mt-10 text-center">
+                      {/* TODO: add ScanQRCode */}
+                      QR Code Prototype
+                    </TabsContent>
+                    <TabsContent value="coupon-code" className="mt-10">
+                      <h3 className="text-center text-2xl font-bold tracking-wider">
+                        {selectedReward.id}
+                      </h3>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+                <footer className="space-y-4 p-5">
+                  <Button className="!bg-transparent w-full flex items-center gap-2">
+                    <Download />
+                    {t("Download Code")}
+                  </Button>
+                  <p className="text-sm text-[#979797] text-center">
+                    {t("This code is valid for one-time use only")}
+                  </p>
+                </footer>
+              </SheetContent>
+            </Sheet>
+          </footer>
+        </div>
+
+        {/* There are no variant options of the rewards, only product variants. I want the variant options to be fetched similarly to the products' one. */}
+        {/* {selectedReward?.variant_options &&
+          selectedReward?.variant_options.length > 0 &&
+          isRedeemSheetOpen && (
+            <VariantDrawer
+              open={isRedeemSheetOpen}
+              onClose={() => setIsRedeemSheetOpen(false)}
+              onSelect={() => {}}
+              variants={product_variants || []}
+              variantOptions={selectedReward?.variant_options}
+              selectedVariantId={id}
+              track_quantity={selectedReward?.track_quantity}
+              onSubmit={() => setIsConfirmDialogOpen(true)}
+            />
+          )} */}
       </div>
     );
   }
@@ -372,9 +685,9 @@ const RewardsPage = () => {
               className="absolute z-0 w-full h-full object-cover opacity-75"
             />
           )}
-          <div className="flex justify-between items-center py-5 px-[30px] z-5 relative">
+          <div className="flex justify-between items-center py-5 px-[30px] z-5 relative text-white">
             <h3 className="font-semibold text-xl tracking-[-0.4px]">
-              {t("Good After Work")}
+              {t("Good Afterwork")}
             </h3>
             <h3 className="font-semibold text-xl">
               {hasPoints
@@ -384,29 +697,42 @@ const RewardsPage = () => {
                 : "0 points"}
             </h3>
           </div>
-          <div className="absolute z-[99] right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
-            {/* <GlowfishIcon className="w-[72px]" />| Glowfish */}
-            <GoodAfterWorkCard />
+          <div className="absolute right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
+            {config?.storeLogo ? (
+              <img
+                src={config.storeLogo}
+                alt="Store Logo"
+                className="w-20 h-20 object-contain"
+              />
+            ) : (
+              <DefaultStorefront />
+            )}
           </div>
+          <button
+            onClick={() => navigate("/scan")}
+            className="absolute left-[30px] bottom-5"
+          >
+            <QrCode className="h-6 w-6 text-white" />
+          </button>
         </div>
 
         <div className="px-5 pb-5">
           <button
-            onClick={() => navigate("/scan")}
-            className="w-full bg-darkgray rounded-lg p-4 transition-colors flex items-center justify-between"
+            onClick={() => navigate("/my-rewards")}
+            className="w-full bg-darkgray rounded-lg p-4 flex items-center justify-between"
           >
             <div className="flex items-center gap-3 w-full">
-              <div className="w-12 h-12 rounded-lg bg-[#2196F31A] flex items-center justify-center">
-                <QrCode className="h-5 w-5 text-[#2196F3]" />
+              <div className="w-12 h-12 rounded-lg bg-[#E66C9E1A] flex items-center justify-center">
+                <Gift className="h-5 w-5 text-[#E66C9E]" />
               </div>
-              <div className="text-left text-sm">{t("Scan to Redeem")}</div>
+              <div className="text-left text-sm">{t("My Rewards")}</div>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
 
         <div className="px-5 pb-7">
-          <h3 className="page-title mb-4">{t("Rewards")}</h3>
+          <h3 className="text-xl font-semibold mb-4">{t("Rewards")}</h3>
           {hasRewards ? (
             <div className="grid grid-cols-2 gap-4">
               {rewardEvents.map((reward) => (
@@ -419,7 +745,7 @@ const RewardsPage = () => {
                     className={cn(
                       "relative overflow-hidden max-h-[220px] h-[40vw] w-full",
                       {
-                        "bg-white/10 flex items-center justify-center":
+                        "bg-black flex items-center justify-center":
                           !reward.image,
                       }
                     )}
@@ -431,7 +757,7 @@ const RewardsPage = () => {
                         className="w-full h-full object-cover object-top"
                       />
                     ) : (
-                      <GlowfishIcon />
+                      <ProductPlaceholder />
                     )}
                   </div>
 
@@ -468,12 +794,10 @@ const RewardsPage = () => {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-8 px-4">
-              <Gift className="w-16 h-16 text-muted-foreground/50 mb-4" />
-              <p className="text-muted-foreground text-center">
-                {t("No rewards available at the moment")}
-              </p>
-            </div>
+            <NoItemsComp
+              icon={Gift}
+              text="No rewards available at the moment"
+            />
           )}
         </div>
       </section>

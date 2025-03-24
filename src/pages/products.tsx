@@ -13,8 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AnimatedCard } from "@/components/shared/AnimatedCard";
 import { useProducts } from "@/features/home/hooks/useProducts";
-import { format, isPast } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
 import {
   Sheet,
   SheetContent,
@@ -25,21 +23,22 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ProductDetail } from "@/features/home/components/ProductDetail";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryGrid } from "@/features/home/components/CategoryGrid";
-import { Product } from "@/features/home/services/productService";
 import { cn, formattedDateAndTime } from "@/lib/utils";
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-}
+import NoItemsComp from "@/components/ui/no-items";
+import { Product, ProductVariant } from "@/features/home/types/product.types";
+import EventPageSkeletons from "@/components/skeletons/EventPageSkeletons";
+import { useCart } from "@/lib/cart";
+import { toZonedTime } from "date-fns-tz";
+import { format } from "date-fns";
 
 export default function ProductsPage() {
   const t = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { products, loading, error, categories } = useProducts();
+  const { events, products, loading, error, categories } = useProducts();
+  const { getTotalItems } = useCart();
+  const isEventPage = location.pathname === "/events";
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     location.state?.selectedCategory || null
   );
@@ -63,47 +62,57 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   // Filter and sort products
-  const filteredProducts = products
-    .filter(
-      (product) =>
-        (selectedCategory ? product.category_id === selectedCategory : true) &&
-        (searchQuery
-          ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            product.description
-              ?.toLowerCase()
-              .includes(searchQuery.toLowerCase())
-          : true) &&
-        (inStock
-          ? product.product_variants?.some((v) => v.quantity > 0) ?? false
-          : true) &&
-        (priceRange.min !== null ? product.price >= priceRange.min : true) &&
-        (priceRange.max !== null ? product.price <= priceRange.max : true)
-    )
-    .sort((a, b) => {
-      // Helper function to get the highest price from variants or base price
-      const getHighestPrice = (product: Product) => {
-        if (!product.product_variants?.length) return product.price;
-        const variantPrices = product.product_variants.map((v) => v.price);
-        return Math.max(product.price, ...variantPrices);
-      };
+  const filteredProducts = isEventPage
+    ? events
+    : products
+        .filter(
+          (product) =>
+            (selectedCategory
+              ? product.category_id === selectedCategory
+              : true) &&
+            (searchQuery
+              ? product.name
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase()) ||
+                product.description
+                  ?.toLowerCase()
+                  .includes(searchQuery.toLowerCase())
+              : true) &&
+            (inStock
+              ? product.product_variants?.some((v) => v.quantity > 0) ?? false
+              : true) &&
+            (priceRange.min !== null
+              ? product.price >= priceRange.min
+              : true) &&
+            (priceRange.max !== null ? product.price <= priceRange.max : true)
+        )
+        .sort((a, b) => {
+          // Helper function to get the highest price from variants or base price
+          const getHighestPrice = (product: Product) => {
+            if (!product.product_variants?.length) return product.price;
+            const variantPrices = product.product_variants.map(
+              (v: ProductVariant) => v.price
+            );
+            return Math.max(product.price, ...variantPrices);
+          };
 
-      switch (sortBy) {
-        case "price-low":
-          return getHighestPrice(a) - getHighestPrice(b);
-        case "price-high":
-          return getHighestPrice(b) - getHighestPrice(a);
-        case "oldest":
-          return (
-            new Date(a.start_datetime).getTime() -
-            new Date(b.start_datetime).getTime()
-          );
-        default: // newest
-          return (
-            new Date(b.start_datetime).getTime() -
-            new Date(a.start_datetime).getTime()
-          );
-      }
-    });
+          switch (sortBy) {
+            case "price-low":
+              return getHighestPrice(a) - getHighestPrice(b);
+            case "price-high":
+              return getHighestPrice(b) - getHighestPrice(a);
+            case "oldest":
+              return (
+                new Date(a.created_at).getTime() -
+                new Date(b.created_at).getTime()
+              );
+            default: // newest
+              return (
+                new Date(b.created_at).getTime() -
+                new Date(a.created_at).getTime()
+              );
+          }
+        });
 
   const formattedDate = (product: any) => {
     return (
@@ -114,6 +123,16 @@ export default function ProductsPage() {
         formattedDateAndTime
       )} - ${format(
         toZonedTime(new Date(product.end_datetime), "UTC"),
+        formattedDateAndTime
+      )}`
+    );
+  };
+
+  const formattedStartDate = (product: Product) => {
+    return (
+      product?.start_datetime &&
+      `${format(
+        toZonedTime(new Date(product.start_datetime), "UTC"),
         formattedDateAndTime
       )}`
     );
@@ -136,10 +155,13 @@ export default function ProductsPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="text-white h-12 !bg-transparent"
+            className="text-foreground h-12 !bg-transparent relative"
             onClick={() => navigate("/cart")}
           >
             <ShoppingCart className="h-6 w-6" />
+            <span className="absolute top-1 -right-1 bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs">
+              {getTotalItems()}
+            </span>
           </Button>
         </div>
 
@@ -149,6 +171,7 @@ export default function ProductsPage() {
           isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
+          tab_type="colorful"
         />
 
         {/* Filter & Sort Bar */}
@@ -177,8 +200,11 @@ export default function ProductsPage() {
       {/* Product Grid */}
       <div className="p-5">
         {loading ? (
-          <div className="flex items-center justify-center h-40">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="grid grid-cols-2 gap-4">
+            <EventPageSkeletons />
+            <EventPageSkeletons />
+            <EventPageSkeletons />
+            <EventPageSkeletons />
           </div>
         ) : (
           <>
@@ -192,17 +218,14 @@ export default function ProductsPage() {
                   >
                     <AnimatedCard
                       id={product.id}
-                      image={product.image}
+                      image={product.product_images[0]?.url || ""}
                       title={product.name}
                       price={product.price}
-                      compareAtPrice={
-                        product.product_variants?.[0]?.compare_at_price ||
-                        undefined
-                      }
-                      product_variants={product.product_variants}
+                      description={product.description}
                       location={product.location}
-                      date={formattedDate(product)}
-                      gallery_link={product.gallery_link}
+                      date={formattedStartDate(product)}
+                      compareAtPrice={product.compare_at_price || undefined}
+                      product_variants={product.product_variants}
                       imageClassName="max-h-[220px] h-[40vw]"
                       onClick={() => {
                         // Get the default variant if product has variants
@@ -212,30 +235,32 @@ export default function ProductsPage() {
                             ...product,
                             variant_id: defaultVariant.id,
                             quantity: defaultVariant.quantity,
+                            image: product.product_images[0]?.url || "",
+                            images: product.product_images || [],
                           });
                         } else {
-                          setSelectedProduct(product);
+                          setSelectedProduct({
+                            ...product,
+                            image: product.product_images[0]?.url || "",
+                            images: product.product_images || [],
+                          });
                         }
                       }}
-                      end_datetime={product.end_datetime}
+                      isProduct={isEventPage ? false : true}
                     />
                   </motion.div>
                 ))}
               </div>
             ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="flex flex-col items-center justify-center py-12 px-4"
-              >
-                <Package2 className="w-16 h-16 text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground text-center">
-                  {searchQuery
-                    ? t("No products found matching your search")
-                    : t("No products found")}
-                </p>
-              </motion.div>
+              <NoItemsComp
+                icon={Package2}
+                className="py-12"
+                text={
+                  searchQuery
+                    ? "No products found matching your search"
+                    : "No products found"
+                }
+              />
             )}
           </>
         )}
@@ -243,13 +268,13 @@ export default function ProductsPage() {
 
       {/* Filter Drawer */}
       <Sheet open={showFilterDrawer} onOpenChange={setShowFilterDrawer}>
-        <SheetContent side="bottom" className="h-[70%] p-0">
+        <SheetContent side="bottom" className="h-[70%] p-0 max-width-mobile">
           <SheetHeader className="px-5 pb-3 pt-8 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Filter Products")}
             </SheetTitle>
           </SheetHeader>
-          <div className="p-5 space-y-6 overflow-auto">
+          <div className="p-5 space-y-6 overflow-auto h-[calc(100%_-_160px)]">
             <div className="space-y-4">
               <h3 className="text-base font-medium">{t("Price Range")}</h3>
               <div className="flex items-center gap-4">
@@ -327,7 +352,7 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          <div className="p-5 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0">
+          <div className="p-5 border-t bg-background/80 backdrop-blur-xl fixed w-full bottom-0 max-width-mobile">
             <Button
               className="w-full main-btn"
               onClick={() => setShowFilterDrawer(false)}
@@ -340,7 +365,7 @@ export default function ProductsPage() {
 
       {/* Sort Drawer */}
       <Sheet open={showSortDrawer} onOpenChange={setShowSortDrawer}>
-        <SheetContent side="bottom" className="h-fit p-0">
+        <SheetContent side="bottom" className="h-fit p-0 max-width-mobile">
           <SheetHeader className="px-5 pb-3 pt-8 border-b sticky top-0 bg-background/80 backdrop-blur-xl flex flex-row items-center">
             <SheetTitle className="text-lg font-semibold">
               {t("Sort By")}
@@ -377,9 +402,10 @@ export default function ProductsPage() {
       {selectedProduct && (
         <ProductDetail
           {...selectedProduct}
-          location={selectedProduct.location}
-          date={formattedDate(selectedProduct)}
+          useNewStructure={true}
           onClose={() => setSelectedProduct(null)}
+          isEvent={!!selectedProduct.end_datetime}
+          date={formattedDate(selectedProduct)}
         />
       )}
     </div>

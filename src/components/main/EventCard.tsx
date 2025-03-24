@@ -33,14 +33,14 @@ const EventCard = ({
           alt={title}
           className="w-full h-full object-cover rounded-lg object-top"
         />
-        <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-orangefocus text-white text-xs font-medium">
+        <div className="absolute top-2 left-2 px-3 py-1.5 rounded-full bg-orangefocus text-foreground text-xs font-medium">
           {price && price !== 0 ? `฿${price}` : t("Free")}
         </div>
       </div>
 
       <div
         className={cn(
-          "p-2 space-y-4 flex-1 text-white absolute bottom-0 w-full"
+          "p-2 space-y-4 flex-1 text-foreground absolute bottom-0 w-full"
         )}
       >
         <div className="space-y-2 backdrop-blur-sm rounded-lg bg-background/50 p-4">

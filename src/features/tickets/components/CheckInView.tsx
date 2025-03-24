@@ -39,7 +39,7 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="absolute bottom-0 left-0 right-0 bg-background rounded-t-[20px] overflow-hidden"
+        className="absolute bottom-0 left-0 right-0 bg-background rounded-t-[20px] overflow-hidden max-width-mobile"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

@@ -169,7 +169,7 @@ export function PaymentPage() {
 
         // If bank transfer, pre-select the first account
         if (
-          storedPaymentMethod?.startsWith("bank_transfer") &&
+          storedPaymentMethod === "bank_transfer" &&
           paymentData.bank_transfer?.accounts
         ) {
           setSelectedBankAccount(paymentData.bank_transfer.accounts[0]);
@@ -223,7 +223,7 @@ export function PaymentPage() {
 
       setShowCelebration(true);
 
-      // Wait for celebration animation then redirect
+      // Wait for celebration animation then redirect to thank you page
       setTimeout(() => {
         navigate("/checkout/thank-you", {
           state: {
@@ -253,8 +253,8 @@ export function PaymentPage() {
     });
   };
 
-  const handleCopyAccountNum = () => {
-    navigator.clipboard.writeText(paymentOptions?.promptpay?.id);
+  const handleCopyAccountNum = (id: string) => {
+    navigator.clipboard.writeText(id);
     setIsBankNumCopied(true);
     setTimeout(() => setIsBankNumCopied(false), 1500);
   };
@@ -298,7 +298,7 @@ export function PaymentPage() {
       formData.append("paymentType", paymentTypeToSend);
 
       // Handle payment method for bank transfer
-      if (paymentMethod?.startsWith("bank_transfer")) {
+      if (paymentMethod === "bank_transfer") {
         if (!selectedBankAccount) {
           alert(t("Please select a bank account first."));
           setIsUploading(false);
@@ -357,8 +357,6 @@ export function PaymentPage() {
       // Success handling
       setSlipImage(result.data.slip_url);
 
-      // Optional: Show success toast or message
-      alert(t("Payment slip uploaded successfully"));
     } catch (error: any) {
       console.error("Comprehensive upload error:", error);
 
@@ -407,7 +405,7 @@ export function PaymentPage() {
           >
             <div
               className={cn("bg-white w-4 h-4 rounded-full", {
-                "bg-mainbutton border-2 border-black outline outline-1 outline-mainbutton":
+                "bg-mainbutton border-2 border-background outline outline-1 outline-mainbutton":
                   selectedBankAccount?.id === account.id,
               })}
             />
@@ -429,14 +427,14 @@ export function PaymentPage() {
 
   const formatBankAccountNumber = (accountNumber: string) => {
     // For 10-digit Bangkok Bank account, use a specific format
-    if (accountNumber.length === 10) {
+    if (accountNumber?.length === 10) {
       return `${accountNumber.slice(0, 3)} ${accountNumber.slice(
         3,
         7
       )} ${accountNumber.slice(7)}`;
     }
     // Fallback to groups of 4 for other account numbers
-    const groups = accountNumber.match(/.{1,4}/g) || [accountNumber];
+    const groups = accountNumber?.match(/.{1,4}/g) || [accountNumber];
     return groups.join(" ");
   };
 
@@ -470,7 +468,25 @@ export function PaymentPage() {
       title: t("Account Number"),
       value: paymentOptions?.promptpay?.id || "-",
       isCopied: isBankNumCopied,
-      onCopy: handleCopyAccountNum,
+      onCopy: () => handleCopyAccountNum(paymentOptions?.promptpay?.id),
+    },
+  ];
+
+  const bankTransferInfo = [
+    {
+      title: t("Account"),
+      value: selectedBankAccount?.account_name || "-",
+    },
+    {
+      title: t("Account Number"),
+      value:
+        formatBankAccountNumber(selectedBankAccount?.account_number) || "-",
+      isCopied: isBankNumCopied,
+      onCopy: () => handleCopyAccountNum(selectedBankAccount?.account_number),
+    },
+    {
+      title: t("Branch"),
+      value: selectedBankAccount?.branch || "-",
     },
   ];
 
@@ -499,21 +515,21 @@ export function PaymentPage() {
             <div
               className={cn(
                 "absolute inset-0",
-                "bg-[radial-gradient(50%_100%_at_50%_100%,rgba(52,211,153,0.15)_0%,rgba(52,211,153,0.05)_30%,transparent_100%)]",
+                "bg-[radial-gradient(50%_100%_at_50%_100%,rgba(250,204,21,0.15)_0%,rgba(250,204,21,0.05)_30%,transparent_100%)]",
                 "animate-pulse"
               )}
             />
             <div
               className={cn(
                 "absolute inset-0",
-                "bg-[radial-gradient(50%_100%_at_50%_100%,rgba(52,211,153,0.1)_0%,rgba(52,211,153,0.02)_40%,transparent_100%)]",
+                "bg-[radial-gradient(50%_100%_at_50%_100%,rgba(250,204,21,0.1)_0%,rgba(250,204,21,0.02)_40%,transparent_100%)]",
                 "animate-[pulse_2s_infinite]"
               )}
             />
           </div>
 
           {/* Countdown Timer */}
-          <motion.div
+          {/* <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{
@@ -526,7 +542,7 @@ export function PaymentPage() {
           >
             <Clock className="w-4 h-4" />
             {formatTime(countdown)}
-          </motion.div>
+          </motion.div> */}
 
           <motion.p
             className="text-base font-normal text-[#636366] mb-3"
@@ -551,7 +567,7 @@ export function PaymentPage() {
             <motion.span
               className="text-[25px] font-normal mt-2"
               initial={{ x: -10, opacity: 0 }}
-              animate={{ x: 0, opacity: 1, color: "rgb(74 222 128)" }}
+              animate={{ x: 0, opacity: 1, color: "rgb(250,204,21)" }}
               transition={{ delay: 0.6 }}
             >
               ฿
@@ -559,7 +575,7 @@ export function PaymentPage() {
             <motion.span
               className="text-[58px] leading-none font-semibold tracking-tight"
               initial={{ color: "#1C1C1E" }}
-              animate={{ color: "rgb(74 222 128)" }}
+              animate={{ color: "rgb(250,204,21)" }}
               transition={{
                 delay: 0.7,
                 duration: 0.8,
@@ -570,15 +586,19 @@ export function PaymentPage() {
                 fontFeatureSettings: "'tnum' on, 'lnum' on",
               }}
             >
-              {order.total.toLocaleString()}
+              {Math.floor(order.total).toLocaleString()}
             </motion.span>
             <motion.span
               className="text-[25px] font-normal mt-2"
               initial={{ x: 10, opacity: 0 }}
-              animate={{ x: 0, opacity: 1, color: "rgb(74 222 128)" }}
+              animate={{ x: 0, opacity: 1, color: "rgb(250,204,21)" }}
               transition={{ delay: 0.6 }}
             >
-              .00
+              {Number.isInteger(order.total)
+                ? ".00"
+                : Math.abs(order.total % 1)
+                    .toFixed(2)
+                    .slice(1)}
             </motion.span>
           </motion.div>
 
@@ -588,7 +608,7 @@ export function PaymentPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.6, ease: "easeOut" }}
           >
-            <div className="w-[6px] h-[6px] rounded-full bg-[#34C759] animate-[pulse_1.5s_infinite]" />
+            <div className="w-[6px] h-[6px] rounded-full bg-[rgb(250,204,21)] animate-[pulse_1.5s_infinite]" />
             <span className="text-[15px] font-normal text-[#636366]">
               {t("Waiting for payment")}
             </span>
@@ -612,7 +632,8 @@ export function PaymentPage() {
             transition={{ delay: 0.5 }}
             className="px-6 pt-8 text-center"
           >
-            <div className="space-y-4">
+            <h3 className="text-lg font-semibold mb-4 text-left">Promptpay</h3>
+            <div className="space-y-3">
               {/* PromptPay Info */}
               {promptPayInfo.map((info) => (
                 <div key={info.title}>
@@ -623,7 +644,7 @@ export function PaymentPage() {
                     <div className="text-sm flex items-center gap-2">
                       <div className="font-medium">{info.value || "-"}</div>
 
-                      {info.onCopy && (
+                      {info.onCopy && info.value && (
                         <Button
                           variant="ghost"
                           size="icon"
@@ -636,7 +657,7 @@ export function PaymentPage() {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 exit={{ scale: 0 }}
-                                className="absolute -top-8 px-2 py-1 bg-green-500 text-white text-xs whitespace-nowrap rounded-full"
+                                className="absolute -top-8 px-2 py-1 bg-green-500 text-foreground text-xs whitespace-nowrap rounded-full"
                               >
                                 {t("Copied!")}
                               </motion.div>
@@ -687,34 +708,43 @@ export function PaymentPage() {
 
             {selectedBankAccount && (
               <div className="p-4">
-                <div className="bg-darkgray rounded-xl p-5 space-y-4">
-                  <div className="flex flex-col">
-                    <h3 className="text-xl font-semibold mb-2">
-                      {selectedBankAccount.bank.bank_name}
-                    </h3>
-                    <div className="space-y-1">
-                      <div className="text-sm">{t("Account")}</div>
-                      <div className="text-base font-medium tracking-wider">
-                        {formatBankAccountNumber(
-                          selectedBankAccount.account_number
-                        )}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">
+                    {selectedBankAccount.bank.bank_name}
+                  </h3>
+                  <div className="space-y-3">
+                    {bankTransferInfo.map((info) => (
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground text-sm">
+                          {info.title}
+                        </span>
+                        <span className="text-sm font-medium flex items-center gap-2">
+                          {info.value}
+                          {info.onCopy && info.value && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={info.onCopy}
+                              className="relative !bg-transparent h-fit w-fit"
+                            >
+                              <AnimatePresence>
+                                {info.isCopied && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    exit={{ scale: 0 }}
+                                    className="absolute -top-8 px-2 py-1 bg-green-500 text-foreground text-xs whitespace-nowrap rounded-full"
+                                  >
+                                    {t("Copied!")}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                              <Copy className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </span>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-200 pt-4 space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">{t("Account Name")}</span>
-                      <span className="text-sm font-semibold">
-                        {selectedBankAccount.account_name}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">{t("Branch")}</span>
-                      <span className="text-sm font-semibold">
-                        {selectedBankAccount.branch}
-                      </span>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -739,7 +769,7 @@ export function PaymentPage() {
                 />
                 <button
                   onClick={() => setSlipImage(null)}
-                  className="absolute top-2 right-2 bg-darkgray/50 text-white p-1 rounded-full"
+                  className="absolute top-2 right-2 bg-darkgray/50 text-foreground p-1 rounded-full"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -818,7 +848,7 @@ export function PaymentPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
           >
             <motion.div
               initial={{ scale: 0 }}

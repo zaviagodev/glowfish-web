@@ -3,6 +3,15 @@ import { useLocation, Link } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { cn } from "@/lib/utils";
 
+export const navItems = [
+  { icon: Home, label: "Home", path: "/home" },
+  { icon: Piano, label: "Events", path: "/events" },
+  { icon: Calendar, label: "Products", path: "/products" },
+  { icon: Ticket, label: "Tickets", path: "/tickets" },
+  { icon: Gift, label: "Rewards", path: "/rewards" },
+  { icon: User, label: "Me", path: "/settings" },
+];
+
 const BottomNav = () => {
   const t = useTranslate();
   const location = useLocation();
@@ -13,15 +22,6 @@ const BottomNav = () => {
     }
     return location.pathname.startsWith(path);
   };
-
-  const navItems = [
-    { icon: Home, label: "Home", path: "/home" },
-    { icon: Piano, label: "Events", path: "/products" },
-    { icon: Calendar, label: "Products", path: "/products" },
-    { icon: Ticket, label: "Tickets", path: "/tickets" },
-    { icon: Gift, label: "Rewards", path: "/rewards" },
-    { icon: User, label: "Me", path: "/settings" },
-  ];
 
   return (
     <nav className="fixed bottom-0 w-full z-[49] bg-background/80 backdrop-blur-xl border-t max-width-mobile">

@@ -1,7 +1,7 @@
 import { ChangeEvent, forwardRef, MouseEvent } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { cn } from "@/lib/utils";
+import { cn, formattedDateAndTime } from "@/lib/utils";
 import { Input } from "./input";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
@@ -28,9 +28,14 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
         selected={selected}
         onChange={(date) => {
           if (onSelect) {
-            onSelect(date);
+            // Convert to local time
+            const localDate = date
+              ? new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+              : null;
+            onSelect(localDate);
           }
         }}
+        maxDate={new Date()}
         {...props}
         ref={ref}
         customInput={
@@ -40,11 +45,11 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
           />
         }
         wrapperClassName="w-full"
-        calendarClassName="!bg-darkgray !text-white !border-input"
-        weekDayClassName={() => "!text-white"}
-        dateFormat="dd MMM yyyy"
+        calendarClassName="!bg-darkgray !text-foreground !border-input"
+        weekDayClassName={() => "!text-foreground"}
+        dateFormat={formattedDateAndTime}
         dropdownMode="select"
-        dayClassName={() => "!text-white"}
+        dayClassName={() => "!text-foreground"}
         renderCustomHeader={({
           date,
           decreaseMonth,
@@ -74,14 +79,14 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
               <div className="flex items-center justify-between">
                 <button
                   onClick={handleDecreaseMonth}
-                  className="text-white hover:text-foreground"
+                  className="text-foreground hover:text-foreground"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
                 <span>{format(date, "MMMM yyyy")}</span>
                 <button
                   onClick={handleIncreaseMonth}
-                  className="text-white hover:text-foreground"
+                  className="text-foreground hover:text-foreground"
                 >
                   <ChevronRight className="h-5 w-5" />
                 </button>
@@ -91,7 +96,7 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
                 <select
                   value={date.getMonth()}
                   onChange={handleChangeMonth}
-                  className="bg-darkgray text-white"
+                  className="bg-darkgray text-foreground"
                 >
                   {Array.from({ length: 12 }, (_, i) => (
                     <option key={i} value={i}>
@@ -102,7 +107,7 @@ export const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
                 <select
                   value={date.getFullYear()}
                   onChange={handleChangeYear}
-                  className="bg-darkgray text-white"
+                  className="bg-darkgray text-foreground"
                 >
                   {Array.from(
                     { length: new Date().getFullYear() - 1900 + 1 },

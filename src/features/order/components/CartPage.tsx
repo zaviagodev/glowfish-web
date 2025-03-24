@@ -1,6 +1,6 @@
 import { useTranslate } from "@refinedev/core";
 import { motion, AnimatePresence } from "framer-motion";
-import { Minus, Package2, Plus, Trash2 } from "lucide-react";
+import { Image, Minus, Package2, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useCart } from "@/lib/cart";
 import { useCoupons } from "@/lib/coupon";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { makeTwoDecimals } from "@/lib/utils";
+import ProductPlaceholder from "@/components/ui/product-placeholder";
 
 export function CartPage() {
   const t = useTranslate();
@@ -81,9 +82,7 @@ export function CartPage() {
                         className="w-full h-full object-cover object-top"
                       />
                     ) : (
-                      <div className="flex items-center justify-center w-full aspect-square overflow-hidden bg-black">
-                        <GlowfishIcon className="h-10 w-10" />
-                      </div>
+                      <ProductPlaceholder imageClassName="w-8 h-8" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -110,7 +109,7 @@ export function CartPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-bold text-[#EE4D2D]">
-                          ฿{item.price.toLocaleString()}
+                          ฿{makeTwoDecimals(item.price).toLocaleString()}
                         </p>
                         <Button
                           variant="ghost"
@@ -195,36 +194,58 @@ export function CartPage() {
                 <div className="text-sm font-medium flex items-center gap-1 text-muted-foreground">
                   {t("Total")}:
                   <span className="text-[#EE4D2D] font-bold text-lg">
-                    ฿{total.toLocaleString()}
+                    ฿{makeTwoDecimals(total).toLocaleString()}
                   </span>
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  {discount > 0 && (
-                    <>
-                      <span className="flex items-center gap-1">
-                        {t("Discount")}:
-                        <span className="text-[#EE4D2D] font-semibold">
-                          -฿{discount.toLocaleString()}
-                        </span>
+                {/* <div className="text-sm font-medium flex items-center gap-1 text-muted-foreground">
+                  {t("Points to use")}:
+                  <span className="text-foreground text-lg">
+                    {/* TODO: Change to the total points
+                    {total.toLocaleString()}
+                  </span>
+                </div> */}
+                {/* {discount < 0 && (
+                  <div className="text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      {t("Discount")}:
+                      <span className="text-[#EE4D2D] font-semibold">
+                        -฿{makeTwoDecimals(discount).toLocaleString()}
                       </span>
-                    </>
-                  )}
-                </div>
+                    </span>
+                  </div>
+                )} */}
               </div>
               <Button
                 className="main-btn w-[130px]"
                 disabled={selectedItems.length === 0}
-                onClick={() =>
+                onClick={() => {
+                  const selectedCartItems = items.filter((item) =>
+                    selectedItems.includes(item.variantId)
+                  );
+
+                  // Validate prices before proceeding - allow zero prices but prevent negative prices
+                  const hasInvalidPrices = selectedCartItems.some(
+                    (item) => item.price < 0
+                  );
+                  if (hasInvalidPrices) {
+                    alert(
+                      t("Some items have invalid prices. Please try again.")
+                    );
+                    return;
+                  }
+
                   navigate("/checkout", {
                     state: {
-                      selectedItems: items.filter((item) =>
-                        selectedItems.includes(item.variantId)
-                      ),
+                      selectedItems: selectedCartItems,
                     },
-                  })
-                }
+                  });
+                }}
               >
-                {t("Checkout")} ({selectedItems.length})
+                {t("Checkout")} (
+                {items
+                  .filter((item) => selectedItems.includes(item.variantId))
+                  .reduce((total, item) => total + item.quantity, 0)}
+                )
               </Button>
             </div>
           </div>

@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 export const trailingCountryCodeRegex = /-([A-Z]{2})(?!.*-[A-Z]{2})/;
 
-export const formattedDateAndTime = "dd MMM yyyy HH:mm";
+export const formattedDateAndTime = "dd MMM yyyy";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -61,4 +61,51 @@ export const generateTimeSlots = (): string[] => {
   }
 
   return times;
+};
+
+export const makeTwoDecimals = (val: number) => {
+  return Number.isInteger(val) ? val : val.toFixed(2);
+}
+
+// Helper function to handle different types of Google Maps links
+export const getMapLinks = (mapLink: string) => {
+  if (!mapLink || mapLink.trim() === "")
+    return { viewLink: "", embedLink: "", isShareLink: false };
+
+  // If it's already an embed link, return as is
+  if (mapLink.includes("google.com/maps/embed")) {
+    return {
+      viewLink: mapLink.replace("/embed", "/place"),
+      embedLink: mapLink,
+      isShareLink: false,
+    };
+  }
+
+  // If it's a share link (maps.app.goo.gl or goo.gl)
+  if (mapLink.includes("goo.gl")) {
+    return {
+      viewLink: mapLink,
+      embedLink: "", // Can't convert short links to embed
+      isShareLink: true,
+    };
+  }
+
+  // If it's a regular maps link
+  if (mapLink.includes("google.com/maps")) {
+    const embedLink = mapLink.includes("/place/")
+      ? mapLink.replace("/place/", "/embed/place/")
+      : mapLink.replace("/maps/", "/maps/embed/");
+    return {
+      viewLink: mapLink,
+      embedLink,
+      isShareLink: false,
+    };
+  }
+
+  // If none of the above conditions match, consider it invalid
+  return {
+    viewLink: "",
+    embedLink: "",
+    isShareLink: false,
+  };
 };

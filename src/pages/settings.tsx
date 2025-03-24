@@ -6,11 +6,13 @@ import { UserProfile } from "@/components/settings/UserProfile";
 import { OrderStatusBar } from "@/components/settings/OrderStatusBar";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { WalletSection } from "@/components/settings/WalletSection";
-import { Crown, Gift, QrCode, Star, User } from "lucide-react";
+import { Crown, Gift, Moon, QrCode, Star, Sun, User } from "lucide-react";
 import DrawerInfo from "@/components/company-info/DrawerInfo";
+import { useTheme } from "@/hooks/useTheme";
 
 const SettingsPage = () => {
   const t = useTranslate();
+  const { currentTheme, toggleTheme } = useTheme();
   const { mutate: logout } = useLogout();
   const [userProfile, setUserProfile] = useState<{
     full_name: string;
@@ -41,54 +43,67 @@ const SettingsPage = () => {
         },
       ],
     },
-    {
-      title: t("Points & Rewards"),
-      items: [
-        // {
-        //   icon: <QrCode className="h-5 w-5" />,
-        //   label: t("Scan to Redeem"),
-        //   path: "/scan",
-        //   showArrow: true,
-        //   color: "#2196F3", // Blue
-        //   bgColor: "rgba(33, 150, 243, 0.1)",
-        // },
-        {
-          icon: <Star className="h-5 w-5" />,
-          label: t("How to Get Points"),
-          path: "/info/how-to-get-points",
-          showArrow: true,
-          color: "#fcc800", // Yellow
-          bgColor: "rgba(252, 200, 0, 0.1)",
-        },
-        // {
-        //   icon: <Gift className="h-5 w-5" />,
-        //   label: t("How to Spend Points"),
-        //   path: "/info/how-to-spend-points",
-        //   showArrow: true,
-        //   color: "#F44336", // Red
-        //   bgColor: "rgba(244, 67, 54, 0.1)",
-        // },
-        // {
-        //   icon: <Crown className="h-5 w-5" />,
-        //   label: t("Member Level"),
-        //   path: "/info/member-level",
-        //   showArrow: true,
-        //   color: "#FF9800", // Orange
-        //   bgColor: "rgba(255, 152, 0, 0.1)",
-        // },
-      ],
-    },
+    // {
+    //   title: t("Points & Rewards"),
+    //   items: [
+    //     // {
+    //     //   icon: <QrCode className="h-5 w-5" />,
+    //     //   label: t("Scan to Redeem"),
+    //     //   path: "/scan",
+    //     //   showArrow: true,
+    //     //   color: "#2196F3", // Blue
+    //     //   bgColor: "rgba(33, 150, 243, 0.1)",
+    //     // },
+    //     {
+    //       icon: <Star className="h-5 w-5" />,
+    //       label: t("How to Get Points"),
+    //       path: "/info/how-to-get-points",
+    //       showArrow: true,
+    //       color: "#fcc800", // Yellow
+    //       bgColor: "rgba(252, 200, 0, 0.1)",
+    //     },
+    //     // {
+    //     //   icon: <Gift className="h-5 w-5" />,
+    //     //   label: t("How to Spend Points"),
+    //     //   path: "/info/how-to-spend-points",
+    //     //   showArrow: true,
+    //     //   color: "#F44336", // Red
+    //     //   bgColor: "rgba(244, 67, 54, 0.1)",
+    //     // },
+    //     // {
+    //     //   icon: <Crown className="h-5 w-5" />,
+    //     //   label: t("Member Level"),
+    //     //   path: "/info/member-level",
+    //     //   showArrow: true,
+    //     //   color: "#FF9800", // Orange
+    //     //   bgColor: "rgba(255, 152, 0, 0.1)",
+    //     // },
+    //   ],
+    // },
   ];
 
   return (
     <div className="bg-background">
       {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b max-width-mobile">
+      <div className="fixed flex items-center justify-between top-0 left-0 right-0 z-50 bg-background border-b max-width-mobile px-5 py-4">
         <UserProfile memberLevel={userProfile?.tier_id} />
+
+        {/* <div className="flex items-center gap-2">
+          <Moon className="w-4 h-4" />
+          <Switch onCheckedChange={toggleTheme} />
+          <Sun className="w-4 h-4" />
+        </div> */}
+        <Button
+          onClick={toggleTheme}
+          variant="ghost"
+          className="p-0 h-6 !bg-transparent !outline-none"
+        >
+          {currentTheme === "dark" ? <Sun /> : <Moon />}
+        </Button>
       </div>
 
       {/* Main Content */}
-      <div className="pt-20 pb-4">
+      <div className="pt-16 pb-4">
         <WalletSection />
         <OrderStatusBar />
         {sections.map((section, index) => (

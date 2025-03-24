@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProductVariant } from "@/type/type 2";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
+import { useConfig } from "@/hooks/useConfig";
+import DefaultStorefront from "@/components/icons/DefaultStorefront";
 
 interface VariantOption {
   id: string;
@@ -44,6 +45,7 @@ export function VariantDrawer({
 }: VariantDrawerProps) {
   const t = useTranslate();
   const navigate = useNavigate();
+  const { config } = useConfig();
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
   >({});
@@ -115,10 +117,7 @@ export function VariantDrawer({
     );
 
     // If we have a complete match, call onSelect
-    if (
-      matchingVariant &&
-      Object.keys(newSelections).length === variantOptions.length
-    ) {
+    if (matchingVariant) {
       onSelect(matchingVariant.id);
     }
   };
@@ -135,8 +134,15 @@ export function VariantDrawer({
         <SheetHeader className="px-5 py-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-lg font-semibold">
-              {/* {t("Select Options")} */}
-              <GlowfishIcon className="w-[100px]" />
+              {config?.storeLogo ? (
+                <img
+                  src={config.storeLogo}
+                  alt="Store Logo"
+                  className="w-[100px] object-contain"
+                />
+              ) : (
+                <DefaultStorefront />
+              )}
             </SheetTitle>
           </div>
         </SheetHeader>
@@ -160,7 +166,7 @@ export function VariantDrawer({
                         key={value}
                         // variant={isSelected ? "default" : "outline"}
                         className={cn(
-                          "!h-9 px-4 rounded-lg !text-sm font-semibold",
+                          "!h-9 px-4 rounded-lg !text-sm font-semibold relative",
                           !isSelected
                             ? "bg-darkgray border-input text-primary"
                             : "main-btn !rounded-lg",
@@ -169,6 +175,10 @@ export function VariantDrawer({
                         disabled={!isAvailable}
                         onClick={() => handleOptionSelect(option.name, value)}
                       >
+                        {/* TODO: set the condition of this red circle if there is a sales_price */}
+                        <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1.5 w-fit text-[10px]">
+                          Sale
+                        </div>
                         {value}
                       </Button>
                     );
@@ -183,27 +193,15 @@ export function VariantDrawer({
           {/* Price Display */}
           {currentVariant && (
             <div className="flex flex-col items-center">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">
-                  ฿{currentVariant.price.toLocaleString()}
-                </span>
-                {/* {currentVariant.compare_at_price && (
-                  <>
-                    <span className="text-sm line-through text-muted-foreground">
-                      ฿{currentVariant.compare_at_price.toLocaleString()}
-                    </span>
-                    <span className="text-xs font-medium px-2 py-1 rounded-full bg-mainbutton rounded-full/10 text-primary-foreground">
-                      {Math.round(
-                        (1 -
-                          currentVariant.price /
-                            currentVariant.compare_at_price) *
-                          100
-                      )}
-                      % OFF
-                    </span>
-                  </>
-                )} */}
-              </div>
+              {currentVariant.compare_at_price &&
+                currentVariant.compare_at_price > 0 && (
+                  <span className="text-sm text-muted-foreground line-through">
+                    ฿{currentVariant.compare_at_price.toLocaleString()}
+                  </span>
+                )}
+              <span className="text-2xl font-bold">
+                ฿{currentVariant.price.toLocaleString()}
+              </span>
 
               {track_quantity ? (
                 currentVariant.quantity > 0 ? (
@@ -227,8 +225,8 @@ export function VariantDrawer({
               (track_quantity ? currentVariant.quantity === 0 : false)
             }
             onClick={() => {
-              if (selectedVariantId) {
-                onSelect(selectedVariantId);
+              if (currentVariant) {
+                onSelect(currentVariant.id);
                 onSubmit();
               }
             }}

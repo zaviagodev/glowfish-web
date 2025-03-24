@@ -12,8 +12,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { useState } from "react";
 import { useToast } from "@/components/ui/toast";
 
 type RatingProps = {
@@ -68,10 +66,10 @@ export const RateForm = ({ onSubmit }: RateFormProps) => {
       const emptyFields = Object.entries(data)
         .filter(([_, value]) => value === 0)
         .map(([key]) => {
-          const rating = ratings.find(r => r.key === key);
+          const rating = ratings.find((r) => r.key === key);
           return rating ? rating.title : key;
         });
-      
+
       if (emptyFields.length > 0) {
         // Show toast for required fields
         toast(`Please fill all rating fields`, "error");

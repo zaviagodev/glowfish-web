@@ -17,7 +17,9 @@ export function CheckoutHeader() {
       >
         <ChevronLeft className="h-6 w-6" />
       </Button>
-      <h1 className="text-title2 font-semibold tracking-tight">{t("Checkout")}</h1>
+      <h1 className="text-base font-semibold tracking-tight">
+        {t("Checkout")}
+      </h1>
       <div className="w-10" />
     </header>
   );
