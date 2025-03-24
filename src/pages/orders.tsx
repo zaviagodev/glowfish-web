@@ -488,32 +488,37 @@ const OrdersPage = () => {
                             <h3 className="text-base font-medium text-card-foreground truncate">
                               {item.product_variants.product.name}
                             </h3>
-                            {item.product_variants.options?.length > 0 && (
-                              <div className="flex flex-wrap gap-1">
-                                {item.product_variants.options.map(
-                                  (option, index) => (
-                                    <span
-                                      key={index}
-                                      className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20"
-                                    >
-                                      {option.name}: {option.value}
-                                    </span>
-                                  )
-                                )}
-                              </div>
-                            )}
                           </div>
-                          <div className="text-sm text-muted-foreground space-y-1">
-                            <div className="flex items-center justify-between gap-3">
+                          <div className="text-sm text-muted-foreground flex justify-between">
+                            <div className="space-y-2">
+                              {item.product_variants.options?.length > 0 && (
+                                <div className="flex flex-wrap gap-1">
+                                  {item.product_variants.options.map(
+                                    (option, index) => (
+                                      <span
+                                        key={index}
+                                        className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20"
+                                      >
+                                        {/* {option.name}:  */}
+                                        {option.value}
+                                      </span>
+                                    )
+                                  )}
+                                </div>
+                              )}
                               <p>
                                 {t("Unit Price")}: ฿
                                 {makeTwoDecimals(
                                   item.unit_price
                                 ).toLocaleString()}
                               </p>
-                              {!isEvent && <Quantity />}
                             </div>
-                            {!isEvent && <Total />}
+                            {!isEvent && (
+                              <div className="flex flex-col items-end gap-2">
+                                <Quantity />
+                                <Total />
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
