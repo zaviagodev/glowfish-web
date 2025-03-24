@@ -705,7 +705,7 @@ const RewardsPage = () => {
                 className="w-20 h-20 object-contain"
               />
             ) : (
-              <DefaultStorefront />
+              <DefaultStorefront theme="dark" />
             )}
           </div>
           <button

@@ -57,7 +57,7 @@ export const ProductSection = memo(function ProductSection({
             <Link
               key={`${title}-see-all`}
               to={linkTo}
-              className="text-sm text-[#FAFAFACC] hover:text-foreground no-underline"
+              className="text-sm text-muted-foreground no-underline"
             >
               {t("See all")}
             </Link>
