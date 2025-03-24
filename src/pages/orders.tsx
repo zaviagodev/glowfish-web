@@ -455,20 +455,18 @@ const OrdersPage = () => {
                             isEvent,
                         })}
                       >
-                        {item.product_variants.product.image ? (
-                          <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                        <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                          {item.product_variants.product.image ? (
                             <img
                               src={item.product_variants.product.image}
                               alt={item.product_variants.product.name}
                               className="w-full h-full object-cover object-top"
                             />
-                          </div>
-                        ) : (
-                          <ProductPlaceholder
-                            className="w-20 h-20"
-                            imageClassName="w-12 h-12"
-                          />
-                        )}
+                          ) : (
+                            <ProductPlaceholder imageClassName="w-10 h-10" />
+                          )}
+                        </div>
+
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="text-base font-medium text-card-foreground truncate">

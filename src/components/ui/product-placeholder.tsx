@@ -9,12 +9,12 @@ interface ProductPlaceholderProps {
 
 const ProductPlaceholder = ({
   className,
-  imageClassName = "w-20 h-20",
+  imageClassName,
 }: ProductPlaceholderProps) => {
   return (
     <div
       className={cn(
-        "flex items-center justify-center h-full w-full bg-[#E3E3E3] dark:bg-[#303030]",
+        "flex items-center justify-center h-full w-full bg-black",
         className
       )}
     >
