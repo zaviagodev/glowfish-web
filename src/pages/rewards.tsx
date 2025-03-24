@@ -703,14 +703,14 @@ const RewardsPage = () => {
                 className="w-20 h-20 object-contain"
               />
             ) : (
-              <DefaultStorefront />
+              <DefaultStorefront theme="dark" />
             )}
           </div>
           <button
             onClick={() => navigate("/scan")}
             className="absolute left-[30px] bottom-5"
           >
-            <QrCode className="h-6 w-6" />
+            <QrCode className="h-6 w-6 text-white" />
           </button>
         </div>
 
