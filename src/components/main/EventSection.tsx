@@ -46,7 +46,12 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
         {list.length > 0 ? (
           <>
             {list
-              .filter((item) => isPast(toZonedTime(new Date(item.end_datetime as string), "UTC")) === false)
+              .filter(
+                (item) =>
+                  isPast(
+                    toZonedTime(new Date(item.end_datetime as string), "UTC")
+                  ) === false
+              )
               .map((item) => {
                 return (
                   <motion.div
@@ -61,7 +66,6 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
                       image={item.image}
                       title={item.title}
                       price={item.price}
-                      compareAtPrice={item.compare_at_price}
                       location={item.location}
                       date={formattedTime(item)}
                       end_datetime={item.end_datetime}

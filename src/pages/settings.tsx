@@ -6,13 +6,11 @@ import { UserProfile } from "@/components/settings/UserProfile";
 import { OrderStatusBar } from "@/components/settings/OrderStatusBar";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { WalletSection } from "@/components/settings/WalletSection";
-import { Crown, Gift, Moon, QrCode, Star, Sun, User } from "lucide-react";
+import { User } from "lucide-react";
 import DrawerInfo from "@/components/company-info/DrawerInfo";
-import { useTheme } from "@/hooks/useTheme";
 
 const SettingsPage = () => {
   const t = useTranslate();
-  const { currentTheme, toggleTheme } = useTheme();
   const { mutate: logout } = useLogout();
   const [userProfile, setUserProfile] = useState<{
     full_name: string;
@@ -87,19 +85,6 @@ const SettingsPage = () => {
       {/* Fixed Header */}
       <div className="fixed flex items-center justify-between top-0 left-0 right-0 z-50 bg-background border-b max-width-mobile px-5 py-4">
         <UserProfile memberLevel={userProfile?.tier_id} />
-
-        {/* <div className="flex items-center gap-2">
-          <Moon className="w-4 h-4" />
-          <Switch onCheckedChange={toggleTheme} />
-          <Sun className="w-4 h-4" />
-        </div> */}
-        <Button
-          onClick={toggleTheme}
-          variant="ghost"
-          className="p-0 h-6 !bg-transparent !outline-none"
-        >
-          {currentTheme === "dark" ? <Sun /> : <Moon />}
-        </Button>
       </div>
 
       {/* Main Content */}

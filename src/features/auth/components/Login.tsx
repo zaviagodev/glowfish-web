@@ -27,7 +27,7 @@ export const Login = () => {
           <img
             src={config.storeLogo}
             alt="Store Logo"
-            className="w-20 h-20 object-contain"
+            className="max-w-[120px] object-contain"
           />
         ) : (
           <DefaultStorefront />

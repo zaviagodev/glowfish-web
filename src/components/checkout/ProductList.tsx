@@ -55,7 +55,7 @@ export function ProductList({ items }: ProductListProps) {
                   className="w-full h-full object-cover object-top"
                 />
               ) : (
-                <ProductPlaceholder imageClassName="w-8 h-8" />
+                <ProductPlaceholder imageClassName="w-10 h-10" />
               )}
             </div>
             <div className="flex-1 min-w-0">

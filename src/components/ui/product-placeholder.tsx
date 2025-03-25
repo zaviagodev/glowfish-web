@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Image } from "lucide-react";
+import DefaultStorefront from "../icons/DefaultStorefront";
+import useConfig from "@/hooks/useConfig";
 
 interface ProductPlaceholderProps {
   className?: string;
@@ -8,18 +10,25 @@ interface ProductPlaceholderProps {
 
 const ProductPlaceholder = ({
   className,
-  imageClassName = "w-20 h-20",
+  imageClassName,
 }: ProductPlaceholderProps) => {
+  const { config } = useConfig();
   return (
     <div
       className={cn(
-        "flex items-center justify-center h-full w-full bg-[#E3E3E3] dark:bg-[#303030]",
+        "flex items-center justify-center bg-black w-full h-full",
         className
       )}
     >
-      <Image
-        className={cn(imageClassName, "text-[#CDCDCD] dark:text-[#767676]")}
-      />
+      {config?.storeLogo ? (
+        <img
+          src={config.storeLogo}
+          alt="Store Logo"
+          className={cn("object-contain max-w-[120px]", imageClassName)}
+        />
+      ) : (
+        <DefaultStorefront />
+      )}
     </div>
   );
 };
