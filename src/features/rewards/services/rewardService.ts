@@ -14,7 +14,7 @@ export interface Reward {
   }[];
 }
 
-export const getRewards = async (): Promise<Reward[]> => {
+export const getRewards = async (storeName: string): Promise<Reward[]> => {
   const { data, error } = await supabase
     .from("products")
     .select(`
@@ -30,6 +30,7 @@ export const getRewards = async (): Promise<Reward[]> => {
       events!left (*)
     `)
     .is("events", null)
+    .eq("store_name", storeName)
     .eq("is_reward", true);
 
   if (error) {
@@ -39,7 +40,7 @@ export const getRewards = async (): Promise<Reward[]> => {
   return data || [];
 };
 
-export const getRewardById = async (id: string): Promise<Reward | null> => {
+export const getRewardById = async (id: string, storeName: string): Promise<Reward | null> => {
   const { data, error } = await supabase
     .from("products")
     .select(`
@@ -55,6 +56,7 @@ export const getRewardById = async (id: string): Promise<Reward | null> => {
     `)
     .eq("id", id)
     .eq("is_reward", true)
+    .eq("store_name", storeName)
     .single();
 
   if (error) {
@@ -123,7 +125,7 @@ export interface RewardOrder {
   }[];
 }
 
-export const getRewardOrders = async (): Promise<RewardOrder[]> => {
+export const getRewardOrders = async (storeName: string): Promise<RewardOrder[]> => {
   const { data, error } = await supabase
     .from("reward_orders")
     .select(`
@@ -133,7 +135,8 @@ export const getRewardOrders = async (): Promise<RewardOrder[]> => {
         code
       )
     `)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .eq("store_name", storeName);
 
   if (error) {
     throw new Error(error.message);
@@ -142,7 +145,7 @@ export const getRewardOrders = async (): Promise<RewardOrder[]> => {
   return data || [];
 };
 
-export const getRewardOrderById = async (id: string): Promise<RewardOrder | null> => {
+export const getRewardOrderById = async (id: string, storeName: string): Promise<RewardOrder | null> => {
   const { data, error } = await supabase
     .from("reward_orders")
     .select(`
@@ -153,6 +156,7 @@ export const getRewardOrderById = async (id: string): Promise<RewardOrder | null
       )
     `)
     .eq("id", id)
+    .eq("store_name", storeName)
     .single();
 
   if (error) {

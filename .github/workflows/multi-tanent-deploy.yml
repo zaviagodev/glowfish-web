@@ -48,7 +48,8 @@ jobs:
           port: ${{ vars.MULTI_TENANT_SSH_PORT }}
           script: |
             cd /root/glowfish-web
-            git pull
+            git fetch --all
+            git reset --hard origin/main
             docker-compose down
             docker-compose --env-file .env.compose build
             docker-compose --env-file .env.compose up -d 
