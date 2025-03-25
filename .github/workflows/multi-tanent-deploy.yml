@@ -50,6 +50,7 @@ jobs:
             cd /root/glowfish-web
             git fetch --all
             git reset --hard origin/main
+            ./.github/scripts/update_caddyfile.sh ${{ vars.MULTI_TENANT_SSH_HOST }}
             docker-compose down
             docker-compose --env-file .env.compose build
             docker-compose --env-file .env.compose up -d 

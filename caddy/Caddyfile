@@ -11,7 +11,7 @@
 }
 
 # Handle the main domain
-store.zaviago.com {
+<MULTI_TENANT_SSH_HOST> {
     # API requests go to nginx
     handle /api/* {
         reverse_proxy nginx:80
