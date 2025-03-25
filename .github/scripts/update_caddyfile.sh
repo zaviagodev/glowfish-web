@@ -8,4 +8,4 @@ if [ -z "$1" ]; then
 fi
 
 # Replace the placeholder in the Caddyfile
-sed -i "s/<MULTI_TENANT_SSH_HOST>/$1/g" caddy/Caddyfile
+sed -i "s/<MULTI_TENANT_VITE_CALLBACK_DOMAIN>/$1/g" caddy/Caddyfile

@@ -1,4 +1,4 @@
-name: Deploy to Multi-Tenant (store.zaviago.com)
+name: Deploy to Multi-Tenant (stg-store.zaviago.com)
 
 on:
   push:
@@ -9,11 +9,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      VITE_LINE_CLIENT_ID: ${{ vars.MULTI_TENANT_VITE_LINE_CLIENT_ID }}
-      VITE_ADMIN_URL: ${{ vars.MULTI_TENANT_VITE_ADMIN_URL }}
-      VITE_CALLBACK_DOMAIN: ${{ vars.MULTI_TENANT_VITE_CALLBACK_DOMAIN }}
-      VITE_SUPABASE_URL: ${{ vars.MULTI_TENANT_VITE_SUPABASE_URL }}
-      VITE_SUPABASE_ANON_KEY: ${{ vars.MULTI_TENANT_VITE_SUPABASE_ANON_KEY }}
+      VITE_LINE_CLIENT_ID: ${{ vars.STAGE_MULTI_TENANT_VITE_LINE_CLIENT_ID }}
+      VITE_ADMIN_URL: ${{ vars.STAGE_MULTI_TENANT_VITE_ADMIN_URL }}
+      VITE_CALLBACK_DOMAIN: ${{ vars.STAGE_MULTI_TENANT_VITE_CALLBACK_DOMAIN }}
+      VITE_SUPABASE_URL: ${{ vars.STAGE_MULTI_TENANT_VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.STAGE_MULTI_TENANT_VITE_SUPABASE_ANON_KEY }}
       
     steps:
       - name: Checkout code
@@ -30,10 +30,10 @@ jobs:
       - name: Copy .env.compose to Multi-Tenant Server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ vars.MULTI_TENANT_SSH_HOST }}
-          username: ${{ vars.MULTI_TENANT_SSH_USERNAME }}
-          key: ${{ secrets.MULTI_TENANT_SSH_PRIVATE_KEY }}
-          port: ${{ vars.MULTI_TENANT_SSH_PORT }}
+          host: ${{ vars.STAGE_MULTI_TENANT_SSH_HOST }}
+          username: ${{ vars.STAGE_MULTI_TENANT_SSH_USERNAME }}
+          key: ${{ secrets.STAGE_MULTI_TENANT_SSH_PRIVATE_KEY }}
+          port: ${{ vars.STAGE_MULTI_TENANT_SSH_PORT }}
           source: .env.compose
           target: /root/glowfish-web
           overwrite: true
@@ -42,15 +42,15 @@ jobs:
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.2.1
         with:
-          host: ${{ vars.MULTI_TENANT_SSH_HOST }}
-          username: ${{ vars.MULTI_TENANT_SSH_USERNAME }}
-          key: ${{ secrets.MULTI_TENANT_SSH_PRIVATE_KEY }}
-          port: ${{ vars.MULTI_TENANT_SSH_PORT }}
+          host: ${{ vars.STAGE_MULTI_TENANT_SSH_HOST }}
+          username: ${{ vars.STAGE_MULTI_TENANT_SSH_USERNAME }}
+          key: ${{ secrets.STAGE_MULTI_TENANT_SSH_PRIVATE_KEY }}
+          port: ${{ vars.STAGE_MULTI_TENANT_SSH_PORT }}
           script: |
             cd /root/glowfish-web
             git fetch --all
             git reset --hard origin/main
-            ./.github/scripts/update_caddyfile.sh ${{ vars.MULTI_TENANT_VITE_CALLBACK_DOMAIN }}
+            ./.github/scripts/update_caddyfile.sh ${{ vars.STAGE_MULTI_TENANT_VITE_CALLBACK_DOMAIN }}
             docker-compose down
             docker-compose --env-file .env.compose build
             docker-compose --env-file .env.compose up -d 

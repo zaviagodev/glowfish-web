@@ -11,7 +11,7 @@
 }
 
 # Handle the main domain
-<MULTI_TENANT_SSH_HOST> {
+<MULTI_TENANT_VITE_CALLBACK_DOMAIN> {
     # API requests go to nginx
     handle /api/* {
         reverse_proxy nginx:80
