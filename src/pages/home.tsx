@@ -231,39 +231,6 @@ export const HomeList = () => {
             tab_type="colorful"
           />
         </div>
-        {/* New Arrivals Section */}
-        <ProductSection
-          title={t("New Arrivals")}
-          linkTo="/products"
-          products={products.slice(0, 8)}
-          onProductSelect={handleProductSelect}
-          sliderRef={eventSliderRef}
-          isLoading={loading}
-          isProduct={true}
-        />
-      </section>
-
-      {/* Category Bar */}
-      <div className="sticky top-0 bg-background border-b">
-        <CategoryGrid
-          categories={categories}
-          isLoading={loading}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          tab_type="no_style"
-        />
-      </div>
-
-      <section className="py-6 space-y-6 px-[1px]">
-        {/* <ProductSection
-          title={t("Discover things you'd love")}
-          linkTo=""
-          products={products.slice(0, 5)}
-          onProductSelect={() => {}}
-          sliderRef={eventSliderRef}
-          isLoading={loading}
-          isBanner={true}
-        /> */}
         <ProductSection
           title={t("Upcoming Events")}
           linkTo="/events"
@@ -289,6 +256,39 @@ export const HomeList = () => {
           sliderRef={eventSliderRef}
           isLoading={loading}
           isProduct={false}
+        />
+      </section>
+
+      {/* Category Bar */}
+      <div className="sticky top-0 bg-background border-b">
+        <CategoryGrid
+          categories={categories}
+          isLoading={loading}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          tab_type="no_style"
+        />
+      </div>
+
+      <section className="py-6 space-y-6 px-[1px]">
+        {/* <ProductSection
+          title={t("Discover things you'd love")}
+          linkTo=""
+          products={products.slice(0, 5)}
+          onProductSelect={() => {}}
+          sliderRef={eventSliderRef}
+          isLoading={loading}
+          isBanner={true}
+        /> */}
+        {/* New Arrivals Section */}
+        <ProductSection
+          title={t("New Arrivals")}
+          linkTo="/products"
+          products={products.slice(0, 8)}
+          onProductSelect={handleProductSelect}
+          sliderRef={eventSliderRef}
+          isLoading={loading}
+          isProduct={true}
         />
       </section>
 
