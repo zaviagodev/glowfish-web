@@ -3,7 +3,7 @@ name: Deploy to Multi-Tenant (stg-store.zaviago.com)
 on:
   push:
     branches:
-      - main
+      - staging
 
 jobs:
   deploy:
