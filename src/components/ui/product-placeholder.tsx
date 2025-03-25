@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { Image } from "lucide-react";
-import GlowfishIcon from "../icons/GlowfishIcon";
 
 interface ProductPlaceholderProps {
   className?: string;
@@ -9,16 +8,18 @@ interface ProductPlaceholderProps {
 
 const ProductPlaceholder = ({
   className,
-  imageClassName,
+  imageClassName = "w-20 h-20",
 }: ProductPlaceholderProps) => {
   return (
     <div
       className={cn(
-        "flex items-center justify-center h-full w-full bg-black",
+        "flex items-center justify-center h-full w-full bg-[#E3E3E3] dark:bg-[#303030]",
         className
       )}
     >
-      <GlowfishIcon className={imageClassName} />
+      <Image
+        className={cn(imageClassName, "text-[#CDCDCD] dark:text-[#767676]")}
+      />
     </div>
   );
 };

@@ -60,10 +60,10 @@ const DrawerInfo = ({ className, isLogin }: DrawerInfoProps) => {
               <div className="text-left">
                 <h2>
                   {title === "Terms of Service"
-                    ? "Terms of Service"
-                    : "Privacy Policy"}
+                    ? "เงื่อนไขการใช้บริการ (Terms of Service)"
+                    : "ประกาศนโยบายความเป็นส่วนตัว (Privacy Notice)"}
                 </h2>
-                <h2>Good Afterwork at Glowfish</h2>
+                {/* <h2>Good Afterwork at Glowfish</h2> */}
                 <p>Last Updated: 4 February 2025</p>
               </div>
               <div

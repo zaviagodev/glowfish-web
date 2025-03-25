@@ -16,7 +16,6 @@ import { Banner } from "@/features/home";
 import { useConfig } from "@/hooks/useConfig";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
 import HomeSkeletons from "@/components/skeletons/HomeSkeletons";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 interface SelectedProduct extends Product {
   variant_id?: string;
@@ -135,10 +134,10 @@ export const HomeList = () => {
     selectedProduct?.end_datetime &&
     `${format(
       toZonedTime(new Date(selectedProduct.start_datetime), "UTC"),
-      formattedDateAndTime
+      "dd MMM yyyy HH:mm"
     )} - ${format(
       toZonedTime(new Date(selectedProduct.end_datetime), "UTC"),
-      formattedDateAndTime
+      "dd MMM yyyy HH:mm"
     )}`;
 
   if (loading) {
@@ -170,7 +169,15 @@ export const HomeList = () => {
           <div className="relative pt-6">
             <div className="flex items-center justify-between">
               <div className="px-5">
-                <GlowfishIcon className="w-[90px]" />
+                {config?.storeLogo ? (
+                  <img
+                    src={config.storeLogo}
+                    alt="Store Logo"
+                    className="w-[90px]"
+                  />
+                ) : (
+                  <DefaultStorefront />
+                )}
               </div>
               <Link to="/settings">
                 <div className="px-5">
@@ -214,16 +221,27 @@ export const HomeList = () => {
         onProductSelect={handleProductSelect}
       />
 
-      <section className="space-y-6 px-[1px]">
-        <div className="sticky top-0 bg-background border-b">
-          <CategoryGrid
-            categories={categories}
-            isLoading={loading}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            category_type="products"
-          />
-        </div>
+      {/* Category Bar */}
+      <div className="sticky top-0 bg-background border-b">
+        <CategoryGrid
+          categories={categories}
+          isLoading={loading}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          tab_type="colorful"
+        />
+      </div>
+
+      <section className="py-6 space-y-6 px-[1px]">
+        {/* <ProductSection
+          title={t("Discover things you'd love")}
+          linkTo=""
+          products={products.slice(0, 5)}
+          onProductSelect={() => {}}
+          sliderRef={eventSliderRef}
+          isLoading={loading}
+          isBanner={true}
+        /> */}
         <ProductSection
           title={t("Upcoming Events")}
           linkTo="/events"
@@ -252,27 +270,17 @@ export const HomeList = () => {
         />
       </section>
 
-      {/* Category Bar */}
-      <div className="sticky top-0 bg-background border-b">
-        <CategoryGrid
-          categories={categories}
-          isLoading={loading}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          category_type="events"
-        />
-      </div>
+      <section className="space-y-6 px-[1px]">
+        <div className="sticky top-0 bg-background border-b">
+          <CategoryGrid
+            categories={categories}
+            isLoading={loading}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            tab_type="no_style"
+          />
+        </div>
 
-      <section className="py-6 space-y-6 px-[1px]">
-        {/* <ProductSection
-          title={t("Discover things you'd love")}
-          linkTo=""
-          products={products.slice(0, 5)}
-          onProductSelect={() => {}}
-          sliderRef={eventSliderRef}
-          isLoading={loading}
-          isBanner={true}
-        /> */}
         {/* New Arrivals Section */}
         <ProductSection
           title={t("New Arrivals")}

@@ -125,15 +125,19 @@ export function ShippingMethodSelection({
                     <Truck className="h-5 w-5 text-blue-500" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium">{method.name}</div>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-medium truncate">
+                        {method.name}
+                      </span>
+                      {method.is_default && (
+                        <span className="text-[10px] bg-primary/10 text-primary font-medium px-1.5 py-0.5 rounded-full flex-shrink-0">
+                          {t("Default")}
+                        </span>
+                      )}
+                    </div>
                     <div className="text-xs text-muted-foreground">
                       ฿{method.rate.toLocaleString()}
                     </div>
-                    {method.is_default && (
-                      <div className="text-xs text-primary mt-0.5">
-                        {t("Default")}
-                      </div>
-                    )}
                   </div>
                 </div>
               </button>

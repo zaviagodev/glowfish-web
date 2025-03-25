@@ -135,7 +135,15 @@ export function VariantDrawer({
         <SheetHeader className="px-5 py-6 border-b sticky top-0 bg-background/80 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-lg font-semibold">
-              <GlowfishIcon className="w-[90px]" />
+              {config?.storeLogo ? (
+                <img
+                  src={config.storeLogo}
+                  alt="Store Logo"
+                  className="w-[90px]"
+                />
+              ) : (
+                <DefaultStorefront />
+              )}
             </SheetTitle>
           </div>
         </SheetHeader>

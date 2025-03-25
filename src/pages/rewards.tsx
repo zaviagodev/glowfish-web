@@ -687,7 +687,7 @@ const RewardsPage = () => {
           )}
           <div className="flex justify-between items-center py-5 px-[30px] z-5 relative text-white">
             <h3 className="font-semibold text-xl tracking-[-0.4px]">
-              {t("Good Afterwork")}
+              {t("Card member")}
             </h3>
             <h3 className="font-semibold text-xl">
               {hasPoints
@@ -698,7 +698,15 @@ const RewardsPage = () => {
             </h3>
           </div>
           <div className="absolute right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
-            <GoodAfterWorkCard />
+            {config?.storeLogo ? (
+              <img
+                src={config.storeLogo}
+                alt="Store Logo"
+                className="max-w-[120px]"
+              />
+            ) : (
+              <DefaultStorefront theme="dark" />
+            )}
           </div>
           <button
             onClick={() => navigate("/scan")}

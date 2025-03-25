@@ -270,7 +270,7 @@ export default function TicketsPage() {
                         new Date(foundOrder.event?.start_datetime || ""),
                         "UTC"
                       ),
-                      formattedDateAndTime
+                      "dd MMM yyyy HH:mm"
                     )}{" "}
                     -{" "}
                     {format(
@@ -278,7 +278,7 @@ export default function TicketsPage() {
                         new Date(foundOrder.event?.end_datetime || ""),
                         "UTC"
                       ),
-                      formattedDateAndTime
+                      "dd MMM yyyy HH:mm"
                     )}
                   </span>
                 </div>

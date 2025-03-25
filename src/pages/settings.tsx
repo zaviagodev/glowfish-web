@@ -13,6 +13,7 @@ import { useTheme } from "@/hooks/useTheme";
 const SettingsPage = () => {
   const t = useTranslate();
   const { mutate: logout } = useLogout();
+  const { currentTheme, toggleTheme } = useTheme();
   const [userProfile, setUserProfile] = useState<{
     full_name: string;
     tier_id?: string;
@@ -86,6 +87,13 @@ const SettingsPage = () => {
       {/* Fixed Header */}
       <div className="fixed flex items-center justify-between top-0 left-0 right-0 z-50 bg-background border-b max-width-mobile px-5 py-4">
         <UserProfile memberLevel={userProfile?.tier_id} />
+        <Button
+          onClick={toggleTheme}
+          variant="ghost"
+          className="p-0 h-6 !bg-transparent !outline-none"
+        >
+          {currentTheme === "dark" ? <Sun /> : <Moon />}
+        </Button>
       </div>
 
       {/* Main Content */}

@@ -200,7 +200,10 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   <span>
-                    {format(toZonedTime(new Date(ticket.date), "UTC"), formattedDateAndTime)}
+                    {format(
+                      toZonedTime(new Date(ticket.date), "UTC"),
+                      "dd MMM yyyy HH:mm"
+                    )}
                   </span>
                 </div>
               )}

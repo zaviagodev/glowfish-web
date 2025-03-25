@@ -135,7 +135,7 @@ export const GetOTPDrawer = ({
   return (
     <RegisterDrawer isOpen={isOpen} setIsOpen={setIsOpen} className="p-5">
       <SheetHeader className="text-left">
-        <SheetTitle className="text-[#E0DCDD]">
+        <SheetTitle className="text-foreground">
           {t("Please fill the OTP")}
         </SheetTitle>
         <SheetDescription className="text-muted-foreground">

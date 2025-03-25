@@ -120,10 +120,10 @@ export default function ProductsPage() {
       product?.end_datetime &&
       `${format(
         toZonedTime(new Date(product.start_datetime), "UTC"),
-        formattedDateAndTime
+        "dd MMM yyyy HH:mm"
       )} - ${format(
         toZonedTime(new Date(product.end_datetime), "UTC"),
-        formattedDateAndTime
+        "dd MMM yyyy HH:mm"
       )}`
     );
   };
@@ -171,7 +171,7 @@ export default function ProductsPage() {
           isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
-          category_type="products"
+          tab_type="colorful"
         />
 
         {/* Filter & Sort Bar */}
