@@ -19,6 +19,7 @@ jobs:
       SMS2PRO_API: ${{ secrets.SMS2PRO_API }}
       STORAGE_BUCKET: ${{ vars.STORAGE_BUCKET }}
       VITE_ADMIN_URL: ${{ vars.STAGE_MULTI_TENANT_VITE_ADMIN_URL }}
+      VITE_CALLBACK_DOMAIN: ${{ vars.STAGE_MULTI_TENANT_VITE_CALLBACK_DOMAIN }}
       
     steps:
       - name: Checkout code
