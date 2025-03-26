@@ -153,6 +153,7 @@ export default function EventsPage() {
           isLoading={loading}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
+          tab_type="colorful"
         />
 
         {/* Filter & Sort Bar */}

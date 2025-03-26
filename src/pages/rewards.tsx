@@ -687,7 +687,7 @@ const RewardsPage = () => {
           )}
           <div className="flex justify-between items-center py-5 px-[30px] z-5 relative text-white">
             <h3 className="font-semibold text-xl tracking-[-0.4px]">
-              {t("Good Afterwork")}
+              {t("Card member")}
             </h3>
             <h3 className="font-semibold text-xl">
               {hasPoints
@@ -702,10 +702,10 @@ const RewardsPage = () => {
               <img
                 src={config.storeLogo}
                 alt="Store Logo"
-                className="w-20 h-20 object-contain"
+                className="max-w-[120px]"
               />
             ) : (
-              <DefaultStorefront />
+              <DefaultStorefront theme="dark" />
             )}
           </div>
           <button

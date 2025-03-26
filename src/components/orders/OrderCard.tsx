@@ -131,7 +131,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <ProductPlaceholder imageClassName="w-12 h-12" />
+                <ProductPlaceholder imageClassName="w-10 h-10" />
               )}
             </div>
             <div className="flex-1 min-w-0">

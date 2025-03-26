@@ -6,6 +6,7 @@ import LineIcon from "@/components/icons/LineIcon";
 import DrawerInfo from "@/components/company-info/DrawerInfo";
 import { useConfig } from "@/hooks/useConfig";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
+import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 export const Login = () => {
   const t = useTranslate();
@@ -27,7 +28,7 @@ export const Login = () => {
           <img
             src={config.storeLogo}
             alt="Store Logo"
-            className="w-20 h-20 object-contain"
+            className="max-w-[120px] object-contain"
           />
         ) : (
           <DefaultStorefront />

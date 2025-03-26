@@ -1,8 +1,18 @@
 import { useTheme } from "@/hooks/useTheme";
+import { PropsWithoutRef } from "react";
 
-const DefaultStorefront = ({ ...props }) => {
+interface DefaultStorefrontProps {
+  theme?: "dark" | "light";
+}
+
+const DefaultStorefront = ({
+  theme,
+  ...props
+}: PropsWithoutRef<DefaultStorefrontProps>) => {
   const { currentTheme } = useTheme();
-  const fill = currentTheme === "dark" ? "#fff" : "#383838";
+  const fill =
+    theme === "dark" || currentTheme === "dark" ? "#FFFFFF" : "#383838";
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
