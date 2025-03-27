@@ -137,19 +137,19 @@ function App() {
                   path="/phone-verification"
                   element={<Navigate to="/auth/phone-verification" replace />}
                 />
-                <Route
+                {/* <Route
                   path="/tell-us-about-yourself"
                   element={
                     <Navigate to="/auth/tell-us-about-yourself" replace />
                   }
-                />
+                /> */}
 
                 {/* Auth routes */}
                 <Route path="auth/*" element={<AuthPage />} />
-                <Route
+                {/* <Route
                   path="/tell-us-about-yourself"
                   element={<TellUsAboutYourself />}
-                />
+                /> */}
 
                 {/* Protected Routes */}
                 <Route element={<ProtectedRoute />}>
@@ -227,16 +227,16 @@ function App() {
 function AppWrapper() {
   return (
     <ConfigProvider>
-        <ToastProvider>
-          <ThemeProvider>
-            <BrowserRouter>
-              <HelmetProvider>
-                  <DynamicTitle />
-                  <App />
-              </HelmetProvider>
-            </BrowserRouter>
-          </ThemeProvider>
-        </ToastProvider>
+      <ToastProvider>
+        <ThemeProvider>
+          <BrowserRouter>
+            <HelmetProvider>
+              <DynamicTitle />
+              <App />
+            </HelmetProvider>
+          </BrowserRouter>
+        </ThemeProvider>
+      </ToastProvider>
     </ConfigProvider>
   );
 }
