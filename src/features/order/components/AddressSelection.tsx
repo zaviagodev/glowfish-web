@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
-import { Home, Building2, Pencil } from "lucide-react";
+import { Home, Building2, Pencil, Truck, MapPin } from "lucide-react";
 import { useCustomer } from "@/hooks/useCustomer";
 import { supabase } from "@/lib/supabase";
 import type { Address } from "@/services/customerService";
@@ -25,6 +25,7 @@ import {
 import { AddressForm } from "./AddressForm";
 import { PageHeader } from "@/components/shared/PageHeader";
 import LoadingSpin from "@/components/loading/LoadingSpin";
+import NoItemsComp from "@/components/ui/no-items";
 
 export default function AddressSelection() {
   const t = useTranslate();
@@ -149,9 +150,10 @@ export default function AddressSelection() {
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground text-center py-4">
-            {t("No delivery addresses. Please add the new address")}
-          </p>
+          <NoItemsComp
+            icon={MapPin}
+            text="No delivery addresses. Please add the new address"
+          />
         )}
 
         {/* Add New Address Button */}
