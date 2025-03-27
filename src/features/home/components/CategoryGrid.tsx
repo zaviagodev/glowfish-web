@@ -53,7 +53,7 @@ export function CategoryGrid({
           tab_type === "no_style",
       },
       {
-        "border-b-white text-foreground font-bold":
+        "border-b-foreground text-foreground font-bold":
           tab_type === "no_style" && selectedCategory === cate,
       }
     );
@@ -62,7 +62,7 @@ export function CategoryGrid({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 px-[22px] pt-[21px] overflow-auto scrollbar-hide pb-0.5",
+        "flex items-center gap-3 px-[22px] pt-[21px] overflow-auto scrollbar-hide",
         { "pb-4": tab_type === "colorful" }
       )}
     >
