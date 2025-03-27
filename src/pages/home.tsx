@@ -144,6 +144,26 @@ export const HomeList = () => {
     return <HomeSkeletons />;
   }
 
+  const upcomingEvents = events
+    .filter(
+      (product: Product) =>
+        product.end_datetime && isPast(new Date(product.end_datetime)) === false
+    )
+    .sort((a, b) => {
+      const dateA = new Date(a.start_datetime || "");
+      const dateB = new Date(b.start_datetime || "");
+      return dateA.getTime() - dateB.getTime();
+    })
+    .slice(0, 5);
+
+  const eventsYouMightEnjoy = events
+    .sort((a, b) => {
+      const dateA = new Date(a.updated_at || "");
+      const dateB = new Date(b.updated_at || "");
+      return dateA.getTime() - dateB.getTime();
+    })
+    .slice(0, 8);
+
   return (
     <div className="min-h-screen relative">
       {/* Hero Section */}
@@ -173,7 +193,7 @@ export const HomeList = () => {
                   <img
                     src={config.storeLogo}
                     alt="Store Logo"
-                    className="w-[90px]"
+                    className="max-h-[68px] object-contain"
                   />
                 ) : (
                   <DefaultStorefront />
@@ -242,31 +262,15 @@ export const HomeList = () => {
           isLoading={loading}
           isBanner={true}
         /> */}
+        {/* New Arrivals Section */}
         <ProductSection
-          title={t("Upcoming Events")}
-          linkTo="/events"
-          products={events
-            .filter(
-              (product: Product) =>
-                product.end_datetime &&
-                isPast(new Date(product.end_datetime)) === false
-            )
-            .slice(0, 5)}
-          onProductSelect={handleProductSelect}
-          sliderRef={productSliderRef}
-          isLoading={loading}
-          isProduct={false}
-        />
-
-        {/* Events you might enjoy Section */}
-        <ProductSection
-          title={t("Events you might enjoy")}
-          linkTo="/events"
-          products={events.slice(0, 8)}
+          title={t("New Arrivals")}
+          linkTo="/products"
+          products={products.slice(0, 8)}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
           isLoading={loading}
-          isProduct={false}
+          isProduct={true}
         />
       </section>
 
@@ -280,16 +284,25 @@ export const HomeList = () => {
             tab_type="no_style"
           />
         </div>
-
-        {/* New Arrivals Section */}
         <ProductSection
-          title={t("New Arrivals")}
-          linkTo="/products"
-          products={products.slice(0, 8)}
+          title={t("Upcoming Events")}
+          linkTo="/events"
+          products={upcomingEvents}
+          onProductSelect={handleProductSelect}
+          sliderRef={productSliderRef}
+          isLoading={loading}
+          isProduct={false}
+        />
+
+        {/* Events you might enjoy Section */}
+        <ProductSection
+          title={t("Events you might enjoy")}
+          linkTo="/events"
+          products={eventsYouMightEnjoy}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
           isLoading={loading}
-          isProduct={true}
+          isProduct={false}
         />
       </section>
 
