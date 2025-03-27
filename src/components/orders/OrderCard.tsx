@@ -118,7 +118,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
         return (
           <motion.div
             key={item.id}
-            className="p-4 pb-0 flex gap-4"
+            className="px-4 py-0 flex gap-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}

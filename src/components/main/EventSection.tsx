@@ -46,12 +46,17 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
         {list.length > 0 ? (
           <>
             {list
-              .filter((item) => isPast(toZonedTime(new Date(item.end_datetime as string), "UTC")) === false)
+              .filter(
+                (item) =>
+                  isPast(
+                    toZonedTime(new Date(item.end_datetime as string), "UTC")
+                  ) === false
+              )
               .map((item) => {
                 return (
                   <motion.div
                     key={item.title}
-                    className="flex-shrink-0 w-[360px]"
+                    className="flex-shrink-0 w-[200px]"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}

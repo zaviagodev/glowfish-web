@@ -130,7 +130,7 @@ export function AnimatedCard({
           "relative overflow-hidden",
           type === "small"
             ? "h-[32vw] w-full"
-            : "max-h-[300px] h-[60vw] w-full",
+            : "max-h-[180px] h-[40vw] w-full",
           type === "event" && "w-[125px] min-w-[125px]",
           { "flex items-center justify-center bg-black": !image },
           imageClassName

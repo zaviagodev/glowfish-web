@@ -73,7 +73,7 @@ export const ProductSection = memo(function ProductSection({
               {products.map((product) => (
                 <motion.div
                   key={product.name}
-                  className={cn("flex-shrink-0 w-[360px]", {
+                  className={cn("flex-shrink-0 w-[200px]", {
                     "h-full": isBanner,
                   })}
                   initial={{ opacity: 0, x: 20 }}
