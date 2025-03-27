@@ -212,7 +212,7 @@ export const ProfileForm = ({
         >
           <Avatar
             className={cn("h-24 w-24", {
-              "rounded-3xl border-2 border-[#F5853B]": isProfileSetup,
+              "rounded-3xl border-2 border-foreground": isProfileSetup,
             })}
           >
             <AvatarImage src={avatarUrl} />
