@@ -139,7 +139,7 @@ export function VariantDrawer({
                 <img
                   src={config.storeLogo}
                   alt="Store Logo"
-                  className="w-[90px]"
+                  className="max-h-[68px] object-contain"
                 />
               ) : (
                 <DefaultStorefront />
