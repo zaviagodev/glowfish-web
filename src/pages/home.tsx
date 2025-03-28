@@ -303,6 +303,7 @@ export const HomeList = () => {
           sliderRef={eventSliderRef}
           isLoading={loading}
           isProduct={false}
+          type="small"
         />
       </section>
 

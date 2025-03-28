@@ -56,7 +56,7 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
                 return (
                   <motion.div
                     key={item.title}
-                    className="flex-shrink-0 w-[200px]"
+                    className="flex-shrink-0 w-[360px]"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
