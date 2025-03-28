@@ -23,7 +23,7 @@ export const Login = () => {
 
   return (
     <section className="px-5 py-10 flex flex-col gap-20">
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-10 items-start">
         {config?.storeLogo ? (
           <img
             src={config.storeLogo}
