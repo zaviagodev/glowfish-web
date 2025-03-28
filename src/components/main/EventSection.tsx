@@ -46,7 +46,12 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
         {list.length > 0 ? (
           <>
             {list
-              .filter((item) => isPast(toZonedTime(new Date(item.end_datetime as string), "UTC")) === false)
+              .filter(
+                (item) =>
+                  isPast(
+                    toZonedTime(new Date(item.end_datetime as string), "UTC")
+                  ) === false
+              )
               .map((item) => {
                 return (
                   <motion.div

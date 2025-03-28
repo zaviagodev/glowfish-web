@@ -702,7 +702,7 @@ const RewardsPage = () => {
               <img
                 src={config.storeLogo}
                 alt="Store Logo"
-                className="max-w-[120px]"
+                className="max-h-[68px]"
               />
             ) : (
               <DefaultStorefront theme="dark" />
