@@ -14,7 +14,6 @@ import { useNavigate } from "react-router-dom";
 import { ProductVariant } from "@/type/type 2";
 import { useConfig } from "@/hooks/useConfig";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 interface VariantOption {
   id: string;
@@ -32,6 +31,7 @@ interface VariantDrawerProps {
   variantOptions: VariantOption[];
   selectedVariantId?: string;
   track_quantity?: boolean;
+  buttonText?: string;
 }
 
 export function VariantDrawer({
@@ -43,6 +43,7 @@ export function VariantDrawer({
   variantOptions,
   selectedVariantId,
   track_quantity,
+  buttonText = "Confirm booking",
 }: VariantDrawerProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -234,7 +235,7 @@ export function VariantDrawer({
           >
             {track_quantity && currentVariant?.quantity === 0
               ? "Out of Stock"
-              : "Confirm booking"}
+              : buttonText}
           </Button>
         </div>
       </SheetContent>

@@ -680,6 +680,7 @@ export function ProductDetail({
           selectedVariantId={selectedVariantId}
           track_quantity={track_quantity}
           onSubmit={handleAddToCart}
+          buttonText={isEvent ? "Confirm booking" : "Check out"}
         />
       )}
     </div>,
