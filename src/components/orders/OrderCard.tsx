@@ -97,7 +97,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
       </div>
 
       {order.shipping_details && (
-        <div className="px-4">
+        <div className="px-4 pb-4">
           <div className="bg-darkgray-two px-3 py-4 rounded-lg flex flex-col justify-center">
             <p className="text-sm">
               {t("Tracking Number")}: {order.shipping_details.tracking_number}
