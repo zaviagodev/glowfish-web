@@ -188,7 +188,9 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
           {/* Check if 'rewards' exists and has at least one entry before accessing it */}
           {order.rewards && order.rewards.length > 0 && (
             <>
-              <div>NO. {order.rewards[0].code}</div>
+              <div className="mb-3">
+                NO. <strong>{order.rewards[0].code}</strong>
+              </div>
               <div className="w-40 h-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl mb-4">
                 <QRCodeCanvas
                   value={`${
