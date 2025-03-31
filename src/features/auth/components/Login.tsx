@@ -6,7 +6,6 @@ import LineIcon from "@/components/icons/LineIcon";
 import DrawerInfo from "@/components/company-info/DrawerInfo";
 import { useConfig } from "@/hooks/useConfig";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
-import GlowfishIcon from "@/components/icons/GlowfishIcon";
 
 export const Login = () => {
   const t = useTranslate();
@@ -34,7 +33,7 @@ export const Login = () => {
           <DefaultStorefront />
         )}
         <h1 className="text-[31px] tracking-[0.43px] m-0">
-          {t("Sign in to see all the event happening.")}
+          {t("Sign up to see more interesting things.")}
         </h1>
       </div>
       <div className="flex flex-col gap-5">
