@@ -509,7 +509,7 @@ const OrdersPage = () => {
                               </p>
                             </div>
                             {!isEvent && (
-                              <div className="flex flex-col items-end gap-2">
+                              <div className="flex flex-col justify-end items-end gap-3">
                                 <Quantity />
                                 <Total />
                               </div>

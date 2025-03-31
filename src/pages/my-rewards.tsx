@@ -141,24 +141,24 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>฿{order.subtotal.toFixed(2)}</span>
+                <span>${order.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Discount</span>
-                <span>฿{order.discount.toFixed(2)}</span>
+                <span>${order.discount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>฿{order.shipping.toFixed(2)}</span>
+                <span>${order.shipping.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Tax</span>
-                <span>฿{order.tax.toFixed(2)}</span>
+                <span>${order.tax.toFixed(2)}</span>
               </div>
               <div className="pt-2 border-t">
                 <div className="flex justify-between font-medium">
                   <span>Total</span>
-                  <span>฿{order.total.toFixed(2)}</span>
+                  <span>${order.total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -178,18 +178,20 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
               </div> */}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Points Discount</span>
-                <span>฿{order.points_discount.toFixed(2)}</span>
+                <span>${order.points_discount.toFixed(2)}</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 items-center my-6">
+        <div className="flex flex-col gap-4 items-center mt-6">
           {/* Check if 'rewards' exists and has at least one entry before accessing it */}
           {order.rewards && order.rewards.length > 0 && (
             <>
-              <div>NO. {order.rewards[0].code}</div>
-              <div className="h-40 w-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl">
+              <div className="mb-3">
+                NO. <strong>{order.rewards[0].code}</strong>
+              </div>
+              <div className="w-40 h-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl mb-4">
                 <QRCodeCanvas
                   value={`${
                     import.meta.env.VITE_ADMIN_URL
@@ -201,6 +203,12 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
                   includeMargin={false}
                 />
               </div>
+              <p
+                className="text-sm text-muted-foreground"
+                onClick={() => setIsBarcode(!isBarcode)}
+              >
+                {isBarcode ? "Switch to QR Code" : "Switch to Barcode"}
+              </p>
             </>
           )}
         </div>

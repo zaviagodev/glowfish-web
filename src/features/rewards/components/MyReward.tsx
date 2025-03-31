@@ -38,17 +38,18 @@ export function MyReward({ order }: MyRewardProps) {
       {/* Content */}
       <div className="relative grid grid-cols-3 h-auto">
         {/* Image Section */}
-        <div className="h-full aspect-square bg-black flex items-center justify-center relative overflow-hidden">
-          {image ? (
-            <img
-              src={image.url}
-              alt={image.alt || product?.name || "Reward"}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <ProductPlaceholder imageClassName="w-16 h-16" />
-          )}
-        </div>
+        {image ? (
+          <img
+            src={image.url}
+            alt={image.alt || product?.name || "Reward"}
+            className="w-full h-full object-cover aspect-square object-top"
+          />
+        ) : (
+          <ProductPlaceholder
+            imageClassName="w-16 h-16"
+            className="aspect-square"
+          />
+        )}
 
         {/* Order Details */}
         <div className="p-4 col-span-2 space-y-4">

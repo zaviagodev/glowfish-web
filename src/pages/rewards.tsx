@@ -698,7 +698,7 @@ const RewardsPage = () => {
             </h3>
           </div>
           <div className="absolute right-[30px] bottom-5 flex items-center w-fit text-2xl gap-2 text-mainbutton font-semibold">
-            {config?.storeLogo ? (
+            {/* {config?.storeLogo ? (
               <img
                 src={config.storeLogo}
                 alt="Store Logo"
@@ -706,8 +706,8 @@ const RewardsPage = () => {
               />
             ) : (
               <DefaultStorefront />
-            )}
-            {/* <GoodAfterWorkCard /> */}
+            )} */}
+            <GoodAfterWorkCard />
           </div>
           <button
             onClick={() => navigate("/scan")}
