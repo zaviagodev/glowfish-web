@@ -141,12 +141,15 @@ const ScanPage = () => {
             <div className="flex items-center gap-2 px-5 pt-1">
               <Button
                 onClick={() => navigate(-1)}
-                className="gap-2 secondary-btn text-foreground w-full"
+                className="gap-2 secondary-btn text-foreground w-full !outline-none !ring-0 !ring-offset-0"
               >
                 <X className="h-4 w-4" />
                 {t("Close")}
               </Button>
-              <Button onClick={handleReset} className="gap-2 main-btn w-full">
+              <Button
+                onClick={handleReset}
+                className="gap-2 main-btn w-full !outline-none !ring-0 !ring-offset-0"
+              >
                 <RefreshCw className="h-4 w-4" />
                 {t("Try Again")}
               </Button>
