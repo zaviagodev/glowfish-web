@@ -30,6 +30,7 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
   const navigate = useNavigate();
   const { order, loading } = useRewardOrder(orderId);
   const [isBarcode, setIsBarcode] = useState(false);
+  const currency = "฿";
 
   if (loading) {
     return (
@@ -78,20 +79,18 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
         </div>
 
         {/* Product Image */}
-        <div className="flex items-center justify-center aspect-video bg-black rounded-lg overflow-hidden mb-6">
-          {image ? (
-            <img
-              src={image.url}
-              alt={image.alt || product?.name || "Reward"}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <ProductPlaceholder />
-          )}
-        </div>
+        {image ? (
+          <img
+            src={image.url}
+            alt={image.alt || product?.name || "Reward"}
+            className="w-full h-full object-cover rounded-lg aspect-square"
+          />
+        ) : (
+          <ProductPlaceholder className="aspect-square rounded-lg" />
+        )}
 
         {/* Reward details */}
-        <div className="space-y-2 mb-6">
+        <div className="space-y-2 my-6">
           <h4 className="font-medium">Item Reward Name</h4>
           <p className="text-muted-foreground">{product?.name}</p>
         </div>
@@ -141,31 +140,46 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${order.subtotal.toFixed(2)}</span>
+                <span>
+                  {currency}
+                  {order.subtotal.toFixed(2)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Discount</span>
-                <span>${order.discount.toFixed(2)}</span>
+                <span>
+                  {currency}
+                  {order.discount.toFixed(2)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>${order.shipping.toFixed(2)}</span>
+                <span>
+                  {currency}
+                  {order.shipping.toFixed(2)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Tax</span>
-                <span>${order.tax.toFixed(2)}</span>
+                <span>
+                  {currency}
+                  {order.tax.toFixed(2)}
+                </span>
               </div>
               <div className="pt-2 border-t">
                 <div className="flex justify-between font-medium">
                   <span>Total</span>
-                  <span>${order.total.toFixed(2)}</span>
+                  <span>
+                    {currency}
+                    {order.total.toFixed(2)}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Points Information */}
-          <div className="space-y-4">
+          <div className="space-y-4 pb-2 border-b">
             <h4 className="font-medium">Points Information</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -178,7 +192,10 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
               </div> */}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Points Discount</span>
-                <span>${order.points_discount.toFixed(2)}</span>
+                <span>
+                  {currency}
+                  {order.points_discount.toFixed(2)}
+                </span>
               </div>
             </div>
           </div>
@@ -188,9 +205,7 @@ const RewardOrderDetails = ({ orderId }: { orderId: string }) => {
           {/* Check if 'rewards' exists and has at least one entry before accessing it */}
           {order.rewards && order.rewards.length > 0 && (
             <>
-              <div className="mb-3">
-                NO. <strong>{order.rewards[0].code}</strong>
-              </div>
+              <div className="mb-3 font-bold">NO. {order.rewards[0].code}</div>
               <div className="w-40 h-40 rounded-lg bg-foreground text-background flex items-center justify-center text-2xl mb-4">
                 <QRCodeCanvas
                   value={`${
