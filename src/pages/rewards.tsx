@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslate } from "@refinedev/core";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Barcode as BarcodeIcon,
@@ -20,7 +20,6 @@ import {
   CircleParking,
   CircleDollarSign,
   CheckCircle2,
-  Image,
 } from "lucide-react";
 import Barcode from "react-barcode";
 import { useCustomer } from "@/hooks/useCustomer";
@@ -43,6 +42,7 @@ import { VariantDrawer } from "@/features/home/components/VariantDrawer";
 import { set } from "date-fns";
 import DefaultStorefront from "@/components/icons/DefaultStorefront";
 import ProductPlaceholder from "@/components/ui/product-placeholder";
+import { truncateSync } from "node:fs";
 
 const RewardsPage = () => {
   const t = useTranslate();
@@ -413,13 +413,15 @@ const RewardsPage = () => {
           <footer className="btn-footer flex flex-col gap-7">
             <Sheet open={isSuccessful}>
               <SheetContent
-                className="max-width-mobile rounded-lg"
+                className="max-width-mobile rounded-t-lg"
                 side="bottom"
               >
-                <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto pb-6" />
-                <h3 className="text-lg font-semibold mb-4 text-center">
-                  {t("Reward successfully redeemed")}
-                </h3>
+                <SheetHeader className="mb-4">
+                  <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto pb-6" />
+                  <h3 className="text-lg font-semibold text-center">
+                    {t("Reward successfully redeemed")}
+                  </h3>
+                </SheetHeader>
                 <p className="text-sm text-[#979797] mb-6 text-center">
                   {t(
                     'You can check your redeemed rewards at " Rewards -> My Rewards".'
@@ -462,9 +464,10 @@ const RewardsPage = () => {
               <SheetContent
                 className="h-max border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col max-width-mobile mx-auto"
                 side="bottom"
+                hideCloseButton={true}
               >
-                <section className="flex flex-col gap-7">
-                  <div className="mt-1">
+                <SheetHeader>
+                  <div className="mt-1 text-left">
                     <h3 className="text-lg font-semibold mb-4">
                       {t("Confirm Redemption?")}
                     </h3>
@@ -476,7 +479,8 @@ const RewardsPage = () => {
                       </p>
                     )}
                   </div>
-
+                </SheetHeader>
+                <section className="flex flex-col gap-7">
                   {isGoingToConfirm ? (
                     <div>
                       Confirm the redemption of "{selectedReward.name}" for{" "}
@@ -579,10 +583,10 @@ const RewardsPage = () => {
 
             <Sheet open={isRedeemSheetOpen} onOpenChange={setIsRedeemSheetOpen}>
               <SheetContent
-                className="h-3/4 border-0 outline-none bg-background rounded-t-2xl p-5 flex flex-col justify-between"
+                className="h-3/4 border-0 outline-none bg-background rounded-t-2xl p-5 pt-6 flex flex-col justify-between"
                 side="bottom"
               >
-                <div>
+                <SheetHeader>
                   <h3 className="text-lg font-semibold text-center mb-4">
                     {t("Redeem Your Reward")}
                   </h3>
@@ -623,7 +627,7 @@ const RewardsPage = () => {
                       </h3>
                     </TabsContent>
                   </Tabs>
-                </div>
+                </SheetHeader>
                 <footer className="space-y-4 p-5">
                   <Button className="!bg-transparent w-full flex items-center gap-2">
                     <Download />
