@@ -12,7 +12,7 @@ export const AuthPage = () => {
       <Route path="line-callback" element={<LineCallback />} />
       <Route path="phone-verification" element={<PhoneVerification />} />
       <Route path="profile-setup" element={<ProfileSetup />} />
-      {/* <Route path="tell-us-about-yourself" element={<TellUsAboutYourself />} /> */}
+      <Route path="tell-us-about-yourself" element={<TellUsAboutYourself />} />
     </Routes>
   );
 };
