@@ -5,7 +5,7 @@ import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Image } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 import { useConfig } from "@/hooks/useConfig";
 import ProductPlaceholder from "../ui/product-placeholder";
