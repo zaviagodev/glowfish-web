@@ -67,9 +67,11 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
                       title={item.title}
                       price={item.price}
                       compareAtPrice={item.compare_at_price}
+                      description={item.description}
                       location={item.location}
                       date={formattedTime(item)}
                       end_datetime={item.end_datetime}
+                      isProduct={true}
                     />
                   </motion.div>
                 );
