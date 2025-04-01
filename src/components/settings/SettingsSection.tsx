@@ -2,7 +2,6 @@ import { useTranslate } from "@refinedev/core";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Ticket } from "lucide-react";
 
 export interface SettingsItem {
   icon: string | React.ReactNode;

@@ -108,13 +108,11 @@ export function CheckoutPage() {
 
     try {
       for (const item of items) {
-
         const { data: variant, error: variantError } = await supabase
           .from("product_variants")
           .select("product_id, price")
           .eq("id", item.variantId)
           .single();
-
 
         if (variantError) {
           continue;
@@ -233,7 +231,12 @@ export function CheckoutPage() {
     }
 
     // Add shipping method validation
-    if (hasPhysicalProducts && shippingMethods.options && shippingMethods.options.length > 0 && !selectedMethod) {
+    if (
+      hasPhysicalProducts &&
+      shippingMethods.options &&
+      shippingMethods.options.length > 0 &&
+      !selectedMethod
+    ) {
       alert(t("Please select a shipping method"));
       return;
     }
@@ -365,8 +368,17 @@ export function CheckoutPage() {
                 }`}
                 isDefault={!!selectedAddress}
                 icon={
-                  <div className="w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center">
-                    <MapPin className="w-4 h-4 text-icon-blue-foreground" />
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-lg bg-icon-blue-background flex items-center justify-center",
+                      { "bg-black/10 dark:bg-white/10": !selectedAddress }
+                    )}
+                  >
+                    <MapPin
+                      className={cn("w-4 h-4 text-icon-blue-foreground", {
+                        "text-black dark:text-white": !selectedAddress,
+                      })}
+                    />
                   </div>
                 }
               />

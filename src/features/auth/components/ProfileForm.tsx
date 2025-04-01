@@ -212,7 +212,7 @@ export const ProfileForm = ({
         >
           <Avatar
             className={cn("h-24 w-24", {
-              "rounded-3xl border-2 border-[#F5853B]": isProfileSetup,
+              "rounded-3xl border-2 border-foreground": isProfileSetup,
             })}
           >
             <AvatarImage src={avatarUrl} />
@@ -224,7 +224,7 @@ export const ProfileForm = ({
           </Avatar>
           {isProfileSetup && (
             <h1 className="main-heading">
-              Become a part of Good Afterwork Community and see the latest event
+              Welcome! Please fill in your personal information to continue.
             </h1>
           )}
           <input

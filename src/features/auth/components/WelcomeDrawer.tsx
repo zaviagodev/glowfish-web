@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
-  const { events, loading, error } = useProducts();
+  const { events, products, loading, error } = useProducts();
   const { storeName } = useStore();
 
   const getPriceDisplay = (product: Product) => {
@@ -30,10 +30,11 @@ export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
     return `${minPrice.toLocaleString()}`;
   };
 
-  const productEvents = events.map((event) => ({
-    ...event,
-    title: event.name,
-    price: getPriceDisplay(event as Product),
+  const productEvents = products.map((product) => ({
+    ...product,
+    title: product.name,
+    description: product.description,
+    price: getPriceDisplay(product as Product),
   }));
 
   return (
@@ -52,7 +53,7 @@ export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
         />
         <footer className="btn-footer">
           <Button className="main-btn w-full" onClick={() => navigate("/home")}>
-            {t("Get started")}
+            {t("Let's get started")}
           </Button>
         </footer>
       </RegisterDrawer>

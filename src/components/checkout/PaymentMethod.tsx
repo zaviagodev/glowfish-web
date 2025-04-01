@@ -19,6 +19,8 @@ import {
 import { cn } from "@/lib/utils";
 import LoadingSpin from "../loading/LoadingSpin";
 import { useTheme } from "@/hooks/useTheme";
+import NoItemsComp from "../ui/no-items";
+import ContactUsButton from "../ui/contact-us-button";
 
 // Add function to generate full image URL
 const getFullImageUrl = (imageUrl: string) => {
@@ -220,42 +222,60 @@ export function PaymentMethod({
               {t("Choose Payment Method")}
             </SheetTitle>
           </SheetHeader>
-          <div className="space-y-6 p-5">
-            {paymentOptions.map((option) => (
-              <button
-                key={option.id}
-                className={cn(
-                  "w-full text-left px-3 py-4 rounded-lg transition-all border bg-darkgray",
-                  option.id === value
-                    ? "border-mainbutton"
-                    : "border-transparent"
-                )}
-                onClick={() => {
-                  onChange(option.id);
-                  setShowOptions(false);
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <PaymentMethodIcon name={option.name} />
-                  <div>
-                    <div className="text-sm font-medium">{option.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {option.description}
+          <div className="space-y-4 p-5">
+            {paymentOptions.length > 0 ? (
+              <>
+                {paymentOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    className={cn(
+                      "w-full text-left px-3 py-4 rounded-lg transition-all border bg-darkgray",
+                      option.id === value
+                        ? "border-mainbutton"
+                        : "border-transparent"
+                    )}
+                    onClick={() => {
+                      onChange(option.id);
+                      setShowOptions(false);
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <PaymentMethodIcon name={option.name} />
+                      <div>
+                        <div className="text-sm font-medium">{option.name}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {option.description}
+                        </div>
+                        {option.details?.bank?.bank_name_thai && (
+                          <div className="text-xs text-muted-foreground mt-0.5">
+                            {option.details.bank.bank_name_thai}
+                          </div>
+                        )}
+                        {option.details?.account_number && (
+                          <div className="text-xs text-muted-foreground">
+                            {t("Account")}: {option.details.account_number}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    {option.details?.bank?.bank_name_thai && (
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        {option.details.bank.bank_name_thai}
-                      </div>
-                    )}
-                    {option.details?.account_number && (
-                      <div className="text-xs text-muted-foreground">
-                        {t("Account")}: {option.details.account_number}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </button>
-            ))}
+                  </button>
+                ))}
+              </>
+            ) : (
+              <div>
+                <NoItemsComp
+                  text={
+                    <>
+                      Sorry, there is no payment method available. <br />
+                      Please contact the store directly.
+                    </>
+                  }
+                  icon={WalletCards}
+                  className="pb-0"
+                />
+                <ContactUsButton />
+              </div>
+            )}
           </div>
         </SheetContent>
       </Sheet>
