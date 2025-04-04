@@ -135,7 +135,7 @@ export const authProvider: AuthProvider = {
         return {
           success: true,
           redirectTo: tokenData.redirect === "register"
-            ? "auth/phone-verification"
+            ? "/auth/phone-verification"
             : "/home",
         };
       } catch (error) {
