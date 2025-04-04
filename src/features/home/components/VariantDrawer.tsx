@@ -31,6 +31,7 @@ interface VariantDrawerProps {
   variantOptions: VariantOption[];
   selectedVariantId?: string;
   track_quantity?: boolean;
+  buttonText?: string;
 }
 
 export function VariantDrawer({
@@ -42,6 +43,7 @@ export function VariantDrawer({
   variantOptions,
   selectedVariantId,
   track_quantity,
+  buttonText = "Confirm booking",
 }: VariantDrawerProps) {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -138,7 +140,7 @@ export function VariantDrawer({
                 <img
                   src={config.storeLogo}
                   alt="Store Logo"
-                  className="w-[100px] object-contain"
+                  className="max-h-[68px] object-contain"
                 />
               ) : (
                 <DefaultStorefront />
@@ -233,7 +235,7 @@ export function VariantDrawer({
           >
             {track_quantity && currentVariant?.quantity === 0
               ? "Out of Stock"
-              : "Confirm booking"}
+              : buttonText}
           </Button>
         </div>
       </SheetContent>

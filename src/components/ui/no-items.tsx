@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 import { useTranslate } from "@refinedev/core";
 import { motion } from "framer-motion";
-import { ComponentType } from "react";
+import { ComponentType, ReactNode } from "react";
 
 interface NoItemsProps {
-  text: string;
+  text: string | ReactNode;
   icon: ComponentType<{ className?: string }>;
   className?: string;
   description?: string;
@@ -29,7 +29,7 @@ const NoItemsComp = ({
     >
       <IconComponent className="w-16 h-16 text-muted-foreground/50" />
       <div className="space-y-2 text-center">
-        <p className="text-muted-foreground font-medium">{t(text)}</p>
+        <p className="text-muted-foreground font-medium">{text}</p>
         {description && (
           <p className="text-sm text-muted-foreground/70">{t(description)}</p>
         )}

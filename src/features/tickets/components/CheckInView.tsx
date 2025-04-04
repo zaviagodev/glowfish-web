@@ -43,8 +43,8 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative px-5 pb-3 pt-8 text-left border-b before:w-12 before:h-1 before:bg-white/20 before:rounded-full before:mx-auto before:absolute before:left-[50%] before:translate-x-[-50%] before:top-4">
-          <div className="absolute left-1/2 -top-3 w-12 h-1 bg-[#E5E5EA] rounded-full transform -translate-x-1/2" />
+        <div className="relative px-5 pb-3 pt-6 text-left border-b before:w-12 before:h-1 before:bg-white/20 before:rounded-full before:mx-auto before:absolute before:left-[50%] before:translate-x-[-50%] before:top-4">
+          <div className="absolute left-1/2 top-3 w-12 h-1 bg-[#E5E5EA] rounded-full transform -translate-x-1/2" />
           <h2 className="text-lg font-semibold">{t("Check In")}</h2>
           <p className="text-sm text-muted-foreground mt-1">
             {t("Show this code to check in")}
@@ -200,7 +200,10 @@ export function CheckInView({ ticket, onClose }: CheckInViewProps) {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   <span>
-                    {format(toZonedTime(new Date(ticket.date), "UTC"), formattedDateAndTime)}
+                    {format(
+                      toZonedTime(new Date(ticket.date), "UTC"),
+                      "dd MMM yyyy HH:mm"
+                    )}
                   </span>
                 </div>
               )}

@@ -358,12 +358,12 @@ export function ProductDetail({
           </div>
 
           <div className="space-y-6">
-            {description && (
-              <div className="space-y-2">
-                <h2 className="text-base">{t("Description")}</h2>
-                <LongParagraph description={description} />
-              </div>
-            )}
+            <div className="space-y-2">
+              <h2 className="text-base">{t("Description")}</h2>
+              <LongParagraph
+                description={description || "There is no description yet"}
+              />
+            </div>
 
             {venue_address && (
               <div className="space-y-2">
@@ -680,6 +680,7 @@ export function ProductDetail({
           selectedVariantId={selectedVariantId}
           track_quantity={track_quantity}
           onSubmit={handleAddToCart}
+          buttonText={isEvent ? "Confirm booking" : "Check out"}
         />
       )}
     </div>,
