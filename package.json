@@ -44,6 +44,7 @@
     "jsqr": "^1.4.0",
     "lucide-react": "^0.453.0",
     "motion": "^10.17.0",
+    "posthog-js": "^1.234.7",
     "qrcode-reader": "^1.0.4",
     "qrcode.react": "^4.2.0",
     "react": "^18.0.0",
