@@ -49,7 +49,10 @@ export function Ticket({ ticket }: TicketProps) {
             className="w-full h-full object-cover aspect-square object-top"
           />
         ) : (
-          <ProductPlaceholder imageClassName="w-12 h-12" />
+          <ProductPlaceholder
+            imageClassName="w-16 h-16"
+            className="aspect-square"
+          />
         )}
 
         {/* Event Details */}

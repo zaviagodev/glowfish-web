@@ -38,17 +38,18 @@ export function MyReward({ order }: MyRewardProps) {
       {/* Content */}
       <div className="relative grid grid-cols-3 h-auto">
         {/* Image Section */}
-        <div className="h-full bg-black flex items-center justify-center relative overflow-hidden">
-          {image ? (
-            <img
-              src={image.url}
-              alt={image.alt || product?.name || "Reward"}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <ProductPlaceholder imageClassName="w-16 h-16" />
-          )}
-        </div>
+        {image ? (
+          <img
+            src={image.url}
+            alt={image.alt || product?.name || "Reward"}
+            className="w-full h-full object-cover aspect-square object-top"
+          />
+        ) : (
+          <ProductPlaceholder
+            imageClassName="w-16 h-16"
+            className="aspect-square"
+          />
+        )}
 
         {/* Order Details */}
         <div className="p-4 col-span-2 space-y-4">
@@ -81,12 +82,12 @@ export function MyReward({ order }: MyRewardProps) {
                 <Calendar className="w-4 h-4" />
                 <span>{new Date(order.created_at).toLocaleDateString()}</span>
               </div>
-              {order.tags.length > 0 && (
+              {/* {order.tags.length > 0 && (
                 <div className="flex items-center gap-1">
                   <Tag className="w-4 h-4" />
                   <span>{order.tags.join(", ")}</span>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 

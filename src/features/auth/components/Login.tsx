@@ -22,18 +22,18 @@ export const Login = () => {
 
   return (
     <section className="px-5 py-10 flex flex-col gap-20">
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-10 items-start">
         {config?.storeLogo ? (
           <img
             src={config.storeLogo}
             alt="Store Logo"
-            className="w-20 h-20 object-contain"
+            className="max-h-[68px] object-contain"
           />
         ) : (
           <DefaultStorefront />
         )}
         <h1 className="text-[31px] tracking-[0.43px] m-0">
-          {t("Sign in to see all the event happening.")}
+          {t("Sign up to see more interesting things.")}
         </h1>
       </div>
       <div className="flex flex-col gap-5">

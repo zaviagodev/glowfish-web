@@ -3,149 +3,201 @@ import { ServiceListProps } from "@/type/type 2";
 const PrivacyPolicy = () => {
   const serviceList: ServiceListProps[] = [
     {
-      title: "Information We Collect",
+      title: "สิทธิตามกฎหมายของท่าน",
       descriptions: (
         <>
           <p className="text-sm text-muted-foreground">
-            We may collect the following types of personal information when you
-            register for or attend our event:
+            เพื่อให้เป็นไปตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
+            (2019)
+            บริษัทขอแจ้งให้คุณทราบว่าข้อมูลส่วนบุคคลของคุณจะถูกรวบรวมและนำไปใช้ตามวัตถุประสงค์ดั้งเดิม
+            โดยคุณมีสิทธิ์ดังต่อไปนี้ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล
+            พ.ศ. 2562 (2019)
+            บริษัทขอให้ท่านมั่นใจว่าข้อมูลส่วนบุคคลของคุณจะถูกเก็บไว้อย่างปลอดภัยตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล
+            พ.ศ. 2562 (2019)
           </p>
           <ul className="text-sm text-muted-foreground">
             <li>
-              Name, email address, phone number, and other contact details
+              <strong>สิทธิในการเข้าถึงข้อมูล</strong>
+              <br />
+              ท่านมีสิทธิที่จะแจ้งขอการเข้าถึงและรับสำเนาข้อมูลส่วนบุคคลของคุณ
+              หรือร้องขอให้มีการเปิดเผยการได้มาซึ่งข้อมูลส่วนบุคคลที่ได้รับโดยไม่ได้รับความยินยอมจากท่าน
+              เว้นแต่จะไม่สามารถทำได้ด้วยด้วยข้อจำกัดทางเทคนิค
             </li>
-            <li>Payment information for event registration</li>
-            <li>Photographs and video recordings during the event</li>
-            <li>Feedback and survey responses</li>
-            <li>Any other information voluntarily provided by you</li>
+
+            <li>
+              <strong>สิทธิในการขอแก้ไขข้อมูล</strong>
+              <br />
+              ท่านมีสิทธิที่จะขอให้บริษัทแก้ไขข้อมูลของท่าน
+              ในกรณีที่ข้อมูลของท่านไม่ถูกต้องหรือไม่ครบถ้วน
+            </li>
+
+            <li>
+              <strong>
+                สิทธิในการคัดค้านการเก็บรวบรวม ใช้หรือเปิดเผยข้อมูล
+              </strong>
+              <br />
+              ท่านมีสิทธิคัดค้านการรวบรวม ใช้ หรือเปิดเผยข้อมูลส่วนบุคคล
+            </li>
+
+            <li>
+              <strong>สิทธิ์ในการเพิกถอนความยินยอม</strong>
+              <br />
+              หากคุณยินยอมให้เราเก็บรวบรวม ใช้ หรือเปิดเผยข้อมูลส่วนบุคคลของคุณ
+              คุณมีสิทธิ์ที่จะเพิกถอนปฎิเสธความยินยอมของคุณได้ทุกเมื่อ
+            </li>
+            <li>
+              <strong>สิทธิในการลบข้อมูล และ สิทธิในการยื่นคำร้อง</strong>
+              <br />
+              คุณมีสิทธิ์ที่จะขอให้เราลบ ทำลาย
+              หรือไม่เปิดเผยข้อมูลส่วนบุคคลของคุณ
+              ตามขอบเขตที่พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคลอนุญาต
+            </li>
           </ul>
         </>
       ),
     },
     {
-      title: "How We Use Your Information",
+      title: "การเก็บรวบรวม ใช้ หรือเปิดเผยข้อมูล",
+      descriptions: (
+        <p className="text-sm text-muted-foreground">
+          เพื่อประสบการณ์ที่ดีขึ้นในขณะที่ใช้บริการของบริษัท
+          บริษัทอาจขอให้คุณจำเป็นต้องให้ข้อมูลส่วนบุคคลที่ระบุถึงตัวตนของคุณแก่เรา
+          ไม่เพียงแต่ชื่อ ที่อยู่อีเมล หมายเลขโทรศัพท์ ตำแหน่งคร่าวๆ
+          ประวัติการค้นหา ID ผู้ใช้งาน ID อุปกรณ์ที่เข้าใช้งาน
+          การโต้ตอบผลิตภัณฑ์ ข้อมูลความผิดพลาด
+          ข้อมูลที่เราร้องขอจะถูกเก็บไว้โดยเราและใช้ตามคำอธิบายไว้ในนโยบายความเป็นส่วนตัวนี้
+        </p>
+      ),
+    },
+    {
+      title: "ประเภทข้อมูลและวัตถุประสงค์การใช้ข้อมูล",
       descriptions: (
         <div>
           <p className="text-sm text-muted-foreground">
-            Your information is used for the following purposes:
+            เพื่อทำให้เว็บไซต์ซาเวียโกจำกัดและบริการสามารถให้ท่านใช้งานได้หรือเพื่อปฏิบัติตามกฎหมาย
+            เราจึงมีความจำเป็นจะต้องเก็บรวบรวมข้อมูลส่วนบุคคลของท่านบางส่วน
+            โดยบริษัทจะเก็บรวบรวมใช้และเปิดเผยข้อมูลส่วนบุคคลของท่าน ดังต่อไปนี้
           </p>
           <ul className="text-sm text-muted-foreground">
-            <li>To process event registration and payments</li>
             <li>
-              To communicate event-related updates and promotional content
+              <strong>ข้อมูลรายละเอียดส่วนตัว:</strong>
+              <br />
+              ชื่อ-นามสกุล, วัน/เดือน/ปีเกิด, หมายเลขบัตรประจำตัวประชาชน,
+              เลขประจำตัวผู้เสียภาษี
             </li>
-            <li>To enhance and improve our events based on feedback</li>
-            <li>To ensure the security and safety of all attendees</li>
             <li>
-              To comply with legal obligations and enforce our terms of service
+              <strong>ข้อมูลการติดต่อ:</strong>
+              <br />
+              ที่อยู่, หมายเลขโทรศัพท์, อีเมล และ LINE
+            </li>
+            <li>
+              <strong>ข้อมูลเกี่ยวกับการทำธุรกรรมและข้อมูลทางการเงิน:</strong>
+              <br />
+              ประวัติการใช้บริการ, หมายเลขบัญชีธนาคาร, หมายเลขบัตรเครดิต
+            </li>
+            <li>
+              <strong>ข้อมูลเกี่ยวกับการใช้งานระบบ คอมพิวเตอร์:</strong>
+              <br />
+              หมายเลขประจำเครื่องคอมพิวเตอร์ (IP Address), บัญชีผู้ใช้งาน,
+              คุกกี้, ข้อมูลและประวัติการเข้าถึงแอปพลิเคชั่น
+              และเว็บไซต์ของบริษัท อย่างไรก็ตาม
+              หากท่านไม่ให้เราเก็บรวบรวมข้อมูลที่เราร้องขอ
+              เราอาจจะไม่สามารถจัดเตรียมผลิตภัณฑ์หรือบริการที่ท่านร้องขอได้
+              ข้อมูลส่วนบุคคลที่เราได้เก็บรวบรวมจากท่านดังที่กล่าวไว้ข้างต้น
+              อาจนำมาใช้สำหรับวัตถุประสงค์ดังต่อไปนี้
+              <ul className="mt-0">
+                <li>เพื่อสร้างและจัดการบัญชีผู้ใช้งาน</li>
+                <li>เพื่อทำการและจัดการคำสั่งซื้อ</li>
+                <li>เพื่อจัดส่งผลิตภัณฑ์หรือบริการ</li>
+                <li>เพื่อปรับปรุงผลิตภัณฑ์หรือบริการให้ดียิ่งขึ้น</li>
+                <li>เพื่อส่งข้อมูลการดูแลจัดการ</li>
+                <li>
+                  เพื่อการนำเสนอสิทธิประโยชน์หรือบริการอื่น ๆ ของบริษัท
+                  การส่งข้อเสนอเกี่ยวกับผลิตภัณฑ์และการบริการ รวมถึงโปรโมชันต่าง
+                  ๆ ในการส่งเสริมกิจกรรมทางการตลาดและรายการส่งเสริมการขาย
+                </li>
+                <li>เพื่อตอบสนองต่อข้อสงสัยและนำเสนอการช่วยเหลือ</li>
+                <li>เพื่อร้องขอข้อเสนอแนะจากผู้ใช้</li>
+                <li>เพื่อปรับปรุงประสบการณ์การใช้งานของผู้ใช้ให้ดียิ่งขึ้น</li>
+                <li>
+                  เพื่อโพสต์หรือประชาสัมพันธ์ความพึงพอใจของท่านที่มีเกี่ยวกับผลิตภัณฑ์และบริการของเรา
+                </li>
+                <li>เพื่อบังคับใช้ข้อตกลงและเงื่อนไขและนโยบายต่าง ๆ</li>
+                <li>เพื่อดำเนินการและจัดการเว็บไซต์ซาเวียโกและบริการ</li>
+                <li>
+                  เพื่อมีส่วนร่วมในกิจกรรมอื่นใดที่เกี่ยวข้องกับเว็บไซต์และบริการของซาเวียโก
+                </li>
+              </ul>
             </li>
           </ul>
         </div>
       ),
     },
     {
-      title: "Sharing Your Information",
-      descriptions: (
-        <div>
-          <p className="text-sm text-muted-foreground">
-            We do not sell or rent your personal data. However, we may share
-            your information with:
-          </p>
-          <ul className="text-sm text-muted-foreground">
-            <li>
-              Third-party service providers assisting in event operations (e.g.,
-              payment processors, marketing tools)
-            </li>
-            <li>
-              Legal authorities if required by law or in case of security
-              concerns
-            </li>
-            <li>Internal teams for event improvement and analytics</li>
-          </ul>
-        </div>
-      ),
-    },
-    {
-      title: "Data Retention",
+      title: "การเก็บข้อมูลและเวลาการเก็บข้อมูล",
       descriptions: (
         <p className="text-sm text-muted-foreground">
-          We retain your personal information only for as long as necessary to
-          fulfill the purposes outlined in this policy. If you wish to have your
-          data removed, please contact us.
+          บริษัทจะเก็บรักษาข้อมูลส่วนบุคคลของท่านในระหว่างที่ท่านเป็นลูกค้าของบริษัท
+          และเมื่อท่านสิ้นสุดความสัมพันธ์กับบริษัท (เช่น
+          หลังจากที่ท่านปิดบัญชีที่มีอยู่กับบริษัท
+          หรือนับแต่การทำธุรกรรมกับบริษัท
+          หรือกรณีบริษัทปฏิเสธคำขอใช้บริการของท่าน
+          หรือท่านขอยกเลิกการใช้บริการของบริษัท)
+          บริษัทจะเก็บข้อมูลส่วนบุคคลของท่านตามระยะเวลาที่เหมาะสมและจำเป็นสำหรับข้อมูลส่วนบุคคลแต่ละประเภทและวัตถุประสงค์ตามที่พรบ.คุ้มครองข้อมูลส่วนบุคคลกำหนด
         </p>
       ),
     },
     {
-      title: "Your Rights and Choices",
-      descriptions: (
-        <div>
-          <p className="text-sm text-muted-foreground">
-            You have the following rights regarding your personal data:
-          </p>
-          <ul className="text-sm text-muted-foreground">
-            <li>Access and review the information we hold about you</li>
-            <li>Request correction or deletion of your personal data</li>
-            <li>Withdraw consent for marketing communications at any time</li>
-            <li>
-              Object to certain processing activities, subject to applicable
-              laws
-            </li>
-          </ul>
-        </div>
-      ),
-    },
-    {
-      title: "Data Security",
+      title: "การใช้คุกกี้",
       descriptions: (
         <p className="text-sm text-muted-foreground">
-          We take appropriate measures to safeguard your data against
-          unauthorized access, loss, or misuse. However, no method of
-          transmission over the internet is completely secure.
+          คุกกี้คือไฟล์ข้อมูลขนาดเล็กซึ่งโดยทั่วไปจะถูกใช้อย่างไม่ระบุตัวตน
+          ไม่บันทึกข้อมูลส่วนบุคคลของบุคคลใดบุคคลหนึ่งเฉพาะ
+          โดยที่จะเก็บข้อมูลเท่าที่จำเป็นในเครื่องคอมพิวเตอร์ของเจ้าของข้อมูลไว้ชั่วคราว
+          นอกจากนี้ข้อมูลเหล่านี้จะถูกส่งจากเบราว์เซอร์ของคุณไปยังเว็บไซต์ที่คุณเยี่ยมชม
+          เพื่ออำนวยความสะดวกในการติดต่อสื่อสาร
+          รวมถึงเพื่อเพิ่มประสิทธิภาพในการใช้งานเว็บไซต์ให้ดียิ่งขึ้น
+          และเพื่อให้ได้รับการบริการที่ดีที่สุด บริการของบริษัทไม่ได้ใช้
+          “คุกกี้” เหล่านี้อย่างชัดเจน อย่างไรก็ตาม
+          แอปอาจใช้รหัสบุคคลที่สามและชุดคำสั่งที่ใช้ “คุกกี้”
+          เพื่อรวบรวมข้อมูลและปรับปรุงบริการของพวกเรา
+          ท่านมีทางเลือกที่จะยอมรับหรือปฏิเสธคุกกี้เหล่านี้และรู้ว่าเมื่อใดที่คุกกี้จะถูกส่งไปยังอุปกรณ์ของท่าน
+          หากท่านเลือกปฏิเสธคุกกี้ของเรา ท่านอาจไม่สามารถใช้บริการบางส่วนได้
+          สำหรับรายละเอียดเพิ่มเติม ท่านสามารถตรวจสอบได้ที่ นโยบายการใช้คุ้กกี้
         </p>
       ),
     },
     {
-      title: "Photography and Media Usage",
+      title: "ความปลอดภัยของข้อมูล",
       descriptions: (
         <p className="text-sm text-muted-foreground">
-          By attending Good Afterwork at Glowfish, you acknowledge and consent
-          to the use of event photographs and videos for marketing and
-          promotional purposes. If you do not wish to be photographed, please
-          inform our staff in advance.
+          บริษัทมีการใช้มาตรการรักษาความปลอดภัยภายในบริษัทและการใช้บังคับนโยบายอย่างเข้มงวดในการเก็บรักษาข้อมูลส่วนบุคคลของท่านให้ปลอดภัย
+          ซึ่งรวมถึงการเข้ารหัสข้อมูล และมาตรการป้องกันการเข้าถึงข้อมูล
+          โดยบริษัทกำหนดให้บุคลากรของบริษัทต้องปฏิบัติตามมาตรฐานและนโยบายความเป็นส่วนบุคคลที่เหมาะสม
+          รวมถึงจะต้องจัดให้มีการดูแลรักษาข้อมูลและมีมาตรการที่เหมาะสมในการใช้หรือการส่งหรือโอนข้อมูลส่วนบุคคลของท่าน
         </p>
       ),
     },
     {
-      title: "Policy Updates",
+      title: "วิธีการติดต่อบริษัท",
       descriptions: (
         <p className="text-sm text-muted-foreground">
-          We may update this Privacy Policy from time to time. Continued
-          participation in our events constitutes acceptance of any changes.
+          หากท่านมีข้อสงสัยหรือข้อเสนอแนะเกี่ยวกับนโยบายความเป็นส่วนตัวของบริษัท
+          โปรดติดต่อบริษัทตามช่องทางดังต่อไปนี้ อีเมล:{" "}
+          <a href="mailto:service@zaviago.com">service@zaviago.com</a> หรือ
+          บริษัท ซาเวียโก จำกัด (สำนักงานใหญ่) 999/99 ถนนพระราม 9 แขวงสวนหลวง
+          เขตสวนหลวง กรุงเทพมหานคร 10250 ( 09.00 - 18.00 น.)
         </p>
       ),
     },
     {
-      title: "Contact Information",
+      title: "การเปลี่ยนแปลงนโยบายความเป็นส่วนตัว",
       descriptions: (
-        <div>
-          <p className="text-sm text-muted-foreground">
-            If you have any questions about this Privacy Policy or wish to
-            exercise your rights, please contact us at:{" "}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            <strong>Email: </strong>
-            <a href="mailto:info@glowfishworkplace.com">
-              info@glowfishworkplace.com
-            </a>
-          </p>
-          <p className="text-sm text-muted-foreground">
-            <strong>Phone: </strong>02-109-9600
-          </p>
-          <p className="text-sm text-muted-foreground">
-            <strong>Address: </strong>92/4, 2nd Floor Thani 2 Building, North
-            Sathorn, Silom, Bangkok, Thailand 10500
-          </p>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          บริษัทอาจมีการเปลี่ยนแปลงนโยบายความเป็นส่วนตัวในอนาคต อย่างไรก็ตาม
+          ท่านสามารถตรวจสอบนโยบายความเป็นส่วนตัวฉบับปัจจุบันได้ที่เว็บไซต์ของบริษัท{" "}
+          <a href="https://zaviago.com">www.zaviago.com</a>
+        </p>
       ),
     },
   ];
@@ -153,10 +205,19 @@ const PrivacyPolicy = () => {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Glowfish values your privacy and is committed to protecting your
-        personal data. This Privacy Policy outlines how we collect, use, store,
-        and protect your information when you participate in Good Afterwork at
-        Glowfish.
+        บริษัท ซาเวียโก จำกัด (“บริษัท”)
+        ขอบพระคุณผู้ใช้งานทุกท่านที่ไว้ใจในบริการของเรา
+        ความปลอดภัยและข้อมูลส่วนบุคคลของผู้ใช้งานถือเป็นสิ่งสำคัญที่บริษัทดูแลและใส่ใจเป็นอย่างยิ่ง
+        บริษัทจึงจัดทำประกาศนโยบายความเป็นส่วนตัวนี้
+        เพื่อแจ้งให้ลูกค้าของบริษัทรับทราบถึงนโยบายของบริษัทเกี่ยวกับการเก็บรวบรวม
+        การใช้ และการเปิดเผยข้อมูลส่วนบุคคลของบุคคลธรรมดา (“ท่าน”)
+        ซึ่งเป็นไปตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ.2562
+        โดยประกาศนโยบายความเป็นส่วนตัวนี้ประกอบไปด้วยสิทธิตามกฎหมายของท่าน
+        วิธีการที่บริษัทเก็บ ใช้ และเปิดเผยข้อมูลส่วนบุคคลของท่าน
+        ประเภทข้อมูลและวัตถุประสงค์ในการดำเนินการดังกล่าว
+        รวมถึงรายละเอียดเกี่ยวกับระยะเวลาในการเก็บรักษาข้อมูล
+        การรักษาความลับและความปลอดภัยของข้อมูลส่วนบุคคลของท่าน
+        และวิธีการติดต่อบริษัท
       </p>
 
       {serviceList.map((list) => (
@@ -165,11 +226,6 @@ const PrivacyPolicy = () => {
           {list.descriptions}
         </div>
       ))}
-
-      <p className="text-sm text-muted-foreground">
-        By registering for or attending Good Afterwork at Glowfish, you
-        acknowledge and agree to this Privacy Policy.
-      </p>
     </div>
   );
 };
