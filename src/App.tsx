@@ -133,16 +133,6 @@ function App() {
                   path="/line-callback"
                   element={<LineCallbackRedirect />}
                 />
-                <Route
-                  path="/phone-verification"
-                  element={<Navigate to="/auth/phone-verification" replace />}
-                />
-                <Route
-                  path="/tell-us-about-yourself"
-                  element={
-                    <Navigate to="/auth/tell-us-about-yourself" replace />
-                  }
-                />
 
                 {/* Auth routes */}
                 <Route path="auth/*" element={<AuthPage />} />
@@ -155,6 +145,8 @@ function App() {
                 <Route element={<ProtectedRoute />}>
                   <Route index element={<HomeList />} />
                   {/* Order Flow Routes */}
+
+                
                   <Route path="/cart" element={<OrderFlow />} />
                   <Route path="/checkout/*" element={<OrderFlow />} />
                   <Route path="/payment/*" element={<OrderFlow />} />
