@@ -3,7 +3,7 @@
 # https://github.com/refinedev/dockerfiles/blob/main/vite/Dockerfile.nginx
 FROM refinedev/node:18 AS base
 
-FROM base as deps
+FROM base AS deps
 
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
 
@@ -14,7 +14,7 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-FROM base as builder
+FROM base AS builder
 
 COPY --from=deps /app/refine/node_modules ./node_modules
 COPY . .
@@ -39,21 +39,14 @@ ENV VITE_PUBLIC_POSTHOG_KEY=$VITE_PUBLIC_POSTHOG_KEY
 
 RUN npm run build
 
-FROM base as runner
+FROM base AS runner
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 RUN npm install -g serve
 
 COPY --from=builder /app/refine/dist ./
 
 USER refine
-
-# Pass runtime environment variables
-ENV VITE_LINE_CLIENT_ID=$VITE_LINE_CLIENT_ID
-ENV VITE_ADMIN_URL=$VITE_ADMIN_URL
-ENV VITE_CALLBACK_DOMAIN=$VITE_CALLBACK_DOMAIN
-ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 
 CMD ["serve", "-s", ".", "-l", "3000"]
