@@ -6,9 +6,10 @@ import { UserProfile } from "@/components/settings/UserProfile";
 import { OrderStatusBar } from "@/components/settings/OrderStatusBar";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { WalletSection } from "@/components/settings/WalletSection";
-import { Crown, Gift, Moon, QrCode, Star, Sun, User } from "lucide-react";
+import { Crown, Gift, Languages, Moon, QrCode, Star, Sun, User } from "lucide-react";
 import DrawerInfo from "@/components/company-info/DrawerInfo";
 import { useTheme } from "@/hooks/useTheme";
+import LanguageSwitcher from "@/components/language-switcher";
 
 const SettingsPage = () => {
   const t = useTranslate();
@@ -40,6 +41,19 @@ const SettingsPage = () => {
           showArrow: true,
           color: "#4CAF50", // Green
           bgColor: "rgba(76, 175, 80, 0.1)",
+        },
+      ],
+    },
+    {
+      title: t("Preferences"),
+      items: [
+        {
+          icon: <Languages className="h-5 w-5" />,
+          label: t("Language"),
+          component: <LanguageSwitcher />,
+          showArrow: false,
+          color: "#2196F3", // Blue
+          bgColor: "rgba(33, 150, 243, 0.1)",
         },
       ],
     },

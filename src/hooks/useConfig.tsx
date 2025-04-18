@@ -12,6 +12,7 @@ interface ConfigContextType {
   isLoading: boolean;
   error: Error | null;
   refetch: () => Promise<unknown>;
+  setConfig: (config: StoreConfig) => void;
 }
 
 const ConfigContext = createContext<ConfigContextType>({
@@ -19,6 +20,7 @@ const ConfigContext = createContext<ConfigContextType>({
   isLoading: false,
   error: null,
   refetch: async () => {},
+  setConfig: () => {},
 });
 
 // Create a client
@@ -46,6 +48,20 @@ const ConfigProviderContent = ({ children }: { children: React.ReactNode }) => {
     cacheTime: 1000 * 60 * 30, // 30 minutes
   });
 
+  // Initialize language from localStorage
+  useEffect(() => {
+    const savedLocale = localStorage.getItem('locale') || 'th';
+    setConfig(prev => ({
+      ...prev,
+      default_language: savedLocale
+    }));
+    
+    // Also set in localStorage if it's not already set
+    if (!localStorage.getItem('locale')) {
+      localStorage.setItem('locale', 'th');
+    }
+  }, []);
+
   useEffect(() => {
     if (data) {
       setConfig(data);
@@ -53,7 +69,7 @@ const ConfigProviderContent = ({ children }: { children: React.ReactNode }) => {
   }, [data]);
 
   return (
-    <ConfigContext.Provider value={{ config, isLoading, error: error as Error | null, refetch }}>
+    <ConfigContext.Provider value={{ config, isLoading, error: error as Error | null, refetch, setConfig }}>
       {children}
     </ConfigContext.Provider>
   );

@@ -21,6 +21,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./App.css";
+import "./i18n";
+import i18n from "i18next";
 import { authProvider } from "./authProvider";
 import { Layout } from "./components/layout";
 import { HomeList } from "@/pages/home";
@@ -29,7 +31,7 @@ import { TellUsAboutYourself } from "@/features/auth/components/TellUsAboutYours
 import SettingsPage from "./pages/settings";
 import Rewards from "./pages/rewards";
 import useConfig, { ConfigProvider } from "./hooks/useConfig";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MyOrdersPage from "./pages/orders";
 import MyPointsPage from "./pages/points";
 import TicketsPage from "./pages/tickets";
@@ -87,6 +89,11 @@ function App() {
             dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
             routerProvider={routerBindings}
             authProvider={authProvider}
+            i18nProvider={{
+              translate: (key) => i18n.t(key),
+              changeLocale: (lang) => i18n.changeLanguage(lang),
+              getLocale: () => i18n.language,
+            }}
             resources={[
               {
                 name: "home",
@@ -217,6 +224,29 @@ function App() {
 }
 
 function AppWrapper() {
+  const [initialized, setInitialized] = useState(false);
+
+  // Initialize i18n 
+  useEffect(() => {
+    // Get saved language from localStorage or default to Thai
+    const savedLanguage = localStorage.getItem('locale') || 'th';
+    
+    // Set default in localStorage if not already set
+    if (!localStorage.getItem('locale')) {
+      localStorage.setItem('locale', 'th');
+    }
+    
+    // Log current language 
+    console.log("App init - Current language:", i18n.language);
+    console.log("App init - Saved language:", savedLanguage);
+    
+    // Force change language to ensure it's loaded
+    i18n.changeLanguage(savedLanguage).then(() => {
+      console.log("App init - Language changed to:", i18n.language);
+      setInitialized(true);
+    });
+  }, []);
+
   return (
     <ConfigProvider>
       <ToastProvider>
