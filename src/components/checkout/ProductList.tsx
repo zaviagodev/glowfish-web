@@ -3,7 +3,6 @@ import { CartItem } from "@/lib/cart";
 import { makeTwoDecimals } from "@/lib/utils";
 import { ChevronDown, ChevronUp, Image } from "lucide-react";
 import { useState } from "react";
-import { useConfig } from "@/hooks/useConfig";
 import ProductPlaceholder from "../ui/product-placeholder";
 
 interface ProductListProps {
@@ -14,7 +13,6 @@ const LIMITED_ITEMS = 1;
 
 export function ProductList({ items }: ProductListProps) {
   const t = useTranslate();
-  const { config } = useConfig();
   const [showAllItems, setShowAllItems] = useState(false);
   const visibleItems = showAllItems ? items : items.slice(0, LIMITED_ITEMS);
 
@@ -25,7 +23,7 @@ export function ProductList({ items }: ProductListProps) {
   );
 
   return (
-    <div className="bg-darkgray rounded-xl shadow-sm border">
+    <div className="bg-darkgray rounded-xl">
       <div className="p-3 pb-0">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-medium">{t("Products Ordered")}</h2>

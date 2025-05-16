@@ -11,7 +11,7 @@
 }
 
 # Handle the main domain
-store.zaviago.com {
+<MULTI_TENANT_VITE_CALLBACK_DOMAIN> {
     # API requests go to nginx
     handle /api/* {
         reverse_proxy nginx:80

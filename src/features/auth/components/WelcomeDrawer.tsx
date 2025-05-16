@@ -42,8 +42,7 @@ export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
         setIsOpen={setIsOpen}
       >
         <h2 className="main-heading px-5 pt-[30px]">
-          {t("Welcome, this is where get people")}{" "}
-          <span className="text-[#9B6CDE]">{t("connected.")}</span>
+          {t(`Welcome to ${storeName}!`)} {t("Hope you can enjoy shopping!")}
         </h2>
         <EventSection
           list={productEvents.slice(0, 5)}
@@ -51,7 +50,7 @@ export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
         />
         <footer className="btn-footer">
           <Button className="main-btn w-full" onClick={() => navigate("/home")}>
-            {t("Let Glowfish")}
+            {t("Let's get started")}
           </Button>
         </footer>
       </RegisterDrawer>

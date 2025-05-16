@@ -134,15 +134,35 @@ export const HomeList = () => {
     selectedProduct?.end_datetime &&
     `${format(
       toZonedTime(new Date(selectedProduct.start_datetime), "UTC"),
-      formattedDateAndTime
+      "dd MMM yyyy HH:mm"
     )} - ${format(
       toZonedTime(new Date(selectedProduct.end_datetime), "UTC"),
-      formattedDateAndTime
+      "dd MMM yyyy HH:mm"
     )}`;
 
   if (loading) {
     return <HomeSkeletons />;
   }
+
+  const upcomingEvents = events
+    .filter(
+      (product: Product) =>
+        product.end_datetime && isPast(new Date(product.end_datetime)) === false
+    )
+    .sort((a, b) => {
+      const dateA = new Date(a.start_datetime || "");
+      const dateB = new Date(b.start_datetime || "");
+      return dateA.getTime() - dateB.getTime();
+    })
+    .slice(0, 5);
+
+  const eventsYouMightEnjoy = events
+    .sort((a, b) => {
+      const dateA = new Date(a.updated_at || "");
+      const dateB = new Date(b.updated_at || "");
+      return dateA.getTime() - dateB.getTime();
+    })
+    .slice(0, 8);
 
   return (
     <div className="min-h-screen relative">
@@ -173,7 +193,7 @@ export const HomeList = () => {
                   <img
                     src={config.storeLogo}
                     alt="Store Logo"
-                    className="w-[90px]"
+                    className="max-h-[68px] object-contain"
                   />
                 ) : (
                   <DefaultStorefront />
@@ -234,13 +254,7 @@ export const HomeList = () => {
         <ProductSection
           title={t("Upcoming Events")}
           linkTo="/events"
-          products={events
-            .filter(
-              (product: Product) =>
-                product.end_datetime &&
-                isPast(new Date(product.end_datetime)) === false
-            )
-            .slice(0, 5)}
+          products={upcomingEvents}
           onProductSelect={handleProductSelect}
           sliderRef={productSliderRef}
           isLoading={loading}
@@ -251,11 +265,12 @@ export const HomeList = () => {
         <ProductSection
           title={t("Events you might enjoy")}
           linkTo="/events"
-          products={events.slice(0, 8)}
+          products={eventsYouMightEnjoy}
           onProductSelect={handleProductSelect}
           sliderRef={eventSliderRef}
           isLoading={loading}
           isProduct={false}
+          type="small"
         />
       </section>
 

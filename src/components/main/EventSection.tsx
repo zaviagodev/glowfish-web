@@ -69,6 +69,7 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
                       location={item.location}
                       date={formattedTime(item)}
                       end_datetime={item.end_datetime}
+                      isProduct={true}
                     />
                   </motion.div>
                 );
