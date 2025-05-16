@@ -23,7 +23,8 @@ export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
     }
 
     if (product.product_variants.length === 1) {
-      return `${product.product_variants[0].price.toLocaleString()}`;
+      const price = Number(product.product_variants[0].price);
+      return `${price}`;
     }
 
     const prices = product.product_variants.map((v) => v.price);
