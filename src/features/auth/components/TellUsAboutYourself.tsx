@@ -6,7 +6,7 @@ import { useTranslate } from "@refinedev/core";
 
 export const TellUsAboutYourself = () => {
   const t = useTranslate();
-  const [isNext, setIsNext] = useState(true);
+  const [isNext, setIsNext] = useState(false);
 
   return (
     <>
