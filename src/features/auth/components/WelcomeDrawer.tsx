@@ -5,11 +5,15 @@ import { useProducts } from "@/features/home/hooks/useProducts";
 import { Product, RegisterDrawerProps } from "@/type/type 2";
 import { useTranslate } from "@refinedev/core";
 import { useNavigate } from "react-router-dom";
+import { useStore } from "@/hooks/useStore";
+
 
 export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
   const { events } = useProducts();
+  const { storeName } = useStore();
+
 
   const getPriceDisplay = (product: Product) => {
     if (!product.product_variants || product.product_variants.length === 0) {
