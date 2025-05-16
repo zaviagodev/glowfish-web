@@ -102,7 +102,7 @@ export function WalletSection() {
         className="w-full bg-darkgray rounded-lg p-4"
       >
         <div className="flex items-center gap-3 w-full">
-          <div className="w-12 h-12 rounded-lg bg-[#E1F5FE1A] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-lg bg-[#E1F5FEB3] dark:bg-[#E1F5FE1A] flex items-center justify-center">
             <Ticket className="w-5 h-5 text-[#03A9F4]" />
           </div>
           <div className="flex-1 text-left">

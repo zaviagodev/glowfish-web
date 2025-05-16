@@ -5,11 +5,15 @@ import { useProducts } from "@/features/home/hooks/useProducts";
 import { Product, RegisterDrawerProps } from "@/type/type 2";
 import { useTranslate } from "@refinedev/core";
 import { useNavigate } from "react-router-dom";
+import { useStore } from "@/hooks/useStore";
+
 
 export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
   const t = useTranslate();
   const navigate = useNavigate();
   const { events } = useProducts();
+  const { storeName } = useStore();
+
 
   const getPriceDisplay = (product: Product) => {
     if (!product.product_variants || product.product_variants.length === 0) {
@@ -19,7 +23,8 @@ export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
     }
 
     if (product.product_variants.length === 1) {
-      return `${product.product_variants[0].price.toLocaleString()}`;
+      const price = Number(product.product_variants[0].price);
+      return `${price}`;
     }
 
     const prices = product.product_variants.map((v) => v.price);
@@ -42,8 +47,7 @@ export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
         setIsOpen={setIsOpen}
       >
         <h2 className="main-heading px-5 pt-[30px]">
-          {t("Welcome, this is where get people")}{" "}
-          <span className="text-[#9B6CDE]">{t("connected.")}</span>
+          {t(`Welcome to ${storeName}!`)} {t("Hope you can enjoy shopping!")}
         </h2>
         <EventSection
           list={productEvents.slice(0, 5)}
@@ -51,7 +55,7 @@ export const WelcomeDrawer = ({ isOpen, setIsOpen }: RegisterDrawerProps) => {
         />
         <footer className="btn-footer">
           <Button className="main-btn w-full" onClick={() => navigate("/home")}>
-            {t("Let Glowfish")}
+            {t("Let's get started")}
           </Button>
         </footer>
       </RegisterDrawer>

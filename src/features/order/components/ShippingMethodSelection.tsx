@@ -49,7 +49,7 @@ export function ShippingMethodSelection({
   // If fixed rate shipping is enabled, show a simple message
   if (methods.fixed_rate?.enabled) {
     return (
-      <Card className="p-3 bg-darkgray flex items-center gap-3">
+      <Card className="p-3 bg-darkgray flex items-center gap-3 shadow-none border-0">
         <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg bg-[#AF52DE]/10">
           <Truck className="h-4 w-4 text-[#AF52DE]" />
         </div>
@@ -77,8 +77,8 @@ export function ShippingMethodSelection({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-black/10 dark:bg-white/10">
-              <Truck className="h-5 w-5 text-black dark:text-white" />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg bg-black/10 dark:bg-white/10">
+              <Truck className="h-4 w-4 text-black dark:text-white" />
             </div>
             <div>
               <div className="text-sm font-medium">
@@ -125,15 +125,19 @@ export function ShippingMethodSelection({
                     <Truck className="h-5 w-5 text-blue-500" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium">{method.name}</div>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-medium truncate">
+                        {method.name}
+                      </span>
+                      {method.is_default && (
+                        <span className="text-[10px] bg-primary/10 text-primary font-medium px-1.5 py-0.5 rounded-full flex-shrink-0">
+                          {t("Default")}
+                        </span>
+                      )}
+                    </div>
                     <div className="text-xs text-muted-foreground">
                       ฿{method.rate.toLocaleString()}
                     </div>
-                    {method.is_default && (
-                      <div className="text-xs text-primary mt-0.5">
-                        {t("Default")}
-                      </div>
-                    )}
                   </div>
                 </div>
               </button>

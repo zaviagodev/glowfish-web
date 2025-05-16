@@ -20,6 +20,7 @@ interface ProductSectionProps {
   isLoading?: boolean;
   isProduct?: boolean;
   isBanner?: boolean;
+  type?: "small" | "event" | undefined;
 }
 
 const formattedStartDate = (product: Product) => {
@@ -41,6 +42,7 @@ export const ProductSection = memo(function ProductSection({
   isLoading,
   isProduct,
   isBanner = false,
+  type,
 }: ProductSectionProps) {
   const t = useTranslate();
   return (
@@ -57,7 +59,7 @@ export const ProductSection = memo(function ProductSection({
             <Link
               key={`${title}-see-all`}
               to={linkTo}
-              className="text-sm text-[#FAFAFACC] hover:text-foreground no-underline"
+              className="text-sm text-muted-foreground no-underline"
             >
               {t("See all")}
             </Link>
@@ -75,6 +77,7 @@ export const ProductSection = memo(function ProductSection({
                   key={product.name}
                   className={cn("flex-shrink-0 w-[360px]", {
                     "h-full": isBanner,
+                    "w-[200px]": type === "small",
                   })}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -104,6 +107,7 @@ export const ProductSection = memo(function ProductSection({
                         acc + variant.quantity === null ? 0 : variant.quantity,
                       0
                     )}
+                    type={type}
                   />
                 </motion.div>
               ))}

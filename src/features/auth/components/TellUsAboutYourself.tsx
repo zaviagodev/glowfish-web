@@ -21,4 +21,4 @@ export const TellUsAboutYourself = () => {
       <WelcomeDrawer isOpen={isNext} setIsOpen={setIsNext} />
     </>
   );
-}; 
+};

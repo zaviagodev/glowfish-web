@@ -5,7 +5,7 @@ import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Image } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { formattedDateAndTime, makeTwoDecimals } from "@/lib/utils";
 import { useConfig } from "@/hooks/useConfig";
 import ProductPlaceholder from "../ui/product-placeholder";
@@ -97,7 +97,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
       </div>
 
       {order.shipping_details && (
-        <div className="px-4">
+        <div className="px-4 pb-4">
           <div className="bg-darkgray-two px-3 py-4 rounded-lg flex flex-col justify-center">
             <p className="text-sm">
               {t("Tracking Number")}: {order.shipping_details.tracking_number}
@@ -118,7 +118,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
         return (
           <motion.div
             key={item.id}
-            className="p-4 pb-0 flex gap-4"
+            className="px-4 py-0 flex gap-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
@@ -131,7 +131,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <ProductPlaceholder imageClassName="w-12 h-12" />
+                <ProductPlaceholder imageClassName="w-10 h-10" />
               )}
             </div>
             <div className="flex-1 min-w-0">
