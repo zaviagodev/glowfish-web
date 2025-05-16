@@ -17,6 +17,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import NoItemsComp from "../ui/no-items";
+import ContactUsButton from "@/components/ui/contact-us-button";
+
 
 // Add function to generate full image URL
 const getFullImageUrl = (imageUrl: string) => {
