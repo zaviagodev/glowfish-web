@@ -55,16 +55,18 @@ export function CategoryGrid({
   
   const mainStyle = (cate: string | null) => {
     const isSelected = selectedCategory === cate;
-    const isNoStyle = tab_type === "no_style";
+    // const isNoStyle = tab_type === "no_style";
   
     return cn(
       "whitespace-nowrap px-3 py-2 h-9 text-base rounded-2xl border",
       {
-        // "text-background font-bold":
-        //   isSelected,
-        "text-background border-0 border-b-2 border-transparent":
-          isNoStyle,
+        "!text-background":
+          cate === null,
         "text-background font-bold":
+          isSelected && cate === null,
+        "text-foreground":
+          cate,
+        "text-foreground font-bold":
           isSelected,
       }
     );

@@ -275,7 +275,7 @@ export const HomeList = () => {
       </section>
 
       {/* Category Bar */}
-      <div className="sticky top-0 bg-background border-b">
+      {/* <div className="sticky top-0 bg-background border-b">
         <CategoryGrid
           categories={categories}
           isLoading={loading}
@@ -283,9 +283,9 @@ export const HomeList = () => {
           onSelectCategory={setSelectedCategory}
           tab_type="no_style"
         />
-      </div>
+      </div> */}
 
-      <section className="py-6 space-y-6 px-[1px]">
+      {/* <section className="py-6 space-y-6 px-[1px]"> */}
         {/* <ProductSection
           title={t("Discover things you'd love")}
           linkTo=""
@@ -296,7 +296,7 @@ export const HomeList = () => {
           isBanner={true}
         /> */}
         {/* New Arrivals Section */}
-        <ProductSection
+        {/* <ProductSection
           title={t("New Arrivals")}
           linkTo="/products"
           products={products.slice(0, 8)}
@@ -305,7 +305,7 @@ export const HomeList = () => {
           isLoading={loading}
           isProduct={true}
         />
-      </section>
+      </section> */}
 
       {/* Product Detail */}
       {selectedProduct && (
