@@ -224,7 +224,7 @@ export const ProfileForm = ({
           </Avatar>
           {isProfileSetup && (
             <h1 className="main-heading">
-              Welcome! Please fill in your personal information to continue.
+              Become a part of Good Afterwork Community and see the latest event
             </h1>
           )}
           <input

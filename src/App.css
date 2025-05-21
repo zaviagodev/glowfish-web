@@ -356,7 +356,7 @@
   }
 
   .main-btn {
-    @apply inline-flex items-center justify-center ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 !bg-mainbutton !rounded-full text-primary-foreground px-4 py-2 !text-base !h-12 !font-semibold
+    @apply inline-flex items-center justify-center ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 !bg-[#F4E9D5] !rounded-full text-primary-foreground px-4 py-2 !text-base !h-12 !font-semibold
   }
 
   .secondary-btn {

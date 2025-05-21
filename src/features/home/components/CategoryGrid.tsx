@@ -21,6 +21,14 @@ interface CategoryGridProps {
   tab_type?: TabType;
 }
 
+const colors = [
+  '#FADB28',
+  '#317ABF',  
+  '#DE473C',  
+  '#F5853B',  
+  '#14A852',
+]
+
 export function CategoryGrid({
   categories,
   isLoading,
@@ -41,20 +49,23 @@ export function CategoryGrid({
     return <CategoriesSkeletons />;
   }
 
+  const getCategoryColor = (index: number) => {
+    return colors[index % colors.length];
+  };
+  
   const mainStyle = (cate: string | null) => {
+    const isSelected = selectedCategory === cate;
+    const isNoStyle = tab_type === "no_style";
+  
     return cn(
-      "whitespace-nowrap px-3 py-2 h-9 text-foreground text-base outline outline-1 outline-background !bg-transparent rounded-full border border-darkgray",
+      "whitespace-nowrap px-3 py-2 h-9 text-base rounded-2xl border",
       {
-        "!bg-foreground text-background border-foreground":
-          selectedCategory === cate,
-      },
-      {
-        "!bg-transparent rounded-none border-0 border-b-2 border-transparent text-muted-foreground":
-          tab_type === "no_style",
-      },
-      {
-        "border-b-foreground text-foreground font-bold":
-          tab_type === "no_style" && selectedCategory === cate,
+        // "text-background font-bold":
+        //   isSelected,
+        "text-background border-0 border-b-2 border-transparent":
+          isNoStyle,
+        "text-background font-bold":
+          isSelected,
       }
     );
   };
@@ -62,9 +73,7 @@ export function CategoryGrid({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 px-[22px] pt-[21px] overflow-auto scrollbar-hide",
-        { "pb-4": tab_type === "colorful" }
-      )}
+        "flex items-center gap-3 px-[22px] pt-[21px] pb-4 overflow-auto scrollbar-hide")}
     >
       <motion.div
         initial={{ opacity: 0 }}
@@ -74,6 +83,13 @@ export function CategoryGrid({
         <Button
           onClick={() => handleCategoryClick(null)}
           className={mainStyle(null)}
+          style={{ 
+            backgroundColor: '#F2E9D6',
+            boxShadow: selectedCategory === null ? 
+            `0 0 0 2px black,
+            0 0 0 3px #F2E9D6
+            ` : '',
+          }}
         >
           {t("All")}
         </Button>
@@ -90,6 +106,13 @@ export function CategoryGrid({
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
               className={mainStyle(category.id)}
+              style={{ 
+                backgroundColor: getCategoryColor(index),
+                boxShadow: selectedCategory === category.id ? 
+                `0 0 0 2px black,
+                0 0 0 3px ${getCategoryColor(index)}
+                ` : '',
+              }}
             >
               {category.name}
             </Button>
@@ -98,4 +121,5 @@ export function CategoryGrid({
       })}
     </div>
   );
+  
 }
