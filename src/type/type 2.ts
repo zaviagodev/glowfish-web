@@ -89,6 +89,8 @@ export interface EventDataProps {
     title: string;
     description: string;
     location?: string;
+    product_variants?: ProductVariant[];
+    track_quantity: boolean;
     compare_at_price?: string | number;
     date?: string;
     start_datetime?: string;

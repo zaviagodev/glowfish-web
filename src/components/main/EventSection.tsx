@@ -66,12 +66,19 @@ const EventSection = ({ list, title, seeAllLink }: EventSectionProps) => {
                       image={item.image}
                       title={item.title}
                       price={item.price}
+                      product_variants={item.product_variants}
                       compareAtPrice={item.compare_at_price}
                       description={item.description}
                       location={item.location}
                       date={formattedTime(item)}
                       end_datetime={item.end_datetime}
                       isProduct={true}
+                      track_quantity={item?.track_quantity}
+                      quantity={item?.product_variants?.reduce(
+                        (acc, variant) =>
+                          acc + variant.quantity === null ? 0 : variant.quantity,
+                        0
+                      )}
                     />
                   </motion.div>
                 );

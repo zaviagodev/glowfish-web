@@ -25,6 +25,7 @@ import { cn, getMapLinks, makeTwoDecimals } from "@/lib/utils";
 import ItemCarousel from "@/components/ui/item-carousel";
 import LongParagraph from "@/components/ui/long-paragraph";
 import ContactUsButton from "@/components/ui/contact-us-button";
+import useConfig from "@/hooks/useConfig";
 
 interface VariantOption {
   id: string;
@@ -100,6 +101,8 @@ export function ProductDetail({
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
   >(variant_id);
+  const { config } = useConfig();
+  const contactUrl = config?.contactLink;
 
   // Find selected variant
   const selectedVariant = product_variants?.find(
@@ -665,7 +668,7 @@ export function ProductDetail({
               ? t("Sign Up")
               : t("Add to cart")}
           </Button>
-          <ContactUsButton />
+          {contactUrl && <ContactUsButton />}
         </div>
       </div>
 

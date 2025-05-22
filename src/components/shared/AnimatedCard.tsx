@@ -110,7 +110,7 @@ export function AnimatedCard({
   };
 
   const isEventEnded = end_datetime ? isPast(new Date(end_datetime)) : false;
-  const checkIfNoProduct = track_quantity === true && quantity === 0;
+  const checkIfNoProduct = track_quantity === true && (quantity ?? 0) === 0;
 
   return (
     <motion.div
