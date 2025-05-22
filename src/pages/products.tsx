@@ -226,6 +226,13 @@ export default function ProductsPage() {
                       date={formattedStartDate(product)}
                       compareAtPrice={product.compare_at_price || undefined}
                       product_variants={product.product_variants}
+                      end_datetime={product.end_datetime}
+                      track_quantity={product.track_quantity}
+                      quantity={product.product_variants.reduce(
+                        (acc, variant) =>
+                          acc + variant.quantity === null ? 0 : variant.quantity,
+                        0
+                      )}
                       imageClassName="max-h-[220px] h-[40vw]"
                       onClick={() => {
                         // Get the default variant if product has variants

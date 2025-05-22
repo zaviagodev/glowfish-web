@@ -4,7 +4,7 @@ import { useConfig } from "@/hooks/useConfig";
 
 const ContactUsButton = () => {
   const { config } = useConfig();
-  const contactUrl = config?.contactLink || "#";
+  const contactUrl = config?.contactLink;
 
 
   return (
